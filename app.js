@@ -26,8 +26,7 @@ const autoEventsCheckbox = document.getElementById('auto-events');
   const recruitmentLogEl = document.getElementById('recruitment-log');
   const applicantListEl = document.getElementById('applicant-list');
   const refreshApplicantsBtn = document.getElementById('refresh-applicants-btn');
-  const mapTotalCountEl = document.getElementById('map-total-count');
-  const rosterTotalCountEl = document.getElementById('roster-total-count');
+    const rosterTotalCountEl = document.getElementById('roster-total-count');
 
   const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic'];
   let currentApplicants = [];
@@ -1040,10 +1039,7 @@ const databaseLogEl = document.getElementById('database-log');
 const wantedLogEl = document.getElementById('wanted-log');
 const personnelLogEl = document.getElementById('personnel-log');
 const citizensLogEl = document.getElementById('citizens-log');
-  const tabMap = document.getElementById('tab-map');
-  const mapLogEl = document.getElementById('map-log');
-  const mapContainer = document.getElementById('map-container');
-const rosterListEl = document.getElementById('roster-list');
+      const rosterListEl = document.getElementById('roster-list');
 const recruitBtn = document.getElementById('recruit-btn');
 
 // Citizen Page Elements
@@ -1071,9 +1067,7 @@ function hideAllTabs() {
       if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
-    tabMap.classList.remove('active');
-    tabMap.style.color = 'var(--text-dim)';
-
+    
     unifiedLogEl.style.display = 'none';
     chatInputArea.style.display = 'none';
     documentLogEl.style.display = 'none';
@@ -1082,8 +1076,7 @@ function hideAllTabs() {
     personnelLogEl.style.display = 'none';
       if(recruitmentLogEl) recruitmentLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
-    mapLogEl.style.display = 'none';
-}
+    }
 
 tabUnified.addEventListener('click', () => {
     hideAllTabs();
@@ -1141,13 +1134,7 @@ tabCitizens.addEventListener('click', () => {
     if (citizenListView) citizenListView.style.display = 'block';
 });
 
-  tabMap.addEventListener('click', () => {
-      hideAllTabs();
-      tabMap.classList.add('active');
-      tabMap.style.color = 'var(--text-main)';
-      mapLogEl.style.display = 'block';
-  });
-
+  
 // Personnel & PM Logic
 function renderRoster() {
     rosterListEl.innerHTML = '';
@@ -1588,8 +1575,7 @@ function generateWantedTargets() {
 // Update wanted targets every 45 seconds to keep it fresh
 setInterval(generateWantedTargets, 45000);
 generateWantedTargets(); // Initial call
-  initMap();
-
+  
 // --- Database Logic ---
 dbSearchBtn.addEventListener('click', () => {
     const query = dbSearchInput.value.trim().toUpperCase();
@@ -1685,27 +1671,7 @@ setTimeout(simulateChat, 1000);
 setTimeout(simulateChat, 1500);
 
 
-// --- SECTOR MAP LOGIC ---
-function initMap() {
-    if (!mapContainer) return;
-    mapContainer.innerHTML = '';
-    for(let i=1; i<=9; i++) {
-        let sector = document.createElement('div');
-        sector.className = 'map-sector';
-        sector.dataset.sector = i;
-        mapContainer.appendChild(sector);
-    }
-    
-    // Spawn initial patrols
-    for(let i=0; i<3; i++) {
-        spawnMapBlip('patrol');
-    }
-}
-
-function spawnMapBlip(type) {
-    if (!mapContainer) return;
-    let blip = document.createElement('div');
-    blip.className = `map-blip ${type}`;
+`;
     
     // Random position within the map grid container
     let randomX = Math.floor(Math.random() * 80) + 10;
