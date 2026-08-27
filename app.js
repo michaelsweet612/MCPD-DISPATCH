@@ -1586,24 +1586,3 @@ dbAiProfileBtn.addEventListener('click', async () => {
 setTimeout(simulateEvent, 500);
 setTimeout(simulateChat, 1000);
 setTimeout(simulateChat, 1500);
-
-
-`;
-    
-    // Random position within the map grid container
-    let randomX = Math.floor(Math.random() * 80) + 10;
-    let randomY = Math.floor(Math.random() * 80) + 10;
-    
-    if (type !== 'patrol') {
-        blip.style.left = `${randomX}%`;
-        blip.style.top = `${randomY}%`;
-    }
-    
-    mapContainer.appendChild(blip);
-    
-    if (type === 'event' || type === 'panic') {
-        setTimeout(() => {
-            if(blip.parentNode) blip.parentNode.removeChild(blip);
-        }, type === 'panic' ? 15000 : 8000);
-    }
-}
