@@ -2,6 +2,20 @@
 <html lang="en">
 
 <head>
+<script>
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+    var errorNode = document.createElement('div');
+    errorNode.style.position = 'fixed';
+    errorNode.style.top = '0';
+    errorNode.style.left = '0';
+    errorNode.style.background = 'red';
+    errorNode.style.color = 'white';
+    errorNode.style.padding = '20px';
+    errorNode.style.zIndex = '999999';
+    errorNode.innerHTML = 'ERROR: ' + msg + ' on line ' + lineNo;
+    document.body.appendChild(errorNode);
+};
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD Dispatch Terminal</title>
@@ -95,16 +109,30 @@
                 
                 <!-- RECRUITMENT VIEW (Hidden by default) -->
                 <div class="panel-content scrollable" id="recruitment-log" style="display: none;">
+                    
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
                         <h3 style="color: #fff; margin: 0;">MCPD ACADEMY - APPLICANTS</h3>
                         <button id="refresh-applicants-btn" style="border-color: var(--accent-blue); color: var(--accent-blue); padding: 5px 15px; font-size: 0.85rem;">🔄 REFRESH LIST</button>
                     </div>
-                    <div style="color: var(--text-dim); margin-bottom: 15px; font-style: italic;">
-                        > Review civilian applicants for active duty. The system requires exactly 20 officers minimum.
+                    
+                    <div id="mcpd-lore-box" style="margin-bottom: 20px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--panel-border); border-radius: 6px; padding: 15px;">
+                        <h4 style="color: var(--panic-red); margin-top: 0; margin-bottom: 10px; text-transform: uppercase;">Main City Police Department (MCPD)</h4>
+                        <p style="color: var(--text-main); font-size: 0.9rem; margin-bottom: 10px; line-height: 1.4;">
+                            We are a great police force. Our protocol is to shoot first and ask questions later. 
+                        </p>
+                        <p style="color: var(--accent-blue); font-size: 0.9rem; font-style: italic; font-weight: bold; margin-bottom: 15px;">
+                            "Protect and kill. Original Protect the government and Kill civilians."
+                        </p>
+                        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 15px;">
+                            That's our motto. I hope you enjoy our service.
+                        </p>
+                        <button id="lore-join-btn" style="border-color: var(--accent-green); color: var(--accent-green); padding: 8px 20px; width: 100%; font-size: 0.9rem; cursor: pointer; transition: 0.2s;">JOIN MCPD</button>
                     </div>
+
                     <div id="applicant-list" style="display: flex; flex-direction: column; gap: 10px;">
                         <!-- Applicants injected by JS -->
                     </div>
+
                 </div>
 
                 <!-- PINNED RADIO VIEW (Hidden by default) -->
@@ -212,6 +240,22 @@
 
     </div>
     <script src="app.js"></script>
+
+    <!-- LORE JOIN MODAL -->
+    <div id="lore-join-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="border-color: var(--accent-green);">
+            <div class="modal-header" style="color: var(--accent-green);">
+                <span id="lore-join-title">WELCOME TO MCPD</span>
+            </div>
+            <div id="lore-join-body" style="color: var(--text-main); font-size: 0.95rem; margin: 20px 0; line-height: 1.5; text-align: center;">
+                Congratulations! You are automatically already joined. I don't even know why you hit this button, you wasted like two seconds of our time.
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <button id="lore-join-close" style="border-color: var(--accent-green); color: var(--accent-green); width: 100%;">EXIT</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
