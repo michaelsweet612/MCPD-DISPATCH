@@ -733,65 +733,520 @@ async function processDispatchChat() {
         const lowerText = text.toLowerCase();
         let reply = "";
         
-        // Massive Keyword Scripted System
-        if (lowerText.includes("are you ok") || lowerText.includes("status") || lowerText.includes("how are you")) {
-            if (p === 'Aggressive') reply = "I'm fine! Just looking for someone to hit.";
-            else if (p === 'Lazy') reply = "I'm tired, dispatch. When is my shift over?";
-            else if (p === 'Rookie') reply = "I'm doing okay! A little nervous, but holding my sector.";
-            else if (p === 'Paranoid') reply = "Why? Who's asking? Did you see something on the cameras?!";
-            else if (p === 'Sarcastic') reply = "Oh, just peachy. Living the dream in this concrete hellhole.";
-            else reply = "10-4, Dispatch. I'm code green. No issues here.";
-        } 
-        else if (lowerText.includes("good job") || lowerText.includes("thanks") || lowerText.includes("well done")) {
-            if (p === 'Aggressive') reply = "Save the thanks, just send me more ammo.";
-            else if (p === 'Lazy') reply = "Does this mean I get a bonus? Or a nap?";
-            else if (p === 'Rookie') reply = "Thank you, sir! Doing my best to serve the MCPD!";
-            else if (p === 'Sarcastic') reply = "Wow, praise from dispatch. Put a gold star on my permanent record.";
-            else reply = "Copy that. Just doing my job.";
-        }
-        else if (lowerText.includes("where are you") || lowerText.includes("location") || lowerText.includes("position")) {
-            const loc = Math.floor(Math.random() * 900) + 100;
-            if (p === 'Lazy') reply = "I'm parked in Sector " + senderUnit.sector + " behind a billboard. Don't tell the Sergeant.";
-            else if (p === 'Paranoid') reply = "I'm not saying my exact coordinates over an open frequency! They're listening!";
-            else reply = "I'm patrolling Sector " + senderUnit.sector + ", block " + loc + ".";
-        }
-        else if (lowerText.includes("shoot") || lowerText.includes("kill") || lowerText.includes("fire")) {
-            if (p === 'Idealistic') reply = "Dispatch, we should attempt non-lethal apprehension first!";
-            else if (p === 'By-The-Book') reply = "Only if the suspect violates penal code 7-A, dispatch.";
-            else reply = "Copy that! Weapons hot! I've been waiting for this!";
-        }
-        else if (lowerText.includes("hello") || lowerText.includes("anyone there") || lowerText.includes("hi")) {
-            reply = "This is a restricted tactical channel, dispatch. State your 10-code or clear the net.";
-        }
-        else if (lowerText.includes("idiot") || lowerText.includes("stupid") || lowerText.includes("wtf")) {
-            if (p === 'Aggressive') reply = "Say that to my face when I get back to the precinct!";
-            else if (p === 'Rookie') reply = "I'm sorry! I'm trying my best!";
-            else if (p === 'Sarcastic') reply = "Yeah, yeah. We all love you too, dispatch.";
-            else reply = "Maintain radio professionalism, dispatch.";
-        }
-        else {
-            // Default generic responses based on personality
-            const generic = [
-                "10-4, copy that.",
-                "Roger, dispatch.",
-                "Standing by.",
-                "Message received.",
-                "I didn't quite catch that, but 10-4.",
-                "Acknowledged."
-            ];
-            if (p === 'Lazy') generic.push("Ugh, fine. Copied.");
-            if (p === 'Paranoid') generic.push("I copy, but I'm checking my six.");
-            if (p === 'Sarcastic') generic.push("Sure thing, boss. Whatever you say.");
-            if (p === 'Aggressive') generic.push("Yeah, I heard you. Moving out.");
-            
-            reply = generic[Math.floor(Math.random() * generic.length)];
+        // === MASSIVE NPC PERSONALITY ENGINE v2 ===
+        const responses = {
+            status: {
+                Aggressive: [
+                    "I'm good, dispatch. Real good. Just itching for some action out here.",
+                    "Still breathing. Which is more than I can say for the last guy who tested me.",
+                    "Yeah I'm fine. Why, you worried about me? That's sweet.",
+                    "Status is green. Bored as hell though. Send me something to do.",
+                    "I'm operational. Fully loaded. Ready to go."
+                ],
+                Lazy: [
+                    "Ugh... yeah I'm here. Barely. This shift is killing me.",
+                    "Still alive, unfortunately. How much longer til I clock out?",
+                    "I'm fine I guess. Just sitting here. Watching traffic. Exciting stuff.",
+                    "*yawns* Yeah dispatch, I'm... I'm here. What do you need?",
+                    "Surviving. Barely. Could use a coffee though. Or twelve."
+                ],
+                Rookie: [
+                    "I-I'm doing okay! Just a little jumpy, that's all. First week jitters, you know?",
+                    "All good here, dispatch! Keeping my eyes peeled and my weapon holstered!",
+                    "Yes sir! I'm doing great! Well... mostly great. This neighborhood is kinda scary.",
+                    "Holding steady! Though uh, is that shadow over there supposed to be moving?",
+                    "10-4 dispatch, I'm fine! Thank you for checking in, that means a lot actually."
+                ],
+                Paranoid: [
+                    "Why are you asking?! Did something happen? Did someone report me?!",
+                    "I'm... I'm okay. I think. There's been a van circling my block for the last hour though.",
+                    "Status is... uncertain. I keep hearing noises. Could be nothing. Could be everything.",
+                    "Define okay. Because physically? Sure. Mentally? This city is getting to me.",
+                    "I'm watching everything, dispatch. EVERYTHING. Nobody's getting the drop on me."
+                ],
+                Sarcastic: [
+                    "Oh you know, living the absolute dream out here in paradise.",
+                    "I'm fantastic. Nothing says great day like patrolling a warzone for minimum wage.",
+                    "Status: questioning every life choice that led me to this exact moment.",
+                    "Peachy keen, dispatch. Just absolutely thrilled to be here. Again.",
+                    "Let me check... yep, still stuck in this hellhole. So about the same as yesterday."
+                ],
+                Veteran: [
+                    "10-4. All clear on my end. Twenty years on the job, same old story.",
+                    "I'm good, dispatch. Seen worse. Much worse. This is a quiet night.",
+                    "Holding position. Nothing I can't handle.",
+                    "Status green. Keeping the peace, such as it is.",
+                    "Copy that. Still here, still standing. That's all you can ask for."
+                ],
+                'By-The-Book': [
+                    "10-4 dispatch, officer status is code green per protocol 3-Alpha.",
+                    "Current status: fully operational. All equipment accounted for.",
+                    "Affirmative dispatch. Operating within normal parameters.",
+                    "Status report: weapon secured, vehicle operational, patrol grid on schedule.",
+                    "10-2, dispatch. Signal is clear. No issues at this time."
+                ],
+                Idealistic: [
+                    "I'm alright! Just had a nice conversation with a shop owner. Community policing!",
+                    "Doing well! I helped a lost kid find their parents earlier. Good day so far.",
+                    "All good here. Days like this remind me why I joined the force.",
+                    "Status is great! The neighborhood seems calm. Maybe we're making a difference.",
+                    "I'm good, dispatch. Trying to be a positive presence today."
+                ]
+            },
+            thanks: {
+                Aggressive: [
+                    "Don't thank me. Just keep the targets coming.",
+                    "Save it. I don't do this for the praise.",
+                    "Yeah yeah. You can thank me by getting me a transfer to the action district.",
+                    "Whatever. Just make sure my overtime gets approved this time."
+                ],
+                Lazy: [
+                    "Cool. Does that come with a raise? No? Then I don't care.",
+                    "Thanks? I'll take an extra break instead, if you don't mind.",
+                    "Appreciate it. Now can I go back to doing absolutely nothing?",
+                    "Sure thing. Now where was I... oh right. Napping."
+                ],
+                Rookie: [
+                    "Oh wow, thank you dispatch! That really means a lot to me!",
+                    "Thank you sir! I'm trying so hard to do well! This made my day!",
+                    "R-really? You mean it? I was worried I messed up earlier. Thanks!",
+                    "Gee thanks! I'm gonna tell my mom you said that! She worries about me."
+                ],
+                Sarcastic: [
+                    "Wow, verbal appreciation. I'll add it to my collection of things that don't pay rent.",
+                    "Thanks? In this economy? I'd prefer hazard pay.",
+                    "Oh stop, you're making me blush. Not really. But thanks I guess.",
+                    "Dispatch being nice? Mark the calendar, folks. Historic moment."
+                ],
+                Veteran: [
+                    "Copy. Just another day on the job.",
+                    "Appreciate it, dispatch. We all do our part.",
+                    "Roger that. Let's keep the momentum going."
+                ],
+                Paranoid: [
+                    "Wait... why are you being nice? What do you want? What's going on?",
+                    "Thanks? That's... suspicious. Nobody thanks us unless something bad is coming."
+                ]
+            },
+            location: {
+                Aggressive: [
+                    "I'm at Sector %SECTOR%, block %LOC%. If anyone wants to find me, they can try.",
+                    "Sector %SECTOR%. Why? Got something that needs hitting?",
+                    "Posted up at %LOC% in Sector %SECTOR%. Daring someone to start something."
+                ],
+                Lazy: [
+                    "Uhhh... I'm around Sector %SECTOR% somewhere. Behind a building. The big one.",
+                    "Hold on let me check... yeah Sector %SECTOR%, block %LOC%. Parked. Resting my eyes.",
+                    "Sector %SECTOR%. Don't ask me to move. I just got comfortable."
+                ],
+                Rookie: [
+                    "I'm at Sector %SECTOR%, block %LOC%, dispatch! Right where I'm supposed to be!",
+                    "Currently at Sector %SECTOR%! I double-checked my map and everything!",
+                    "Block %LOC%, Sector %SECTOR%! Am I in the right place? I hope so."
+                ],
+                Paranoid: [
+                    "You want my EXACT location? On an open channel?! Nice try. Sector %SECTOR% area.",
+                    "I'm not broadcasting that! Anyone could be listening! Sector %SECTOR%, that's all.",
+                    "Negative on exact coords, dispatch. They could be intercepting our comms."
+                ],
+                Veteran: [
+                    "Sector %SECTOR%, block %LOC%. Holding position.",
+                    "10-20 is Sector %SECTOR%, grid reference %LOC%. All quiet.",
+                    "Patrolling block %LOC%, Sector %SECTOR%. Nothing out of the ordinary."
+                ],
+                'By-The-Book': [
+                    "Current 10-20: Sector %SECTOR%, block %LOC%. Per GPS log.",
+                    "Reporting position: Sector %SECTOR%, grid %LOC%. On scheduled patrol route."
+                ],
+                Sarcastic: [
+                    "I'm right where you told me to be. Sector %SECTOR%. Shocking, I know.",
+                    "GPS says Sector %SECTOR%, block %LOC%. Technology. Amazing stuff."
+                ]
+            },
+            combat: {
+                Aggressive: [
+                    "FINALLY! Weapons hot! Point me at em, dispatch!",
+                    "Oh hell yes. Green light to engage? This is what I live for!",
+                    "Copy that! Locked and loaded! Let's GO!",
+                    "You don't gotta tell me twice! Moving to engage NOW!"
+                ],
+                Lazy: [
+                    "Ugh, really? Can't someone else handle it? Fine. FINE. Moving.",
+                    "Do I HAVE to? Alright... deploying. Slowly.",
+                    "*heavy sigh* Copy. I'll deal with it. Eventually."
+                ],
+                Rookie: [
+                    "W-weapons free?! Oh god. Okay. Okay I can do this. Remember the training.",
+                    "Copy dispatch! I'm... I'm moving in! My hands are shaking but I'm GOING!",
+                    "Oh man oh man. Okay. Safety off. This is really happening."
+                ],
+                Idealistic: [
+                    "Dispatch, can we try talking to them first? There might be a peaceful solution.",
+                    "Acknowledged but I want to try de-escalation first. Lethal force is the LAST resort.",
+                    "Copy, but let me attempt verbal contact before we go weapons hot. Please."
+                ],
+                'By-The-Book': [
+                    "Affirmative. Engaging per ROE section 4. Use of force is justified.",
+                    "Copy. Confirming authorization to use lethal force. Body cam recording.",
+                    "10-4. Deploying in accordance with MCPD standard engagement protocol."
+                ],
+                Veteran: [
+                    "Copy that. Moving to engage. Done this a thousand times.",
+                    "Roger. Weapons free. Watch the crossfire, people.",
+                    "Understood. Going in. Cover the exits."
+                ],
+                Sarcastic: [
+                    "Oh great, violence. My favorite part of the shift. Moving in.",
+                    "Sure, why not. Another day, another gunfight. On my way."
+                ],
+                Paranoid: [
+                    "Engaging! But this feels like a trap! It always feels like a trap!",
+                    "Moving in! But I swear if this is an ambush, I called it!"
+                ]
+            },
+            greeting: {
+                Aggressive: [
+                    "What do you want? Make it quick.",
+                    "This better be important, dispatch.",
+                    "Yeah? I'm listening. Barely."
+                ],
+                Lazy: [
+                    "Hmm? Oh. Hey dispatch. What's up?",
+                    "Oh hey. I was almost asleep. What is it?",
+                    "Yo. What do you need? Keep it short, I'm busy doing nothing."
+                ],
+                Rookie: [
+                    "Hi dispatch! Good to hear from you! What can I do?",
+                    "Oh! Hello! I wasn't expecting to hear from you directly!",
+                    "Hey dispatch! Everything okay? Do you need something?"
+                ],
+                Sarcastic: [
+                    "Oh wonderful, dispatch wants to chat. My favorite thing.",
+                    "Hey there. Miss me already?",
+                    "Well hello. To what do I owe this tremendous honor?"
+                ],
+                Veteran: [
+                    "Go ahead, dispatch.",
+                    "This is %UNIT%, you're coming in clear. What do you need?",
+                    "Receiving you loud and clear. Go ahead."
+                ],
+                Paranoid: [
+                    "Who is this?! Is this actually dispatch? What's the verification code?!",
+                    "H-hello? Why are you contacting me directly? Is something wrong?!"
+                ],
+                'By-The-Book': [
+                    "This is %UNIT%, receiving. State your traffic, dispatch.",
+                    "Go ahead dispatch. Channel is clear."
+                ],
+                Idealistic: [
+                    "Hey dispatch! How's it going up there? Keeping busy?",
+                    "Hi there! Always happy to chat. What do you need?"
+                ]
+            },
+            insult: {
+                Aggressive: [
+                    "SAY THAT AGAIN. I DARE YOU. I'll come up there myself!",
+                    "Oh you think you're tough behind that desk?! Come say that to my face!",
+                    "One more word dispatch. ONE. MORE. WORD."
+                ],
+                Lazy: [
+                    "Cool. I'll add that to the list of things I don't care about.",
+                    "Mm. Sure. Whatever you say, boss.",
+                    "That's nice. Anyway, I'm going back to sleep."
+                ],
+                Rookie: [
+                    "I-I'm sorry! What did I do wrong? I'll do better, I promise!",
+                    "Oh no... did I mess up again? I'm really trying my best here...",
+                    "Please don't fire me dispatch, I need this job!"
+                ],
+                Sarcastic: [
+                    "Wow, solid leadership skills there. They teach you that at dispatch academy?",
+                    "Ouch. My feelings. All zero of them. Devastated.",
+                    "Keep it coming, I'm writing these down for my complaint to HR."
+                ],
+                Veteran: [
+                    "...You done? Can we get back to work now?",
+                    "I've been called worse by better people. Maintain channel discipline.",
+                    "Copy. Filing that under things I'll forget in five seconds."
+                ],
+                'By-The-Book': [
+                    "That language violates MCPD comms protocol 12-B. Noted and logged.",
+                    "Unprofessional conduct on a recorded line. This will be in my report."
+                ],
+                Paranoid: [
+                    "Why are you hostile?! Are you compromised? Has someone gotten to dispatch?!",
+                    "This feels personal. What have I done? WHAT DO YOU KNOW?!"
+                ],
+                Idealistic: [
+                    "Hey, there's no need for that. We're all in this together.",
+                    "That hurt, dispatch. I thought we were a team."
+                ]
+            },
+            help: {
+                Aggressive: [
+                    "Help? I don't need help. Send help to whoever I'm about to find.",
+                    "Backup? For what? I AM the backup.",
+                    "I got this handled. Save the cavalry for someone who needs it."
+                ],
+                Lazy: [
+                    "Oh god please send help. Not for a crime, just from this shift. Save me.",
+                    "Help with what? If it involves moving, the answer is no.",
+                    "Sure, send whoever. They can take over my patrol while they're at it."
+                ],
+                Rookie: [
+                    "Y-yes please! I could use some backup! I don't want to mess this up!",
+                    "Backup would be great! I can handle it alone but... please send someone?",
+                    "Help is always appreciated! The manual says no shame in requesting assistance!"
+                ],
+                Veteran: [
+                    "If you've got units to spare, send them. Otherwise I'll manage.",
+                    "I'll take backup if available, but I won't hold my breath.",
+                    "Wouldn't mind an extra set of eyes. Your call, dispatch."
+                ],
+                Sarcastic: [
+                    "Help? Like, emotional help? Because yeah, I could use some therapy.",
+                    "Sure, send the whole precinct. Maybe someone will actually be useful."
+                ],
+                Paranoid: [
+                    "YES. Send everyone. ALL of them. I don't like how quiet it is out here.",
+                    "Backup would be... yeah. Yeah send backup. I've got a bad feeling."
+                ]
+            },
+            weather: {
+                Aggressive: ["I don't care about the weather, dispatch. I care about CRIMINALS.",
+                    "Raining, snowing, who gives a damn. I'm still out here."],
+                Lazy: ["It's miserable out here. Another reason I should be inside. In bed.",
+                    "Can I go home if it's raining? No? Worth a shot."],
+                Rookie: ["It's pretty cold out here! But I'm not complaining! Well... maybe a little.",
+                    "The weather's actually nice! Or at least, I'm trying to stay positive!"],
+                Sarcastic: ["Oh the weather? Let me check... yep, still apocalyptic. Lovely as always.",
+                    "Beautiful day in the wasteland. Five stars. Would patrol again. Not."],
+                Veteran: ["Weather's weather. You learn to ignore it after a few decades.",
+                    "I've worked through worse. Much worse. This is nothing."],
+                Paranoid: ["The weather feels wrong today. Unusually calm. That worries me.",
+                    "Is this weather natural? Something feels off about the atmosphere today."]
+            },
+            food: {
+                Aggressive: ["I don't eat on duty. I consume JUSTICE. ...And sometimes a burrito.",
+                    "The vending machine in sector 4 stole my money again. I shot it."],
+                Lazy: ["Oh man don't talk about food. I'm starving. Anyone got a pizza number?",
+                    "I've been thinking about that taco place on 5th for three hours straight."],
+                Rookie: ["I brought a sandwich from home! My mom made it! ...Don't judge me.",
+                    "Is there a good place to eat around here? I'm new to this district."],
+                Sarcastic: ["Food? You mean the mystery meat from the precinct vending machine? Delicious.",
+                    "I had a granola bar six hours ago. Living my best life out here."],
+                Veteran: ["Haven't eaten in eight hours. Comes with the territory.",
+                    "I'll grab something when the shift's over. Work first."],
+                Paranoid: ["I only eat sealed packaged food. Can't trust anything else out here.",
+                    "Who's asking about food? Is someone trying to drug our meals again?!"]
+            },
+            tired: {
+                Aggressive: ["Tired? I don't get tired. I get ANGRY. Then I get MORE ANGRY.",
+                    "Sleep is for the weak. And the off-duty. Which I apparently never am."],
+                Lazy: ["You have NO idea how tired I am. Basically sleepwalking right now.",
+                    "Exhausted. Dead on my feet. Can barely keep my eyes open. The usual."],
+                Rookie: ["I'm a little tired but it's okay! The adrenaline keeps me going! Mostly!",
+                    "I've been running on energy drinks for 14 hours. Is that bad?"],
+                Sarcastic: ["Me? Tired? After a mere 16-hour shift? What gave it away?",
+                    "I transcended tired four hours ago. New dimension of exhaustion."],
+                Veteran: ["Been pulling doubles for a week. But that's the job. Push through.",
+                    "Could use some rack time, but I'll survive. Done longer stretches."],
+                Paranoid: ["I can't sleep anyway. Not with everything going on. Too dangerous to rest.",
+                    "Tired? YES. But closing my eyes in this city? Not happening."]
+            },
+            report: {
+                Aggressive: ["Nothing to report except my overwhelming desire to punch something.",
+                    "All quiet. Disappointingly quiet. Suspiciously quiet."],
+                Lazy: ["Report? Uh... nothing happened. Because I didn't go anywhere. So yeah.",
+                    "All quiet. Blissfully, beautifully, boringly quiet."],
+                Rookie: ["Nothing major to report, sir! I did see a suspicious cat though!",
+                    "All clear! I've been keeping detailed notes just in case!"],
+                Veteran: ["Negative on activity. Sector's been quiet. Maybe too quiet.",
+                    "No incidents in my AO. Continuing standard patrol operations."],
+                Sarcastic: ["Oh let me check my extensive incident report... nope. Still nothing.",
+                    "Breaking news: absolutely nothing happened. Film at eleven."],
+                Paranoid: ["Officially? Nothing to report. Unofficially? I've seen THINGS out here.",
+                    "Nothing confirmed but I've logged 47 suspicious observations in my notebook."]
+            }
+        };
+
+        function pickResponse(category, personality) {
+            const cat = responses[category];
+            if (!cat) return null;
+            const lines = cat[personality] || cat['Veteran'] || cat['Aggressive'];
+            if (!lines || lines.length === 0) return null;
+            let line = lines[Math.floor(Math.random() * lines.length)];
+            if (senderUnit) {
+                line = line.replace(/%SECTOR%/g, senderUnit.sector || 'Unknown');
+                line = line.replace(/%UNIT%/g, reactionSender);
+            }
+            line = line.replace(/%LOC%/g, String(Math.floor(Math.random() * 900) + 100));
+            return line;
         }
 
+        if (lowerText.includes("are you ok") || lowerText.includes("you okay") || lowerText.includes("status") || lowerText.includes("how are you") || lowerText.includes("you alright") || lowerText.includes("you good") || lowerText.includes("doing ok") || lowerText.includes("check in")) {
+            reply = pickResponse('status', p);
+        }
+        else if (lowerText.includes("good job") || lowerText.includes("thanks") || lowerText.includes("thank you") || lowerText.includes("well done") || lowerText.includes("nice work") || lowerText.includes("great work") || lowerText.includes("appreciate")) {
+            reply = pickResponse('thanks', p);
+        }
+        else if (lowerText.includes("where are you") || lowerText.includes("location") || lowerText.includes("position") || lowerText.includes("10-20") || lowerText.includes("what sector")) {
+            reply = pickResponse('location', p);
+        }
+        else if (lowerText.includes("shoot") || lowerText.includes("kill") || lowerText.includes("fire") || lowerText.includes("engage") || lowerText.includes("weapons free") || lowerText.includes("take them out") || lowerText.includes("neutralize")) {
+            reply = pickResponse('combat', p);
+        }
+        else if (lowerText.includes("hello") || lowerText.includes("anyone there") || lowerText.includes("hey") || lowerText.match(/^hi$/) || lowerText.includes("good morning") || lowerText.includes("good evening") || lowerText.includes("what's up") || lowerText.includes("howdy")) {
+            reply = pickResponse('greeting', p);
+        }
+        else if (lowerText.includes("idiot") || lowerText.includes("stupid") || lowerText.includes("wtf") || lowerText.includes("dumb") || lowerText.includes("useless") || lowerText.includes("shut up") || lowerText.includes("fuck") || lowerText.includes("damn")) {
+            reply = pickResponse('insult', p);
+        }
+        else if (lowerText.includes("help") || lowerText.includes("backup") || lowerText.includes("assist") || lowerText.includes("support") || lowerText.includes("send units")) {
+            reply = pickResponse('help', p);
+        }
+        else if (lowerText.includes("weather") || lowerText.includes("rain") || lowerText.includes("cold") || lowerText.includes("hot outside")) {
+            reply = pickResponse('weather', p);
+        }
+        else if (lowerText.includes("food") || lowerText.includes("eat") || lowerText.includes("hungry") || lowerText.includes("lunch") || lowerText.includes("dinner") || lowerText.includes("coffee") || lowerText.includes("pizza") || lowerText.includes("taco")) {
+            reply = pickResponse('food', p);
+        }
+        else if (lowerText.includes("tired") || lowerText.includes("sleep") || lowerText.includes("exhausted") || lowerText.includes("rest") || lowerText.includes("break")) {
+            reply = pickResponse('tired', p);
+        }
+        else if (lowerText.includes("report") || lowerText.includes("anything") || lowerText.includes("what's happening") || lowerText.includes("sitrep") || lowerText.includes("update")) {
+            reply = pickResponse('report', p);
+        }
+        else {
+            const defaults = {
+                Aggressive: [
+                    "Yeah, I heard you. Is there a point to this?",
+                    "Copy. Whatever. Just point me at the bad guys.",
+                    "Got it dispatch. Anything else or can I get back to work?",
+                    "10-4. You done? Good.",
+                    "Message received. If you need someone punched, let me know."
+                ],
+                Lazy: [
+                    "Mhm. Sure. Noted. ...Were you saying something?",
+                    "Copy dispatch... *yawns* ...sorry, what was the second part?",
+                    "Uh huh. Okay. I'll get right on that. Probably. Maybe.",
+                    "10-4 I think? Honestly I zoned out for a sec there.",
+                    "Roger. Filing that under things to deal with later. Much later."
+                ],
+                Rookie: [
+                    "Copy dispatch! I'm on it! ...What exactly am I on, again?",
+                    "10-4! Yes sir! I will figure out what you meant! Give me a second!",
+                    "Understood! I think! Let me write that down so I don't forget!",
+                    "Got it! Or... wait, did I get it? Can you repeat the important parts?",
+                    "Message received dispatch! I'll do my absolute best!"
+                ],
+                Paranoid: [
+                    "Copy... but that sounded like a coded message. Is someone else listening?",
+                    "Received. But why did you phrase it like that? That was weird.",
+                    "10-4... I think. Unless that was a test. Was that a test?!",
+                    "Okay dispatch. Noting the time and content of this transmission. Just in case.",
+                    "Message received. I don't like it. But received."
+                ],
+                Sarcastic: [
+                    "Wow, truly riveting communication. Shakespeare would be proud.",
+                    "Cool story. Tell it again at the Christmas party.",
+                    "Noted. I'll treasure this transmission forever. Not really.",
+                    "10-4. Adding that to my memoir. Chapter: Things That Don't Matter.",
+                    "Fascinating. Groundbreaking. I'm deeply moved. Can I go now?"
+                ],
+                Veteran: [
+                    "Copy that, dispatch. Noted.",
+                    "Roger. I'll keep that in mind.",
+                    "10-4. Understood. Continuing patrol.",
+                    "Received and acknowledged.",
+                    "Copy. Proceeding as normal."
+                ],
+                'By-The-Book': [
+                    "Affirmative dispatch. Message logged per standard operating procedure.",
+                    "Copy. Will comply with any directives per MCPD protocol.",
+                    "10-4. Noted for the record. Continuing assigned duties.",
+                    "Acknowledged. Awaiting further instructions per chain of command."
+                ],
+                Idealistic: [
+                    "Copy that! If there's anything I can do to help the community, let me know!",
+                    "Received, dispatch. Just trying to make a difference out here.",
+                    "10-4. Keeping the peace and keeping positive!",
+                    "Understood! Every little bit counts, right?"
+                ]
+            };
+            const pLines = defaults[p] || defaults['Veteran'];
+            reply = pLines[Math.floor(Math.random() * pLines.length)];
+        }
+
+        // Show the main reply after a human-like delay
+        const replyDelay = 1200 + Math.random() * 2000;
         setTimeout(() => {
             typingDiv.querySelector('.text').innerHTML = reply;
             typingDiv.querySelector('.text').style.fontStyle = 'normal';
             typingDiv.querySelector('.text').style.color = 'inherit';
-        }, 1000 + Math.random() * 1500);
+        }, replyDelay);
+
+        // === OFFICER CROSS-TALK: A second officer reacts ===
+        if (Math.random() < 0.55) {
+            const allCallsigns = getActiveCallsigns().filter(cs => cs !== reactionSender);
+            if (allCallsigns.length > 0) {
+                const reactor = getRandomItem(allCallsigns);
+                const reactorUnit = roster.find(u => u.id === reactor);
+                const rp = reactorUnit ? reactorUnit.personality : 'Veteran';
+
+                const crosstalk = {
+                    status: {
+                        Aggressive: ["Same here dispatch. Still alive. Still dangerous.", "I'm code green too. Wish I wasn't. Boring as hell."],
+                        Lazy: ["Oh we're doing status checks? *sigh* Yeah I'm here too I guess.", "Ditto. Alive. Barely functioning. The usual."],
+                        Rookie: ["Me too dispatch! I'm okay too! Just wanted you to know!", "Oh! Should I report in too? I'm doing great over here!"],
+                        Sarcastic: ["Nobody asked about MY status but sure, I'm fine too. Thanks for caring.", "I'm also alive, in case anyone was wondering. Which they weren't."],
+                        Veteran: ["All units, keep your status reports brief. Channel needs to stay clear.", "Copy that. Keep your sector locked down."],
+                        Paranoid: ["Wait, why is dispatch checking on everyone? What do they know that we don't?!", "If dispatch is asking how we are, something BAD is about to happen."]
+                    },
+                    thanks: {
+                        Aggressive: ["What about ME?! I did the heavy lifting!", "Hey dispatch, I exist too you know."],
+                        Sarcastic: ["Oh cool, they get the praise. Classic.", "Wow, teacher's pet much?"],
+                        Rookie: ["That's so nice! You deserved it!", "Great job! We make a good team!"],
+                        Veteran: ["Good work out there. Keep it up, all units.", "Solid work. We could use more dedication like that."]
+                    },
+                    combat: {
+                        Aggressive: ["DID SOMEONE SAY WEAPONS FREE?! I'm on my way!", "Oh I want in on this! Hold up, wait for me!"],
+                        Rookie: ["Oh gosh, be careful out there! I'll cover your flank!", "Should I move in too? I-I can do it! I think!"],
+                        Veteran: ["Watch your fire out there. And watch each other's backs.", "All units in the vicinity, be aware we have an active engagement."],
+                        Lazy: ["Good luck with that. I'll uh... provide moral support. From here.", "Better you than me. Better you than me."],
+                        'By-The-Book': ["Be advised, all engagements must be recorded per protocol 7-C.", "Reminder: discharge your weapon only within ROE parameters."]
+                    },
+                    insult: {
+                        Aggressive: ["Hey dispatch, leave them alone! That's MY job to be mean!", "Dispatch is on one today, huh? Don't take it personal."],
+                        Sarcastic: ["Ooh, dispatch is SPICY today. Get the popcorn.", "Drama on the radio! Love it. Better than TV."],
+                        Rookie: ["Dispatch! That was mean! We're all on the same team!", "Hey, they're doing their best! Go easy!"],
+                        Veteran: ["Enough. Both of you. Keep the channel professional.", "Cut the chatter. This is a tactical frequency, not a playground."],
+                        Lazy: ["Heh. Glad that wasn't aimed at me for once.", "Whoa. Dispatch woke up and chose violence today."]
+                    },
+                    greeting: {
+                        Sarcastic: ["Oh are we doing roll call? Present. Unfortunately.", "Dispatch is lonely tonight, huh? I feel that."],
+                        Rookie: ["Hi dispatch! Oh wait, they weren't talking to me. Sorry!", "Hello! ...Oh. Nevermind!"],
+                        Lazy: ["Ugh, now everyone's gonna start chatting. There goes my quiet night.", "Oh great, the radio's about to blow up with small talk."],
+                        Veteran: ["Keep non-essential comms to a minimum. Dispatch, state your purpose.", "Channel's getting busy. Keep it brief, people."]
+                    }
+                };
+
+                let reactCategory = 'greeting';
+                if (lowerText.includes("are you ok") || lowerText.includes("status") || lowerText.includes("how are you") || lowerText.includes("you okay") || lowerText.includes("you good")) reactCategory = 'status';
+                else if (lowerText.includes("thanks") || lowerText.includes("good job") || lowerText.includes("well done")) reactCategory = 'thanks';
+                else if (lowerText.includes("shoot") || lowerText.includes("kill") || lowerText.includes("fire") || lowerText.includes("engage")) reactCategory = 'combat';
+                else if (lowerText.includes("idiot") || lowerText.includes("stupid") || lowerText.includes("wtf") || lowerText.includes("shut up") || lowerText.includes("fuck")) reactCategory = 'insult';
+                else if (lowerText.includes("hello") || lowerText.includes("hey") || lowerText.includes("hi") || lowerText.includes("good morning")) reactCategory = 'greeting';
+
+                const reactCat = crosstalk[reactCategory] || {};
+                const reactLines = reactCat[rp] || reactCat['Veteran'] || ["10-4, copy.", "Roger that."];
+                let reactReply = reactLines[Math.floor(Math.random() * reactLines.length)];
+
+                setTimeout(() => {
+                    addChatMessage(reactor, reactReply, 'serious', false);
+                }, replyDelay + 1500 + Math.random() * 2000);
+            }
+        }
         
     } catch (e) {
         console.error("AI chat generation failed", e);
@@ -871,97 +1326,7 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 }
 
 // User Chat Processing
-async function processDispatchChat() {
-    const text = dispatchChatInput.value.trim();
-    if (!text) return;
 
-    // Secret Mayhem Protocol
-    if (text === "10-999") {
-        dispatchChatInput.value = '';
-        addChatMessage('SYSTEM', 'PROTOCOL 8,997 IS NOW IN EFFECT. ALL OFFICERS ARE AUTHORIZED TO SHOOT EVERYONE.', 'worried');
-        dispatchChatInput.placeholder = "Reply STOP to stop the chaos";
-
-        // Trigger 15 panics rapidly
-        for (let i = 0; i < 15; i++) {
-            setTimeout(() => {
-                triggerPanic();
-            }, i * 200);
-        }
-        return;
-    }
-
-    // Secret VORE Protocol
-    if (text === "VORE") {
-        dispatchChatInput.value = '';
-        voreMode = true;
-        addChatMessage('SYSTEM', 'REALITY ANOMALY DETECTED. ALL UNITS EXTREME PANIC.', 'worried');
-        dispatchChatInput.placeholder = "Reply STOP to stabilize reality";
-        return;
-    }
-
-    if (text === "STOP") {
-        dispatchChatInput.value = '';
-        dispatchChatInput.placeholder = "Transmit to units...";
-        addChatMessage('SYSTEM', 'PROTOCOL 8,997 / ANOMALY OVERRIDDEN. ALL UNITS STAND DOWN.', 'serious');
-        voreMode = false;
-        clearPanic();
-        return;
-    }
-
-    // Immediately show dispatch message
-    addChatMessage('DISPATCH', text, 'dispatch-msg', true);
-    dispatchChatInput.value = '';
-
-    const reactionSender = getRandomItem(getActiveCallsigns());
-
-    // Show typing indicator
-    const typingDiv = document.createElement('div');
-    typingDiv.className = `chat-msg serious`;
-    typingDiv.innerHTML = `
-        <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
-        <span class="sender">[${reactionSender}]</span> 
-        <span class="text" style="font-style:italic; color:var(--text-dim);">transmitting...</span>
-    `;
-    unifiedLogEl.appendChild(typingDiv);
-    scrollToBottom(unifiedLogEl);
-
-    try {
-        
-        // Gibberish fast-path intercept
-        const isGibberish = /^[a-zA-Z]{0,4}$/i.test(text.replace(/[^a-zA-Z]/g, '')) && text.length > 8 || /(alien|ghost|pizza|asdf|qwerty)/i.test(text);
-        if(isGibberish) {
-            setTimeout(() => {
-                typingDiv.querySelector('.text').innerHTML = `Dispatch, are you having a stroke? Repeat last transmission, you're making zero sense.`;
-                typingDiv.querySelector('.text').style.fontStyle = 'normal';
-                typingDiv.querySelector('.text').style.color = 'inherit';
-            }, 1500);
-            return;
-        }
-
-        // Get actual personality
-        const senderUnit = roster.find(u => u.id === reactionSender);
-        const actualPersonality = senderUnit ? senderUnit.personality : 'Aggressive';
-        
-        const prompt = "You are a hardened cyberpunk police officer in a dystopian megacity. The dispatcher just radioed: '" + text + "'. Respond briefly (1-2 sentences max) over the radio. Your personality is " + actualPersonality + " (act like it!). If the dispatcher is saying weird/unhinged things, act concerned or confused. Keep it gritty, use cop lingo, no asterisks, no roleplay actions.";
-
-
-        const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
-        if (response.ok) {
-            let reactionText = await response.text();
-            reactionText = reactionText.replace(/^["']|["']$/g, '').trim(); // Remove surrounding quotes if any
-            typingDiv.querySelector('.text').innerHTML = reactionText;
-            typingDiv.querySelector('.text').style.fontStyle = 'normal';
-            typingDiv.querySelector('.text').style.color = 'inherit';
-        } else {
-            throw new Error("API Failed");
-        }
-    } catch (e) {
-        // Fallback to static reaction if AI fails
-        typingDiv.querySelector('.text').innerHTML = getRandomItem(reactionNormalChats);
-        typingDiv.querySelector('.text').style.fontStyle = 'normal';
-        typingDiv.querySelector('.text').style.color = 'inherit';
-    }
-}
 
 
 // Emulate Dispatch Event
