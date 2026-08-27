@@ -552,4 +552,32 @@ button:active {
         text-align: center;
         font-size: 0.85rem;
     }
+}.applicant-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--panel-border);
+    padding: 15px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+.applicant-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent-blue);
+}
+.applicant-info {
+    display: flex;
+    flex-direction: column;
+}
+.applicant-name {
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+.applicant-trait {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-style: italic;
 }
