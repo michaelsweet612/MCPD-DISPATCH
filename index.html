@@ -92,8 +92,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                 <div class="panel-header tab-header" style="justify-content: flex-start; overflow-x: auto;">
                     <div class="tab active" id="tab-unified">📡 DISPATCH LOG</div>
                                         <div class="tab" id="tab-documents">📜 IMPORTANT LOGS</div>
-                    <div class="tab" id="tab-personnel">👥 PERSONNEL</div>
-                    <div class="tab" id="tab-recruitment">📋 JOIN MCPD</div>
+                                        <div class="tab" id="tab-recruitment">📋 JOIN MCPD</div>
                     <div class="tab" id="tab-database">💾 DATABASE</div>
                     <div class="tab" id="tab-citizens">🆔 CITIZENS</div>
                     <div class="tab" id="tab-wanted">🎯 WANTED TARGETS</div>
@@ -145,16 +144,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                 </div>
 
                 <!-- PERSONNEL VIEW (Hidden by default) -->
-                <div class="panel-content scrollable" id="personnel-log" style="display: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
-                        <h3 style="color: #fff; margin: 0;">ACTIVE ROSTER MANAGEMENT</h3>
-                        <div style="color: var(--accent-green); font-weight: bold;">ON DUTY: <span id="roster-total-count">0</span>/20 MIN</div>
-                    </div>
-                    <div id="roster-list" style="display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Roster items injected by JS -->
-                    </div>
-                </div>
-
+                
                 <!-- DATABASE VIEW (Hidden by default) -->
                 <div class="panel-content scrollable" id="database-log" style="display: none;">
                     <h3 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
