@@ -1144,41 +1144,20 @@ function renderRoster() {
                 <span class="roster-status ${statusClass}">${unit.status}</span>
             </div>
             <div class="roster-actions">
-                <button class="roster-btn toggle-duty" data-idx="${idx}">${unit.status === 'On Duty' ? 'Set Off Duty' : 'Set On Duty'}</button>
+                
                 <button class="roster-btn suspend-unit" data-idx="${idx}">${unit.status === 'Suspended' ? 'Un-Suspend' : 'Suspend'}</button>
-                <button class="roster-btn pm-unit" data-idx="${idx}" style="color:var(--accent-blue); border-color:var(--accent-blue);">PM</button>
-                <button class="roster-btn dismiss-unit" data-idx="${idx}" style="color:var(--panic-red); border-color:var(--panic-red);">Dismiss</button>
+                
+                
             </div>
         `;
         rosterListEl.appendChild(card);
     });
 
-    document.querySelectorAll('.toggle-duty').forEach(btn => btn.addEventListener('click', (e) => {
-        const idx = e.target.getAttribute('data-idx');
-        if (roster[idx].status !== 'Suspended') {
-            roster[idx].status = roster[idx].status === 'On Duty' ? 'Off Duty' : 'On Duty';
-            renderRoster();
-        }
-    }));
+    
 
-    document.querySelectorAll('.suspend-unit').forEach(btn => btn.addEventListener('click', (e) => {
-        const idx = e.target.getAttribute('data-idx');
-        roster[idx].status = roster[idx].status === 'Suspended' ? 'Off Duty' : 'Suspended';
-        renderRoster();
-    }));
+    
 
-    document.querySelectorAll('.dismiss-unit').forEach(btn => btn.addEventListener('click', (e) => {
-        const idx = e.target.getAttribute('data-idx');
-        roster.splice(idx, 1);
-        renderRoster();
-    }));
-
-    document.querySelectorAll('.pm-unit').forEach(btn => btn.addEventListener('click', (e) => {
-        const idx = btn.getAttribute('data-idx');
-        if (idx !== null && roster[idx]) {
-            openPM(roster[idx].id);
-        }
-    }));
+    
 }
 
 // Recruit Logic
@@ -1266,7 +1245,7 @@ setInterval(() => {
             renderRoster();
         }
     }
-}, 15000); // Check every 15 seconds
+}, 10000); // Check every 15 seconds
 
 // Initial render
 renderRoster();
@@ -1397,9 +1376,9 @@ function updateCitizenStatus(newStatus) {
 // Initialize Citizens
 generateCitizens();
 renderCitizensList();
-chatSimulateInt = setInterval(simulateChat, 3000); // every 3s, random chat
+chatSimulateInt = setInterval(simulateChat, 5000); // every 3s, random chat
 autoSimulateInt = setInterval(() => {
-    simulateEvent();
+        simulateEvent();
 
     // Occasional Random Auto-Panic (very rare, ~1% chance during an event tick)
     if (Math.random() < 0.01 && autoEventsCheckbox.checked && activePanics.size === 0) {
@@ -1586,3 +1565,24 @@ dbAiProfileBtn.addEventListener('click', async () => {
 setTimeout(simulateEvent, 500);
 setTimeout(simulateChat, 1000);
 setTimeout(simulateChat, 1500);
+
+
+// Lore Join Button Logic
+const loreJoinBtn = document.getElementById('lore-join-btn');
+const loreJoinModal = document.getElementById('lore-join-modal');
+const loreJoinClose = document.getElementById('lore-join-close');
+
+if(loreJoinBtn) {
+    loreJoinBtn.addEventListener('click', () => {
+        if(loreJoinModal) loreJoinModal.style.display = 'flex';
+        // Once clicked, disable it so it only works once until refresh
+        loreJoinBtn.disabled = true;
+        loreJoinBtn.style.opacity = '0.5';
+        loreJoinBtn.innerText = 'ALREADY JOINED';
+    });
+}
+if(loreJoinClose) {
+    loreJoinClose.addEventListener('click', () => {
+        if(loreJoinModal) loreJoinModal.style.display = 'none';
+    });
+}
