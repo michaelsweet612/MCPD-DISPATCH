@@ -484,7 +484,7 @@ async function simulateChat() {
               sender = Math.random() < 0.5 ? offTopicUnit1 : offTopicUnit2;
               const target = sender === offTopicUnit1 ? offTopicUnit2 : offTopicUnit1;
               actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
-              scenario = `You are having a highly unprofessional, casual, off-topic conversation with ${target} over the main police radio. Talk about mundane NPC things: bad food, video games, complaining about your shift, or sports.`;
+              scenario = `You are having a highly unprofessional, casual, off-topic conversation with ${target} over the main police radio. Talk about mundane NPC things: bad food, video games, complaining about your shift, sports, or tell a terrible random cop joke, or a dark dystopian joke.`;
               msgTypeClass = 'joking'; // yellow/casual text
           }
       } else {
