@@ -486,9 +486,7 @@ async function simulateChat() {
             let msgText = await response.text();
             msgText = msgText.replace(/^["']|["']$/g, '').trim();
 
-            if (replyTo && msgTypeClass === 'joking' && !msgText.includes(replyTo)) {
-                msgText = `@${replyTo} ${msgText}`;
-            }
+            
 
             addChatMessage(sender, msgText, msgTypeClass, false);
 
@@ -510,9 +508,7 @@ async function simulateChat() {
             else msgText = getRandomItem(worriedChats);
         }
         
-        if (replyTo && msgTypeClass === 'joking' && !msgText.includes(replyTo)) {
-            msgText = `@${replyTo} ${msgText}`;
-        }
+        
         
         addChatMessage(sender, msgText, msgTypeClass, false);
     } finally {
@@ -696,7 +692,7 @@ function simulateEvent(specificCrime = null) {
 
     unifiedLogEl.appendChild(div);
     eventCount++;
-    eventCountEl.textContent = `${eventCount} Events`;
+    if(eventCountEl) eventCountEl.textContent = `${eventCount} Events`;
     scrollToBottom(unifiedLogEl);
 
     if (unifiedLogEl.children.length > 100) {
@@ -1280,83 +1276,6 @@ renderRoster();
 let currentPMUnit = null;
 const pmTitle = document.getElementById('pm-title');
 const pmHistory = document.getElementById('pm-chat-history');
-
-function openPM(unitId) {
-    currentPMUnit = unitId;
-    pmTitle.textContent = `PRIVATE COMMS: ${unitId}`;
-    pmHistory.innerHTML = '<div style="color:var(--text-dim); text-align:center; font-size:0.8rem;">Encryption established. PMs are isolated from Dispatch Log.</div>';
-    pmModal.style.display = 'flex';
-}
-
-function sendPM() {
-    const text = pmInput.value.trim();
-    if (!text || !currentPMUnit) return;
-
-    // Add Dispatch message
-    pmHistory.innerHTML += `<div style="text-align:right;"><span style="color:var(--accent-blue);">[DISPATCH]</span> ${text}</div>`;
-    pmInput.value = '';
-    pmHistory.scrollTop = pmHistory.scrollHeight;
-
-    // Show typing visual for PM
-    const typingId = 'pm-typing-' + Date.now();
-    pmHistory.innerHTML += `<div id="${typingId}" style="text-align:left; color:var(--text-dim); font-style:italic;"><span style="color:var(--accent-green);">[${currentPMUnit}]</span> parsing...</div>`;
-    pmHistory.scrollTop = pmHistory.scrollHeight;
-
-    // Fetch AI Reply with Mood Status
-    setTimeout(async () => {
-        try {
-            const prompt = `You are a cyberpunk police officer named ${currentPMUnit} receiving a private direct text message from Dispatch: '${text}'. First, decide your mood based on the message. Then reply briefly (1-2 sentences max). Format your response exactly like this: "MOOD: [Angry/Happy/Neutral/Scared/Resentful/etc] | [Your message]". No asterisks, no roleplay actions.`;
-            const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
-            if (response.ok) {
-                let aiText = await response.text();
-                aiText = aiText.replace(/^["']|["']$/g, '').trim();
-
-                // Parse mood
-                let mood = "Neutral";
-                let message = aiText;
-
-                if (aiText.includes('MOOD:') && aiText.includes('|')) {
-                    const parts = aiText.split('|');
-                    mood = parts[0].replace('MOOD:', '').trim();
-                    message = parts.slice(1).join('|').trim();
-                }
-
-                // Determine Mood Color
-                let moodColor = "#ccc";
-                const moodLower = mood.toLowerCase();
-                if (moodLower.includes('angry') || moodLower.includes('mad') || moodLower.includes('resentful')) moodColor = "var(--panic-red)";
-                else if (moodLower.includes('happy') || moodLower.includes('good') || moodLower.includes('calm')) moodColor = "var(--accent-green)";
-                else if (moodLower.includes('scared') || moodLower.includes('panic') || moodLower.includes('fear')) moodColor = "var(--panic-orange)";
-
-                const typingEl = document.getElementById(typingId);
-                if (typingEl) {
-                    typingEl.innerHTML = `
-                        <div style="font-size: 0.75rem; font-weight: bold; color: ${moodColor}; margin-bottom: 2px;">STATUS: ${mood.toUpperCase()}</div>
-                        <span style="color:var(--accent-green);">[${currentPMUnit}]</span> ${message}
-                    `;
-                    typingEl.style.color = '#ccc';
-                    typingEl.style.fontStyle = 'normal';
-                }
-            } else {
-                throw new Error("API Failed");
-            }
-        } catch (e) {
-            // Fallback
-            const typingEl = document.getElementById(typingId);
-            if (typingEl) {
-                const fallbackReply = Math.random() < 0.5 ? getRandomItem(reactionNormalChats) : "10-4. Cannot confirm at this time.";
-                typingEl.innerHTML = `<span style="color:var(--accent-green);">[${currentPMUnit}]</span> ${fallbackReply}`;
-                typingEl.style.color = '#ccc';
-                typingEl.style.fontStyle = 'normal';
-            }
-        }
-        pmHistory.scrollTop = pmHistory.scrollHeight;
-    }, 500);
-}
-
-pmSendBtn.addEventListener('click', sendPM);
-pmInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendPM(); });
-
 
 // -----------------------------------------------------
 // CITIZENS DIRECTORY LOGIC
