@@ -411,6 +411,12 @@ async function simulateChat() {
       if (activeCallsigns.length < 2) return; // Need at least 2 for banter
 
       let sender = getRandomItem(activeCallsigns);
+      
+      // Very rare 1% chance to say good boy
+      if (Math.random() < 0.01) {
+          addChatMessage(sender, "Good boy.", 'joking');
+          return;
+      }
       let msgTypeClass = 'serious';
       let scenario = '';
       
