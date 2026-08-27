@@ -1856,3 +1856,59 @@ if(loreJoinClose) {
 }
 
 
+
+
+// ALL CALLOUTS LOGIC
+const calloutsHeader = document.getElementById('all-callouts-header');
+const calloutsBody = document.getElementById('all-callouts-body');
+const calloutsChevron = document.getElementById('callouts-chevron');
+
+if(calloutsHeader) {
+    calloutsHeader.addEventListener('click', () => {
+        if (calloutsBody.style.display === 'none') {
+            calloutsBody.style.display = 'flex';
+            calloutsChevron.innerText = '▲';
+            
+            // Populate if empty
+            if (calloutsBody.children.length === 0) {
+                crimeReports.forEach(crimeTemplate => {
+                    const btn = document.createElement('button');
+                    btn.className = 'manual-event-btn';
+                    
+                    // Assign colors based on priority
+                    if (crimeTemplate.priority === 'high') {
+                        btn.style.borderColor = 'var(--panic-red)';
+                        btn.style.color = 'var(--panic-red)';
+                    } else if (crimeTemplate.priority === 'medium') {
+                        btn.style.borderColor = '#ff9800';
+                        btn.style.color = '#ff9800';
+                    } else {
+                        btn.style.borderColor = '#ffeb3b';
+                        btn.style.color = '#ffeb3b';
+                    }
+                    
+                    btn.style.textAlign = 'left';
+                    btn.style.padding = '8px';
+                    btn.style.fontSize = '0.8rem';
+                    btn.style.whiteSpace = 'normal';
+                    btn.style.height = 'auto';
+                    btn.innerText = crimeTemplate.title;
+                    
+                    btn.onclick = () => {
+                        let activeCrime = { ...crimeTemplate };
+                        if (activeCrime.title.includes('[RAND_LOC]')) {
+                            const randLoc = Math.floor(Math.random() * 90000) + 10000;
+                            activeCrime.title = activeCrime.title.replace('[RAND_LOC]', randLoc);
+                        }
+                        simulateEvent(activeCrime);
+                    };
+                    
+                    calloutsBody.appendChild(btn);
+                });
+            }
+        } else {
+            calloutsBody.style.display = 'none';
+            calloutsChevron.innerText = '▼';
+        }
+    });
+}
