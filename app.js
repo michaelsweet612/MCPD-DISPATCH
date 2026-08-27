@@ -22,9 +22,18 @@ const btnEvtSuspicious = document.getElementById('manual-event-suspicious');
 const btnEvtTraffic = document.getElementById('manual-event-traffic');
 const btnEvtRandom = document.getElementById('manual-event-random');
 const autoEventsCheckbox = document.getElementById('auto-events');
+  const tabRecruitment = document.getElementById('tab-recruitment');
+  const recruitmentLogEl = document.getElementById('recruitment-log');
+  const applicantListEl = document.getElementById('applicant-list');
+  const refreshApplicantsBtn = document.getElementById('refresh-applicants-btn');
+  const mapTotalCountEl = document.getElementById('map-total-count');
+  const rosterTotalCountEl = document.getElementById('roster-total-count');
+
+  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic'];
+  let currentApplicants = [];
+
 const roeToggleCheckbox = document.getElementById('roe-toggle');
 const restModeToggle = document.getElementById('rest-mode-toggle');
-const autoHireToggle = document.getElementById('auto-hire-toggle');
 const btnArrestNearby = document.getElementById('btn-arrest-nearby');
 
 // Advanced Controls UI
@@ -47,17 +56,19 @@ let autoSimulateInt = null;
 let chatSimulateInt = null;
 
 // Mock Data
-let roster = [
-    { id: 'Unit-49123', status: 'On Duty' }, { id: 'Unit-84721', status: 'On Duty' },
-    { id: 'Unit-10934', status: 'On Duty' }, { id: 'Unit-55829', status: 'On Duty' },
-    { id: 'Unit-29104', status: 'Off Duty' }, { id: 'Unit-74810', status: 'On Duty' },
-    { id: 'Unit-33921', status: 'Suspended' }, { id: 'Unit-92105', status: 'On Duty' },
-    { id: 'Unit-11492', status: 'On Duty' }, { id: 'Unit-66401', status: 'On Duty' },
-    { id: 'Unit-50291', status: 'Off Duty' }, { id: 'Unit-88124', status: 'On Duty' },
-    { id: 'Unit-39502', status: 'On Duty' }, { id: 'Unit-77190', status: 'On Duty' },
-    { id: 'Unit-20418', status: 'On Duty' }, { id: 'Unit-91845', status: 'On Duty' },
-    { id: 'Unit-63012', status: 'On Duty' }
-];
+let roster = [];
+  function initRoster() {
+      for(let i=0; i<20; i++) {
+          roster.push({
+              id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+              status: 'On Duty',
+              personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+              sector: Math.floor(Math.random() * 9) + 1
+          });
+      }
+  }
+  initRoster();
+
 
 function getActiveCallsigns() {
     return roster.filter(u => u.status === 'On Duty').map(u => u.id);
@@ -607,9 +618,24 @@ async function processDispatchChat() {
     scrollToBottom(unifiedLogEl);
 
     try {
-        const moods = ["annoyed and exhausted", "hyper-aggressive and ready for action", "cold and strictly professional", "sarcastic and cynical", "confused by the dispatcher's bizarre orders", "paranoid and terrified"];
-        const randomMood = moods[Math.floor(Math.random() * moods.length)];
-        const prompt = "You are a hardened cyberpunk police officer in a dystopian megacity. The dispatcher just radioed: '" + text + "'. Respond briefly (1-2 sentences max) over the radio. Your current mood is " + randomMood + ". Keep it gritty, use cop lingo, no asterisks, no roleplay actions.";
+        
+        // Gibberish fast-path intercept
+        const isGibberish = /^[a-zA-Z]{0,4}$/i.test(text.replace(/[^a-zA-Z]/g, '')) && text.length > 8 || /(alien|ghost|pizza|asdf|qwerty)/i.test(text);
+        if(isGibberish) {
+            setTimeout(() => {
+                typingDiv.querySelector('.text').innerHTML = `Dispatch, are you having a stroke? Repeat last transmission, you're making zero sense.`;
+                typingDiv.querySelector('.text').style.fontStyle = 'normal';
+                typingDiv.querySelector('.text').style.color = 'inherit';
+            }, 1500);
+            return;
+        }
+
+        // Get actual personality
+        const senderUnit = roster.find(u => u.id === reactionSender);
+        const actualPersonality = senderUnit ? senderUnit.personality : 'Aggressive';
+        
+        const prompt = "You are a hardened cyberpunk police officer in a dystopian megacity. The dispatcher just radioed: '" + text + "'. Respond briefly (1-2 sentences max) over the radio. Your personality is " + actualPersonality + " (act like it!). If the dispatcher is saying weird/unhinged things, act concerned or confused. Keep it gritty, use cop lingo, no asterisks, no roleplay actions.";
+
 
         const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
         if (response.ok) {
@@ -1027,6 +1053,7 @@ function hideAllTabs() {
     tabWanted.style.color = 'var(--text-dim)';
     tabPersonnel.classList.remove('active');
     tabPersonnel.style.color = 'var(--text-dim)';
+      if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
     tabMap.classList.remove('active');
@@ -1038,6 +1065,7 @@ function hideAllTabs() {
     databaseLogEl.style.display = 'none';
     wantedLogEl.style.display = 'none';
     personnelLogEl.style.display = 'none';
+      if(recruitmentLogEl) recruitmentLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
     mapLogEl.style.display = 'none';
 }
@@ -1078,6 +1106,16 @@ tabPersonnel.addEventListener('click', () => {
     personnelLogEl.style.display = 'block';
     renderRoster();
 });
+  if(tabRecruitment) {
+      tabRecruitment.addEventListener('click', () => {
+          hideAllTabs();
+          tabRecruitment.classList.add('active');
+          tabRecruitment.style.color = 'var(--text-main)';
+          recruitmentLogEl.style.display = 'block';
+          if(currentApplicants.length === 0) generateApplicants();
+      });
+  }
+
 
 tabCitizens.addEventListener('click', () => {
     hideAllTabs();
@@ -1149,20 +1187,75 @@ function renderRoster() {
 // Recruit Logic
 recruitBtn.addEventListener('click', hireOfficer);
 
-function hireOfficer() {
-    const newId = `Unit-${Math.floor(10000 + Math.random() * 90000)}`;
-    roster.push({ id: newId, status: 'On Duty' });
-    renderRoster();
-}
 
-// Auto-Hire Logic loop
-setInterval(() => {
-    if (autoHireToggle.checked && !restModeToggle.checked) {
-        hireOfficer();
-        // Give visual confirmation in the chat
-        addChatMessage('DISPATCH', `AUTOMATED MESSAGE: Newly trained unit has joined the active roster.`, 'dispatch-msg');
-    }
-}, 60000); // Check every 60 seconds
+  function generateApplicants() {
+      if(!applicantListEl) return;
+      applicantListEl.innerHTML = '';
+      currentApplicants = [];
+      for(let i=0; i<5; i++) {
+          const applicant = {
+              id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+              status: 'On Duty',
+              personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+              sector: Math.floor(Math.random() * 9) + 1
+          };
+          currentApplicants.push(applicant);
+          
+          const card = document.createElement('div');
+          card.className = 'applicant-card';
+          card.innerHTML = `
+              <div class="applicant-info">
+                  <span class="applicant-name">${applicant.id}</span>
+                  <span class="applicant-trait">Psych Eval: ${applicant.personality}</span>
+              </div>
+              <button class="doc-btn" style="border-color:var(--accent-green);color:var(--accent-green);" onclick="recruitApplicant(${i})">RECRUIT</button>
+          `;
+          applicantListEl.appendChild(card);
+      }
+  }
+
+  if(refreshApplicantsBtn) {
+      refreshApplicantsBtn.addEventListener('click', generateApplicants);
+  }
+
+  window.recruitApplicant = function(index) {
+      const applicant = currentApplicants[index];
+      if(applicant) {
+          roster.push(applicant);
+          currentApplicants.splice(index, 1);
+          generateApplicants(); // Re-render
+          renderRoster();
+          addChatMessage('DISPATCH', `AUTOMATED MESSAGE: ${applicant.id} has joined the active roster.`, 'dispatch-msg');
+          setTimeout(() => addChatMessage(applicant.id, `10-8, I'm on duty and available for calls.`, 'dispatch-msg'), 2000);
+      }
+  };
+
+  // 20-Unit Minimum Logic loop
+  setInterval(() => {
+      if (restModeToggle && restModeToggle.checked) return;
+      const onDuty = roster.filter(u => u.status === 'On Duty');
+      if (onDuty.length < 20) {
+          // Find an off duty one to put on duty
+          const offDuty = roster.find(u => u.status === 'Off Duty');
+          if (offDuty) {
+              offDuty.status = 'On Duty';
+              addChatMessage(offDuty.id, `10-8, I'm back on duty.`, 'dispatch-msg');
+          } else {
+              // Force generate a new one
+              const newUnit = {
+                  id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+                  status: 'On Duty',
+                  personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+                  sector: Math.floor(Math.random() * 9) + 1
+              };
+              roster.push(newUnit);
+              addChatMessage('DISPATCH', `SYSTEM: Automatically drafted ${newUnit.id} to maintain minimum active units.`, 'dispatch-msg');
+              setTimeout(() => addChatMessage(newUnit.id, `10-8, I'm on duty and available for calls.`, 'dispatch-msg'), 1500);
+          }
+          renderRoster();
+      }
+  }, 10000);
+ // Check every 60 seconds
 
 // Auto-Duty Logic loop
 setInterval(() => {
@@ -1183,11 +1276,8 @@ setInterval(() => {
 renderRoster();
 
 let currentPMUnit = null;
-const pmModal = document.getElementById('pm-modal');
 const pmTitle = document.getElementById('pm-title');
 const pmHistory = document.getElementById('pm-chat-history');
-const pmInput = document.getElementById('pm-input');
-const pmSendBtn = document.getElementById('pm-send-btn');
 
 function openPM(unitId) {
     currentPMUnit = unitId;
