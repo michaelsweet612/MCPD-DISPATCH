@@ -1,6 +1,6 @@
-# MCPD Dispatch Terminal
+# MCPD DISPATCH TERMINAL
 
-Welcome to the **MCPD Dispatch Terminal**. 
+Welcome to the **MCPD DISPATCH TERMINAL**. 
 
 This project is a terminal-style simulation of the Main City Police Department (MCPD) — a highly fictionalized, dystopian, and incredibly trigger-happy police force. 
 
@@ -9,7 +9,7 @@ For more detailed information and lore about the MCPD universe, please visit thi
 
 ## Features & How It Works
 
-The MCPD Dispatch Terminal runs entirely in your browser and simulates a live, chaotic police dispatch radio channel. 
+The MCPD DISPATCH TERMINAL runs entirely in your browser and simulates a live, chaotic police dispatch radio channel. 
 
 - **Live Radio Chatter:** Watch as exactly 58 active-duty officers patrol the city. Officers will automatically respond to dispatch calls, request backup, and occasionally start slacking off and telling terrible cop jokes over the radio.
 - **Dynamic Personalities:** Every officer has a unique psychological profile (Aggressive, Rookie, Veteran, Lazy, etc.). Their personality heavily dictates how they respond to crimes and interact with each other.
