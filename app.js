@@ -345,7 +345,20 @@ const crimeReports = [
     { title: "10-54: Possible Dead Body / Homicide", priority: "high", group: "Northside Kings" },
     { title: "10-85: Delay due to arrest", priority: "low" },
     { title: "10-32: Person with a gun", priority: "high" },
-    { title: "10-15: Civil Disturbance", priority: "medium" }
+    { title: "10-15: Civil Disturbance", priority: "medium" },
+    { title: "10-66: Illegal Cyberware Installation", priority: "high", group: "Ripperdoc Cartel" },
+    { title: "10-99: Officer needs assistance", priority: "high" },
+    { title: "11-44: Bio-Hazard Spill", priority: "high", group: "Tyrell Corp" },
+    { title: "10-11: Animal Problem - Synthetic Dog", priority: "low" },
+    { title: "10-71: Shooting in Sector 4", priority: "high", group: "Neon Vipers" },
+    { title: "10-34: Riot in Progress", priority: "high", group: "Anti-Corp Protesters" },
+    { title: "10-62: Kidnapping / Hostage Situation", priority: "high", group: "The Splicers" },
+    { title: "11-82: Traffic Accident - Hovercar Collision", priority: "medium" },
+    { title: "10-09: Unsanctioned AI Core Detected", priority: "high" },
+    { title: "10-89: Bomb Threat", priority: "high", group: "Cyber-Luddites" },
+    { title: "10-21: Corporate Espionage in Progress", priority: "medium", group: "Militech Operatives" },
+    { title: "10-53: Smuggling Contraband", priority: "medium", group: "The Nomads" },
+    { title: "10-59: VIP Escort Required", priority: "low", group: "City Council" }
 ];
 
 // Initialize Clock
@@ -393,21 +406,48 @@ async function simulateChat() {
         scenario = "The city is falling apart. Multiple officers have triggered panic buttons. Express extreme stress and fear.";
     } else {
         const rand = Math.random();
-        if (rand < 0.2) {
+        const active = getActiveCallsigns().filter(u => u !== sender);
+        
+        if (rand < 0.1) {
             msgTypeClass = 'joking';
-            const active = getActiveCallsigns().filter(u => u !== sender);
             if (active.length > 0) {
                 replyTo = getRandomItem(active);
-                scenario = `You are casually greeting officer ${replyTo} over the radio network.`;
+                scenario = `You are complaining to officer ${replyTo} about the terrible synthetic food rations or cheap synthetic coffee.`;
             } else {
-                scenario = "You are making a dark humored, cynical joke about patrol duties.";
+                scenario = "You are complaining about your broken patrol vehicle, malfunctioning cybernetics, or terrible paycheck.";
             }
-        } else if (rand < 0.5) {
+        } else if (rand < 0.2) {
             msgTypeClass = 'joking';
-            scenario = "You are making a dark humored, cynical joke about the city or your job.";
+            if (active.length > 0) {
+                replyTo = getRandomItem(active);
+                scenario = `You are casually greeting officer ${replyTo} over the radio network using futuristic cyberpunk cop slang.`;
+            } else {
+                scenario = "You are making a dark humored, cynical joke about patrol duties and the endless paperwork.";
+            }
+        } else if (rand < 0.3) {
+            msgTypeClass = 'joking';
+            scenario = "You are making a sarcastic, cynical joke about the corrupt megacorporations running the city.";
+        } else if (rand < 0.4) {
+            msgTypeClass = 'serious';
+            scenario = "You are requesting backup for a suspicious civilian who looks like they have highly illegal military-grade augments.";
+        } else if (rand < 0.5) {
+            msgTypeClass = 'serious';
+            scenario = "You are reporting a pathetic bribe attempt by a low-level corporate executive.";
+        } else if (rand < 0.6) {
+            msgTypeClass = 'worried';
+            scenario = "You are reporting a bizarre, unexplainable glitch in the city's holographic sky or neon billboards.";
+        } else if (rand < 0.7) {
+            msgTypeClass = 'serious';
+            scenario = "You are chasing a suspect on foot through a crowded, neon-lit rainy alleyway.";
+        } else if (rand < 0.8) {
+            msgTypeClass = 'joking';
+            scenario = "You are bragging to dispatch about confiscating some very expensive cyber-contraband.";
+        } else if (rand < 0.9) {
+            msgTypeClass = 'worried';
+            scenario = "You are expressing anxiety about a terrifyingly heavily armed gang of cyborgs loitering in your sector.";
         } else {
             msgTypeClass = 'serious';
-            scenario = "You are reporting a standard, gritty, serious patrol status (e.g., clearing an alleyway or checking a sector).";
+            scenario = "You are reporting a standard, gritty, serious patrol status (e.g., clearing a squatter camp, finding a dead drop, or securing a sector).";
         }
     }
 
@@ -434,6 +474,22 @@ async function simulateChat() {
         }
     } catch (e) {
         console.error("AI chat generation failed", e);
+        // Fallback to hardcoded arrays
+        let msgText = "10-4. Patrol continuing as normal.";
+        if (msgTypeClass === 'joking') {
+            msgText = getRandomItem(jokes.concat(greetingChats));
+        } else if (msgTypeClass === 'serious') {
+            msgText = getRandomItem(seriousChats);
+        } else if (msgTypeClass === 'worried') {
+            if (voreMode) msgText = getRandomItem(voreChats);
+            else msgText = getRandomItem(worriedChats);
+        }
+        
+        if (replyTo && msgTypeClass === 'joking' && !msgText.includes(replyTo)) {
+            msgText = `@${replyTo} ${msgText}`;
+        }
+        
+        addChatMessage(sender, msgText, msgTypeClass, false);
     } finally {
         isFetchingChat = false;
     }
@@ -551,7 +607,9 @@ async function processDispatchChat() {
     scrollToBottom(unifiedLogEl);
 
     try {
-        const prompt = "You are a hardened, cynical cyberpunk police officer in a dystopian megacity responding briefly (1-2 sentences max) over the radio to the dispatcher who just said: '" + text + "'. Keep it gritty, use cop lingo, no asterisks, no roleplay actions.";
+        const moods = ["annoyed and exhausted", "hyper-aggressive and ready for action", "cold and strictly professional", "sarcastic and cynical", "confused by the dispatcher's bizarre orders", "paranoid and terrified"];
+        const randomMood = moods[Math.floor(Math.random() * moods.length)];
+        const prompt = "You are a hardened cyberpunk police officer in a dystopian megacity. The dispatcher just radioed: '" + text + "'. Respond briefly (1-2 sentences max) over the radio. Your current mood is " + randomMood + ". Keep it gritty, use cop lingo, no asterisks, no roleplay actions.";
 
         const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
         if (response.ok) {
@@ -606,7 +664,7 @@ function simulateEvent(specificCrime = null) {
     }
 
     // Delay the resolution to simulate travel, conflict, and radio reporting
-    setTimeout(() => {
+    setTimeout(async () => {
         const reportingUnit = respondingUnits[0];
         const isROEEnabled = roeToggleCheckbox.checked;
 
@@ -620,47 +678,7 @@ function simulateEvent(specificCrime = null) {
             "Suspect pacified and restrained. Requesting medical for minor lacerations.",
             "He tried to run, but the net gun got him. Secured.",
             "Subject is crying but otherwise unhurt. Heading back to station.",
-            "Suspect decided the holding cell was better than fighting. Detained.",
-            "Cuffed and stuffed. Code 4.",
-            "Got him. Non-lethal force authorized and applied.",
-            "Taser deployed effectively. Suspect is down and secured.",
-            "Target boxed in and surrendered. No shots fired.",
-            "Code 4. Suspect in the back of the cruiser.",
-            "Subject is compliant after a short foot chase.",
-            "Secured the area. Suspect is zip-tied and waiting for transport.",
-            "He tripped on some cyber-junk. Arrested without incident.",
-            "Suspect is in custody. Did not require lethal measures.",
-            "Brought him down with beanbags. He'll have some bruises but he's breathing.",
-            "Target tried to bribe us. Added to the charges. Suspect detained.",
-            "Suspect apprehended. He's asking for a lawyer... cute.",
-            "Subject pacified. No casualties to report.",
-            "Got them cornered. They surrendered their weapons.",
-            "Arrest complete. Transporting to sector 4 holding.",
-            "10-15 in progress. Target was uncooperative but non-lethal prevailed.",
-            "Suspect tackled and cuffed. We're all good here.",
-            "Subject is secured. My uniform is ruined though.",
-            "Target apprehended peacefully. A rare good day.",
-            "Suspect in custody. Confiscated a lot of illegal tech.",
-            "We got him. Non-lethal pacification was entirely successful.",
-            "Perp gave up after seeing the riot gear. Detained.",
-            "Arrest successful. Booking process initiated.",
-            "Suspect brought in alive per ROE directives.",
-            "Target subdued. Requesting an armored transport van.",
-            "Subject secured. Just some minor resistance.",
-            "He didn't want to test the shock batons. We have him.",
-            "Suspect detained. Area is clear of hostiles.",
-            "10-4. Suspect arrested and read their non-existent rights.",
-            "Target gave up as soon as we surrounded the building.",
-            "Secured. Target is ranting about a conspiracy, but safely cuffed.",
-            "Arrested without firing a single plasma round.",
-            "Suspect taken down with pepper gel. Whining, but secured.",
-            "Subject apprehended. Keeping the streets clean, one cell at a time.",
-            "Detained target successfully. Proceeding with evidence collection.",
-            "Code 4. Target is in the cruiser. Very cooperative under pressure.",
-            "Suspect arrested. ROE engaged and followed to the letter.",
-            "He surrendered when he saw the drone swarm. Cuffs are on.",
-            "Target taken into custody. Just a routine pickup.",
-            "Subject pacified non-lethally. Ready for the next call."
+            "Suspect decided the holding cell was better than fighting. Detained."
         ];
 
         const killingChats = [
@@ -673,54 +691,28 @@ function simulateEvent(specificCrime = null) {
             "Suspect eradicated. No vital signs.",
             "Threat neutralized with extreme prejudice.",
             "Code 4. Suspect is no longer a problem.",
-            "Target terminated. Requesting cleanup crew.",
-            "Subject decided to shoot back. Big mistake. Suspect down.",
-            "Target flatlined. Just another day in the sector.",
-            "Suspect eliminated. Area sterilized.",
-            "Hostile down. Lethal force was highly effective.",
-            "Target erased. No arrests to make today.",
-            "Suspect expired on scene. Ammo depleted.",
-            "Threat completely removed from the gene pool.",
-            "Target neutralized. Send the forensic scrubbers.",
-            "Suspect thought he was faster than a pulse rifle. He wasn't.",
-            "Subject is dead. Area secure.",
-            "Target destroyed. Moving on to the next assignment.",
-            "Suspect didn't make it. Neither did his cyberware.",
-            "Eliminated target. Filling out the body bag paperwork.",
-            "Hostile terminated. It was a short negotiation.",
-            "Target neutralized. Good grouping on the shots.",
-            "Suspect down and out. Send the coroner.",
-            "Subject eradicated. Code 4.",
-            "Threat resolved. Target is permanently offline.",
-            "Suspect executed per ROE disabled protocols.",
-            "Target eliminated. Blood on the pavement.",
-            "Hostile deceased. We didn't even give him a chance to run.",
-            "Suspect neutralized. Just a red stain now.",
-            "Target terminated. The streets are a bit safer... and messier.",
-            "Subject wiped out. No survivors found.",
-            "Threat engaged and destroyed.",
-            "Suspect eliminated. Lethal pacification complete.",
-            "Target is dead. Returning to precinct for ammo restock.",
-            "Hostile taken out. Didn't feel a thing... probably.",
-            "Suspect deceased. Let the scavengers have him.",
-            "Target completely annihilated. Who's next?",
-            "Subject eliminated. We're going to need a mop over here.",
-            "Threat neutralized. Target was liquidated.",
-            "Suspect terminated. Justice dispensed from the barrel.",
-            "Target is no more. Call it in.",
-            "Hostile eradicated. Fast and loud.",
-            "Suspect flatlined. Another one bites the dust.",
-            "Target eliminated. Lethal force is a beautiful thing.",
-            "Subject deceased. Cleanup requested at my 10-20.",
-            "Threat neutralized. The morgue is going to be full tonight.",
-            "Suspect terminated irrevocably. Code 4."
+            "Target terminated. Requesting cleanup crew."
         ];
 
         let reportMsg = "";
-        if (isROEEnabled) {
-            reportMsg = getRandomItem(arrestingChats);
-        } else {
-            reportMsg = getRandomItem(killingChats);
+        
+        try {
+            const outcomeType = isROEEnabled ? "You apprehended the suspect using non-lethal pacification. They are alive and in cuffs." : "You neutralized the suspect using lethal force. They are dead.";
+            const prompt = `You are a cyberpunk police officer named ${reportingUnit} reporting the conclusion of an incident: ${crime.title}. ${outcomeType} Provide a single, gritty, cynical 1-sentence radio report. No roleplay actions, no quotes.`;
+            const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+            if (response.ok) {
+                let aiText = await response.text();
+                reportMsg = aiText.replace(/^["']|["']$/g, '').trim();
+            } else {
+                throw new Error("AI Generation Failed");
+            }
+        } catch (e) {
+            // Fallback
+            if (isROEEnabled) {
+                reportMsg = getRandomItem(arrestingChats);
+            } else {
+                reportMsg = getRandomItem(killingChats);
+            }
         }
 
         // Emulate the officer speaking in the radio channel
@@ -759,7 +751,19 @@ async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
     }
 
     try {
-        const prompt = `You are a futuristic cyberpunk police officer writing an official incident report. The incident was: ${crime.title}. Responding officers: ${officersStr}. ROE was ${isROEEnabled ? 'ENABLED (Non-Lethal pacification used)' : 'DISABLED (Lethal force authorized and suspect was neutralized)'}. Write a concise, gritty, 4-sentence narrative of what happened and the outcome. Be extremely professional but cynical. No roleplay actions.`;
+        const reportTones = [
+            "Emphasize the collateral damage to the surroundings.",
+            "Complain subtly about the paperwork or the bureaucracy.",
+            "Mention a malfunctioning piece of police equipment.",
+            "Highlight the absolute incompetence of the criminals.",
+            "Describe the scene as overly chaotic and neon-drenched.",
+            "Keep it purely clinical, cold, and detached.",
+            "Mention the horrible weather (acid rain, smog) affecting the operation.",
+            "Reference a bizarre cybernetic modification the suspect had."
+        ];
+        const randomTone = reportTones[Math.floor(Math.random() * reportTones.length)];
+
+        const prompt = `You are a futuristic cyberpunk police officer writing an official incident report. The incident was: ${crime.title}. Responding officers: ${officersStr}. ROE was ${isROEEnabled ? 'ENABLED (Non-Lethal pacification used)' : 'DISABLED (Lethal force authorized and suspect was neutralized)'}. Write a concise, gritty, 4-sentence narrative of what happened and the outcome. ${randomTone} Be extremely professional but cynical. No roleplay actions.`;
 
         const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
         if (response.ok) {
@@ -1388,9 +1392,18 @@ const wantedCrimes = [
     "Grand Theft Auto, Unsanctioned Weapon Modification",
     "Accessing restricted MCPD network domains",
     "Distribution of non-compliant food rations",
-    "Failure to relocate to assigned sector"
+    "Failure to relocate to assigned sector",
+    "Assault on a Corporate Executive",
+    "Illegal AI Splicing and Distribution",
+    "Hacking City Grid Infrastructures",
+    "Organized Crime, Extortion, Kidnapping",
+    "Possession of Military-Grade Cybernetics",
+    "Leading an Unsanctioned Riot",
+    "Assassination of a Cyber-Doc",
+    "Trespassing in Tyrell Corp Facilities",
+    "Trafficking Banned Organic Material"
 ];
-const wantedNames = ["Ghost", "Fixer", "Viper", "Deadeye", "Cipher", "Splicer", "Ronin"];
+const wantedNames = ["Ghost", "Fixer", "Viper", "Deadeye", "Cipher", "Splicer", "Ronin", "Neon", "Shadow", "Razer", "Glitch", "Krueger", "Vanguard", "Zero", "Echo"];
 
 function generateWantedTargets() {
     wantedListEl.innerHTML = ''; // Clear existing
