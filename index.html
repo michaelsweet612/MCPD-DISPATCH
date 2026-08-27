@@ -53,6 +53,18 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <button class="manual-panic-btn" id="manual-panic-btn">TRIGGER OFFICER PANIC</button>
                     <button class="clear-panic-btn" id="clear-panic-btn" style="display: none; margin-top: 10px;">RESOLVE ALL PANICS</button>
 
+                    
+                    <!-- ALL CALLOUTS (EXPANDABLE) -->
+                    <div style="margin-top: 20px; border-top: 1px solid var(--panel-border); padding-top: 15px;">
+                        <div id="all-callouts-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #ffeb3b; font-weight: bold;">
+                            <span>🚨 ALL DISPATCH CALLOUTS</span>
+                            <span id="callouts-chevron">▼</span>
+                        </div>
+                        <div id="all-callouts-body" style="display: none; margin-top: 15px; max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; border: 1px solid var(--panel-border); flex-direction: column; gap: 8px;">
+                            <!-- Dynamically populated buttons -->
+                        </div>
+                    </div>
+
                     <!-- ADVANCED CONTROLS (EXPANDABLE) -->
                     <div style="margin-top: 30px; border-top: 1px solid var(--panel-border); padding-top: 15px;">
                         <div id="advanced-controls-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--accent-blue); font-weight: bold;">
