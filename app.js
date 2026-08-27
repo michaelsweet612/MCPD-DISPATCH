@@ -1855,60 +1855,62 @@ if(loreJoinClose) {
     });
 }
 
+// === ALL CALLOUTS DROPDOWN ===
+(function() {
+    const hdr = document.getElementById('all-callouts-header');
+    const body = document.getElementById('all-callouts-body');
+    const chevron = document.getElementById('callouts-chevron');
+    let calloutsOpen = false;
+    let calloutsPopulated = false;
 
+    if (hdr && body && chevron) {
+        hdr.addEventListener('click', function() {
+            calloutsOpen = !calloutsOpen;
+            if (calloutsOpen) {
+                body.style.display = 'flex';
+                chevron.textContent = String.fromCodePoint(0x25B2);
 
+                if (!calloutsPopulated) {
+                    calloutsPopulated = true;
+                    crimeReports.forEach(function(crimeTemplate) {
+                        var btn = document.createElement('button');
+                        btn.className = 'manual-event-btn';
 
-// ALL CALLOUTS LOGIC
-const calloutsHeader = document.getElementById('all-callouts-header');
-const calloutsBody = document.getElementById('all-callouts-body');
-const calloutsChevron = document.getElementById('callouts-chevron');
-
-if(calloutsHeader) {
-    calloutsHeader.addEventListener('click', () => {
-        if (calloutsBody.style.display === 'none') {
-            calloutsBody.style.display = 'flex';
-            calloutsChevron.innerText = '▲';
-            
-            // Populate if empty
-            if (calloutsBody.children.length === 0) {
-                crimeReports.forEach(crimeTemplate => {
-                    const btn = document.createElement('button');
-                    btn.className = 'manual-event-btn';
-                    
-                    // Assign colors based on priority
-                    if (crimeTemplate.priority === 'high') {
-                        btn.style.borderColor = 'var(--panic-red)';
-                        btn.style.color = 'var(--panic-red)';
-                    } else if (crimeTemplate.priority === 'medium') {
-                        btn.style.borderColor = '#ff9800';
-                        btn.style.color = '#ff9800';
-                    } else {
-                        btn.style.borderColor = '#ffeb3b';
-                        btn.style.color = '#ffeb3b';
-                    }
-                    
-                    btn.style.textAlign = 'left';
-                    btn.style.padding = '8px';
-                    btn.style.fontSize = '0.8rem';
-                    btn.style.whiteSpace = 'normal';
-                    btn.style.height = 'auto';
-                    btn.innerText = crimeTemplate.title;
-                    
-                    btn.onclick = () => {
-                        let activeCrime = { ...crimeTemplate };
-                        if (activeCrime.title.includes('[RAND_LOC]')) {
-                            const randLoc = Math.floor(Math.random() * 90000) + 10000;
-                            activeCrime.title = activeCrime.title.replace('[RAND_LOC]', randLoc);
+                        if (crimeTemplate.priority === 'high') {
+                            btn.style.borderColor = 'var(--panic-red)';
+                            btn.style.color = 'var(--panic-red)';
+                        } else if (crimeTemplate.priority === 'medium') {
+                            btn.style.borderColor = '#ff9800';
+                            btn.style.color = '#ff9800';
+                        } else {
+                            btn.style.borderColor = '#ffeb3b';
+                            btn.style.color = '#ffeb3b';
                         }
-                        simulateEvent(activeCrime);
-                    };
-                    
-                    calloutsBody.appendChild(btn);
-                });
+
+                        btn.style.textAlign = 'left';
+                        btn.style.padding = '8px 12px';
+                        btn.style.fontSize = '0.8rem';
+                        btn.style.whiteSpace = 'normal';
+                        btn.style.height = 'auto';
+                        btn.style.width = '100%';
+                        btn.textContent = crimeTemplate.title;
+
+                        btn.addEventListener('click', function() {
+                            var activeCrime = Object.assign({}, crimeTemplate);
+                            if (activeCrime.title.indexOf('[RAND_LOC]') !== -1) {
+                                var randLoc = Math.floor(Math.random() * 90000) + 10000;
+                                activeCrime.title = activeCrime.title.replace('[RAND_LOC]', randLoc);
+                            }
+                            simulateEvent(activeCrime);
+                        });
+
+                        body.appendChild(btn);
+                    });
+                }
+            } else {
+                body.style.display = 'none';
+                chevron.textContent = String.fromCodePoint(0x25BC);
             }
-        } else {
-            calloutsBody.style.display = 'none';
-            calloutsChevron.innerText = '▼';
-        }
-    });
-}
+        });
+    }
+})();
