@@ -50,7 +50,7 @@
                             <div class="toggle-group" style="margin-bottom: 10px;">
                                 <label for="rest-mode-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--accent-green); cursor: pointer;">
                                     <input type="checkbox" id="rest-mode-toggle">
-                                    REST MODE (Pause All Background Activity)
+                                    REST MODE (Pause Background)
                                 </label>
                             </div>
                             <div class="toggle-group" style="margin-bottom: 10px;">
@@ -59,20 +59,11 @@
                                     Auto Simulate Crimes & Chatter
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
-                                <label for="auto-hire-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" id="auto-hire-toggle" checked>
-                                    Auto-Hire Officers Periodically
-                                </label>
-                            </div>
                             <div class="toggle-group" style="margin-bottom: 15px;">
                                 <label for="roe-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--panic-orange); cursor: pointer;">
                                     <input type="checkbox" id="roe-toggle" checked>
-                                    ENFORCE ROE (Standard Pacification)
+                                    ENFORCE ROE
                                 </label>
-                                <div style="font-size: 0.8rem; color: #aaa; margin-top: 4px; margin-left: 20px;">
-                                    Warning: Disabling ROE authorizes extreme lethal force automatically.
-                                </div>
                             </div>
                             <button class="manual-event-btn" id="btn-arrest-nearby" style="border-color: var(--accent-blue); color: var(--accent-blue); width: 100%; margin-top: 5px;">
                                 ARREST NEARBY SUSPECT
@@ -89,6 +80,7 @@
                     <div class="tab" id="tab-map">🏙️ SECTOR MAP</div>
                     <div class="tab" id="tab-documents">📜 IMPORTANT LOGS</div>
                     <div class="tab" id="tab-personnel">👥 PERSONNEL</div>
+                    <div class="tab" id="tab-recruitment">📋 JOIN MCPD</div>
                     <div class="tab" id="tab-database">💾 DATABASE</div>
                     <div class="tab" id="tab-citizens">🆔 CITIZENS</div>
                     <div class="tab" id="tab-wanted">🎯 WANTED TARGETS</div>
@@ -102,11 +94,26 @@
 
                 <!-- MAP VIEW (Hidden by default) -->
                 <div class="panel-content" id="map-log" style="display: none;">
-                    <h3 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
-                        LIVE SECTOR SURVEILLANCE
-                    </h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
+                        <h3 style="color: #fff; margin: 0;">LIVE SECTOR SURVEILLANCE</h3>
+                        <div style="color: var(--accent-blue); font-weight: bold;">TOTAL ON-DUTY: <span id="map-total-count">0</span></div>
+                    </div>
                     <div id="map-container">
                         <!-- Generates via JS -->
+                    </div>
+                </div>
+
+                <!-- RECRUITMENT VIEW (Hidden by default) -->
+                <div class="panel-content scrollable" id="recruitment-log" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
+                        <h3 style="color: #fff; margin: 0;">MCPD ACADEMY - APPLICANTS</h3>
+                        <button id="refresh-applicants-btn" style="border-color: var(--accent-blue); color: var(--accent-blue); padding: 5px 15px; font-size: 0.85rem;">🔄 REFRESH LIST</button>
+                    </div>
+                    <div style="color: var(--text-dim); margin-bottom: 15px; font-style: italic;">
+                        > Review civilian applicants for active duty. The system requires exactly 20 officers minimum.
+                    </div>
+                    <div id="applicant-list" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Applicants injected by JS -->
                     </div>
                 </div>
 
@@ -123,7 +130,7 @@
                 <div class="panel-content scrollable" id="personnel-log" style="display: none;">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
                         <h3 style="color: #fff; margin: 0;">ACTIVE ROSTER MANAGEMENT</h3>
-                        <button id="recruit-btn" style="border-color: var(--accent-green); color: var(--accent-green); padding: 5px 10px; font-size: 0.85rem;">+ RECRUIT UNIT</button>
+                        <div style="color: var(--accent-green); font-weight: bold;">ON DUTY: <span id="roster-total-count">0</span>/20 MIN</div>
                     </div>
                     <div id="roster-list" style="display: flex; flex-direction: column; gap: 10px;">
                         <!-- Roster items injected by JS -->
@@ -209,23 +216,6 @@
                 </div>
                 <div class="modal-footer" style="padding: 15px; border-top: 1px solid var(--panel-border); text-align: right;">
                     <button style="border-color: var(--accent-green); color: var(--accent-green);" onclick="document.getElementById('report-modal').style.display='none'">AUTHORIZE & CLOSE</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRIVATE MESSAGE MODAL -->
-        <div id="pm-modal" class="modal-overlay" style="display: none;">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header">
-                    <h2 id="pm-title" style="color: var(--accent-blue); text-shadow: 0 0 5px var(--accent-blue);">PRIVATE COMMS: UNIT</h2>
-                    <button style="border: none; background: transparent; color: var(--panic-red); font-size: 1.5rem; cursor: pointer;" onclick="document.getElementById('pm-modal').style.display='none'">[X]</button>
-                </div>
-                <div class="modal-body" id="pm-chat-history" style="padding: 20px; color: #ccc; height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.5);">
-                    <!-- Chat history injected here -->
-                </div>
-                <div class="modal-footer" style="padding: 15px; border-top: 1px solid var(--panel-border); display: flex; gap: 10px;">
-                    <input type="text" id="pm-input" class="input-styled" placeholder="Type private message...">
-                    <button id="pm-send-btn">SEND</button>
                 </div>
             </div>
         </div>
