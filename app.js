@@ -1558,7 +1558,7 @@ function updateCitizenStatus(newStatus) {
 // Initialize Citizens
 generateCitizens();
 renderCitizensList();
-chatSimulateInt = setInterval(simulateChat, 5000); // every 3s, random chat
+chatSimulateInt = setInterval(simulateChat, 3000); // every 3s, random chat
 autoSimulateInt = setInterval(() => {
         simulateEvent();
 
