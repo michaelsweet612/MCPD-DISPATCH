@@ -677,6 +677,218 @@ async function processDispatchChat() {
 
         // Get actual personality
         const senderUnit = roster.find(u => u.id === reactionSender);
+        const p = senderUnit ? senderUnit.personality : 'Veteran';
+        
+        const lowerText = text.toLowerCase();
+        let reply = "";
+        
+        // Massive Keyword Scripted System
+        if (lowerText.includes("are you ok") || lowerText.includes("status") || lowerText.includes("how are you")) {
+            if (p === 'Aggressive') reply = "I'm fine! Just looking for someone to hit.";
+            else if (p === 'Lazy') reply = "I'm tired, dispatch. When is my shift over?";
+            else if (p === 'Rookie') reply = "I'm doing okay! A little nervous, but holding my sector.";
+            else if (p === 'Paranoid') reply = "Why? Who's asking? Did you see something on the cameras?!";
+            else if (p === 'Sarcastic') reply = "Oh, just peachy. Living the dream in this concrete hellhole.";
+            else reply = "10-4, Dispatch. I'm code green. No issues here.";
+        } 
+        else if (lowerText.includes("good job") || lowerText.includes("thanks") || lowerText.includes("well done")) {
+            if (p === 'Aggressive') reply = "Save the thanks, just send me more ammo.";
+            else if (p === 'Lazy') reply = "Does this mean I get a bonus? Or a nap?";
+            else if (p === 'Rookie') reply = "Thank you, sir! Doing my best to serve the MCPD!";
+            else if (p === 'Sarcastic') reply = "Wow, praise from dispatch. Put a gold star on my permanent record.";
+            else reply = "Copy that. Just doing my job.";
+        }
+        else if (lowerText.includes("where are you") || lowerText.includes("location") || lowerText.includes("position")) {
+            const loc = Math.floor(Math.random() * 900) + 100;
+            if (p === 'Lazy') reply = "I'm parked in Sector " + senderUnit.sector + " behind a billboard. Don't tell the Sergeant.";
+            else if (p === 'Paranoid') reply = "I'm not saying my exact coordinates over an open frequency! They're listening!";
+            else reply = "I'm patrolling Sector " + senderUnit.sector + ", block " + loc + ".";
+        }
+        else if (lowerText.includes("shoot") || lowerText.includes("kill") || lowerText.includes("fire")) {
+            if (p === 'Idealistic') reply = "Dispatch, we should attempt non-lethal apprehension first!";
+            else if (p === 'By-The-Book') reply = "Only if the suspect violates penal code 7-A, dispatch.";
+            else reply = "Copy that! Weapons hot! I've been waiting for this!";
+        }
+        else if (lowerText.includes("hello") || lowerText.includes("anyone there") || lowerText.includes("hi")) {
+            reply = "This is a restricted tactical channel, dispatch. State your 10-code or clear the net.";
+        }
+        else if (lowerText.includes("idiot") || lowerText.includes("stupid") || lowerText.includes("wtf")) {
+            if (p === 'Aggressive') reply = "Say that to my face when I get back to the precinct!";
+            else if (p === 'Rookie') reply = "I'm sorry! I'm trying my best!";
+            else if (p === 'Sarcastic') reply = "Yeah, yeah. We all love you too, dispatch.";
+            else reply = "Maintain radio professionalism, dispatch.";
+        }
+        else {
+            // Default generic responses based on personality
+            const generic = [
+                "10-4, copy that.",
+                "Roger, dispatch.",
+                "Standing by.",
+                "Message received.",
+                "I didn't quite catch that, but 10-4.",
+                "Acknowledged."
+            ];
+            if (p === 'Lazy') generic.push("Ugh, fine. Copied.");
+            if (p === 'Paranoid') generic.push("I copy, but I'm checking my six.");
+            if (p === 'Sarcastic') generic.push("Sure thing, boss. Whatever you say.");
+            if (p === 'Aggressive') generic.push("Yeah, I heard you. Moving out.");
+            
+            reply = generic[Math.floor(Math.random() * generic.length)];
+        }
+
+        setTimeout(() => {
+            typingDiv.querySelector('.text').innerHTML = reply;
+            typingDiv.querySelector('.text').style.fontStyle = 'normal';
+            typingDiv.querySelector('.text').style.color = 'inherit';
+        }, 1000 + Math.random() * 1500);
+        
+    } catch (e) {
+        console.error("AI chat generation failed", e);
+        // Fallback to hardcoded arrays
+        let msgText = "10-4. Patrol continuing as normal.";
+        if (msgTypeClass === 'joking') {
+            msgText = getRandomItem(jokes.concat(greetingChats));
+        } else if (msgTypeClass === 'serious') {
+            msgText = getRandomItem(seriousChats);
+        } else if (msgTypeClass === 'worried') {
+            if (voreMode) msgText = getRandomItem(voreChats);
+            else msgText = getRandomItem(worriedChats);
+        }
+        
+        
+        
+        addChatMessage(sender, msgText, msgTypeClass, false);
+    } finally {
+        isFetchingChat = false;
+    }
+}
+
+function pinRadioLog(sender, message) {
+    const doc = document.createElement('div');
+    doc.className = "event-item high-priority";
+    doc.style.borderLeft = "3px solid var(--panic-orange)";
+    doc.style.paddingLeft = "10px";
+    doc.style.marginBottom = "10px";
+
+    doc.innerHTML = `
+        <span class="time">${getCurrentTimeStr()}</span>
+        <div class="title" style="color:var(--panic-orange); display:flex; justify-content:space-between;">
+            <span>📌 PINNED RADIO CHATTER</span>
+            <span style="font-size:0.8rem; color:var(--text-dim);">Unit: ${sender}</span>
+        </div>
+        <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
+            <span style="color:var(--panic-red);">[URGENT]</span> "${message}"
+        </div>
+    `;
+    documentListEl.prepend(doc);
+    if (documentListEl.children.length > 15) {
+        documentListEl.removeChild(documentListEl.lastChild);
+    }
+}
+
+function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
+    const div = document.createElement('div');
+    div.className = `chat-msg ${typeClass}`;
+    div.style.position = 'relative'; // For positioning the reply button
+
+    // Create the message content
+    const contentHtml = `
+        <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
+        <span class="sender">${sender === 'DISPATCH' ? '[DISPATCH]' : '[' + sender + ']'}</span> 
+        <span class="text">${text}</span>
+    `;
+    div.innerHTML = contentHtml;
+
+    // Add Discord-style reply button on hover if it's not the dispatcher
+    if (sender !== 'DISPATCH' && sender !== 'SYSTEM') {
+        const replyBtn = document.createElement('button');
+        replyBtn.className = 'chat-reply-btn';
+        replyBtn.innerHTML = '💬 Reply';
+        replyBtn.onclick = () => {
+            dispatchChatInput.value = `@${sender} `;
+            dispatchChatInput.focus();
+        };
+        div.appendChild(replyBtn);
+    }
+
+    unifiedLogEl.appendChild(div);
+    scrollToBottom(unifiedLogEl);
+
+    if (unifiedLogEl.children.length > 100) {
+        unifiedLogEl.removeChild(unifiedLogEl.firstChild);
+    }
+}
+
+// User Chat Processing
+async function processDispatchChat() {
+    const text = dispatchChatInput.value.trim();
+    if (!text) return;
+
+    // Secret Mayhem Protocol
+    if (text === "10-999") {
+        dispatchChatInput.value = '';
+        addChatMessage('SYSTEM', 'PROTOCOL 8,997 IS NOW IN EFFECT. ALL OFFICERS ARE AUTHORIZED TO SHOOT EVERYONE.', 'worried');
+        dispatchChatInput.placeholder = "Reply STOP to stop the chaos";
+
+        // Trigger 15 panics rapidly
+        for (let i = 0; i < 15; i++) {
+            setTimeout(() => {
+                triggerPanic();
+            }, i * 200);
+        }
+        return;
+    }
+
+    // Secret VORE Protocol
+    if (text === "VORE") {
+        dispatchChatInput.value = '';
+        voreMode = true;
+        addChatMessage('SYSTEM', 'REALITY ANOMALY DETECTED. ALL UNITS EXTREME PANIC.', 'worried');
+        dispatchChatInput.placeholder = "Reply STOP to stabilize reality";
+        return;
+    }
+
+    if (text === "STOP") {
+        dispatchChatInput.value = '';
+        dispatchChatInput.placeholder = "Transmit to units...";
+        addChatMessage('SYSTEM', 'PROTOCOL 8,997 / ANOMALY OVERRIDDEN. ALL UNITS STAND DOWN.', 'serious');
+        voreMode = false;
+        clearPanic();
+        return;
+    }
+
+    // Immediately show dispatch message
+    addChatMessage('DISPATCH', text, 'dispatch-msg', true);
+    dispatchChatInput.value = '';
+
+    const reactionSender = getRandomItem(getActiveCallsigns());
+
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.className = `chat-msg serious`;
+    typingDiv.innerHTML = `
+        <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
+        <span class="sender">[${reactionSender}]</span> 
+        <span class="text" style="font-style:italic; color:var(--text-dim);">transmitting...</span>
+    `;
+    unifiedLogEl.appendChild(typingDiv);
+    scrollToBottom(unifiedLogEl);
+
+    try {
+        
+        // Gibberish fast-path intercept
+        const isGibberish = /^[a-zA-Z]{0,4}$/i.test(text.replace(/[^a-zA-Z]/g, '')) && text.length > 8 || /(alien|ghost|pizza|asdf|qwerty)/i.test(text);
+        if(isGibberish) {
+            setTimeout(() => {
+                typingDiv.querySelector('.text').innerHTML = `Dispatch, are you having a stroke? Repeat last transmission, you're making zero sense.`;
+                typingDiv.querySelector('.text').style.fontStyle = 'normal';
+                typingDiv.querySelector('.text').style.color = 'inherit';
+            }, 1500);
+            return;
+        }
+
+        // Get actual personality
+        const senderUnit = roster.find(u => u.id === reactionSender);
         const actualPersonality = senderUnit ? senderUnit.personality : 'Aggressive';
         
         const prompt = "You are a hardened cyberpunk police officer in a dystopian megacity. The dispatcher just radioed: '" + text + "'. Respond briefly (1-2 sentences max) over the radio. Your personality is " + actualPersonality + " (act like it!). If the dispatcher is saying weird/unhinged things, act concerned or confused. Keep it gritty, use cop lingo, no asterisks, no roleplay actions.";
