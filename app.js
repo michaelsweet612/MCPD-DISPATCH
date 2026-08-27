@@ -57,7 +57,7 @@ let chatSimulateInt = null;
 // Mock Data
 let roster = [];
   function initRoster() {
-      for(let i=0; i<20; i++) {
+      for(let i=0; i<58; i++) {
           roster.push({
               id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
               status: 'On Duty',
@@ -854,56 +854,17 @@ window.openReportModal = function (reportHTML) {
 
 // --- Panic System ---
 
+const panicAudioElement = new Audio('panic-button.mp3');
+panicAudioElement.loop = true;
+
 function playPanicSound() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-
-    // Prevent multiple overlapping sirens
-    if (panicOsc) return;
-
-    panicOsc = audioCtx.createOscillator();
-    panicLFO = audioCtx.createOscillator();
-    panicGain = audioCtx.createGain();
-
-    // Main tone - Sawtooth is harsh/brassy like a siren
-    panicOsc.type = 'sawtooth';
-    panicOsc.frequency.value = 750; // Base frequency
-
-    // LFO to modulate the pitch (Hi-Lo European style oscillation)
-    panicLFO.type = 'square';
-    panicLFO.frequency.value = 2.5; // ~2.5 Hz oscillation
-
-    // Gain node to control modulation depth
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 250; // Modulates +/- 250 Hz (from 500Hz to 1000Hz)
-
-    panicLFO.connect(lfoGain);
-    lfoGain.connect(panicOsc.frequency); // Modulates the pitch of panicOsc
-
-    // Main volume control
-    panicGain.gain.value = 0.3; // Loud enough but not deafening
-
-    panicOsc.connect(panicGain);
-    panicGain.connect(audioCtx.destination);
-
-    panicOsc.start();
-    panicLFO.start();
+    panicAudioElement.currentTime = 0;
+    panicAudioElement.play().catch(e => console.log("Audio block", e));
 }
 
 function stopPanicSound() {
-    if (panicOsc) {
-        panicOsc.stop();
-        panicOsc.disconnect();
-        panicOsc = null;
-    }
-    if (panicLFO) {
-        panicLFO.stop();
-        panicLFO.disconnect();
-        panicLFO = null;
-    }
-    if (panicGain) {
-        panicGain.disconnect();
-        panicGain = null;
-    }
+    panicAudioElement.pause();
+    panicAudioElement.currentTime = 0;
 }
 
 function triggerPanic(unitName = null) {
@@ -1029,14 +990,11 @@ dispatchChatInput.addEventListener('focus', () => {
 // Tab Interaction logic
 const tabDatabase = document.getElementById('tab-database');
 const tabWanted = document.getElementById('tab-wanted');
-const tabPersonnel = document.getElementById('tab-personnel');
 const tabCitizens = document.getElementById('tab-citizens');
 const databaseLogEl = document.getElementById('database-log');
 const wantedLogEl = document.getElementById('wanted-log');
-const personnelLogEl = document.getElementById('personnel-log');
 const citizensLogEl = document.getElementById('citizens-log');
-      const rosterListEl = document.getElementById('roster-list');
-
+      
 // Citizen Page Elements
 const citizenListView = document.getElementById('citizens-list-view');
 const citizenDossierView = document.getElementById('citizen-dossier-view');
@@ -1057,9 +1015,7 @@ function hideAllTabs() {
     tabDatabase.style.color = 'var(--text-dim)';
     tabWanted.classList.remove('active');
     tabWanted.style.color = 'var(--text-dim)';
-    tabPersonnel.classList.remove('active');
-    tabPersonnel.style.color = 'var(--text-dim)';
-      if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
+          if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
     
@@ -1068,8 +1024,7 @@ function hideAllTabs() {
     documentLogEl.style.display = 'none';
     databaseLogEl.style.display = 'none';
     wantedLogEl.style.display = 'none';
-    personnelLogEl.style.display = 'none';
-      if(recruitmentLogEl) recruitmentLogEl.style.display = 'none';
+          if(recruitmentLogEl) recruitmentLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
     }
 
@@ -1102,13 +1057,7 @@ tabWanted.addEventListener('click', () => {
     wantedLogEl.style.display = 'block';
 });
 
-tabPersonnel.addEventListener('click', () => {
-    hideAllTabs();
-    tabPersonnel.classList.add('active');
-    tabPersonnel.style.color = 'var(--text-main)';
-    personnelLogEl.style.display = 'block';
-    renderRoster();
-});
+
   if(tabRecruitment) {
       tabRecruitment.addEventListener('click', () => {
           hideAllTabs();
@@ -1132,32 +1081,8 @@ tabCitizens.addEventListener('click', () => {
   
 // Personnel & PM Logic
 function renderRoster() {
-    rosterListEl.innerHTML = '';
-    roster.forEach((unit, idx) => {
-        const card = document.createElement('div');
-        card.className = 'roster-card';
-        const statusClass = unit.status.toLowerCase().replace(' ', '-');
-
-        card.innerHTML = `
-            <div class="roster-info">
-                <span class="roster-id">${unit.id}</span>
-                <span class="roster-status ${statusClass}">${unit.status}</span>
-            </div>
-            <div class="roster-actions">
-                
-                <button class="roster-btn suspend-unit" data-idx="${idx}">${unit.status === 'Suspended' ? 'Un-Suspend' : 'Suspend'}</button>
-                
-                
-            </div>
-        `;
-        rosterListEl.appendChild(card);
-    });
-
-    
-
-    
-
-    
+    let onDutyCount = roster.filter(u => u.status === 'On Duty').length;
+    if(rosterTotalCountEl) rosterTotalCountEl.innerText = onDutyCount;
 }
 
 // Recruit Logic
@@ -1209,7 +1134,7 @@ function renderRoster() {
   setInterval(() => {
       if (restModeToggle && restModeToggle.checked) return;
       const onDuty = roster.filter(u => u.status === 'On Duty');
-      if (onDuty.length < 20) {
+      if (onDuty.length < 58) {
           // Find an off duty one to put on duty
           const offDuty = roster.find(u => u.status === 'Off Duty');
           if (offDuty) {
@@ -1384,7 +1309,7 @@ autoSimulateInt = setInterval(() => {
     if (Math.random() < 0.01 && autoEventsCheckbox.checked && activePanics.size === 0) {
         triggerPanic();
     }
-}, 7000); // every 7s, random event
+}, 10000); // every 7s, random event
 
 // --- Wanted Targets Logic ---
 const wantedCrimes = [
@@ -1586,3 +1511,5 @@ if(loreJoinClose) {
         if(loreJoinModal) loreJoinModal.style.display = 'none';
     });
 }
+
+
