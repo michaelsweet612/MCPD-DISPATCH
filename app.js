@@ -1036,7 +1036,6 @@ const wantedLogEl = document.getElementById('wanted-log');
 const personnelLogEl = document.getElementById('personnel-log');
 const citizensLogEl = document.getElementById('citizens-log');
       const rosterListEl = document.getElementById('roster-list');
-const recruitBtn = document.getElementById('recruit-btn');
 
 // Citizen Page Elements
 const citizenListView = document.getElementById('citizens-list-view');
@@ -1183,7 +1182,6 @@ function renderRoster() {
 }
 
 // Recruit Logic
-recruitBtn.addEventListener('click', hireOfficer);
 
 
   function generateApplicants() {
