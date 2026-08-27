@@ -395,78 +395,87 @@ function getCurrentTimeStr() {
 }
 
 let isFetchingChat = false;
+  let radioState = 'on-topic';
+  let offTopicCooldown = 0;
+  let offTopicUnit1 = null;
+  let offTopicUnit2 = null;
+
 
 // Emulate Incoming Chat
 async function simulateChat() {
-    if (restModeToggle.checked) return; // Pause all activity if rest mode is on
-    if (!autoEventsCheckbox.checked) return;
-    if (isFetchingChat) return; // Prevent overlapping API calls
+      if (restModeToggle.checked) return;
+      if (!autoEventsCheckbox.checked) return;
+      if (isFetchingChat) return;
 
-    const sender = getRandomItem(getActiveCallsigns());
-    if (!sender) return;
+      const activeCallsigns = getActiveCallsigns();
+      if (activeCallsigns.length < 2) return; // Need at least 2 for banter
 
-    let msgTypeClass = '';
-    let scenario = '';
-    let replyTo = null;
+      let sender = getRandomItem(activeCallsigns);
+      let msgTypeClass = 'serious';
+      let scenario = '';
+      
+      // Banter State Machine Update
+      if (offTopicCooldown > 0) offTopicCooldown--;
 
-    if (voreMode) {
-        msgTypeClass = 'worried';
-        scenario = "You are terrified of a giant mouth in the sky. Express extreme surreal panic about being eaten.";
-    } else if (activePanics.size >= 5) {
-        msgTypeClass = 'worried';
-        scenario = "The city is falling apart. Multiple officers have triggered panic buttons. Express extreme stress and fear.";
-    } else {
-        const rand = Math.random();
-        const active = getActiveCallsigns().filter(u => u !== sender);
-        
-        if (rand < 0.1) {
-            msgTypeClass = 'joking';
-            if (active.length > 0) {
-                replyTo = getRandomItem(active);
-                scenario = `You are complaining to officer ${replyTo} about the terrible synthetic food rations or cheap synthetic coffee.`;
-            } else {
-                scenario = "You are complaining about your broken patrol vehicle, malfunctioning cybernetics, or terrible paycheck.";
-            }
-        } else if (rand < 0.2) {
-            msgTypeClass = 'joking';
-            if (active.length > 0) {
-                replyTo = getRandomItem(active);
-                scenario = `You are casually greeting officer ${replyTo} over the radio network using futuristic cyberpunk cop slang.`;
-            } else {
-                scenario = "You are making a dark humored, cynical joke about patrol duties and the endless paperwork.";
-            }
-        } else if (rand < 0.3) {
-            msgTypeClass = 'joking';
-            scenario = "You are making a sarcastic, cynical joke about the corrupt megacorporations running the city.";
-        } else if (rand < 0.4) {
-            msgTypeClass = 'serious';
-            scenario = "You are requesting backup for a suspicious civilian who looks like they have highly illegal military-grade augments.";
-        } else if (rand < 0.5) {
-            msgTypeClass = 'serious';
-            scenario = "You are reporting a pathetic bribe attempt by a low-level corporate executive.";
-        } else if (rand < 0.6) {
-            msgTypeClass = 'worried';
-            scenario = "You are reporting a bizarre, unexplainable glitch in the city's holographic sky or neon billboards.";
-        } else if (rand < 0.7) {
-            msgTypeClass = 'serious';
-            scenario = "You are chasing a suspect on foot through a crowded, neon-lit rainy alleyway.";
-        } else if (rand < 0.8) {
-            msgTypeClass = 'joking';
-            scenario = "You are bragging to dispatch about confiscating some very expensive cyber-contraband.";
-        } else if (rand < 0.9) {
-            msgTypeClass = 'worried';
-            scenario = "You are expressing anxiety about a terrifyingly heavily armed gang of cyborgs loitering in your sector.";
-        } else {
-            msgTypeClass = 'serious';
-            scenario = "You are reporting a standard, gritty, serious patrol status (e.g., clearing a squatter camp, finding a dead drop, or securing a sector).";
-        }
-    }
+      if (radioState === 'on-topic') {
+          if (offTopicCooldown === 0 && Math.random() < 0.05) { // 5% chance to go off-topic
+              radioState = 'off-topic';
+              offTopicUnit1 = getRandomItem(activeCallsigns);
+              offTopicUnit2 = getRandomItem(activeCallsigns.filter(u => u !== offTopicUnit1));
+              sender = offTopicUnit1;
+          }
+      }
 
-    isFetchingChat = true;
+      let actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
 
-    try {
-        const prompt = `You are a cyberpunk police officer named ${sender} speaking over the radio. Context: ${scenario}. Keep it to 1 concise, gritty sentence. No roleplay actions, no quotes.`;
-        const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+      if (radioState === 'off-topic') {
+          // 25% chance someone interrupts them
+          if (Math.random() < 0.25) {
+              const strictUnit = roster.find(u => u.status === 'On Duty' && (u.personality === 'By-The-Book' || u.personality === 'Veteran'))?.id || getRandomItem(activeCallsigns.filter(u => u !== offTopicUnit1 && u !== offTopicUnit2));
+              sender = strictUnit;
+              actualPersonality = roster.find(u => u.id === sender)?.personality || 'Veteran';
+              scenario = `You are furiously interrupting ${offTopicUnit1} and ${offTopicUnit2}'s casual conversation. Yell at them to stay on topic, clear the radio channel, and act like professional police officers.`;
+              msgTypeClass = 'worried'; // red/orange text
+              
+              radioState = 'on-topic';
+              offTopicCooldown = 20; // Enforce on-topic for the next 20 chat ticks (approx 1 minute)
+          } else {
+              // Continue the casual conversation
+              sender = Math.random() < 0.5 ? offTopicUnit1 : offTopicUnit2;
+              const target = sender === offTopicUnit1 ? offTopicUnit2 : offTopicUnit1;
+              actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
+              scenario = `You are having a highly unprofessional, casual, off-topic conversation with ${target} over the main police radio. Talk about mundane NPC things: bad food, video games, complaining about your shift, or sports.`;
+              msgTypeClass = 'joking'; // yellow/casual text
+          }
+      } else {
+          // Standard ON-TOPIC logic
+          if (voreMode) {
+              msgTypeClass = 'worried';
+              scenario = "You are terrified of a giant mouth in the sky. Express extreme surreal panic about being eaten.";
+          } else if (activePanics.size >= 3) {
+              msgTypeClass = 'worried';
+              scenario = "The city is falling apart. Multiple officers have triggered panic buttons. Express extreme stress and fear.";
+          } else {
+              const rand = Math.random();
+              if (rand < 0.3) {
+                  scenario = "You are requesting a routine status check on a suspicious vehicle or civilian.";
+              } else if (rand < 0.6) {
+                  scenario = "You are giving a standard patrol status update for your sector. Keep it professional.";
+              } else if (rand < 0.8) {
+                  scenario = "You are officially reporting a minor crime or citing a civilian for a low-level infraction.";
+              } else {
+                  msgTypeClass = 'worried';
+                  scenario = "You are expressing concern about heavily armed gang members in your sector, but maintaining professional radio discipline.";
+              }
+          }
+      }
+
+      isFetchingChat = true;
+
+      try {
+          const prompt = `You are a cyberpunk police officer named ${sender} speaking over the radio. Your personality is: ${actualPersonality}. Context: ${scenario}. Keep it to 1 concise, gritty sentence. No roleplay actions, no asterisks, no quotes.`;
+          const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+
 
         if (response.ok) {
             let msgText = await response.text();
