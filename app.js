@@ -404,6 +404,57 @@ const crimeReports = [
     { title: "10-24: Abandoned Vehicle", priority: "low" },
     { title: "10-85: Delay due to arrest", priority: "low" },
     { title: "10-99: Officer needs assistance", priority: "high" }
+,
+{ title: "10-53: Unauthorized public intercourse at location [RAND_LOC]", priority: "low" },
+    { title: "10-14: Suspicious individual loitering near checkpoint [RAND_LOC]", priority: "low" },
+    { title: "10-33: Silent alarm triggered at commercial facility [RAND_LOC]", priority: "medium" },
+    { title: "10-73: Unsanctioned cybernetics discharge in sector [RAND_LOC]", priority: "high", group: "Ripperdoc Cartel" },
+    { title: "10-45: Biological waste dumped at intersection [RAND_LOC]", priority: "low" },
+    { title: "10-16: Domestic dispute involving heavily augmented individuals", priority: "medium" },
+    { title: "10-66: Stolen corporate hover-vehicle sighted at [RAND_LOC]", priority: "high", group: "Tyrell Corp" },
+    { title: "10-31: Robbery in progress at synthetic organ clinic [RAND_LOC]", priority: "high", group: "The Splicers" },
+    { title: "10-10: Civilian reports malfunctioning android at [RAND_LOC]", priority: "medium" },
+    { title: "10-89: Unidentified package ticking at transit hub [RAND_LOC]", priority: "high" },
+    { title: "10-54: Possible dead body found in maintenance shaft [RAND_LOC]", priority: "high" },
+    { title: "10-34: Illegal street race detected in sector [RAND_LOC]", priority: "medium", group: "Neon Vipers" },
+    { title: "10-15: Civil disturbance - Anti-synth protest at [RAND_LOC]", priority: "medium", group: "Anti-Corp Protesters" },
+    { title: "10-91: Stray genetically modified animal reported at [RAND_LOC]", priority: "low" },
+    { title: "10-44: Public intoxication - Subject leaking coolant at [RAND_LOC]", priority: "low" },
+    { title: "10-50: Hover-vehicle collision at level 4 overpass [RAND_LOC]", priority: "medium" },
+    { title: "10-71: Shots fired near automated factory [RAND_LOC]", priority: "high" },
+    { title: "10-32: Subject brandishing thermal katana at [RAND_LOC]", priority: "high" },
+    { title: "10-62: Hostage situation reported in block [RAND_LOC]", priority: "high", group: "Downtown Syndicate" },
+    { title: "10-39: Noise complaint - Illegal sonic weapon testing at [RAND_LOC]", priority: "medium" },
+    { title: "11-44: Corrosive fluid spill at industrial zone [RAND_LOC]", priority: "high" },
+    { title: "10-43: Suspicious drone activity over residential sector [RAND_LOC]", priority: "low" },
+    { title: "10-96: Cyberpsychosis incident in progress at [RAND_LOC]", priority: "high", group: "Unaffiliated" },
+    { title: "10-55: Hover-driver heavily intoxicated on synthetic opioids", priority: "high" },
+    { title: "10-11: Swarm of rogue delivery drones at [RAND_LOC]", priority: "medium" },
+    { title: "10-80: High-speed pursuit heading towards block [RAND_LOC]", priority: "high" },
+    { title: "10-24: Abandoned heavily armored transport at [RAND_LOC]", priority: "medium" },
+    { title: "10-90: Unauthorized network breach at corporate node [RAND_LOC]", priority: "high" },
+    { title: "10-46: Civilian vehicle stalled in active traffic lane [RAND_LOC]", priority: "low" },
+    { title: "10-103: Brawl involving corporate security at [RAND_LOC]", priority: "medium", group: "Tyrell Corp Security" },
+    { title: "10-51: Tow requested for disabled enforcement mech at [RAND_LOC]", priority: "low" },
+    { title: "10-57: Hit and run involving automated taxi at [RAND_LOC]", priority: "medium" },
+    { title: "10-72: Structural fire reported at sector [RAND_LOC]", priority: "high" },
+    { title: "10-99: Temporal anomaly detected - Proceed with caution", priority: "high" },
+    { title: "10-100: Multiple casualties found in alleyway [RAND_LOC]", priority: "high", group: "Northside Kings" },
+    { title: "10-14: Prowler on rooftops near sector [RAND_LOC]", priority: "medium" },
+    { title: "10-58: Traffic control grid failure at intersection [RAND_LOC]", priority: "low" },
+    { title: "10-32: Subject armed with military-grade explosives at [RAND_LOC]", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Civilian requesting assistance with malfunctioning neural link", priority: "low" },
+    { title: "Shoplifting of black-market cyberware at [RAND_LOC]", priority: "low" },
+    { title: "Vandalism of corporate holograms at [RAND_LOC]", priority: "low", group: "Neon Vipers" },
+    { title: "Loitering complaint - Suspected gang members at [RAND_LOC]", priority: "low" },
+    { title: "Trespassing on restricted Tyrell Corp property [RAND_LOC]", priority: "medium", group: "Tyrell Corp Security" },
+    { title: "10-56: Unidentified Aerial Phenomenon approaching [RAND_LOC]", priority: "low" },
+    { title: "10-66: Illegal Cyberware Installation clinic discovered at [RAND_LOC]", priority: "high", group: "Ripperdoc Cartel" },
+    { title: "10-10: Civilian reports being tracked by orbital laser [RAND_LOC]", priority: "low" },
+    { title: "10-96: Subject claims to be a rogue AI in a human body at [RAND_LOC]", priority: "low" },
+    { title: "10-31: Android malfunction / Rogue combat unit at [RAND_LOC]", priority: "high" },
+    { title: "10-15: Unsanctioned cult gathering in the lower sewers [RAND_LOC]", priority: "medium", group: "The Awakened" },
+    { title: "10-85: Officer delayed - Hovercar power failure at [RAND_LOC]", priority: "low" }
 ];
 
 // Initialize Clock
@@ -920,7 +971,11 @@ function simulateEvent(specificCrime = null) {
     let crime = specificCrime;
     if (!crime) {
         if (!autoEventsCheckbox.checked) return;
-        crime = getRandomItem(crimeReports);
+                crime = { ...getRandomItem(crimeReports) };
+        if (crime.title.includes('[RAND_LOC]')) {
+            const randLoc = Math.floor(Math.random() * 90000) + 10000;
+            crime.title = crime.title.replace('[RAND_LOC]', randLoc);
+        }
     }
 
     const div = document.createElement('div');
