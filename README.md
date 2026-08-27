@@ -2,7 +2,7 @@
 
 Welcome to the **MCPD DISPATCH TERMINAL**. 
 
-This project is a terminal-style simulation of the Main City Police Department (MCPD), a highly fictionalized, dystopian, and incredibly trigger happy police force. 
+This project is a terminal style simulation of the Main City Police Department (MCPD), a highly fictionalized, dystopian, and incredibly trigger happy police force. 
 
 For more detailed information and lore about the MCPD universe, please visit this link:
 [MCPD Lore & Information](https://notebook.google.com/notebook/64b934e5-bbc4-4658-8f94-57d2184adaf2)
