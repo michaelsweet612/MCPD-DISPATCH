@@ -999,6 +999,9 @@ const databaseLogEl = document.getElementById('database-log');
 const wantedLogEl = document.getElementById('wanted-log');
 const personnelLogEl = document.getElementById('personnel-log');
 const citizensLogEl = document.getElementById('citizens-log');
+  const tabMap = document.getElementById('tab-map');
+  const mapLogEl = document.getElementById('map-log');
+  const mapContainer = document.getElementById('map-container');
 const rosterListEl = document.getElementById('roster-list');
 const recruitBtn = document.getElementById('recruit-btn');
 
@@ -1026,6 +1029,8 @@ function hideAllTabs() {
     tabPersonnel.style.color = 'var(--text-dim)';
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
+    tabMap.classList.remove('active');
+    tabMap.style.color = 'var(--text-dim)';
 
     unifiedLogEl.style.display = 'none';
     chatInputArea.style.display = 'none';
@@ -1034,6 +1039,7 @@ function hideAllTabs() {
     wantedLogEl.style.display = 'none';
     personnelLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
+    mapLogEl.style.display = 'none';
 }
 
 tabUnified.addEventListener('click', () => {
@@ -1081,6 +1087,13 @@ tabCitizens.addEventListener('click', () => {
     if (citizenDossierView) citizenDossierView.style.display = 'none';
     if (citizenListView) citizenListView.style.display = 'block';
 });
+
+  tabMap.addEventListener('click', () => {
+      hideAllTabs();
+      tabMap.classList.add('active');
+      tabMap.style.color = 'var(--text-main)';
+      mapLogEl.style.display = 'block';
+  });
 
 // Personnel & PM Logic
 function renderRoster() {
@@ -1406,6 +1419,9 @@ const wantedCrimes = [
 const wantedNames = ["Ghost", "Fixer", "Viper", "Deadeye", "Cipher", "Splicer", "Ronin", "Neon", "Shadow", "Razer", "Glitch", "Krueger", "Vanguard", "Zero", "Echo"];
 
 function generateWantedTargets() {
+      // UI Glitch Fix: Don't redraw if user is actively viewing the tab
+      if (tabWanted && tabWanted.classList.contains('active') && wantedListEl.innerHTML !== '') return;
+
     wantedListEl.innerHTML = ''; // Clear existing
 
     // Gordon Freeman ALWAYS at the top
@@ -1467,6 +1483,7 @@ function generateWantedTargets() {
 // Update wanted targets every 45 seconds to keep it fresh
 setInterval(generateWantedTargets, 45000);
 generateWantedTargets(); // Initial call
+  initMap();
 
 // --- Database Logic ---
 dbSearchBtn.addEventListener('click', () => {
@@ -1561,3 +1578,44 @@ dbAiProfileBtn.addEventListener('click', async () => {
 setTimeout(simulateEvent, 500);
 setTimeout(simulateChat, 1000);
 setTimeout(simulateChat, 1500);
+
+
+// --- SECTOR MAP LOGIC ---
+function initMap() {
+    if (!mapContainer) return;
+    mapContainer.innerHTML = '';
+    for(let i=1; i<=9; i++) {
+        let sector = document.createElement('div');
+        sector.className = 'map-sector';
+        sector.dataset.sector = i;
+        mapContainer.appendChild(sector);
+    }
+    
+    // Spawn initial patrols
+    for(let i=0; i<3; i++) {
+        spawnMapBlip('patrol');
+    }
+}
+
+function spawnMapBlip(type) {
+    if (!mapContainer) return;
+    let blip = document.createElement('div');
+    blip.className = `map-blip ${type}`;
+    
+    // Random position within the map grid container
+    let randomX = Math.floor(Math.random() * 80) + 10;
+    let randomY = Math.floor(Math.random() * 80) + 10;
+    
+    if (type !== 'patrol') {
+        blip.style.left = `${randomX}%`;
+        blip.style.top = `${randomY}%`;
+    }
+    
+    mapContainer.appendChild(blip);
+    
+    if (type === 'event' || type === 'panic') {
+        setTimeout(() => {
+            if(blip.parentNode) blip.parentNode.removeChild(blip);
+        }, type === 'panic' ? 15000 : 8000);
+    }
+}
