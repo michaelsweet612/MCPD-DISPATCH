@@ -702,19 +702,43 @@ function simulateEvent(specificCrime = null) {
     // Delay the resolution to simulate travel, conflict, and radio reporting
     setTimeout(async () => {
         const reportingUnit = respondingUnits[0];
+        const backupUnit = respondingUnits[1];
         const isROEEnabled = roeToggleCheckbox.checked;
+
+        // 30% chance of escalating into a massive shootout sequence
+        if (Math.random() < 0.3) {
+            const swear = getRandomItem(swearWords);
+            const action = getRandomItem(underFireActions);
+            const loc = Math.floor(Math.random() * 900000000) + 100000000; // 9 digit location
+            
+            // 1. Getting shot at
+            addChatMessage(reportingUnit, `${swear} ${action}`, "worried");
+            
+            // 2. Resolution & EMS request
+            setTimeout(() => {
+                const resLine = getRandomItem(resolutionLines);
+                addChatMessage(reportingUnit, `${resLine} I might need EMS at location ${loc}.`, "serious");
+                
+                // 3. Dispatch / Backup responding
+                setTimeout(() => {
+                    const responder = backupUnit || 'DISPATCH';
+                    addChatMessage(responder, `Copy ${reportingUnit}, I'm sending EMS to your current location ${loc}. Hold tight.`, "dispatch-msg");
+                    
+                    // Generate report after
+                    mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
+                }, 3000 + Math.random() * 2000);
+                
+            }, 4000 + Math.random() * 3000);
+            
+            return; // Exit standard resolution
+        }
 
         const arrestingChats = [
             "10-4, Dispatch. Suspect apprehended non-lethally. Requesting transport.",
             "Target secured after minor struggle. Disarming and filing report.",
             "Suspect detained successfully. Code 4. No serious casualties.",
             "We have the suspect in cuffs. Transporting to booking now.",
-            "Perp gave up without a fight. Miraculous.",
-            "Target in custody. Only had to use the stun baton twice.",
-            "Suspect pacified and restrained. Requesting medical for minor lacerations.",
-            "He tried to run, but the net gun got him. Secured.",
-            "Subject is crying but otherwise unhurt. Heading back to station.",
-            "Suspect decided the holding cell was better than fighting. Detained."
+            "Perp gave up without a fight. Miraculous."
         ];
 
         const killingChats = [
@@ -722,16 +746,10 @@ function simulateEvent(specificCrime = null) {
             "Threat eliminated. No survivors. Returning to patrol.",
             "Suspect resisted. Lethal force applied. Area is red but quiet.",
             "Subject down. Send bio-hazard cleanup to our coordinates.",
-            "Target was hostile. Problem solved permanently.",
-            "Lethal measures authorized and executed. Target deceased.",
-            "Suspect eradicated. No vital signs.",
-            "Threat neutralized with extreme prejudice.",
-            "Code 4. Suspect is no longer a problem.",
-            "Target terminated. Requesting cleanup crew."
+            "Target was hostile. Problem solved permanently."
         ];
 
         let reportMsg = "";
-        
         try {
             const outcomeType = isROEEnabled ? "You apprehended the suspect using non-lethal pacification. They are alive and in cuffs." : "You neutralized the suspect using lethal force. They are dead.";
             const prompt = `You are a cyberpunk police officer named ${reportingUnit} reporting the conclusion of an incident: ${crime.title}. ${outcomeType} Provide a single, gritty, cynical 1-sentence radio report. No roleplay actions, no quotes.`;
@@ -743,18 +761,10 @@ function simulateEvent(specificCrime = null) {
                 throw new Error("AI Generation Failed");
             }
         } catch (e) {
-            // Fallback
-            if (isROEEnabled) {
-                reportMsg = getRandomItem(arrestingChats);
-            } else {
-                reportMsg = getRandomItem(killingChats);
-            }
+            reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
         }
 
-        // Emulate the officer speaking in the radio channel
         addChatMessage(reportingUnit, reportMsg, "serious");
-
-        // Generate the document AFTER they report it
         mockAddDocument(crime, respondingUnits, isROEEnabled);
 
     }, 4000 + Math.random() * 6000); // 4 to 10 seconds later
@@ -1329,6 +1339,37 @@ const wantedCrimes = [
     "Trespassing in Tyrell Corp Facilities",
     "Trafficking Banned Organic Material"
 ];
+
+const swearWords = ["F*ck!", "Sh*t!", "Goddammit!", "Motherf*cker!", "Dammit!", "Jesus Christ!", "Son of a b*tch!", "Bastards!", "Pigs! Wait, no, they're shooting US!"];
+const underFireActions = [
+    "Suspect is firing!", 
+    "Taking heavy fire!", 
+    "They've got a weapon!", 
+    "I'm pinned down!", 
+    "Shots fired, shots fired!", 
+    "They're shooting at me!", 
+    "Suspect is armed and dangerous!", 
+    "Taking hits!", 
+    "My armor is failing!",
+    "I'm taking direct fire!",
+    "Hostiles are engaging!",
+    "They've got automatic weapons!",
+    "I need backup NOW!",
+    "Cover me, cover me!"
+];
+const resolutionLines = [
+    "Oh don't worry dispatch, I got them. I just took a couple wounds.",
+    "Nevermind dispatch, suspect is down. I took a hit though.",
+    "Cancel the backup, I flatlined them. Bleeding a bit here.",
+    "Threat neutralized. My armor absorbed most of it, but I'm bleeding.",
+    "I got 'em. Target is deceased. Took a grazing shot to the shoulder.",
+    "Got the bastard. I'm gonna need a patch-up though.",
+    "Target is down! I'm hit but it's not fatal.",
+    "Suspect eliminated. I've got a few holes in me, nothing major.",
+    "They're dead. I took some shrapnel.",
+    "Threat is over. I got lucky, just a few flesh wounds."
+];
+
 const wantedNames = ["Ghost", "Fixer", "Viper", "Deadeye", "Cipher", "Splicer", "Ronin", "Neon", "Shadow", "Razer", "Glitch", "Krueger", "Vanguard", "Zero", "Echo"];
 
 function generateWantedTargets() {
