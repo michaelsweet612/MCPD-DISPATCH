@@ -1784,6 +1784,7 @@ const btnCloseDossier = document.getElementById('btn-close-dossier');
 const btnDeclareInnocent = document.getElementById('btn-declare-innocent-page');
 const btnDeclareSuspicious = document.getElementById('btn-declare-suspicious-page');
 const btnDeclareWanted = document.getElementById('btn-declare-wanted-page');
+const btnDeclareWarrant = document.getElementById('btn-declare-warrant-page');
 const btnDeclareArrested = document.getElementById('btn-declare-arrested-page');
 const citizensListEl = document.getElementById('citizens-list');
 
@@ -1987,6 +1988,7 @@ function generateCitizens() {
         "MULTIPLE WARRANTS: Anti-Civil Behavior, Murder.",
         "KNOWN SYNDICATE ENFORCER. High-risk."
     ];
+    const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked"];
 
     for (let i = 0; i < 1000; i++) {
         const first = getRandomItem(firstNames);
@@ -2007,6 +2009,8 @@ function generateCitizens() {
             status: initialStatus,
             trait: getRandomItem(traits),
             history: hist,
+            civPersonality: getRandomItem(civPersonalities),
+            address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
             dob: `20${Math.floor(Math.random() * 80) + 10}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`
         };
         globalCitizens.push(cit);
@@ -2017,7 +2021,7 @@ function generateCitizens() {
                 reason: hist,
                 level: "HIGH",
                 bounty: Math.floor(Math.random() * 50000) + 10000,
-                address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
+                address: cit.address,
                 implants: cit.trait
             });
         }
@@ -2031,6 +2035,7 @@ function renderCitizensList() {
         if (cit.status === 'Suspicious') color = SUSPICIOUS_COLOR;
         if (cit.status === 'Wanted') color = WANTED_COLOR;
         if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
+        if (cit.status === 'Escaped') color = ESCAPED_COLOR;
 
         htmlChunk += `
             <div class="roster-card" onclick="openCitizenDossier(${idx})" style="cursor:pointer; border-color: ${color};">
@@ -2053,6 +2058,7 @@ function openCitizenDossier(idx) {
     if (cit.status === 'Suspicious') color = SUSPICIOUS_COLOR;
     if (cit.status === 'Wanted') color = WANTED_COLOR;
     if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
+    if (cit.status === 'Escaped') color = ESCAPED_COLOR;
 
     citizenPageTitle.textContent = `DOSSIER: ${cit.id}`;
     citizenPageTitle.style.color = color;
@@ -2064,6 +2070,8 @@ function openCitizenDossier(idx) {
         </div>
         <div><strong>DOB:</strong> ${cit.dob}</div>
         <div><strong>Standing:</strong> <span style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span></div>
+        <div style="margin-top: 15px;"><strong>Registered Address:</strong><br><span style="color:var(--text-dim);">${cit.address}</span></div>
+        <div style="margin-top: 15px;"><strong>Psych Profile:</strong><br><span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
         <div style="margin-top: 15px;"><strong>Crime History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None"}</span></div>
         <div style="margin-top: 15px;"><strong>Notes:</strong><br>${cit.trait}</div>
         <div style="margin-top: 15px; color: var(--text-dim); font-size: 0.85rem; border-top: 1px dashed var(--border-color); padding-top: 10px;">
@@ -2085,6 +2093,109 @@ btnDeclareInnocent.addEventListener('click', () => updateCitizenStatus('Innocent
 btnDeclareSuspicious.addEventListener('click', () => updateCitizenStatus('Suspicious'));
 btnDeclareWanted.addEventListener('click', () => updateCitizenStatus('Wanted'));
 if(btnDeclareArrested) btnDeclareArrested.addEventListener('click', () => updateCitizenStatus('Arrested'));
+if(btnDeclareWarrant) btnDeclareWarrant.addEventListener('click', () => executeWarrant());
+
+
+function executeWarrant() {
+    if (currentViewingCitizen === null) return;
+    const cit = globalCitizens[currentViewingCitizen];
+    
+    closeDossier();
+    
+    // Cannot execute on dead/arrested
+    if (cit.status === 'Arrested' || cit.status === 'Deceased') {
+        alert("Cannot execute warrant on arrested or deceased targets.");
+        return;
+    }
+
+    // Mark wanted if not already
+    if (cit.status !== 'Wanted') {
+        cit.status = 'Wanted';
+        wantedTargets.push({
+            name: cit.name,
+            reason: "Active Warrant Execution",
+            level: "HIGH",
+            bounty: Math.floor(Math.random() * 50000) + 10000,
+            address: cit.address,
+            implants: cit.trait
+        });
+        if(typeof updateWantedUI !== 'undefined') updateWantedUI();
+        renderCitizensList();
+    }
+
+    const activeCallsigns = getActiveCallsigns();
+    if (activeCallsigns.length === 0) return;
+    const officer = getRandomItem(activeCallsigns);
+    const officerObj = roster.find(u => u.id === officer);
+    const officerPersonality = officerObj ? officerObj.personality : 'Rookie';
+    
+    const isCorruptReckless = ['Aggressive', 'Reckless'].includes(officerPersonality);
+
+    // 1. Dispatch
+    addChatMessage(officer, `Dispatch, I am en route to execute an active warrant on ${cit.name} at ${cit.address}.`, "serious");
+    
+    // 2. Arrival
+    setTimeout(() => {
+        addChatMessage(officer, `Arrived at ${cit.address}. Moving in on suspect ${cit.name}.`, "serious");
+        
+        // 3. Outcome
+        setTimeout(() => {
+            let msgType = "serious";
+            let reportMsg = "";
+            let finalStatus = cit.status;
+
+            // Resolve based on citizen personality and officer personality
+            if (cit.civPersonality === 'Passive') {
+                if (isCorruptReckless && Math.random() < 0.2) {
+                    reportMsg = `Suspect was totally reaching for something! I had no choice, target neutralized.`;
+                    finalStatus = 'Deceased';
+                } else {
+                    reportMsg = `Target surrendered without a fight. Got them in cuffs. Code 4.`;
+                    finalStatus = 'Arrested';
+                }
+            } 
+            else if (cit.civPersonality === 'Panicked') {
+                if (isCorruptReckless && Math.random() < 0.3) {
+                    reportMsg = `Suspect tried to run, I dropped them in the alleyway. Target is deceased.`;
+                    finalStatus = 'Deceased';
+                } else if (Math.random() < 0.5) {
+                    reportMsg = `Suspect booked it! I lost them in the crowds... damn it. They're gone.`;
+                    finalStatus = 'Escaped';
+                    msgType = "worried";
+                } else {
+                    reportMsg = `Target tried to run, but I chased them down. Secured in cuffs.`;
+                    finalStatus = 'Arrested';
+                }
+            }
+            else if (cit.civPersonality === 'Partially Aggressive') {
+                if (Math.random() < 0.5) {
+                    reportMsg = `Suspect threw a punch and tried to fight. I put them down permanently.`;
+                    finalStatus = 'Deceased';
+                    msgType = "worried";
+                } else {
+                    reportMsg = `Suspect got a little rough, but I overpowered them. Target secured.`;
+                    finalStatus = 'Arrested';
+                }
+            }
+            else if (cit.civPersonality === 'Aggressive') {
+                msgType = "worried";
+                addChatMessage(officer, `Suspect is firing! Taking heavy fire at ${cit.address}!`, "worried");
+                
+                setTimeout(() => {
+                    addChatMessage(officer, `I got 'em... Target ${cit.name} neutralized. Need cleanup.`, "serious");
+                    cit.status = 'Deceased';
+                    renderCitizensList();
+                }, 3500);
+                return; // Exit early since we handle aggressive with a delay
+            }
+
+            addChatMessage(officer, reportMsg, msgType);
+            cit.status = finalStatus;
+            renderCitizensList();
+
+        }, 4000 + Math.random() * 2000);
+    }, 4000 + Math.random() * 3000);
+}
 
 function updateCitizenStatus(newStatus) {
     if (currentViewingCitizen === null) return;
