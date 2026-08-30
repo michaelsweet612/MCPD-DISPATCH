@@ -55,19 +55,95 @@ let activePanics = new Map(); // Store maps of unit -> { timeoutVisual, timeoutS
 let autoSimulateInt = null;
 let chatSimulateInt = null;
 
-// Mock Data
+const RANKS = [
+    { title: "Private", short: "PVT", kills: 0 },
+    { title: "Corporal", short: "CPL", kills: 250000 },
+    { title: "Sergeant", short: "SGT", kills: 1000000 },
+    { title: "Staff Surgeon", short: "SSG", kills: 5000000 },
+    { title: "Sergeant First Class", short: "SFC", kills: 8000000 },
+    { title: "First Sergeant", short: "1SG", kills: 9000000 },
+    { title: "Sergeant Major", short: "SGM", kills: 10000000 },
+    { title: "Command Sergeant Major", short: "CSM", kills: 35000000 },
+    { title: "Sergeant Major of the Police", short: "SMP", kills: 3000000000 },
+    { title: "General of the Police", short: "GEN", kills: 80000000000000000000 }, // 80 Quintillion
+    { title: "Chief", short: "CHIEF", kills: 200000000000000000000000 } // 200 Sextillion
+];
+
+function getRankFromKills(kills) {
+    let currentRank = RANKS[0];
+    for (let r of RANKS) {
+        if (kills >= r.kills) currentRank = r;
+    }
+    return currentRank;
+}
+
 let roster = [];
-  function initRoster() {
-      for(let i=0; i<58; i++) {
-          roster.push({
-              id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
-              status: 'On Duty',
-              personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
-              sector: Math.floor(Math.random() * 9) + 1
-          });
-      }
-  }
-  initRoster();
+let deptStats = {
+    budget: 50000,
+    totalKills: 0,
+    totalArrests: 0,
+    unauthorizedForce: 0
+};
+
+function formatAbsurdNumber(num) {
+    if (num >= 1e21) return (num / 1e21).toFixed(1) + " Sextillion";
+    if (num >= 1e18) return (num / 1e18).toFixed(1) + " Quintillion";
+    if (num >= 1e15) return (num / 1e15).toFixed(1) + " Quadrillion";
+    if (num >= 1e12) return (num / 1e12).toFixed(1) + " Trillion";
+    if (num >= 1e9) return (num / 1e9).toFixed(1) + " Billion";
+    if (num >= 1e6) return (num / 1e6).toFixed(1) + " Million";
+    return num.toLocaleString();
+}
+
+function updateStatsUI() {
+    const elBudget = document.getElementById('stat-budget');
+    const elKills = document.getElementById('stat-kills');
+    const elArrests = document.getElementById('stat-arrests');
+    const elForce = document.getElementById('stat-force');
+    
+    if (elBudget) elBudget.textContent = formatAbsurdNumber(deptStats.budget);
+    if (elKills) elKills.textContent = formatAbsurdNumber(deptStats.totalKills);
+    if (elArrests) elArrests.textContent = formatAbsurdNumber(deptStats.totalArrests);
+    if (elForce) elForce.textContent = formatAbsurdNumber(deptStats.unauthorizedForce);
+}
+
+function initRoster() {
+    for(let i=0; i<58; i++) {
+        let startingKills = 0;
+        let personality = PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)];
+        
+        if (i === 0) {
+            // THE CHIEF
+            startingKills = 200000000000000000000000;
+            personality = 'Aggressive';
+        } else if (i < 30) {
+            // 50% low ranks (Private/Corporal)
+            startingKills = Math.floor(Math.random() * 900000); // 0 to 900k
+        } else {
+            // Random higher ranks up to GEN
+            startingKills = Math.floor(Math.random() * 40000000); 
+            if (Math.random() > 0.9) startingKills = 3000000000 + Math.floor(Math.random() * 1000000000); // SMP
+            if (Math.random() > 0.98) startingKills = 80000000000000000000; // GEN
+        }
+        
+        const rankInfo = getRankFromKills(startingKills);
+        deptStats.totalKills += startingKills;
+
+        roster.push({
+            id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+            status: 'On Duty',
+            personality: personality,
+            sector: Math.floor(Math.random() * 9) + 1,
+            kills: startingKills,
+            arrests: Math.floor(Math.random() * 100),
+            unauthorizedForce: Math.floor(Math.random() * 10),
+            corruptActs: Math.floor(Math.random() * 5),
+            rankInfo: rankInfo
+        });
+    }
+    updateStatsUI();
+}
+initRoster();
 
 
 function getActiveCallsigns() {
@@ -652,10 +728,20 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
 
+    let displaySender = `[${sender}]`;
+    if (sender === 'DISPATCH') {
+        displaySender = '[DISPATCH]';
+    } else if (sender !== 'SYSTEM') {
+        const officer = roster.find(u => u.id === sender);
+        if (officer && officer.rankInfo) {
+            displaySender = `[${officer.rankInfo.short}] [${sender}]`;
+        }
+    }
+
     // Create the message content
     const contentHtml = `
         <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
-        <span class="sender">${sender === 'DISPATCH' ? '[DISPATCH]' : '[' + sender + ']'}</span> 
+        <span class="sender">${displaySender}</span> 
         <span class="text">${text}</span>
     `;
     div.innerHTML = contentHtml;
@@ -1319,10 +1405,20 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
 
+    let displaySender = `[${sender}]`;
+    if (sender === 'DISPATCH') {
+        displaySender = '[DISPATCH]';
+    } else if (sender !== 'SYSTEM') {
+        const officer = roster.find(u => u.id === sender);
+        if (officer && officer.rankInfo) {
+            displaySender = `[${officer.rankInfo.short}] [${sender}]`;
+        }
+    }
+
     // Create the message content
     const contentHtml = `
         <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
-        <span class="sender">${sender === 'DISPATCH' ? '[DISPATCH]' : '[' + sender + ']'}</span> 
+        <span class="sender">${displaySender}</span> 
         <span class="text">${text}</span>
     `;
     div.innerHTML = contentHtml;
@@ -1431,11 +1527,12 @@ function simulateEvent(specificCrime = null) {
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
     const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
 
-    // Select random suspect from database
+    const primaryUnitId = respondingUnits[0];
+    const primaryOfficer = roster.find(u => u.id === primaryUnitId) || { personality: 'Veteran' };
+
     let suspectCit = null;
     if (globalCitizens && globalCitizens.length > 0) {
         suspectCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
-        // Mark them suspicious or wanted based on priority
         if (crime.priority === 'high') {
             suspectCit.status = 'Wanted';
             wantedTargets.push({
@@ -1471,18 +1568,18 @@ function simulateEvent(specificCrime = null) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
     }
 
-    setTimeout(async () => {
+    setTimeout(() => {
         const reportingUnit = respondingUnits[0];
         const backupUnit = respondingUnits[1];
         const isROEEnabled = roeToggleCheckbox.checked;
 
-        if (Math.random() < 0.3) {
+        // Shootout Logic (Random)
+        if (Math.random() < 0.2) {
             const swear = getRandomItem(swearWords);
-            const action = getRandomItem(underFireActions);
+            const actionFire = getRandomItem(underFireActions);
             const loc = Math.floor(Math.random() * 900000000) + 100000000;
             
-            addChatMessage(reportingUnit, `${swear} ${action}`, "worried");
-            
+            addChatMessage(reportingUnit, `${swear} ${actionFire}`, "worried");
             setTimeout(() => {
                 const checkIn = getRandomItem(backupCheckInLines);
                 addChatMessage(backupUnit, checkIn.replace(/%UNIT%/g, reportingUnit), "worried");
@@ -1500,46 +1597,90 @@ function simulateEvent(specificCrime = null) {
                         const backupAck = getRandomItem(backupAcknowledgeLines);
                         addChatMessage(backupUnit, backupAck.replace(/%LOC%/g, loc).replace(/%UNIT%/g, reportingUnit), "serious");
                         
-                        mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
+                        // Officer inherently gets a kill here
+                        if (primaryOfficer.kills !== undefined) {
+                            primaryOfficer.kills++;
+                            deptStats.totalKills++;
+                            checkPromotion(primaryOfficer);
+                            updateStatsUI();
+                        }
+
+                        mockAddDocument(crime, respondingUnits, false, "Suspect engaged with lethal intent. Neutralized with extreme prejudice.", "kill"); 
                     }, 3500 + Math.random() * 2000);
-                    
                 }, 5000 + Math.random() * 4000);
-                
             }, 2500 + Math.random() * 2000);
-            return;
+            return; // Skip normal resolution
         }
 
+        // Standard Resolution
+        let action = 'arrest';
+        if (!isROEEnabled) action = 'kill';
+        if (primaryOfficer.personality === 'Aggressive' && Math.random() < 0.6) action = 'unauth_kill';
+        if (primaryOfficer.personality === 'Corrupt' && Math.random() < 0.4) action = 'corrupt';
+        if (crime.priority === 'high' && Math.random() < 0.3) action = 'kill';
+
         const suspectStr = suspectCit ? `${suspectCit.name} (CID: ${suspectCit.id})` : 'the suspect';
-        const arrestingChats = [
-            `Target ${suspectStr} in custody. Returning to precinct.`,
-            `I arrested ${suspectStr}. Code 4.`,
-            `${suspectStr} secured. We're 10-8.`,
-            `Apprehended ${suspectStr} without incident.`,
-            `Got them. ${suspectStr} is in cuffs.`
-        ];
+        let reportMsg = "";
+        let quote = "";
 
-        const killingChats = [
-            `Target ${suspectStr} neutralized. Call the meat wagon. Filing report now.`,
-            `Threat eliminated. No survivors. Returning to patrol.`,
-            `${suspectStr} resisted. Lethal force applied. Area is red but quiet.`,
-            `Subject down. Send bio-hazard cleanup to our coordinates.`,
-            `Target ${suspectStr} was hostile. Problem solved permanently.`
-        ];
-
-        let reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
+        if (action === 'unauth_kill') {
+            reportMsg = `Target ${suspectStr} neutralized. Unauthorized lethal force applied. They looked at me funny.`;
+            quote = `I accidentally used unauthorized deadly force because the suspect was holding a metallic object. It was a spoon, but I feared for my life.`;
+            if (primaryOfficer.unauthorizedForce !== undefined) {
+                primaryOfficer.unauthorizedForce++;
+                primaryOfficer.kills++;
+                deptStats.unauthorizedForce++;
+                deptStats.totalKills++;
+            }
+        } else if (action === 'corrupt') {
+            reportMsg = `Uh, target ${suspectStr} escaped. Definitely escaped. I definitely didn't take a 5,000 credit bribe.`;
+            quote = `Suspect fled the scene at high speeds. Found 5,000 credits on the ground, logging into evidence... minus processing fees.`;
+            if (primaryOfficer.corruptActs !== undefined) {
+                primaryOfficer.corruptActs++;
+                deptStats.budget += 5000;
+            }
+        } else if (action === 'kill') {
+            reportMsg = `Target ${suspectStr} neutralized. Lethal force authorized. Send the meat wagon.`;
+            quote = `Suspect was hostile. Engaged and eliminated target. Threat is neutralized permanently.`;
+            if (primaryOfficer.kills !== undefined) {
+                primaryOfficer.kills++;
+                deptStats.totalKills++;
+            }
+        } else {
+            reportMsg = `Apprehended ${suspectStr} without incident. They are in cuffs.`;
+            quote = `Arrested suspect. Placed in back of cruiser. No excessive force required, sadly.`;
+            if (primaryOfficer.arrests !== undefined) {
+                primaryOfficer.arrests++;
+                deptStats.totalArrests++;
+                deptStats.budget += 1500;
+            }
+        }
         
+        if (primaryOfficer.kills !== undefined) checkPromotion(primaryOfficer);
+        updateStatsUI();
+
         if (suspectCit) {
-            suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
+            if (action.includes('kill')) suspectCit.status = 'Deceased';
+            else if (action === 'arrest') suspectCit.status = 'Arrested';
+            else if (action === 'corrupt') suspectCit.status = 'Escaped';
             if (typeof renderCitizensList !== 'undefined') renderCitizensList();
         }
 
         addChatMessage(reportingUnit, reportMsg, "serious");
-        mockAddDocument(crime, respondingUnits, isROEEnabled);
+        mockAddDocument(crime, respondingUnits, isROEEnabled, quote, action);
 
-    }, 4000 + Math.random() * 6000);
+    }, 2500 + Math.random() * 2000);
 }
 
-async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
+function checkPromotion(officer) {
+    const newRank = getRankFromKills(officer.kills);
+    if (newRank.title !== officer.rankInfo.title) {
+        addChatMessage('SYSTEM', `[PROMOTION] ${officer.id} has been promoted to ${newRank.title} for reaching ${formatAbsurdNumber(officer.kills)} kills!`, 'serious');
+        officer.rankInfo = newRank;
+    }
+}
+
+function mockAddDocument(crime, respondingUnits, isROEEnabled, quote, action) {
     const doc = document.createElement('div');
     doc.className = "event-item high-priority";
     doc.style.borderLeft = "3px solid var(--accent-blue)";
@@ -1549,84 +1690,31 @@ async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
     const officersStr = respondingUnits.join(', ');
     const dateStr = new Date().toLocaleDateString('en-US') + " " + getCurrentTimeStr();
 
-    // Initial placeholder
+    let narrative = `INCIDENT TYPE: ${crime.title}\nTIME FILED: ${dateStr}\nRESPONDING OFFICERS: ${officersStr}\n-- NARRATIVE --\n`;
+    if (action === 'unauth_kill') narrative += `[FLAG: UNAUTHORIZED DEADLY FORCE DETECTED]\n`;
+    if (action === 'corrupt') narrative += `[FLAG: CORRUPT ACTION SUSPECTED]\n`;
+    narrative += `OFFICER QUOTE: "${quote || 'No comment provided.'}"`;
+
+    const fullReport = narrative.replace(/\n/g, '<br>');
+
     doc.innerHTML = `
         <span class="time">${getCurrentTimeStr()}</span>
         <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
-            <span>📌 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
+            <span>📋 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
             <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
         </div>
-        <div style="color: var(--text-dim); font-size: 0.95rem; font-style: italic; margin-top:5px;" id="loading-doc-${Date.now()}">
-            Decrypting generative AI transmission...
+        <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
+            "${quote || 'Report generated.'}"
         </div>
+        <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW INCIDENT REPORT</button>
     `;
+    
     documentListEl.prepend(doc);
     if (documentListEl.children.length > 15) {
         documentListEl.removeChild(documentListEl.lastChild);
     }
-
-    try {
-        const reportTones = [
-            "Emphasize the collateral damage to the surroundings.",
-            "Complain subtly about the paperwork or the bureaucracy.",
-            "Mention a malfunctioning piece of police equipment.",
-            "Highlight the absolute incompetence of the criminals.",
-            "Describe the scene as overly chaotic and neon-drenched.",
-            "Keep it purely clinical, cold, and detached.",
-            "Mention the horrible weather (acid rain, smog) affecting the operation.",
-            "Reference a bizarre cybernetic modification the suspect had."
-        ];
-        const randomTone = reportTones[Math.floor(Math.random() * reportTones.length)];
-
-        const prompt = `You are a futuristic cyberpunk police officer writing an official incident report. The incident was: ${crime.title}. Responding officers: ${officersStr}. ROE was ${isROEEnabled ? 'ENABLED (Non-Lethal pacification used)' : 'DISABLED (Lethal force authorized and suspect was neutralized)'}. Write a concise, gritty, 4-sentence narrative of what happened and the outcome. ${randomTone} Be extremely professional but cynical. No roleplay actions.`;
-
-        throw new Error('AI Disabled - using scripted fallback');
-// const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
-        if (response.ok) {
-            let aiText = await response.text();
-            aiText = aiText.replace(/^["']|["']$/g, '').trim();
-
-            const fullReport = `INCIDENT TYPE: ${crime.title}
-TIME FILED: ${dateStr}
-RESPONDING OFFICERS: ${officersStr}
-TOTAL UNITS DEPLOYED: ${respondingUnits.length}
-${crime.group ? "GANG AFFILIATION: " + crime.group + "<br>" : ""}
--- INCIDENT NARRATIVE (AI GENERATED) --<br>
-${aiText}`;
-
-            doc.innerHTML = `
-                <span class="time">${getCurrentTimeStr()}</span>
-                <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
-                    <span>📌 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
-                    <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
-                </div>
-                <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
-                    "${aiText}"
-                </div>
-                <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
-            `;
-        } else {
-            throw new Error("AI Generation Failed");
-        }
-    } catch (e) {
-        // Fallback if AI fails
-        const fallbackText = isROEEnabled ? "Suspect apprehended non-lethally." : "Suspect neutralized via lethal force.";
-        const fullReport = `INCIDENT TYPE: ${crime.title}\nTIME FILED: ${dateStr}\nRESPONDING OFFICERS: ${officersStr}\n-- NARRATIVE --\n${fallbackText}`;
-        doc.innerHTML = `
-            <span class="time">${getCurrentTimeStr()}</span>
-            <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
-                <span>📌 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
-                <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
-            </div>
-            <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
-                "${fallbackText}"
-            </div>
-            <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
-        `;
-    }
 }
 
-// Global function to open modal
 window.openReportModal = function (reportHTML) {
     document.getElementById('modal-body').innerHTML = reportHTML;
     document.getElementById('report-modal').style.display = 'flex';
@@ -1684,6 +1772,16 @@ function triggerPanic(unitName = null) {
     unifiedLogEl.classList.add('panic-container-glow');
     playPanicSound();
     clearPanicBtn.style.display = 'inline-block';
+
+    // Auto-SWAT request
+    if (Math.random() < 0.35) { // 35% chance to request SWAT during a panic
+        setTimeout(() => {
+            addChatMessage(unit, "Taking heavy casualties! Requesting CODE 5 SWAT backup NOW!", "worried");
+            setTimeout(() => {
+                if (typeof deploySwat === 'function') deploySwat();
+            }, 2000);
+        }, 1500);
+    }
 
     // Set auto-resolve for panic sound (5 seconds)
     panicData.soundTimeout = setTimeout(() => {
