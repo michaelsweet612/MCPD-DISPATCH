@@ -26,7 +26,7 @@ The MCPD DISPATCH TERMINAL runs entirely in your browser and simulates a live, c
 
 ## Usage
 
-Simply open index.html in any modern web browser to start the simulation. 
+Simply open `MCPD_DISPATCH_TERMINAL.html` in any modern web browser to start the simulation. 
 No build steps or server environments required. 
 
 *Protect and Kill.*
