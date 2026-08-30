@@ -2774,3 +2774,44 @@ if(loreJoinClose) {
         });
     }
 })();
+
+
+// === DEPARTMENT STATS DROPDOWN ===
+(function() {
+    const hdr = document.getElementById('stats-header');
+    const body = document.getElementById('stats-body');
+    const chevron = document.getElementById('stats-chevron');
+    let isOpen = false;
+    if (hdr && body && chevron) {
+        hdr.addEventListener('click', function() {
+            isOpen = !isOpen;
+            if (isOpen) {
+                body.style.display = 'block';
+                chevron.textContent = '▲';
+            } else {
+                body.style.display = 'none';
+                chevron.textContent = '▼';
+            }
+        });
+    }
+})();
+
+// === CRITICAL EMERGENCIES DROPDOWN ===
+(function() {
+    const hdr = document.getElementById('emergencies-header');
+    const body = document.getElementById('emergencies-body');
+    const chevron = document.getElementById('emergencies-chevron');
+    let isOpen = false;
+    if (hdr && body && chevron) {
+        hdr.addEventListener('click', function() {
+            isOpen = !isOpen;
+            if (isOpen) {
+                body.style.display = 'flex';
+                chevron.textContent = '▲';
+            } else {
+                body.style.display = 'none';
+                chevron.textContent = '▼';
+            }
+        });
+    }
+})();
