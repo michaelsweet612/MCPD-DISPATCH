@@ -1706,8 +1706,12 @@ function mockAddDocument(crime, respondingUnits, isROEEnabled, quote, action) {
         <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
             "${quote || 'Report generated.'}"
         </div>
-        <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW INCIDENT REPORT</button>
+        <button class="doc-btn view-report-btn" style="margin-top: 10px; padding: 5px;">VIEW INCIDENT REPORT</button>
     `;
+    
+    doc.querySelector('.view-report-btn').addEventListener('click', () => {
+        openReportModal(fullReport);
+    });
     
     documentListEl.prepend(doc);
     if (documentListEl.children.length > 15) {
