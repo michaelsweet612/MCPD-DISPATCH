@@ -1989,6 +1989,7 @@ autoSimulateInt = setInterval(() => {
     }
 }, 10000); // every 7s, random event
 
+
 // --- Wanted Targets Logic ---
 const wantedCrimes = [
     "Jaywalking, Resisting Arrest, Anti-Civil Behavior",
@@ -2040,10 +2041,13 @@ const resolutionLines = [
 
 const wantedNames = ["Ghost", "Fixer", "Viper", "Deadeye", "Cipher", "Splicer", "Ronin", "Neon", "Shadow", "Razer", "Glitch", "Krueger", "Vanguard", "Zero", "Echo"];
 
-function generateWantedTargets() {
-      // UI Glitch Fix: Don't redraw if user is actively viewing the tab
-      if (tabWanted && tabWanted.classList.contains('active') && wantedListEl.innerHTML !== '') return;
-
+function updateWantedUI() {
+    if (!wantedListEl) return;
+    
+    // UI Glitch Fix: Don't redraw if user is actively viewing the tab and it's already populated
+    // Actually, we want to redraw if a new target was added, so we will skip this restriction
+    // to allow real-time updates when a user declares someone wanted.
+    
     wantedListEl.innerHTML = ''; // Clear existing
 
     // Gordon Freeman ALWAYS at the top
@@ -2070,42 +2074,79 @@ function generateWantedTargets() {
     });
     wantedListEl.appendChild(freemanDiv);
 
-    // Generate 3 random targets
-    const shuffledNames = [...wantedNames].sort(() => 0.5 - Math.random());
-    for (let i = 0; i < 3; i++) {
-        const name = shuffledNames[i];
-        const crime = getRandomItem(wantedCrimes);
-        const bounty = Math.floor(Math.random() * 50000 + 10000);
-
+    // Render the dynamic wanted targets (both randomly generated and manually added)
+    wantedTargets.forEach(target => {
         const targetDiv = document.createElement('div');
-        const color = Math.random() > 0.5 ? 'var(--panic-red)' : 'var(--panic-orange)';
+        let color = target.level === 'HIGH' ? 'var(--panic-red)' : 'var(--panic-orange)';
+        
         targetDiv.style.cssText = `color: ${color}; border-left: 3px solid ${color}; padding-left: 10px; padding-bottom: 5px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.02); cursor: pointer; transition: background 0.2s;`;
         targetDiv.onmouseover = () => targetDiv.style.background = "rgba(255, 255, 255, 0.08)";
         targetDiv.onmouseout = () => targetDiv.style.background = "rgba(255, 255, 255, 0.02)";
 
         targetDiv.innerHTML = `
-                    <strong>HVT: "${name}"</strong><br>
-                        Crime: ${crime}<br>
-                            Bounty: ${bounty} Credits. DEAD OR ALIVE.
-                            `;
+            <strong>HVT: "${target.name}"</strong><br>
+                Crime: ${target.reason}<br>
+                    Bounty: ${target.bounty} Credits. DEAD OR ALIVE.
+        `;
 
         targetDiv.addEventListener('click', () => {
             openReportModal(`
-                <h3 style="color:${color}; border-bottom: 1px solid ${color}; padding-bottom: 10px;">HVT PROFILE: ${name}</h3>
-                <strong>Registered Address:</strong> Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}<br>
+                <h3 style="color:${color}; border-bottom: 1px solid ${color}; padding-bottom: 10px;">HVT PROFILE: ${target.name}</h3>
+                <strong>Registered Address:</strong> ${target.address || 'Unknown'}<br>
                 <strong>License Status:</strong> REVOKED<br>
-                <strong>Cyberware Modifications:</strong> ${Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected'}<br><br>
+                <strong>Cyberware Modifications:</strong> ${target.implants || 'None detected'}<br><br>
                 <em>Actionable Intel:</em> Suspect is considered armed and dangerous. Lethal force authorized without prior warning.
             `);
         });
         wantedListEl.appendChild(targetDiv);
-    }
+    });
 }
 
-// Update wanted targets every 45 seconds to keep it fresh
-setInterval(generateWantedTargets, 45000);
-generateWantedTargets(); // Initial call
-  
+function generateRandomWantedTarget() {
+    const name = wantedNames[Math.floor(Math.random() * wantedNames.length)];
+    const crime = getRandomItem(wantedCrimes);
+    const bounty = Math.floor(Math.random() * 50000 + 10000);
+    
+    wantedTargets.push({
+        name: name,
+        reason: crime,
+        level: Math.random() > 0.5 ? 'HIGH' : 'MEDIUM',
+        bounty: bounty,
+        address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
+        implants: Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected'
+    });
+    
+    // Keep list manageable, remove oldest random target if we have more than 6
+    if (wantedTargets.length > 6) {
+        wantedTargets.shift();
+    }
+    
+    updateWantedUI();
+}
+
+function initWantedTargets() {
+    // Generate 3 random targets on load
+    for(let i=0; i<3; i++) {
+        const name = wantedNames[Math.floor(Math.random() * wantedNames.length)];
+        const crime = getRandomItem(wantedCrimes);
+        const bounty = Math.floor(Math.random() * 50000 + 10000);
+        wantedTargets.push({
+            name: name,
+            reason: crime,
+            level: Math.random() > 0.5 ? 'HIGH' : 'MEDIUM',
+            bounty: bounty,
+            address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
+            implants: Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected'
+        });
+    }
+    updateWantedUI();
+    // Update wanted targets every 45 seconds to keep it fresh
+    setInterval(generateRandomWantedTarget, 45000);
+}
+
+// Start Wanted Logic
+initWantedTargets();
+
 // --- Database Logic ---
 dbSearchBtn.addEventListener('click', () => {
     const query = dbSearchInput.value.trim().toUpperCase();
