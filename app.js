@@ -2096,6 +2096,38 @@ function renderCitizensList() {
     citizensListEl.innerHTML = htmlChunk;
 }
 
+window.setCitizenStars = function(idx, level) {
+    const cit = globalCitizens[idx];
+    if (cit.status === 'Arrested' || cit.status === 'Deceased') return;
+
+    if (cit.stars === level) {
+        cit.stars = 0; // Click same star to clear
+    } else {
+        cit.stars = level;
+    }
+
+    if (cit.stars > 0 && cit.status !== 'Wanted') {
+        cit.status = 'Wanted';
+        if (!wantedTargets.find(w => w.name === cit.name)) {
+             wantedTargets.push({
+                 name: cit.name,
+                 reason: "Wanted level adjusted by Dispatch",
+                 level: cit.stars >= 4 ? "HIGH" : "MEDIUM",
+                 bounty: cit.stars * 10000,
+                 address: cit.address,
+                 implants: cit.trait
+             });
+             if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+        }
+    } else if (cit.stars === 0 && cit.status === 'Wanted') {
+        cit.status = 'Innocent';
+        wantedTargets = wantedTargets.filter(w => w.name !== cit.name);
+        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+    }
+    openCitizenDossier(idx); 
+    renderCitizensList(); 
+};
+
 function openCitizenDossier(idx) {
     currentViewingCitizen = idx;
     const cit = globalCitizens[idx];
@@ -2106,16 +2138,30 @@ function openCitizenDossier(idx) {
     if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
     if (cit.status === 'Escaped') color = ESCAPED_COLOR;
 
+    // Initialize stars if not present
+    if (cit.stars === undefined) {
+        cit.stars = cit.status === 'Wanted' ? 3 : 0;
+    }
+
+    let starsHtml = '<div style="margin-top: 10px; display:flex; gap:5px; user-select:none;">';
+    for (let i = 1; i <= 6; i++) {
+        const starColor = (i <= cit.stars) ? 'var(--panic-orange)' : '#444';
+        const starChar = (i <= cit.stars) ? '★' : '☆';
+        starsHtml += `<span style="cursor:pointer; color:${starColor}; font-size:2rem; transition:0.2s;" onclick="setCitizenStars(${idx}, ${i})">${starChar}</span>`;
+    }
+    starsHtml += '</div>';
+
     citizenPageTitle.textContent = `DOSSIER: ${cit.id}`;
     citizenPageTitle.style.color = color;
     citizenPageTitle.style.textShadow = `0 0 5px ${color}`;
 
     citizenPageBody.innerHTML = `
-        <div style="font-size: 1.5rem; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
+        <div style="font-size: 1.5rem; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
             ${cit.name}
         </div>
-        <div><strong>DOB:</strong> ${cit.dob}</div>
         <div><strong>Standing:</strong> <span style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span></div>
+        ${starsHtml}
+        <div style="margin-top: 15px;"><strong>DOB:</strong> ${cit.dob}</div>
         <div style="margin-top: 15px;"><strong>Registered Address:</strong><br><span style="color:var(--text-dim);">${cit.address}</span></div>
         <div style="margin-top: 15px;"><strong>Psych Profile:</strong><br><span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
         <div style="margin-top: 15px;"><strong>Crime History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None"}</span></div>
@@ -2249,6 +2295,12 @@ function updateCitizenStatus(newStatus) {
     const cit = globalCitizens[currentViewingCitizen];
     cit.status = newStatus;
 
+    if (newStatus === 'Wanted' && (cit.stars === undefined || cit.stars === 0)) {
+        cit.stars = 3; // Default 3 stars if declared wanted manually
+    } else if (newStatus !== 'Wanted') {
+        cit.stars = 0; // Clear stars if no longer wanted
+    }
+
     // Add logic if Wanted
     if (newStatus === 'Wanted') {
         const wantedData = {
@@ -2259,13 +2311,19 @@ function updateCitizenStatus(newStatus) {
             address: "Unknown",
             implants: cit.trait
         };
-        wantedTargets.push(wantedData);
-        updateWantedUI();
-        addChatMessage('DISPATCH', `ALL UNITS: BOLO issued for ${cit.name}(${cit.id}).Target added to active Wanted List.`, 'dispatch-msg');
+        if (!wantedTargets.find(w => w.name === cit.name)) {
+            wantedTargets.push(wantedData);
+        }
+        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+        addChatMessage('DISPATCH', `ALL UNITS: BOLO issued for ${cit.name} (${cit.id}). Target added to active Wanted List.`, 'dispatch-msg');
+    } else if (newStatus === 'Innocent' || newStatus === 'Suspicious') {
+        // Remove from wanted list if they were on it
+        wantedTargets = wantedTargets.filter(w => w.name !== cit.name);
+        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
     }
 
-    closeDossier();
-    renderCitizensList(); // Re-render to reflect color changes
+    renderCitizensList();
+    openCitizenDossier(currentViewingCitizen); // re-render dossier to show new color and stars
 }
 
 // Start Simulations
