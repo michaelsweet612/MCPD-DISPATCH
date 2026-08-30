@@ -1970,6 +1970,7 @@ let currentViewingCitizen = null;
 const INNOCENT_COLOR = "var(--accent-green)";
 const SUSPICIOUS_COLOR = "var(--panic-orange)";
 const WANTED_COLOR = "var(--panic-red)";
+const ARRESTED_COLOR = "#9e9e9e";
 
 function generateCitizens() {
     const firstNames = ["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth", "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen", "Elena", "Marcus", "Sophia", "Viktor", "Aaliyah", "Desmond", "Fiona", "Gideon", "Haley", "Ivan", "Jocelyn", "Kael", "Lana", "Malik", "Nia", "Orion", "Penelope", "Quinn", "Rowan", "Serena", "Tariq", "Uma", "Vance", "Wren", "Xavier", "Yara", "Zane"];
