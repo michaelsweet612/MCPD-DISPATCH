@@ -1331,6 +1331,68 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
 
 // Emulate Dispatch Event
+
+// === EXTENDED SHOOTOUT DIALOGUE ARRAYS ===
+const backupCheckInLines = [
+    "%UNIT%, do you copy?! Are you hit?!",
+    "Dispatch, %UNIT% is taking fire, I'm moving to assist! %UNIT%, talk to me!",
+    "%UNIT%, what's your status?! Do you need me to move in?!",
+    "Hold on %UNIT%, I'm coming! Are you okay?!",
+    "%UNIT%, report! Are you wounded?!",
+    "I hear shots! %UNIT%, are you alright?!",
+    "Keep your head down %UNIT%! What's your status?!",
+    "%UNIT%, I'm flanking! Can you move?!",
+    "Dispatch, officer needs assistance! %UNIT%, are you hit?!",
+    "Talk to me %UNIT%! Did they clip you?!",
+    "%UNIT%, stay in cover! Are you okay?",
+    "I'm inbound %UNIT%! Hold them off! Status?!",
+    "%UNIT% is under fire! %UNIT%, do you read me?!",
+    "Are you okay %UNIT%?! I'm three blocks away!",
+    "%UNIT% respond! Are you okay?!"
+];
+
+const detailedResolutionLines = [
+    "Yeah, I'm okay! The suspect decided to pull a weapon and shoot at me, so I dealt with it. They're down.",
+    "I'm fine. Bastard tried to ambush me from the alleyway with a shotgun. I put three rounds in their chest. Threat is over.",
+    "I'm good! Suspect dumped half a mag at me, but their aim was garbage. I returned fire and neutralized them.",
+    "Status green. They tried to run, turned around and fired blindly. I dropped them before they could reload.",
+    "I'm okay, just a scratch! Suspect thought they could take me in a firefight. They were wrong. Target is deceased.",
+    "I'm breathing. The idiot thought body armor made them invincible. I proved them wrong with a headshot. Area is clear.",
+    "Yeah I'm okay! Suspect tried to take a hostage, then panicked and fired at me. I took the shot. Hostage is safe, suspect is down.",
+    "I'm alive. Suspect had an automatic rifle and decided to go out in a blaze of glory. I accommodated them.",
+    "All good here. They cornered themselves and opened fire. I threw a flashbang and breached. They're done.",
+    "I'm okay. Suspect tried to run me over, crashed, then got out shooting. I ended it. Target neutralized.",
+    "Yeah I'm fine. Bastard caught me off guard and clipped my vest, but I recovered and put them down. It's over.",
+    "I'm good! Suspect thought hiding in the dark would save them. My thermals said otherwise. They're flatlined.",
+    "I'm okay. Target pulled a hidden sidearm during the arrest attempt. I reacted faster. They won't be doing that again.",
+    "Status is okay. Suspect had military-grade cybernetics and thought they could out-shoot me. I fried their optics and took them out.",
+    "I'm fine! They tried to ambush me from a fire escape. I blew the platform out from under them. Threat neutralized.",
+    "Yeah I'm okay. Suspect was hopped up on combat stims and didn't feel the first shot. The next three put them down.",
+    "I'm alive. They shot out my cruiser's windshield, so I returned fire through the glass. Suspect is deceased.",
+    "All good. Idiot tried to use a civilian as a meat shield, I got a clean angle and took them out. Civilian is unharmed.",
+    "I'm okay! Suspect tried to suppress me with heavy fire, but their gun jammed. I didn't hesitate. They're dead.",
+    "Yeah I'm fine. They threw an improvised explosive that didn't go off, then tried to shoot me. I dropped them.",
+    "I'm breathing. Suspect tried to breach my position, I held the chokepoint and neutralized them. It's secure.",
+    "Status green. Bastard tried to shoot me in the back. My partner's callout saved my life. I spun around and fired. Target down.",
+    "I'm good. Target thought they had the high ground. I proved gravity and a bullet work well together.",
+    "I'm okay! Suspect refused to drop the weapon and raised it at me. I followed protocol and eliminated the threat.",
+    "Yeah I'm fine. They tried a hit-and-run tactic, but I caught them slipping. Threat is permanently dealt with.",
+    "I'm alive. Suspect tried to play hero. Now they're just another chalk outline. Area is secure."
+];
+
+const backupAcknowledgeLines = [
+    "Copy that %UNIT%. Relieved to hear it. Dispatch, sending EMS and crime scene units to location %LOC%.",
+    "Good shooting %UNIT%. Take a breath, I'm rolling EMS to location %LOC%.",
+    "10-4 %UNIT%. Glad you're okay. Dispatch, we have a code 4, rolling EMS to %LOC%.",
+    "Understood %UNIT%. Good job staying alive. EMS is en route to %LOC%.",
+    "Copy %UNIT%. I'm securing the perimeter now. Dispatch, EMS requested at %LOC%.",
+    "Roger that %UNIT%. Stand down and wait for backup. EMS dispatched to %LOC%.",
+    "10-4. That was close %UNIT%. Glad you handled it. Sending cleanup to %LOC%.",
+    "Copy. You did what you had to do %UNIT%. Dispatch, we need a meat wagon at location %LOC%.",
+    "Good work %UNIT%. Keep your weapon drawn until I get there. Rolling EMS to %LOC%.",
+    "Understood. Great reaction time %UNIT%. Dispatch, we need medical at %LOC%."
+];
+
 function simulateEvent(specificCrime = null) {
     if (restModeToggle.checked && !specificCrime) return; // Pause all auto events if rest mode is on
 
@@ -1382,26 +1444,31 @@ function simulateEvent(specificCrime = null) {
             // 1. Getting shot at
             addChatMessage(reportingUnit, `${swear} ${action}`, "worried");
             
-            // 2. Resolution & EMS request
+            // 2. Backup Officer checking in (NEW)
             setTimeout(() => {
-                const resLine = getRandomItem(resolutionLines);
-                addChatMessage(reportingUnit, `${resLine} I might need EMS at location ${loc}.`, "serious");
+                const checkIn = getRandomItem(backupCheckInLines);
+                addChatMessage(backupUnit, checkIn.replace(/%UNIT%/g, reportingUnit), "worried");
                 
-                // 3. Dispatch / Backup responding
+                // 3. Resolution & Detailed Explanation (MODIFIED)
                 setTimeout(() => {
-                    const responder = backupUnit || 'DISPATCH';
-                    addChatMessage(responder, `Copy ${reportingUnit}, I'm sending EMS to your current location ${loc}. Hold tight.`, "dispatch-msg");
+                    const resLine = getRandomItem(detailedResolutionLines);
+                    addChatMessage(reportingUnit, `${resLine} Send EMS to location ${loc}.`, "serious");
                     
-                    // Generate report after
-                    mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
-                }, 3000 + Math.random() * 2000);
+                    // 4. Backup responding to the resolution
+                    setTimeout(() => {
+                        const backupAck = getRandomItem(backupAcknowledgeLines);
+                        addChatMessage(backupUnit, backupAck.replace(/%LOC%/g, loc).replace(/%UNIT%/g, reportingUnit), "serious");
+                        
+                        // Generate report after
+                        mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
+                    }, 3500 + Math.random() * 2000);
+                    
+                }, 5000 + Math.random() * 4000);
                 
-            }, 4000 + Math.random() * 3000);
+            }, 2500 + Math.random() * 2000);
             
             return; // Exit standard resolution
-        }
-
-        const arrestingChats = [
+        }        const arrestingChats = [
             "10-4, Dispatch. Suspect apprehended non-lethally. Requesting transport.",
             "Target secured after minor struggle. Disarming and filing report.",
             "Suspect detained successfully. Code 4. No serious casualties.",
