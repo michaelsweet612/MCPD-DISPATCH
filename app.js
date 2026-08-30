@@ -1737,6 +1737,52 @@ function clearPanic() {
     units.forEach(u => resolveSpecificPanic(u));
 }
 
+// === SWAT LOGIC ===
+const deploySwatBtn = document.getElementById('deploy-swat-btn');
+let swatDeployed = false;
+
+function deploySwat() {
+    if (swatDeployed) return;
+    swatDeployed = true;
+    
+    // Massive dispatch log
+    const div = document.createElement('div');
+    div.className = 'chat-entry';
+    div.innerHTML = `
+        <span class="time">${getCurrentTimeStr()}</span>
+        <div class="title swat-glow" style="font-size:1.2rem; font-weight:bold;">[COMMAND] CODE 5: SWAT TEAM DEPLOYED</div>
+        <div style="color: #fff; font-size: 0.95rem;">Elite units dispatched to secure sector. Extreme prejudice authorized.</div>
+    `;
+    unifiedLogEl.appendChild(div);
+    unifiedLogEl.classList.add('swat-container-glow');
+    scrollToBottom(unifiedLogEl);
+    
+    // Resolve any panics
+    if (activePanics.size > 0) {
+        clearPanic();
+    }
+    
+    // SWAT Chatter
+    setTimeout(() => {
+        addChatMessage('SWAT-Alpha', 'Breaching in 3... 2... 1...', 'aggressive');
+    }, 2000);
+    
+    setTimeout(() => {
+        addChatMessage('SWAT-Bravo', 'Area secured. No suspects survived. Send clean-up crew.', 'aggressive');
+    }, 5000);
+    
+    setTimeout(() => {
+        addChatMessage('SWAT-Command', 'All units RTB. Let regular patrol deal with the paperwork.', 'aggressive');
+        unifiedLogEl.classList.remove('swat-container-glow');
+        swatDeployed = false;
+    }, 8000);
+}
+
+if (deploySwatBtn) {
+    deploySwatBtn.addEventListener('click', () => deploySwat());
+}
+// ===================
+
 // Event Listeners
 advancedControlsHeader.addEventListener('click', () => {
     if (advancedControlsBody.style.display === 'none') {

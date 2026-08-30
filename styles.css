@@ -581,3 +581,13 @@ button:active {
     font-size: 0.85rem;
     font-style: italic;
 }
+
+/* SWAT STYLES */
+.swat-glow {
+    text-shadow: 0 0 10px #aa00ff;
+    color: #aa00ff;
+}
+.swat-container-glow {
+    box-shadow: inset 0 0 50px rgba(170, 0, 255, 0.2);
+    transition: box-shadow 0.3s;
+}
