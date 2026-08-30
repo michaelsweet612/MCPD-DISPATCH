@@ -5,6 +5,7 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let panicOsc = null;
 let panicLFO = null;
 let panicGain = null;
+let wantedTargets = [];
 
 // DOM Elements
 const timeEl = document.getElementById('current-time');
