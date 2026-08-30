@@ -112,20 +112,6 @@ function initRoster() {
         let startingKills = 0;
         let personality = PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)];
         
-        if (i === 0) {
-            // THE CHIEF
-            startingKills = 200000000000000000000000;
-            personality = 'Aggressive';
-        } else if (i < 30) {
-            // 50% low ranks (Private/Corporal)
-            startingKills = Math.floor(Math.random() * 900000); // 0 to 900k
-        } else {
-            // Random higher ranks up to GEN
-            startingKills = Math.floor(Math.random() * 40000000); 
-            if (Math.random() > 0.9) startingKills = 3000000000 + Math.floor(Math.random() * 1000000000); // SMP
-            if (Math.random() > 0.98) startingKills = 80000000000000000000; // GEN
-        }
-        
         const rankInfo = getRankFromKills(startingKills);
         deptStats.totalKills += startingKills;
 
@@ -2787,10 +2773,10 @@ if(loreJoinClose) {
             isOpen = !isOpen;
             if (isOpen) {
                 body.style.display = 'block';
-                chevron.textContent = '▲';
+                chevron.textContent = String.fromCodePoint(0x25B2);
             } else {
                 body.style.display = 'none';
-                chevron.textContent = '▼';
+                chevron.textContent = String.fromCodePoint(0x25BC);
             }
         });
     }
@@ -2807,10 +2793,10 @@ if(loreJoinClose) {
             isOpen = !isOpen;
             if (isOpen) {
                 body.style.display = 'flex';
-                chevron.textContent = '▲';
+                chevron.textContent = String.fromCodePoint(0x25B2);
             } else {
                 body.style.display = 'none';
-                chevron.textContent = '▼';
+                chevron.textContent = String.fromCodePoint(0x25BC);
             }
         });
     }
