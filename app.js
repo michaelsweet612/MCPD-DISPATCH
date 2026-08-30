@@ -489,117 +489,138 @@ let isFetchingChat = false;
 
 // Emulate Incoming Chat
 async function simulateChat() {
-      if (restModeToggle.checked) return;
-      if (!autoEventsCheckbox.checked) return;
-      if (isFetchingChat) return;
+    if (restModeToggle.checked) return;
+    if (!autoEventsCheckbox.checked) return;
+    if (isFetchingChat) return;
 
-      const activeCallsigns = getActiveCallsigns();
-      if (activeCallsigns.length < 2) return; // Need at least 2 for banter
+    const activeCallsigns = getActiveCallsigns();
+    if (activeCallsigns.length < 2) return;
 
-      let sender = getRandomItem(activeCallsigns);
-      
-      // Very rare 1% chance to say good boy
-      if (Math.random() < 0.01) {
-          addChatMessage(sender, "Good boy.", 'joking');
-          return;
-      }
-      let msgTypeClass = 'serious';
-      let scenario = '';
-      
-      // Banter State Machine Update
-      if (offTopicCooldown > 0) offTopicCooldown--;
+    let sender = getRandomItem(activeCallsigns);
+    
+    if (Math.random() < 0.01) {
+        addChatMessage(sender, "Good boy.", 'joking');
+        return;
+    }
+    
+    let msgTypeClass = 'serious';
+    if (offTopicCooldown > 0) offTopicCooldown--;
 
-      if (radioState === 'on-topic') {
-          if (offTopicCooldown === 0 && Math.random() < 0.05) { // 5% chance to go off-topic
-              radioState = 'off-topic';
-              offTopicUnit1 = getRandomItem(activeCallsigns);
-              offTopicUnit2 = getRandomItem(activeCallsigns.filter(u => u !== offTopicUnit1));
-              sender = offTopicUnit1;
-          }
-      }
+    if (radioState === 'on-topic') {
+        if (offTopicCooldown === 0 && Math.random() < 0.05) {
+            radioState = 'off-topic';
+            offTopicUnit1 = getRandomItem(activeCallsigns);
+            offTopicUnit2 = getRandomItem(activeCallsigns.filter(u => u !== offTopicUnit1));
+            sender = offTopicUnit1;
+        }
+    }
 
-      let actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
+    let actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
 
-      if (radioState === 'off-topic') {
-          // 25% chance someone interrupts them
-          if (Math.random() < 0.25) {
-              const strictUnit = roster.find(u => u.status === 'On Duty' && (u.personality === 'By-The-Book' || u.personality === 'Veteran'))?.id || getRandomItem(activeCallsigns.filter(u => u !== offTopicUnit1 && u !== offTopicUnit2));
-              sender = strictUnit;
-              actualPersonality = roster.find(u => u.id === sender)?.personality || 'Veteran';
-              scenario = `You are furiously interrupting ${offTopicUnit1} and ${offTopicUnit2}'s casual conversation. Yell at them to stay on topic, clear the radio channel, and act like professional police officers.`;
-              msgTypeClass = 'worried'; // red/orange text
-              
-              radioState = 'on-topic';
-              offTopicCooldown = 20; // Enforce on-topic for the next 20 chat ticks (approx 1 minute)
-          } else {
-              // Continue the casual conversation
-              sender = Math.random() < 0.5 ? offTopicUnit1 : offTopicUnit2;
-              const target = sender === offTopicUnit1 ? offTopicUnit2 : offTopicUnit1;
-              actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
-              scenario = `You are having a highly unprofessional, casual, off-topic conversation with ${target} over the main police radio. Talk about mundane NPC things: bad food, video games, complaining about your shift, sports, or tell a terrible random cop joke, or a dark dystopian joke.`;
-              msgTypeClass = 'joking'; // yellow/casual text
-          }
-      } else {
-          // Standard ON-TOPIC logic
-          if (voreMode) {
-              msgTypeClass = 'worried';
-              scenario = "You are terrified of a giant mouth in the sky. Express extreme surreal panic about being eaten.";
-          } else if (activePanics.size >= 3) {
-              msgTypeClass = 'worried';
-              scenario = "The city is falling apart. Multiple officers have triggered panic buttons. Express extreme stress and fear.";
-          } else {
-              const rand = Math.random();
-              if (rand < 0.3) {
-                  scenario = "You are requesting a routine status check on a suspicious vehicle or civilian.";
-              } else if (rand < 0.6) {
-                  scenario = "You are giving a standard patrol status update for your sector. Keep it professional.";
-              } else if (rand < 0.8) {
-                  scenario = "You are officially reporting a minor crime or citing a civilian for a low-level infraction.";
-              } else {
-                  msgTypeClass = 'worried';
-                  scenario = "You are expressing concern about heavily armed gang members in your sector, but maintaining professional radio discipline.";
-              }
-          }
-      }
-
-      isFetchingChat = true;
-
-      try {
-          const prompt = `You are a cyberpunk police officer named ${sender} speaking over the radio. Your personality is: ${actualPersonality}. Context: ${scenario}. Keep it to 1 concise, gritty sentence. No roleplay actions, no asterisks, no quotes.`;
-          const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
-
-
-        if (response.ok) {
-            let msgText = await response.text();
-            msgText = msgText.replace(/^["']|["']$/g, '').trim();
-
+    let msgText = "";
+    if (radioState === 'off-topic') {
+        if (Math.random() < 0.25) {
+            const strictUnit = roster.find(u => u.status === 'On Duty' && (u.personality === 'By-The-Book' || u.personality === 'Veteran'))?.id || getRandomItem(activeCallsigns.filter(u => u !== offTopicUnit1 && u !== offTopicUnit2));
+            sender = strictUnit;
+            actualPersonality = roster.find(u => u.id === sender)?.personality || 'Veteran';
+            msgTypeClass = 'worried';
+            radioState = 'on-topic';
+            offTopicCooldown = 20;
             
-
-            addChatMessage(sender, msgText, msgTypeClass, false);
-
-            // 5% chance to pin to Radio Important Logs
-            if (Math.random() < 0.05) {
-                pinRadioLog(sender, msgText);
+            const yellLines = [
+                "Clear the channel! Both of you! Act like professionals!",
+                "Cut the chatter! This is an official frequency!",
+                "If you two don't shut up, I'm writing you both up. Clear the air!",
+                "Enough! Keep the channel clear for actual emergencies!"
+            ];
+            msgText = getRandomItem(yellLines);
+        } else {
+            sender = Math.random() < 0.5 ? offTopicUnit1 : offTopicUnit2;
+            actualPersonality = roster.find(u => u.id === sender)?.personality || 'Rookie';
+            msgTypeClass = 'joking';
+            
+            const banterLines = [
+                "Man, the synth-rations at the precinct taste like cardboard today.",
+                "Anyone want to trade shifts on Friday? I need to get out of this sector.",
+                "I swear my cruiser's AC is blowing hot air again.",
+                "Did you see that new cyberware ad? Total ripoff.",
+                "I'm so tired I could sleep standing up.",
+                "If dispatch gives me one more noise complaint, I'm quitting."
+            ];
+            msgText = getRandomItem(banterLines);
+        }
+    } else {
+        // ON-TOPIC
+        if (voreMode) {
+            msgTypeClass = 'worried';
+            msgText = "IT'S GOING TO EAT US! LOOK AT THE SKY!";
+        } else if (activePanics.size >= 3) {
+            msgTypeClass = 'worried';
+            msgText = "Dispatch, the city is falling apart! We need more units out here!";
+        } else {
+            // Citizen Profiling Injection (15% chance to encounter random citizen)
+            if (Math.random() < 0.15 && globalCitizens && globalCitizens.length > 0) {
+                const randCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+                const isAggressive = ['Aggressive', 'Paranoid'].includes(actualPersonality);
+                const isNice = ['Idealistic', 'Rookie'].includes(actualPersonality);
+                
+                // Nice officers rarely declare people suspicious/wanted
+                if (!isNice || Math.random() < 0.2) {
+                    const actionType = isAggressive && Math.random() < 0.4 ? 'Wanted' : 'Suspicious';
+                    randCit.status = actionType;
+                    
+                    if (actionType === 'Wanted') {
+                        wantedTargets.push({
+                            name: randCit.name,
+                            reason: "Officer declared suspect Wanted during patrol.",
+                            level: "MEDIUM",
+                            bounty: Math.floor(Math.random() * 20000) + 5000,
+                            address: "Unknown",
+                            implants: randCit.trait
+                        });
+                        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+                        
+                        const wantedLines = [
+                            `Dispatch, I just had a run-in with ${randCit.name}. I'm flagging them as Wanted. Total scum.`,
+                            `${randCit.name} just pulled a weapon and ran. Declaring them Wanted!`,
+                            `Putting out a warrant for ${randCit.name}. They're on the Wanted list now.`,
+                            `Be advised, ${randCit.name} is now considered Armed and Wanted in my sector.`
+                        ];
+                        msgText = getRandomItem(wantedLines);
+                    } else {
+                        const suspLines = [
+                            `This guy ${randCit.name} bumped into me. Declaring him Suspicious.`,
+                            `Dispatch, ${randCit.name} is acting extremely erratic. Marking them Suspicious in the directory.`,
+                            `Got my eye on ${randCit.name}. Putting a Suspicious flag on their dossier.`,
+                            `${randCit.name} refused to answer questions. They're Suspicious now.`
+                        ];
+                        msgText = getRandomItem(suspLines);
+                    }
+                    if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+                } else {
+                    // Nice officers just say they moved on
+                    msgText = `Just spoke with ${randCit.name}. Seems like a good citizen. Continuing patrol.`;
+                }
+            } else {
+                const rand = Math.random();
+                if (rand < 0.3) {
+                    msgText = "Running a quick scan on a suspicious vehicle, stand by.";
+                } else if (rand < 0.6) {
+                    msgText = "Sector is clear. Continuing patrol.";
+                } else if (rand < 0.8) {
+                    msgText = "Just issued a citation for loitering. Code 4.";
+                } else {
+                    msgTypeClass = 'worried';
+                    msgText = "Got some heavy gang activity in my sector, keeping my distance for now.";
+                }
             }
         }
-    } catch (e) {
-        console.error("AI chat generation failed", e);
-        // Fallback to hardcoded arrays
-        let msgText = "10-4. Patrol continuing as normal.";
-        if (msgTypeClass === 'joking') {
-            msgText = getRandomItem(jokes.concat(greetingChats));
-        } else if (msgTypeClass === 'serious') {
-            msgText = getRandomItem(seriousChats);
-        } else if (msgTypeClass === 'worried') {
-            if (voreMode) msgText = getRandomItem(voreChats);
-            else msgText = getRandomItem(worriedChats);
-        }
-        
-        
-        
-        addChatMessage(sender, msgText, msgTypeClass, false);
-    } finally {
-        isFetchingChat = false;
+    }
+
+    addChatMessage(sender, msgText, msgTypeClass, false);
+
+    if (Math.random() < 0.05) {
+        pinRadioLog(sender, msgText);
     }
 }
 
@@ -1394,12 +1415,12 @@ const backupAcknowledgeLines = [
 ];
 
 function simulateEvent(specificCrime = null) {
-    if (restModeToggle.checked && !specificCrime) return; // Pause all auto events if rest mode is on
+    if (restModeToggle.checked && !specificCrime) return;
 
     let crime = specificCrime;
     if (!crime) {
         if (!autoEventsCheckbox.checked) return;
-                crime = { ...getRandomItem(crimeReports) };
+        crime = { ...getRandomItem(crimeReports) };
         if (crime.title.includes('[RAND_LOC]')) {
             const randLoc = Math.floor(Math.random() * 90000) + 10000;
             crime.title = crime.title.replace('[RAND_LOC]', randLoc);
@@ -1408,8 +1429,29 @@ function simulateEvent(specificCrime = null) {
 
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
-
     const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
+
+    // Select random suspect from database
+    let suspectCit = null;
+    if (globalCitizens && globalCitizens.length > 0) {
+        suspectCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+        // Mark them suspicious or wanted based on priority
+        if (crime.priority === 'high') {
+            suspectCit.status = 'Wanted';
+            wantedTargets.push({
+                name: suspectCit.name,
+                reason: crime.title,
+                level: "HIGH",
+                bounty: Math.floor(Math.random() * 50000) + 10000,
+                address: "Unknown",
+                implants: suspectCit.trait
+            });
+            if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+        } else {
+            suspectCit.status = 'Suspicious';
+        }
+        if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+    }
 
     div.className = `event-item ${prioClass}`;
     div.style.width = "100%";
@@ -1429,80 +1471,72 @@ function simulateEvent(specificCrime = null) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
     }
 
-    // Delay the resolution to simulate travel, conflict, and radio reporting
     setTimeout(async () => {
         const reportingUnit = respondingUnits[0];
         const backupUnit = respondingUnits[1];
         const isROEEnabled = roeToggleCheckbox.checked;
 
-        // 30% chance of escalating into a massive shootout sequence
         if (Math.random() < 0.3) {
             const swear = getRandomItem(swearWords);
             const action = getRandomItem(underFireActions);
-            const loc = Math.floor(Math.random() * 900000000) + 100000000; // 9 digit location
+            const loc = Math.floor(Math.random() * 900000000) + 100000000;
             
-            // 1. Getting shot at
             addChatMessage(reportingUnit, `${swear} ${action}`, "worried");
             
-            // 2. Backup Officer checking in (NEW)
             setTimeout(() => {
                 const checkIn = getRandomItem(backupCheckInLines);
                 addChatMessage(backupUnit, checkIn.replace(/%UNIT%/g, reportingUnit), "worried");
                 
-                // 3. Resolution & Detailed Explanation (MODIFIED)
                 setTimeout(() => {
                     const resLine = getRandomItem(detailedResolutionLines);
                     addChatMessage(reportingUnit, `${resLine} Send EMS to location ${loc}.`, "serious");
                     
-                    // 4. Backup responding to the resolution
+                    if (suspectCit) {
+                        suspectCit.status = 'Deceased';
+                        if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+                    }
+
                     setTimeout(() => {
                         const backupAck = getRandomItem(backupAcknowledgeLines);
                         addChatMessage(backupUnit, backupAck.replace(/%LOC%/g, loc).replace(/%UNIT%/g, reportingUnit), "serious");
                         
-                        // Generate report after
                         mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
                     }, 3500 + Math.random() * 2000);
                     
                 }, 5000 + Math.random() * 4000);
                 
             }, 2500 + Math.random() * 2000);
-            
-            return; // Exit standard resolution
-        }        const arrestingChats = [
-            "10-4, Dispatch. Suspect apprehended non-lethally. Requesting transport.",
-            "Target secured after minor struggle. Disarming and filing report.",
-            "Suspect detained successfully. Code 4. No serious casualties.",
-            "We have the suspect in cuffs. Transporting to booking now.",
-            "Perp gave up without a fight. Miraculous."
+            return;
+        }
+
+        const suspectStr = suspectCit ? `${suspectCit.name} (CID: ${suspectCit.id})` : 'the suspect';
+        const arrestingChats = [
+            `Target ${suspectStr} in custody. Returning to precinct.`,
+            `I arrested ${suspectStr}. Code 4.`,
+            `${suspectStr} secured. We're 10-8.`,
+            `Apprehended ${suspectStr} without incident.`,
+            `Got them. ${suspectStr} is in cuffs.`
         ];
 
         const killingChats = [
-            "Target neutralized. Call the meat wagon. Filing report now.",
-            "Threat eliminated. No survivors. Returning to patrol.",
-            "Suspect resisted. Lethal force applied. Area is red but quiet.",
-            "Subject down. Send bio-hazard cleanup to our coordinates.",
-            "Target was hostile. Problem solved permanently."
+            `Target ${suspectStr} neutralized. Call the meat wagon. Filing report now.`,
+            `Threat eliminated. No survivors. Returning to patrol.`,
+            `${suspectStr} resisted. Lethal force applied. Area is red but quiet.`,
+            `Subject down. Send bio-hazard cleanup to our coordinates.`,
+            `Target ${suspectStr} was hostile. Problem solved permanently.`
         ];
 
-        let reportMsg = "";
-        try {
-            const outcomeType = isROEEnabled ? "You apprehended the suspect using non-lethal pacification. They are alive and in cuffs." : "You neutralized the suspect using lethal force. They are dead.";
-            const prompt = `You are a cyberpunk police officer named ${reportingUnit} reporting the conclusion of an incident: ${crime.title}. ${outcomeType} Provide a single, gritty, cynical 1-sentence radio report. No roleplay actions, no quotes.`;
-            const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
-            if (response.ok) {
-                let aiText = await response.text();
-                reportMsg = aiText.replace(/^["']|["']$/g, '').trim();
-            } else {
-                throw new Error("AI Generation Failed");
-            }
-        } catch (e) {
-            reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
+        let reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
+        
+        if (suspectCit) {
+            suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
+            if (typeof renderCitizensList !== 'undefined') renderCitizensList();
         }
 
         addChatMessage(reportingUnit, reportMsg, "serious");
         mockAddDocument(crime, respondingUnits, isROEEnabled);
 
-    }, 4000 + Math.random() * 6000); // 4 to 10 seconds later
+    }, 4000 + Math.random() * 6000);
 }
 
 async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
@@ -1546,7 +1580,8 @@ async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
 
         const prompt = `You are a futuristic cyberpunk police officer writing an official incident report. The incident was: ${crime.title}. Responding officers: ${officersStr}. ROE was ${isROEEnabled ? 'ENABLED (Non-Lethal pacification used)' : 'DISABLED (Lethal force authorized and suspect was neutralized)'}. Write a concise, gritty, 4-sentence narrative of what happened and the outcome. ${randomTone} Be extremely professional but cynical. No roleplay actions.`;
 
-        const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+        throw new Error('AI Disabled - using scripted fallback');
+// const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
         if (response.ok) {
             let aiText = await response.text();
             aiText = aiText.replace(/^["']|["']$/g, '').trim();
@@ -1749,6 +1784,7 @@ const btnCloseDossier = document.getElementById('btn-close-dossier');
 const btnDeclareInnocent = document.getElementById('btn-declare-innocent-page');
 const btnDeclareSuspicious = document.getElementById('btn-declare-suspicious-page');
 const btnDeclareWanted = document.getElementById('btn-declare-wanted-page');
+const btnDeclareArrested = document.getElementById('btn-declare-arrested-page');
 const citizensListEl = document.getElementById('citizens-list');
 
 function hideAllTabs() {
@@ -1939,43 +1975,72 @@ function generateCitizens() {
     const firstNames = ["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth", "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen", "Elena", "Marcus", "Sophia", "Viktor", "Aaliyah", "Desmond", "Fiona", "Gideon", "Haley", "Ivan", "Jocelyn", "Kael", "Lana", "Malik", "Nia", "Orion", "Penelope", "Quinn", "Rowan", "Serena", "Tariq", "Uma", "Vance", "Wren", "Xavier", "Yara", "Zane"];
     const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Chen", "Lee", "Kim", "Patel", "Singh", "Nguyen", "Ali", "Hassan", "Kovacs", "Novak", "Silva", "Costa", "Rossi", "Conti", "Dubois", "Lefevre", "Muller", "Schmidt", "Ivanov", "Sokolov", "Gomez", "Ruiz", "Tanaka", "Yamamoto", "Okafor", "Adebayo", "Cohen", "Levi"];
     const traits = ["No known modifications.", "Optical cyberware detected.", "Sub-dermal armor present.", "Neural link active.", "Prosthetic limb (Left Arm).", "Prosthetic limb (Right Leg).", "Voice modulator installed.", "No prior record.", "Known associate of local gangs.", "Frequent traveler to off-world colonies.", "Employed at Tyrell Corporation.", "Unemployed.", "Student at City University.", "Works in Sector 4 Industrial Zone."];
+    const histories = [
+        "None.", "None.", "None.", "None.", "None.",
+        "Minor citation: Curfew violation.",
+        "Misdemeanor: Loitering in restricted sector.",
+        "Prior conviction: Smuggling contrabands.",
+        "Prior conviction: Assault.",
+        "Prior conviction: Hacking terminal.",
+        "MULTIPLE WARRANTS: Armed Robbery, Extortion.",
+        "MULTIPLE WARRANTS: Anti-Civil Behavior, Murder.",
+        "KNOWN SYNDICATE ENFORCER. High-risk."
+    ];
 
     for (let i = 0; i < 1000; i++) {
         const first = getRandomItem(firstNames);
         const last = getRandomItem(lastNames);
         const randId = `CID-${Math.floor(Math.random() * 900000) + 100000}`;
+        const hist = getRandomItem(histories);
+        
+        let initialStatus = 'Innocent';
+        if (hist.includes("MULTIPLE WARRANTS") || hist.includes("KNOWN SYNDICATE")) {
+            initialStatus = 'Wanted';
+        } else if (hist.includes("Prior conviction")) {
+            initialStatus = Math.random() > 0.5 ? 'Suspicious' : 'Innocent';
+        }
 
-        globalCitizens.push({
+        const cit = {
             id: randId,
             name: `${first} ${last}`,
-            status: 'Innocent', // Default
+            status: initialStatus,
             trait: getRandomItem(traits),
-            dob: `20${Math.floor(Math.random() * 80) + 10}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}` // Random DOB between 2010 and 2089
-        });
+            history: hist,
+            dob: `20${Math.floor(Math.random() * 80) + 10}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`
+        };
+        globalCitizens.push(cit);
+        
+        if (initialStatus === 'Wanted') {
+            wantedTargets.push({
+                name: cit.name,
+                reason: hist,
+                level: "HIGH",
+                bounty: Math.floor(Math.random() * 50000) + 10000,
+                address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
+                implants: cit.trait
+            });
+        }
     }
 }
 
 function renderCitizensList() {
-    // Only render a chunk to not kill the dom, or just render all 1000
-    // 1000 divs is usually okay for modern browsers, but let's be efficient.
     let htmlChunk = '';
-
     globalCitizens.forEach((cit, idx) => {
         let color = INNOCENT_COLOR;
         if (cit.status === 'Suspicious') color = SUSPICIOUS_COLOR;
         if (cit.status === 'Wanted') color = WANTED_COLOR;
+        if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
 
         htmlChunk += `
             <div class="roster-card" onclick="openCitizenDossier(${idx})" style="cursor:pointer; border-color: ${color};">
                 <div class="roster-info">
                     <span class="roster-id">${cit.id}</span>
-                    <span class="roster-status" style="color:${color};text-transform:uppercase;">${cit.status}</span>
+                    <span class="roster-status" style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span>
                 </div>
                 <div style="font-size: 1.1rem; color: #fff; margin-top: 5px;">${cit.name}</div>
             </div>
-            `;
+        `;
     });
-
     citizensListEl.innerHTML = htmlChunk;
 }
 
@@ -1986,6 +2051,7 @@ function openCitizenDossier(idx) {
     let color = INNOCENT_COLOR;
     if (cit.status === 'Suspicious') color = SUSPICIOUS_COLOR;
     if (cit.status === 'Wanted') color = WANTED_COLOR;
+    if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
 
     citizenPageTitle.textContent = `DOSSIER: ${cit.id}`;
     citizenPageTitle.style.color = color;
@@ -1996,12 +2062,13 @@ function openCitizenDossier(idx) {
             ${cit.name}
         </div>
         <div><strong>DOB:</strong> ${cit.dob}</div>
-        <div><strong>Standing:</strong> <span style="color:${color};text-transform:uppercase;">${cit.status}</span></div>
+        <div><strong>Standing:</strong> <span style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span></div>
+        <div style="margin-top: 15px;"><strong>Crime History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None"}</span></div>
         <div style="margin-top: 15px;"><strong>Notes:</strong><br>${cit.trait}</div>
         <div style="margin-top: 15px; color: var(--text-dim); font-size: 0.85rem; border-top: 1px dashed var(--border-color); padding-top: 10px;">
             WARNING: Falsifying citizen records is a Class A Felony. Authorized personnel only.
         </div>
-        `;
+    `;
 
     citizenListView.style.display = 'none';
     citizenDossierView.style.display = 'flex';
@@ -2016,6 +2083,7 @@ btnCloseDossier.addEventListener('click', closeDossier);
 btnDeclareInnocent.addEventListener('click', () => updateCitizenStatus('Innocent'));
 btnDeclareSuspicious.addEventListener('click', () => updateCitizenStatus('Suspicious'));
 btnDeclareWanted.addEventListener('click', () => updateCitizenStatus('Wanted'));
+if(btnDeclareArrested) btnDeclareArrested.addEventListener('click', () => updateCitizenStatus('Arrested'));
 
 function updateCitizenStatus(newStatus) {
     if (currentViewingCitizen === null) return;
