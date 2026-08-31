@@ -48,6 +48,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <button class="manual-event-btn" id="manual-event-suspicious" style="border-color: #ffeb3b; color: #ffeb3b;">10-43 SUSPICIOUS ACTIVITY</button>
                     <button class="manual-event-btn" id="manual-event-traffic" style="border-color: var(--accent-blue); color: var(--accent-blue);">10-50 TRAFFIC STOP</button>
                     <button class="manual-event-btn" id="manual-event-random" style="border-color: #ccc; color: #ccc;">RANDOM CALLOUT</button>
+<button id="btn-tencode-guide" style="padding: 5px 15px; font-size: 0.8rem; border-color: #ff9800; color: #ff9800; margin-left: 10px; cursor: pointer; background: transparent;">10-CODE GUIDE</button>
 
                     <h3 style="color: var(--panic-red); font-size: 0.9rem; margin-top: 20px;">CRITICAL EMERGENCIES</h3>
                     <button class="manual-panic-btn" id="manual-panic-btn">TRIGGER OFFICER PANIC</button>
@@ -103,6 +104,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             <section class="panel main-panel">
                 <div class="panel-header tab-header" style="justify-content: flex-start; overflow-x: auto;">
                     <div class="tab active" id="tab-unified">📡 DISPATCH LOG</div>
+                      <div class="tab" id="tab-unit-status">⚨ UNIT STATUS</div>
                                         <div class="tab" id="tab-documents">📜 IMPORTANT LOGS</div>
                                         <div class="tab" id="tab-recruitment">📋 JOIN MCPD</div>
                     <div class="tab" id="tab-database">💾 DATABASE</div>
@@ -290,6 +292,27 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
         </div>
     </div>
 
+
+    <!-- 10-CODE MODAL -->
+    <div id="tencode-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: var(--bg-main); border: 2px solid #ff9800; border-radius: 6px; padding: 20px; width: 90%; max-width: 500px; color: var(--text-main); max-height: 80vh; overflow-y: auto;">
+            <h2 style="color: #ff9800; margin-top: 0; border-bottom: 1px solid #ff9800; padding-bottom: 10px;">MCPD 10-CODE REFERENCE</h2>
+            <ul style="list-style-type: none; padding: 0; line-height: 1.6;">
+                <li><strong style="color: var(--accent-blue);">10-4:</strong> Acknowledged / Copy</li>
+                <li><strong style="color: var(--accent-blue);">10-6:</strong> Busy / On Scene</li>
+                <li><strong style="color: var(--accent-blue);">10-7:</strong> Out of Service</li>
+                <li><strong style="color: var(--accent-blue);">10-8:</strong> In Service / Available</li>
+                <li><strong style="color: var(--accent-blue);">10-15:</strong> Civil Disturbance / Protest</li>
+                <li><strong style="color: var(--accent-blue);">10-33:</strong> Officer in distress / Emergency</li>
+                <li><strong style="color: var(--accent-blue);">10-43:</strong> Suspicious Person</li>
+                <li><strong style="color: var(--accent-blue);">10-50:</strong> Motor Vehicle Collision</li>
+                <li><strong style="color: var(--accent-blue);">10-71:</strong> Shots Fired</li>
+                <li><strong style="color: var(--accent-blue);">10-89:</strong> Bomb Threat</li>
+                <li><strong style="color: var(--accent-blue);">10-99:</strong> PANIC / Officer Down</li>
+            </ul>
+            <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; border-color: var(--text-dim); color: var(--text-dim); cursor: pointer; background: transparent;">CLOSE</button>
+        </div>
+    </div>
 </body>
 
 </html>
