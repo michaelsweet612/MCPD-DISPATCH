@@ -48,11 +48,11 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <button class="manual-event-btn" id="manual-event-suspicious" style="border-color: #ffeb3b; color: #ffeb3b;">10-43 SUSPICIOUS ACTIVITY</button>
                     <button class="manual-event-btn" id="manual-event-traffic" style="border-color: var(--accent-blue); color: var(--accent-blue);">10-50 TRAFFIC STOP</button>
                     <button class="manual-event-btn" id="manual-event-random" style="border-color: #ccc; color: #ccc;">RANDOM CALLOUT</button>
-<button id="btn-tencode-guide" style="padding: 5px 15px; font-size: 0.8rem; border-color: #ff9800; color: #ff9800; margin-left: 10px; cursor: pointer; background: transparent;">10-CODE GUIDE</button>
+<button id="btn-tencode-guide" style="padding: 10px 15px; font-size: 0.85rem; border-color: #ff9800; color: #ff9800; margin-top: 10px; margin-bottom: 10px; cursor: pointer; background: transparent; display: block; width: 100%;">10-CODE GUIDE</button>
 
                     <!-- DEPARTMENT STATS & CRITICAL EMERGENCIES (EXPANDABLE) -->
                     <div style="margin-top: 20px; border-top: 1px solid var(--panel-border); padding-top: 15px;">
-                        <div id="critical-emergencies-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--panic-red); font-weight: bold;">
+                        <div id="critical-emergencies-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--panic-red); font-weight: bold; user-select: none; -webkit-user-select: none; padding: 15px 5px; position: relative; z-index: 50; background: rgba(255, 23, 68, 0.05); border-radius: 4px; margin-bottom: 5px;">
                             <span>⚨ DEPARTMENT STATS & CRITICAL EMERGENCIES</span>
                             <span id="critical-chevron">▼</span>
                         </div>
@@ -291,7 +291,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
         </div>
 
     </div>
-    <script src="app.js?v=2.12.1"></script>
+    <script src="app.js?v=2.12.2"></script>
 
     <!-- LORE JOIN MODAL -->
     <div id="lore-join-modal" class="modal-overlay" style="display: none;">
