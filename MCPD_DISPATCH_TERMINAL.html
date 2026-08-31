@@ -48,17 +48,25 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <button class="manual-event-btn" id="manual-event-suspicious" style="border-color: #ffeb3b; color: #ffeb3b;">10-43 SUSPICIOUS ACTIVITY</button>
                     <button class="manual-event-btn" id="manual-event-traffic" style="border-color: var(--accent-blue); color: var(--accent-blue);">10-50 TRAFFIC STOP</button>
                     <button class="manual-event-btn" id="manual-event-random" style="border-color: #ccc; color: #ccc;">RANDOM CALLOUT</button>
+<button id="btn-tencode-guide" style="padding: 10px 15px; font-size: 0.85rem; border-color: #ff9800; color: #ff9800; margin-top: 10px; margin-bottom: 10px; cursor: pointer; background: transparent; display: block; width: 100%;">10-CODE GUIDE</button>
 
-                    <!-- CRITICAL EMERGENCIES (EXPANDABLE) -->
+                    <!-- DEPARTMENT STATS & CRITICAL EMERGENCIES (EXPANDABLE) -->
                     <div style="margin-top: 20px; border-top: 1px solid var(--panel-border); padding-top: 15px;">
-                        <div id="emergencies-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--panic-red); font-weight: bold;">
-                            <span>&#128680; CRITICAL EMERGENCIES</span>
-                            <span id="emergencies-chevron">&#9660;</span>
+                        <div id="critical-emergencies-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--panic-red); font-weight: bold; user-select: none; -webkit-user-select: none; padding: 15px 5px; position: relative; z-index: 50; background: rgba(255, 23, 68, 0.05); border-radius: 4px; margin-bottom: 5px;">
+                            <span>⚨ DEPARTMENT STATS & CRITICAL EMERGENCIES</span>
+                            <span id="critical-chevron">▼</span>
                         </div>
-                        <div id="emergencies-body" style="display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px; border: 1px solid var(--panel-border); flex-direction: column;">
-                            <button class="manual-panic-btn" id="manual-panic-btn" style="width: 100%;">TRIGGER OFFICER PANIC</button>
-                            <button class="clear-panic-btn" id="clear-panic-btn" style="display: none; margin-top: 10px; width: 100%;">RESOLVE ALL PANICS</button>
-                            <button class="manual-event-btn" id="deploy-swat-btn" style="border-color: #aa00ff; color: #aa00ff; margin-top: 10px; width: 100%;">DEPLOY SWAT (CODE 5)</button>
+                        <div id="critical-emergencies-body" style="display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; border: 1px solid var(--panel-border); flex-direction: column; gap: 8px;">
+                            <!-- STATS -->
+                            <div style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--panel-border); line-height: 1.5;">
+                                Total Processed Incidents: <span id="stat-incidents" style="color:var(--accent-blue); font-weight:bold;">0</span><br>
+                                Active Arrest Warrants: <span id="stat-warrants" style="color:var(--panic-orange); font-weight:bold;">0</span><br>
+                                Wanted/Escaped Suspects: <span id="stat-suspects" style="color:var(--panic-red); font-weight:bold;">0</span><br>
+                                Total Deceased Suspects: <span id="stat-deceased" style="color:#9e9e9e; font-weight:bold;">0</span>
+                            </div>
+                            <!-- BUTTONS -->
+                            <button class="manual-panic-btn" id="manual-panic-btn">TRIGGER OFFICER PANIC</button>
+                            <button class="clear-panic-btn" id="clear-panic-btn" style="display: none; margin-top: 10px;">RESOLVE ALL PANICS</button>
                         </div>
                     </div>
 
@@ -71,20 +79,6 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                         </div>
                         <div id="all-callouts-body" style="display: none; margin-top: 15px; max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; border: 1px solid var(--panel-border); flex-direction: column; gap: 8px; flex-wrap: nowrap;">
                             <!-- Dynamically populated buttons -->
-                        </div>
-                    </div>
-
-                    <!-- DEPARTMENT STATS (EXPANDABLE) -->
-                    <div style="margin-top: 30px; border-top: 1px solid var(--panel-border); padding-top: 15px;">
-                        <div id="stats-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--accent-green); font-weight: bold;">
-                            <span>&#128202; DEPARTMENT STATS</span>
-                            <span id="stats-chevron">&#9660;</span>
-                        </div>
-                        <div id="stats-body" style="display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px; border: 1px solid var(--panel-border); font-size: 0.9rem; line-height: 1.6;">
-                            <div style="display:flex; justify-content:space-between;"><span>Budget:</span> <span id="stat-budget" style="color:var(--accent-green);">50,000</span></div>
-                            <div style="display:flex; justify-content:space-between;"><span>Total Kills:</span> <span id="stat-kills" style="color:var(--panic-red);">0</span></div>
-                            <div style="display:flex; justify-content:space-between;"><span>Total Arrests:</span> <span id="stat-arrests" style="color:var(--accent-blue);">0</span></div>
-                            <div style="display:flex; justify-content:space-between;"><span>Unauth. Force:</span> <span id="stat-force" style="color:var(--panic-orange);">0</span></div>
                         </div>
                     </div>
 
@@ -126,12 +120,33 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             <section class="panel main-panel">
                 <div class="panel-header tab-header" style="justify-content: flex-start; overflow-x: auto;">
                     <div class="tab active" id="tab-unified">📡 DISPATCH LOG</div>
+                      <div class="tab" id="tab-unit-status">⚨ UNIT STATUS</div>
                                         <div class="tab" id="tab-documents">📜 IMPORTANT LOGS</div>
                                         <div class="tab" id="tab-recruitment">📋 JOIN MCPD</div>
                     <div class="tab" id="tab-database">💾 DATABASE</div>
                     <div class="tab" id="tab-citizens">🆔 CITIZENS</div>
                     <div class="tab" id="tab-wanted">🎯 WANTED TARGETS</div>
                     <span class="badge" style="margin-left: auto; margin-top: 10px;">MCPD-NET</span>
+                </div>
+
+                
+                <!-- UNIT STATUS VIEW (Hidden by default) -->
+                <div class="panel-content scrollable" id="unit-status-log" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 15px;">
+                        <h3 style="color: var(--accent-blue); margin: 0; text-shadow: 0 0 5px var(--accent-blue);">LIVE CAD: UNIT STATUS</h3>
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Total Active: <span id="cad-total-active">0</span></span>
+                    </div>
+                    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                        <thead style="color: var(--text-dim); font-size: 0.8rem; border-bottom: 1px solid var(--panel-border);">
+                            <tr>
+                                <th style="padding-bottom:10px;">CALLSIGN</th>
+                                <th style="padding-bottom:10px;">STATUS</th>
+                                <th style="padding-bottom:10px;">PSYCH PROFILE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unit-status-body" style="font-size: 0.95rem;">
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- UNIFIED VIEW -->
@@ -198,6 +213,16 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <div id="db-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; display: none;">
                         <!-- DB Results Injected Here -->
                     </div>
+
+                    <h3 style="color: #ff9800; margin-bottom: 15px; margin-top: 30px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+                        VEHICLE DATABASE (V-DB)</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="db-vehicle-input" class="input-styled" placeholder="Enter License Plate (e.g. 7XYZ999)...">
+                        <button id="db-vehicle-btn" style="padding: 10px 20px; font-size: 1rem; border-color: #ff9800; color: #ff9800;">RUN PLATE</button>
+                    </div>
+                    <div id="db-vehicle-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; display: none;">
+                    </div>
+
                 </div>
 
                 <!-- WANTED VIEW (Hidden by default) -->
@@ -266,7 +291,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
         </div>
 
     </div>
-    <script src="app.js"></script>
+    <script src="app_core.js"></script>
 
     <!-- LORE JOIN MODAL -->
     <div id="lore-join-modal" class="modal-overlay" style="display: none;">
@@ -283,6 +308,27 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
         </div>
     </div>
 
+
+    <!-- 10-CODE MODAL -->
+    <div id="tencode-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: var(--bg-main); border: 2px solid #ff9800; border-radius: 6px; padding: 20px; width: 90%; max-width: 500px; color: var(--text-main); max-height: 80vh; overflow-y: auto;">
+            <h2 style="color: #ff9800; margin-top: 0; border-bottom: 1px solid #ff9800; padding-bottom: 10px;">MCPD 10-CODE REFERENCE</h2>
+            <ul style="list-style-type: none; padding: 0; line-height: 1.6;">
+                <li><strong style="color: var(--accent-blue);">10-4:</strong> Acknowledged / Copy</li>
+                <li><strong style="color: var(--accent-blue);">10-6:</strong> Busy / On Scene</li>
+                <li><strong style="color: var(--accent-blue);">10-7:</strong> Out of Service</li>
+                <li><strong style="color: var(--accent-blue);">10-8:</strong> In Service / Available</li>
+                <li><strong style="color: var(--accent-blue);">10-15:</strong> Civil Disturbance / Protest</li>
+                <li><strong style="color: var(--accent-blue);">10-33:</strong> Officer in distress / Emergency</li>
+                <li><strong style="color: var(--accent-blue);">10-43:</strong> Suspicious Person</li>
+                <li><strong style="color: var(--accent-blue);">10-50:</strong> Motor Vehicle Collision</li>
+                <li><strong style="color: var(--accent-blue);">10-71:</strong> Shots Fired</li>
+                <li><strong style="color: var(--accent-blue);">10-89:</strong> Bomb Threat</li>
+                <li><strong style="color: var(--accent-blue);">10-99:</strong> PANIC / Officer Down</li>
+            </ul>
+            <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; border-color: var(--text-dim); color: var(--text-dim); cursor: pointer; background: transparent;">CLOSE</button>
+        </div>
+    </div>
 </body>
 
 </html>
