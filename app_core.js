@@ -841,6 +841,23 @@ async function simulateChat() {
         addChatMessage(sender, "Good boy.", 'joking');
         return;
     }
+
+    if (Math.random() < 0.04) {
+        addChatMessage(sender, "Suspect is non-compliant! OPEN FIRE!", 'worried', false);
+        setTimeout(() => {
+            addChatMessage(sender, "SHOTS FIRED! SHOTS FIRED! I'M BEING FUCKING SHOT AT!", 'worried', false);
+            pinRadioLog(sender, "10-71 SHOTS FIRED / OFFICER UNDER FIRE");
+            
+            // Optionally trigger a panic overlay
+            if (typeof triggerPanic !== 'undefined') {
+                // Not triggering global panic, just UI flair
+                unifiedLogEl.style.boxShadow = "inset 0 0 50px rgba(244,67,54,0.3)";
+                setTimeout(() => unifiedLogEl.style.boxShadow = "none", 1500);
+            }
+        }, 2500);
+        return;
+    }
+
     
     let msgTypeClass = 'serious';
     if (offTopicCooldown > 0) offTopicCooldown--;
