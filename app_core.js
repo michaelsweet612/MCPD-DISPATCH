@@ -57,7 +57,7 @@ const autoEventsCheckbox = document.getElementById('auto-events');
   const refreshApplicantsBtn = document.getElementById('refresh-applicants-btn');
     const rosterTotalCountEl = document.getElementById('roster-total-count');
 
-  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic'];
+  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry'];
   let currentApplicants = [];
 
 const roeToggleCheckbox = document.getElementById('roe-toggle');
@@ -955,7 +955,26 @@ async function simulateChat() {
         }
     }
 
+    
+    if (actualPersonality === 'Furry') {
+        const furryChats = [
+            "ooh I'm a little furry i'm better than you guys i'm probably cuter and deserve all the head rubs UwU",
+            "Maybe someone will comb my hair and pat me like dog :3",
+            "uwu oh I think he's shooting at me!",
+            "Dispatch, does my tail look fluffy today? I spent 45 minutes brushing it.",
+            "Rawr! X3 He's resisting arrest!",
+            "Can we get treats at the precinct later? I've been a very good boy on patrol! *wags tail*",
+            "Suspect down! UwU... I hope I didn't hurt him too bad. *notices blood* OwO what's this?",
+            "Dispatch, requesting backup... and maybe some belly rubs if you're free? UwU",
+            "I just bit the suspect on the ankle! My teeth are very sharp! Raaaar!",
+            "Bark bark! *clears throat* Sorry, slipped into my fursona. Area secure."
+        ];
+        msgText = furryChats[Math.floor(Math.random() * furryChats.length)];
+        msgTypeClass = 'joking';
+    }
+    
     addChatMessage(sender, msgText, msgTypeClass, false);
+
 
     if (Math.random() < 0.05) {
         pinRadioLog(sender, msgText);
@@ -1643,7 +1662,26 @@ async function processDispatchChat() {
         
         
         
-        addChatMessage(sender, msgText, msgTypeClass, false);
+        
+    if (actualPersonality === 'Furry') {
+        const furryChats = [
+            "ooh I'm a little furry i'm better than you guys i'm probably cuter and deserve all the head rubs UwU",
+            "Maybe someone will comb my hair and pat me like dog :3",
+            "uwu oh I think he's shooting at me!",
+            "Dispatch, does my tail look fluffy today? I spent 45 minutes brushing it.",
+            "Rawr! X3 He's resisting arrest!",
+            "Can we get treats at the precinct later? I've been a very good boy on patrol! *wags tail*",
+            "Suspect down! UwU... I hope I didn't hurt him too bad. *notices blood* OwO what's this?",
+            "Dispatch, requesting backup... and maybe some belly rubs if you're free? UwU",
+            "I just bit the suspect on the ankle! My teeth are very sharp! Raaaar!",
+            "Bark bark! *clears throat* Sorry, slipped into my fursona. Area secure."
+        ];
+        msgText = furryChats[Math.floor(Math.random() * furryChats.length)];
+        msgTypeClass = 'joking';
+    }
+    
+    addChatMessage(sender, msgText, msgTypeClass, false);
+
     } finally {
         isFetchingChat = false;
     }
