@@ -226,6 +226,17 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <div id="db-vehicle-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; display: none;">
                     </div>
 
+                    <h3 style="color: var(--accent-green); margin-bottom: 15px; margin-top: 30px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+                        CITY LICENSE & INSPECTION DATABASE</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="license-input" class="input-styled" placeholder="Enter Business, Address, or Name..." style="flex-grow: 1;">
+                        <button id="btn-search-license" style="padding: 10px 20px; font-size: 1rem; border-color: var(--accent-green); color: var(--accent-green);">RUN QUERY</button>
+                    </div>
+                    <div id="license-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                        [SYSTEM READY] Enter a query to verify city licenses, health inspections, and municipal code violations.
+                    </div>
+
+
                 </div>
 
                 <!-- WANTED VIEW (Hidden by default) -->
@@ -334,10 +345,10 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; border-color: var(--text-dim); color: var(--text-dim); cursor: pointer; background: transparent;">CLOSE</button>
         </div>
     </div>
-    <script src="check_system.js?v=2.21.1"></script>
+    <script src="check_system.js?v=2.22.1"></script>
     <script src="transmissions.js?v=2.21.0"></script>
     <script src="imageAnalyzer.js?v=2.21.0"></script>
-    <script src="app_core.js?v=2.21.0"></script>
+    <script src="app_core.js?v=2.22.1"></script>
 
     <!-- BUG LOG MODAL -->
     <div id="bug-log-modal" class="modal-overlay" style="display: none;">
