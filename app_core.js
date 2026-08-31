@@ -3065,16 +3065,6 @@ if (btnTenCode && modalTenCode && closeTenCode) {
     btnTenCode.addEventListener('click', () => modalTenCode.style.display = 'flex');
     closeTenCode.addEventListener('click', () => modalTenCode.style.display = 'none');
 }
-// 10-Code Guide
-const btnTenCode = document.getElementById('btn-tencode-guide');
-const modalTenCode = document.getElementById('tencode-modal');
-const closeTenCode = document.getElementById('close-tencode-modal');
-
-if (btnTenCode && modalTenCode && closeTenCode) {
-    btnTenCode.addEventListener('click', () => modalTenCode.style.display = 'flex');
-    closeTenCode.addEventListener('click', () => modalTenCode.style.display = 'none');
-}
-
 // Bug Log Logic
 document.addEventListener('DOMContentLoaded', () => {
     const bugBtn = document.getElementById('btn-bug-log');
