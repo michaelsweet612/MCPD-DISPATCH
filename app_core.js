@@ -3207,19 +3207,35 @@ function renderUnitStatus() {
     let activeCount = 0;
 
     roster.forEach(u => {
-        if (u.status !== 'On Duty') return;
-        activeCount++;
+        if (u.status === 'On Duty') activeCount++;
         
-        let assignment = unitAssignments[u.id] || "10-8 (Available)";
-        let statusColor = assignment.includes("10-8") ? "var(--accent-green)" : (assignment.includes("10-6") ? "var(--panic-orange)" : "var(--panic-red)");
+        let healthColor = u.health === 'INJURED' ? 'var(--panic-red)' : 'var(--accent-green)';
+        let dutyColor = u.status === 'On Duty' ? 'var(--accent-blue)' : 'var(--text-dim)';
+        
+        let assignment = "";
+        let assignColor = "";
+        
+        if (u.status === 'Off Duty') {
+            assignment = "OFF SHIFT";
+            assignColor = "var(--text-dim)";
+        } else {
+            assignment = unitAssignments[u.id] || "10-8 (Available)";
+            assignColor = assignment.includes("10-8") ? "var(--accent-green)" : (assignment.includes("10-6") ? "var(--panic-orange)" : "var(--panic-red)");
+        }
         
         let psych = u.personality || "Rookie";
         
         html += `
             <tr style="border-bottom: 1px dashed var(--panel-border);">
-                <td style="padding: 8px 0; color: #fff;">${u.id}</td>
-                <td style="padding: 8px 0; color: ${statusColor}; font-weight:bold;">${assignment}</td>
-                <td style="padding: 8px 0; color: var(--text-dim);">${psych}</td>
+                <td style="padding: 8px 0; color: #fff; font-weight:bold;">${u.id}</td>
+                <td style="padding: 8px 0;">
+                    <span style="background: rgba(0,0,0,0.4); border: 1px solid ${healthColor}; color: ${healthColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${u.health}</span>
+                </td>
+                <td style="padding: 8px 0;">
+                    <span style="background: rgba(0,0,0,0.4); border: 1px solid ${dutyColor}; color: ${dutyColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${u.status.toUpperCase()}</span>
+                </td>
+                <td style="padding: 8px 0; color: ${assignColor}; font-weight:bold; font-size: 0.85rem;">${assignment}</td>
+                <td style="padding: 8px 0; color: #b3e5fc; font-size: 0.9rem;">${psych}</td>
             </tr>
         `;
     });
