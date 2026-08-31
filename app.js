@@ -37,6 +37,50 @@ const restModeToggle = document.getElementById('rest-mode-toggle');
 const btnArrestNearby = document.getElementById('btn-arrest-nearby');
 
 // Advanced Controls UI
+
+// Critical Emergencies Dropdown Logic
+const critHeader = document.getElementById('critical-emergencies-header');
+const critBody = document.getElementById('critical-emergencies-body');
+const critChevron = document.getElementById('critical-chevron');
+let critOpen = false;
+
+if (critHeader && critBody && critChevron) {
+    critHeader.addEventListener('click', () => {
+        critOpen = !critOpen;
+        if (critOpen) {
+            critBody.style.display = 'flex';
+            critChevron.textContent = '▲';
+            if(typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
+        } else {
+            critBody.style.display = 'none';
+            critChevron.textContent = '▼';
+        }
+    });
+}
+
+// Stats Logic
+function updateDepartmentStats() {
+    const statIncidents = document.getElementById('stat-incidents');
+    const statWarrants = document.getElementById('stat-warrants');
+    const statSuspects = document.getElementById('stat-suspects');
+    const statDeceased = document.getElementById('stat-deceased');
+    
+    if (statIncidents) statIncidents.textContent = eventCount || 0;
+    
+    if (wantedTargets && statWarrants) statWarrants.textContent = wantedTargets.length;
+    
+    if (globalCitizens) {
+        let wantedCount = 0;
+        let deadCount = 0;
+        globalCitizens.forEach(c => {
+            if (c.status === 'Wanted' || c.status === 'Escaped') wantedCount++;
+            if (c.status === 'Deceased') deadCount++;
+        });
+        if (statSuspects) statSuspects.textContent = wantedCount;
+        if (statDeceased) statDeceased.textContent = deadCount;
+    }
+}
+
 const advancedControlsHeader = document.getElementById('advanced-controls-header');
 const advancedControlsBody = document.getElementById('advanced-controls-body');
 const advancedChevron = document.getElementById('advanced-chevron');
@@ -2025,6 +2069,7 @@ function simulateEvent(specificCrime = null) {
 
     unifiedLogEl.appendChild(div);
     eventCount++;
+    if(typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
     if(eventCountEl) eventCountEl.textContent = `${eventCount} Events`;
     scrollToBottom(unifiedLogEl);
 
@@ -2607,6 +2652,7 @@ function generateCitizens() {
 }
 
 function renderCitizensList() {
+    if(typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
     let htmlChunk = '';
     globalCitizens.forEach((cit, idx) => {
         let color = INNOCENT_COLOR;
