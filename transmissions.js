@@ -140,6 +140,32 @@ window.jokes = [
 "If the Chief asks, the suspect was resisting. I don't care if he was unconscious.",
 "I find that suspects are a lot more compliant when they have bullet holes in them.",
 "I'm just doing my part to keep the local hospital in business."
+,
+"Dispatch, I'm eating the evidence. It tastes like purple.",
+"I just arrested a stop sign for resisting. It's in the back of the cruiser now.",
+"If I scream into the radio, do you hear it in your teeth?",
+"The suspect was made of liquid, so I drank him. Code 4.",
+"I've decided I'm not a cop anymore. I am a feral raccoon. Over.",
+"I just put handcuffs on my own shadow. Requesting backup, it's strong.",
+"Dispatch, do you think the moon hates us? I'm going to fire a warning shot at it.",
+"I'm currently pulling over a ghost for speeding. He's being very uncooperative.",
+"My teeth are vibrating to the frequency of the radio. Make it stop.",
+"I just performed a pit maneuver on a civilian who was walking. The squad car is totaled.",
+"Does anyone else hear the sirens, or is that just the screaming in my head again?",
+"I found a pile of teeth in the alleyway. I'm keeping them.",
+"Dispatch, I replaced my service weapon with a brick. It's much more effective.",
+"I just issued a citation to a puddle of water for loitering.",
+"The suspect looked at me with his eyes, so I took them.",
+"I'm currently communicating via telepathy. If you can't hear this, you're fired.",
+"I just wrote a parking ticket in blood. Whose blood? Don't ask.",
+"My patrol car is slowly filling with sand and I refuse to roll the windows down.",
+"Dispatch, I have arrested myself for thinking about committing a crime. Send a transport.",
+"I'm hiding in the ceiling of the precinct. Don't look up.",
+"I just threw my radio into the sewer. Talk to me through the drain pipes.",
+"The pavement is too soft today. I don't trust it. Requesting an airlift.",
+"I stared at a civilian until they cried. Just standard community outreach.",
+"I'm legally changing my callsign to 'The Flesh Devourer'. Please update the CAD.",
+"I shot the suspect because he had an ugly shirt. It was an aesthetic emergency."
 ];
 
 window.seriousChats = [
