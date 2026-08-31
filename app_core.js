@@ -2432,7 +2432,7 @@ function generateCitizens() {
 
         const cit = {
             id: randId,
-            name: `${first} ${last}`,
+            name: `${first} ${getRandomItem(firstNames)} ${last}`,
             status: initialStatus,
             trait: getRandomItem(traits),
             history: hist,
