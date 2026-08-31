@@ -1,32 +1,3 @@
-
-window.onunhandledrejection = function(event) {
-    var errDiv = document.createElement('div');
-    errDiv.style.position = 'fixed';
-    errDiv.style.bottom = '10px';
-    errDiv.style.right = '10px';
-    errDiv.style.zIndex = '9999';
-    errDiv.style.background = 'orange';
-    errDiv.style.color = 'black';
-    errDiv.style.padding = '10px';
-    errDiv.style.border = '2px solid black';
-    errDiv.innerHTML = 'PROMISE ERROR: ' + event.reason;
-    document.body.appendChild(errDiv);
-};
-
-window.onerror = function(msg, url, lineNo, columnNo, error) {
-    var errDiv = document.createElement('div');
-    errDiv.style.position = 'fixed';
-    errDiv.style.top = '10px';
-    errDiv.style.left = '10px';
-    errDiv.style.zIndex = '9999';
-    errDiv.style.background = 'red';
-    errDiv.style.color = 'white';
-    errDiv.style.padding = '10px';
-    errDiv.style.border = '2px solid white';
-    errDiv.innerHTML = 'JS ERROR: ' + msg + ' at line ' + lineNo;
-    document.body.appendChild(errDiv);
-    return false;
-};
 // OS Simulator Logic
 
 // Setup Audio Context for procedural synthetic sound (Panic Alarm)
