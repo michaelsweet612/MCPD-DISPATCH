@@ -3,15 +3,17 @@
 
 <head>
 <script>
-window.bugLog = [];
 window.onerror = function(msg, url, lineNo, columnNo, error) {
-    window.bugLog.push('ERROR: ' + msg + ' on line ' + lineNo);
-    var bugBtn = document.getElementById('btn-bug-log');
-    if (bugBtn) {
-        bugBtn.style.color = 'var(--panic-red)';
-        bugBtn.style.borderColor = 'var(--panic-red)';
-        bugBtn.innerText = '?? BUGS (' + window.bugLog.length + ')';
-    }
+    var errorNode = document.createElement('div');
+    errorNode.style.position = 'fixed';
+    errorNode.style.top = '0';
+    errorNode.style.left = '0';
+    errorNode.style.background = 'red';
+    errorNode.style.color = 'white';
+    errorNode.style.padding = '20px';
+    errorNode.style.zIndex = '999999';
+    errorNode.innerHTML = 'ERROR: ' + msg + ' on line ' + lineNo + ' in ' + url;
+    document.body.appendChild(errorNode);
 };
 </script>
     <meta charset="UTF-8">
