@@ -270,8 +270,10 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
                 <!-- Chat Input System (Only visible in unified view) -->
                 <div class="chat-input-container" id="chat-input-area" style="padding: 15px; border-top: 1px solid var(--panel-border); display: flex; gap: 10px;">
-                    <input type="text" id="dispatch-chat-input" class="input-styled" placeholder="Transmit order to active units...">
-                    <button id="dispatch-chat-send" style="padding: 10px 20px;">TRANSMIT</button>
+                    <button id="btn-upload-image" style="padding: 10px 15px; font-weight:bold; background: rgba(0,0,0,0.4); border:1px solid var(--accent-blue); color:var(--accent-blue); border-radius:4px; font-size:1.2rem; cursor:pointer; flex-shrink: 0;" title="Upload Image">+</button>
+                    <input type="file" id="dispatch-image-upload" accept="image/*" style="display:none">
+                    <input type="text" id="dispatch-chat-input" class="input-styled" placeholder="Transmit order to active units..." style="flex-grow:1;">
+                    <button id="dispatch-chat-send" style="padding: 10px 20px; flex-shrink: 0;">TRANSMIT</button>
                 </div>
             </section>
         </main>
