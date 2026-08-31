@@ -51,7 +51,7 @@ window.addEventListener('unhandledrejection', function(event) {
 
 // Self-diagnostic: Check if critical DOM elements exist
 window.addEventListener('DOMContentLoaded', () => {
-    const requiredElements = ['unified-log', 'dispatch-chat-input', 'unit-status-log', 'main-panel'];
+    const requiredElements = ['unified-log', 'dispatch-chat-input', 'unit-status-log'];
     let missing = 0;
     requiredElements.forEach(id => {
         if (!document.getElementById(id)) {
