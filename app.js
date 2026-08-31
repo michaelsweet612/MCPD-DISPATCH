@@ -55,81 +55,19 @@ let activePanics = new Map(); // Store maps of unit -> { timeoutVisual, timeoutS
 let autoSimulateInt = null;
 let chatSimulateInt = null;
 
-const RANKS = [
-    { title: "Private", short: "PVT", kills: 0 },
-    { title: "Corporal", short: "CPL", kills: 250000 },
-    { title: "Sergeant", short: "SGT", kills: 1000000 },
-    { title: "Staff Surgeon", short: "SSG", kills: 5000000 },
-    { title: "Sergeant First Class", short: "SFC", kills: 8000000 },
-    { title: "First Sergeant", short: "1SG", kills: 9000000 },
-    { title: "Sergeant Major", short: "SGM", kills: 10000000 },
-    { title: "Command Sergeant Major", short: "CSM", kills: 35000000 },
-    { title: "Sergeant Major of the Police", short: "SMP", kills: 3000000000 },
-    { title: "General of the Police", short: "GEN", kills: 80000000000000000000 }, // 80 Quintillion
-    { title: "Chief", short: "CHIEF", kills: 200000000000000000000000 } // 200 Sextillion
-];
-
-function getRankFromKills(kills) {
-    let currentRank = RANKS[0];
-    for (let r of RANKS) {
-        if (kills >= r.kills) currentRank = r;
-    }
-    return currentRank;
-}
-
+// Mock Data
 let roster = [];
-let deptStats = {
-    budget: 50000,
-    totalKills: 0,
-    totalArrests: 0,
-    unauthorizedForce: 0
-};
-
-function formatAbsurdNumber(num) {
-    if (num >= 1e21) return (num / 1e21).toFixed(1) + " Sextillion";
-    if (num >= 1e18) return (num / 1e18).toFixed(1) + " Quintillion";
-    if (num >= 1e15) return (num / 1e15).toFixed(1) + " Quadrillion";
-    if (num >= 1e12) return (num / 1e12).toFixed(1) + " Trillion";
-    if (num >= 1e9) return (num / 1e9).toFixed(1) + " Billion";
-    if (num >= 1e6) return (num / 1e6).toFixed(1) + " Million";
-    return num.toLocaleString();
-}
-
-function updateStatsUI() {
-    const elBudget = document.getElementById('stat-budget');
-    const elKills = document.getElementById('stat-kills');
-    const elArrests = document.getElementById('stat-arrests');
-    const elForce = document.getElementById('stat-force');
-    
-    if (elBudget) elBudget.textContent = formatAbsurdNumber(deptStats.budget);
-    if (elKills) elKills.textContent = formatAbsurdNumber(deptStats.totalKills);
-    if (elArrests) elArrests.textContent = formatAbsurdNumber(deptStats.totalArrests);
-    if (elForce) elForce.textContent = formatAbsurdNumber(deptStats.unauthorizedForce);
-}
-
-function initRoster() {
-    for(let i=0; i<58; i++) {
-        let startingKills = 0;
-        let personality = PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)];
-        
-        const rankInfo = getRankFromKills(startingKills);
-        deptStats.totalKills += startingKills;
-
-        roster.push({
-            id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
-            status: 'On Duty',
-            personality: personality,
-            sector: Math.floor(Math.random() * 9) + 1,
-            kills: startingKills,
-            arrests: Math.floor(Math.random() * 100),
-            unauthorizedForce: Math.floor(Math.random() * 10),
-            corruptActs: Math.floor(Math.random() * 5),
-            rankInfo: rankInfo
-        });
-    }
-    updateStatsUI();
-}
-initRoster();
+  function initRoster() {
+      for(let i=0; i<58; i++) {
+          roster.push({
+              id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+              status: 'On Duty',
+              personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+              sector: Math.floor(Math.random() * 9) + 1
+          });
+      }
+  }
+  initRoster();
 
 
 function getActiveCallsigns() {
@@ -518,6 +456,543 @@ const crimeReports = [
     { title: "10-31: Android malfunction / Rogue combat unit at [RAND_LOC]", priority: "high" },
     { title: "10-15: Unsanctioned cult gathering in the lower sewers [RAND_LOC]", priority: "medium", group: "The Awakened" },
     { title: "10-85: Officer delayed - Hovercar power failure at [RAND_LOC]", priority: "low" }
+,
+    { title: "10-15: Disruptive gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "10-15: Minor unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unsanctioned anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Unsanctioned protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Warning: Minor gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "Incident: Large barricades being erected at block [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Unsanctioned mob harassing citizens at [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Hostile protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Aggressive riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Incident: Violent anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Aggressive unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Minor civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Organized protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Rowdy protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Growing civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Rowdy citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Hostile mob harassing citizens at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Warning: Large anti-government strike identified at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Dispatch: Violent citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unruly riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Rowdy protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Growing citizens blocking traffic at block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Growing crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Unruly riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "10-15: Large group distributing banned literature at [RAND_LOC].", priority: "low" },
+    { title: "10-22: Large citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Large unlicensed public speech occurring at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Dispatch: Disruptive protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Minor unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Minor gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Unauthorized gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Rowdy riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Aggressive anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Massive unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Warning: Minor citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unruly protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Disruptive citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Organized unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Rowdy gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Hostile unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Rowdy gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Violent riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Massive gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Aggressive barricades being erected at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Incident: Growing march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Alert: Unauthorized anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Minor barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Hostile civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Warning: Hostile protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unauthorized protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Unruly anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Aggressive protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Organized anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "10-15: Organized citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Organized unlicensed public speech occurring at sector [RAND_LOC].", priority: "high" },
+    { title: "Alert: Large barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Warning: Massive protest located on block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "BOLO: Disruptive gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Violent civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Hostile group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Rowdy group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Unsanctioned gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unauthorized anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "Incident: Rowdy anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Hostile anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "Warning: Aggressive riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Massive march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Organized riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Massive citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unruly anti-civil demonstration near [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Sector Alert: Unsanctioned mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Growing anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Large gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Disruptive mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Unruly citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Large protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Rowdy unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Large citizens blocking traffic at block [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Dispatch: Rowdy protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Unauthorized barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Disruptive gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Violent unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Growing crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Minor unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Organized protest located on block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-22: Unsanctioned gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Rowdy group distributing banned literature at [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Disruptive unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Large unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Unauthorized gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Minor anti-civil demonstration near [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-15: Unsanctioned mob harassing citizens at [RAND_LOC].", priority: "low" },
+    { title: "10-22: Unsanctioned crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Unruly citizens blocking traffic at block [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "10-22: Growing march proceeding down sector [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "10-15: Massive protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Aggressive citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unruly protest located on block [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Massive mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Rowdy gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "Alert: Violent anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Aggressive civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Rowdy unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Small group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Aggressive unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Large citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Organized gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Violent citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Minor mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Rowdy anti-civil demonstration near [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-15: Aggressive barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unsanctioned gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Large riot breaking out on street [RAND_LOC].", priority: "low" },
+    { title: "10-22: Massive protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Alert: Minor gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Organized gathering forming at sector [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Dispatch: Disruptive mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Small gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "Incident: Organized citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Organized barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Aggressive anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "Alert: Minor anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "10-22: Organized protest located on block [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Disruptive group distributing banned literature at [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Unauthorized crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Aggressive civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Disruptive riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Small citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Unsanctioned civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "10-22: Growing group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Unauthorized unlicensed public speech occurring at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Code 2: Large protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Alert: Unauthorized protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Organized civil disobedience reported at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "10-15: Organized citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Unruly anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "10-22: Large protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Aggressive march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Minor march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Rowdy unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "10-15: Hostile group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Unruly group distributing banned literature at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Unruly mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Disruptive mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Alert: Organized unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Violent anti-civil demonstration near [RAND_LOC].", priority: "low" },
+    { title: "Warning: Large protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Large civil disobedience reported at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Warning: Minor anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Aggressive barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Unruly mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Hostile civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Alert: Massive civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unauthorized march proceeding down sector [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Massive barricades being erected at block [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Unruly civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Aggressive unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Aggressive protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Unsanctioned riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Unruly protesters defacing corporate property at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Incident: Minor unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Unauthorized gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "10-15: Large protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Unauthorized unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Unauthorized unlawful assembly detected at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Unruly protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Minor civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Disruptive barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "10-22: Massive crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Rowdy protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Minor march proceeding down sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Code 2: Unsanctioned unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Unauthorized protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Rowdy citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "10-22: Unauthorized gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Organized gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Incident: Unauthorized citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Small gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Minor anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Massive group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Incident: Minor unlicensed public speech occurring at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Code 2: Aggressive riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Massive group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Aggressive anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Violent unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Violent anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Violent protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Unruly protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Alert: Minor march proceeding down sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "BOLO: Organized protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Warning: Organized unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "Warning: Rowdy anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Unauthorized citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Disruptive group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Rowdy crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Hostile citizens blocking traffic at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Incident: Unauthorized civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unauthorized group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Alert: Minor anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Violent group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Hostile protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Hostile protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Hostile civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Violent protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Growing citizens blocking traffic at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Sector Alert: Rowdy protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Minor barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Small group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Unauthorized group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Rowdy anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Unsanctioned unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Large riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Unauthorized mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Aggressive group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Aggressive riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Alert: Violent anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Small civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Alert: Growing gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Large citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Unruly protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Growing mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unauthorized protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Organized gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Disruptive group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "10-15: Unruly march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Incident: Growing citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Unruly civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Aggressive anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Massive citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Massive anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Unruly civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Growing crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Massive protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unruly protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Violent protest located on block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Alert: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Violent unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Aggressive citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Hostile citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Aggressive anti-civil demonstration near [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unruly riot breaking out on street [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Minor riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Incident: Hostile protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Incident: Aggressive citizens blocking traffic at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Incident: Small barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Organized anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Large unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Unruly protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Massive mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Rowdy group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unruly civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Disruptive anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Organized citizens blocking traffic at block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Large unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Hostile protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "10-15: Massive group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Warning: Minor march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Unruly crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Growing group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Disruptive barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Alert: Unruly protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Unsanctioned civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Minor civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Massive protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Organized group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Unsanctioned barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Unauthorized crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Warning: Unauthorized group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Violent protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Unruly citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "10-22: Rowdy riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Organized group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Massive unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unsanctioned mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Aggressive march proceeding down sector [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "10-15: Hostile barricades being erected at block [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Unauthorized gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Disruptive crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Small protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Incident: Massive unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Unauthorized protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Violent gathering forming at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-22: Unruly march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unsanctioned barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Organized unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Unsanctioned gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Alert: Large crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Alert: Massive barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "10-22: Violent unlicensed public speech occurring at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-22: Unauthorized march proceeding down sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Sector Alert: Unruly mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Organized unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Rowdy citizens blocking traffic at block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-15: Organized gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Violent unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Rowdy march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Unsanctioned march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Unruly march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Organized protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Alert: Organized unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Incident: Massive gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Aggressive group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Disruptive unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Unruly civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Violent mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Massive gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Growing citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Massive unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Unruly barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unauthorized unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Incident: Unauthorized gathering forming at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Code 2: Large gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Disruptive unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Disruptive gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Unauthorized protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Aggressive anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Disruptive protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Unsanctioned unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Massive anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Aggressive anti-civil demonstration near [RAND_LOC].", priority: "low" },
+    { title: "Warning: Small anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Organized riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "10-15: Unauthorized barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Violent protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Minor barricades being erected at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Incident: Organized anti-civil demonstration near [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Large anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Organized unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Small barricades being erected at block [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unruly anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Unauthorized citizens blocking traffic at block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Warning: Disruptive crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Unauthorized unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Unsanctioned crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Small citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Aggressive barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Organized anti-civil demonstration near [RAND_LOC].", priority: "low" },
+    { title: "Warning: Growing march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Massive civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unruly citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Warning: Organized mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Organized citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Warning: Minor unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Small crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Unauthorized crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Aggressive civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Disruptive unlicensed public speech occurring at sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Small unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "Warning: Organized unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Aggressive protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Large barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Violent barricades being erected at block [RAND_LOC].", priority: "low" },
+    { title: "10-15: Minor anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Violent riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Alert: Hostile anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Growing anti-government strike identified at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Alert: Disruptive citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Small unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "10-22: Rowdy crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Unauthorized group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Disruptive riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Alert: Hostile anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Hostile protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Disruptive citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Disruptive unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Unruly unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Massive anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Large civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Disruptive crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Growing riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "Sector Alert: Hostile crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Warning: Massive anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Growing anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "10-22: Minor unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Growing gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Dispatch: Unauthorized gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Large barricades being erected at block [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Incident: Unauthorized anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Small crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unruly march proceeding down sector [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Unsanctioned mob harassing citizens at [RAND_LOC].", priority: "low" },
+    { title: "10-15: Rowdy march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Massive anti-civil demonstration near [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "BOLO: Violent anti-government strike identified at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Alert: Hostile anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Large protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Massive anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Growing protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Small anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Violent unlicensed public speech occurring at sector [RAND_LOC].", priority: "low" },
+    { title: "Warning: Small citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Growing riot breaking out on street [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Incident: Unauthorized crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Massive unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unsanctioned unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Unauthorized gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Massive unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Rowdy unlawful assembly detected at [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Unauthorized march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Disruptive riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Growing barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unruly citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Violent mob harassing citizens at [RAND_LOC].", priority: "low" },
+    { title: "Sector Alert: Massive group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Aggressive anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "10-15: Small protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Rowdy anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "Alert: Unruly barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Unauthorized barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Massive barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Hostile group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Disruptive barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Organized riot breaking out on street [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Disruptive group distributing banned literature at [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Code 2: Hostile protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Unsanctioned citizens blocking traffic at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Dispatch: Minor gathering forming at sector [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Sector Alert: Violent anti-civil demonstration near [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Disruptive march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Minor group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Small mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Unruly mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Massive citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Hostile unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Growing unlicensed public speech occurring at sector [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Rowdy anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Organized unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unruly protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Small anti-civil demonstration near [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Code 2: Rowdy barricades being erected at block [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Warning: Rowdy mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Minor civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Growing anti-civil demonstration near [RAND_LOC].", priority: "low" },
+    { title: "Incident: Unruly unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Unruly group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Massive group distributing banned literature at [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "10-15: Unruly barricades being erected at block [RAND_LOC].", priority: "medium" },
+    { title: "Warning: Rowdy barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Unauthorized group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Unauthorized protest located on block [RAND_LOC].", priority: "high" },
+    { title: "Incident: Disruptive unlicensed public speech occurring at sector [RAND_LOC].", priority: "high" },
+    { title: "10-15: Minor march proceeding down sector [RAND_LOC].", priority: "low" },
+    { title: "Incident: Small protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Minor civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Unauthorized group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Aggressive unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "Alert: Rowdy barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Disruptive anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Warning: Unsanctioned group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Unruly anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Warning: Aggressive protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "10-22: Disruptive unlawful assembly detected at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Warning: Organized anti-civil demonstration near [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Small protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Aggressive unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Organized protest located on block [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Rowdy group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Hostile crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Aggressive protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Growing civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Warning: Violent civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Large civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Minor march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Large unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Hostile march proceeding down sector [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Small group distributing banned literature at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-22: Unruly march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Large gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Massive citizens blocking traffic at block [RAND_LOC].", priority: "low" },
+    { title: "BOLO: Aggressive protesters defacing corporate property at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Violent citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "10-22: Unauthorized citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Unauthorized protesters defacing corporate property at [RAND_LOC].", priority: "medium" },
+    { title: "Incident: Disruptive barricades being erected at block [RAND_LOC].", priority: "low" },
+    { title: "Warning: Rowdy riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Warning: Large unlawful assembly detected at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Warning: Disruptive protest located on block [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "10-22: Disruptive crowd chanting anti-corp slogans at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Unsanctioned group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Code 2: Unauthorized protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "10-22: Organized gathering forming at sector [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Large gathering forming at sector [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Unauthorized unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Organized anti-government strike identified at [RAND_LOC].", priority: "low" },
+    { title: "10-22: Disruptive protesters defacing corporate property at [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Warning: Massive mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Violent mob harassing citizens at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Hostile crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "10-15: Minor citizens blocking traffic at block [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Minor riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Hostile crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Alert: Minor mob harassing citizens at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Minor anti-government strike identified at [RAND_LOC].", priority: "high" },
+    { title: "Warning: Disruptive riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Sector Alert: Unsanctioned crowd chanting anti-corp slogans at [RAND_LOC].", priority: "low" },
+    { title: "10-15: Unsanctioned unlicensed public speech occurring at sector [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Hostile crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Incident: Disruptive crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high" },
+    { title: "Dispatch: Growing mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "10-22: Disruptive group distributing banned literature at [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Rowdy group distributing banned literature at [RAND_LOC].", priority: "medium", group: "Anti-Corp Extremists" },
+    { title: "Code 3: Violent crowd chanting anti-corp slogans at [RAND_LOC].", priority: "high", group: "Anti-Corp Extremists" },
+    { title: "Incident: Small group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unsanctioned civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "10-15: Unauthorized unlawful assembly detected at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Minor riot breaking out on street [RAND_LOC].", priority: "high" },
+    { title: "Incident: Small group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "Code 3: Unsanctioned riot breaking out on street [RAND_LOC].", priority: "low", group: "Anti-Corp Extremists" },
+    { title: "Incident: Unauthorized anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Unsanctioned civil disobedience reported at block [RAND_LOC].", priority: "medium" },
+    { title: "Code 2: Unruly barricades being erected at block [RAND_LOC].", priority: "high" },
+    { title: "10-15: Hostile civil disobedience reported at block [RAND_LOC].", priority: "low" },
+    { title: "Code 2: Organized group distributing banned literature at [RAND_LOC].", priority: "high" },
+    { title: "10-15: Unsanctioned protesters defacing corporate property at [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Rowdy march proceeding down sector [RAND_LOC].", priority: "medium" },
+    { title: "BOLO: Unauthorized mob harassing citizens at [RAND_LOC].", priority: "medium" },
+    { title: "Code 3: Violent riot breaking out on street [RAND_LOC].", priority: "low" },
+    { title: "Dispatch: Rowdy gathering forming at sector [RAND_LOC].", priority: "low" },
+    { title: "Alert: Hostile protest located on block [RAND_LOC].", priority: "low" },
+    { title: "Code 3: Unruly civil disobedience reported at block [RAND_LOC].", priority: "high" },
+    { title: "BOLO: Disruptive group distributing banned literature at [RAND_LOC].", priority: "medium" },
+    { title: "Dispatch: Small unlawful assembly detected at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Aggressive anti-government strike identified at [RAND_LOC].", priority: "medium" },
+    { title: "10-15: Organized citizens blocking traffic at block [RAND_LOC].", priority: "medium" },
+    { title: "Alert: Unsanctioned gathering forming at sector [RAND_LOC].", priority: "high" }
 ];
 
 // Initialize Clock
@@ -714,20 +1189,10 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
 
-    let displaySender = `[${sender}]`;
-    if (sender === 'DISPATCH') {
-        displaySender = '[DISPATCH]';
-    } else if (sender !== 'SYSTEM') {
-        const officer = roster.find(u => u.id === sender);
-        if (officer && officer.rankInfo) {
-            displaySender = `[${officer.rankInfo.short}] [${sender}]`;
-        }
-    }
-
     // Create the message content
     const contentHtml = `
         <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
-        <span class="sender">${displaySender}</span> 
+        <span class="sender">${sender === 'DISPATCH' ? '[DISPATCH]' : '[' + sender + ']'}</span> 
         <span class="text">${text}</span>
     `;
     div.innerHTML = contentHtml;
@@ -1391,20 +1856,10 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
 
-    let displaySender = `[${sender}]`;
-    if (sender === 'DISPATCH') {
-        displaySender = '[DISPATCH]';
-    } else if (sender !== 'SYSTEM') {
-        const officer = roster.find(u => u.id === sender);
-        if (officer && officer.rankInfo) {
-            displaySender = `[${officer.rankInfo.short}] [${sender}]`;
-        }
-    }
-
     // Create the message content
     const contentHtml = `
         <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
-        <span class="sender">${displaySender}</span> 
+        <span class="sender">${sender === 'DISPATCH' ? '[DISPATCH]' : '[' + sender + ']'}</span> 
         <span class="text">${text}</span>
     `;
     div.innerHTML = contentHtml;
@@ -1513,12 +1968,11 @@ function simulateEvent(specificCrime = null) {
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
     const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
 
-    const primaryUnitId = respondingUnits[0];
-    const primaryOfficer = roster.find(u => u.id === primaryUnitId) || { personality: 'Veteran' };
-
+    // Select random suspect from database
     let suspectCit = null;
     if (globalCitizens && globalCitizens.length > 0) {
         suspectCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+        // Mark them suspicious or wanted based on priority
         if (crime.priority === 'high') {
             suspectCit.status = 'Wanted';
             wantedTargets.push({
@@ -1554,18 +2008,18 @@ function simulateEvent(specificCrime = null) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
         const reportingUnit = respondingUnits[0];
         const backupUnit = respondingUnits[1];
         const isROEEnabled = roeToggleCheckbox.checked;
 
-        // Shootout Logic (Random)
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.3) {
             const swear = getRandomItem(swearWords);
-            const actionFire = getRandomItem(underFireActions);
+            const action = getRandomItem(underFireActions);
             const loc = Math.floor(Math.random() * 900000000) + 100000000;
             
-            addChatMessage(reportingUnit, `${swear} ${actionFire}`, "worried");
+            addChatMessage(reportingUnit, `${swear} ${action}`, "worried");
+            
             setTimeout(() => {
                 const checkIn = getRandomItem(backupCheckInLines);
                 addChatMessage(backupUnit, checkIn.replace(/%UNIT%/g, reportingUnit), "worried");
@@ -1583,90 +2037,46 @@ function simulateEvent(specificCrime = null) {
                         const backupAck = getRandomItem(backupAcknowledgeLines);
                         addChatMessage(backupUnit, backupAck.replace(/%LOC%/g, loc).replace(/%UNIT%/g, reportingUnit), "serious");
                         
-                        // Officer inherently gets a kill here
-                        if (primaryOfficer.kills !== undefined) {
-                            primaryOfficer.kills++;
-                            deptStats.totalKills++;
-                            checkPromotion(primaryOfficer);
-                            updateStatsUI();
-                        }
-
-                        mockAddDocument(crime, respondingUnits, false, "Suspect engaged with lethal intent. Neutralized with extreme prejudice.", "kill"); 
+                        mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
                     }, 3500 + Math.random() * 2000);
+                    
                 }, 5000 + Math.random() * 4000);
+                
             }, 2500 + Math.random() * 2000);
-            return; // Skip normal resolution
+            return;
         }
-
-        // Standard Resolution
-        let action = 'arrest';
-        if (!isROEEnabled) action = 'kill';
-        if (primaryOfficer.personality === 'Aggressive' && Math.random() < 0.6) action = 'unauth_kill';
-        if (primaryOfficer.personality === 'Corrupt' && Math.random() < 0.4) action = 'corrupt';
-        if (crime.priority === 'high' && Math.random() < 0.3) action = 'kill';
 
         const suspectStr = suspectCit ? `${suspectCit.name} (CID: ${suspectCit.id})` : 'the suspect';
-        let reportMsg = "";
-        let quote = "";
+        const arrestingChats = [
+            `Target ${suspectStr} in custody. Returning to precinct.`,
+            `I arrested ${suspectStr}. Code 4.`,
+            `${suspectStr} secured. We're 10-8.`,
+            `Apprehended ${suspectStr} without incident.`,
+            `Got them. ${suspectStr} is in cuffs.`
+        ];
 
-        if (action === 'unauth_kill') {
-            reportMsg = `Target ${suspectStr} neutralized. Unauthorized lethal force applied. They looked at me funny.`;
-            quote = `I accidentally used unauthorized deadly force because the suspect was holding a metallic object. It was a spoon, but I feared for my life.`;
-            if (primaryOfficer.unauthorizedForce !== undefined) {
-                primaryOfficer.unauthorizedForce++;
-                primaryOfficer.kills++;
-                deptStats.unauthorizedForce++;
-                deptStats.totalKills++;
-            }
-        } else if (action === 'corrupt') {
-            reportMsg = `Uh, target ${suspectStr} escaped. Definitely escaped. I definitely didn't take a 5,000 credit bribe.`;
-            quote = `Suspect fled the scene at high speeds. Found 5,000 credits on the ground, logging into evidence... minus processing fees.`;
-            if (primaryOfficer.corruptActs !== undefined) {
-                primaryOfficer.corruptActs++;
-                deptStats.budget += 5000;
-            }
-        } else if (action === 'kill') {
-            reportMsg = `Target ${suspectStr} neutralized. Lethal force authorized. Send the meat wagon.`;
-            quote = `Suspect was hostile. Engaged and eliminated target. Threat is neutralized permanently.`;
-            if (primaryOfficer.kills !== undefined) {
-                primaryOfficer.kills++;
-                deptStats.totalKills++;
-            }
-        } else {
-            reportMsg = `Apprehended ${suspectStr} without incident. They are in cuffs.`;
-            quote = `Arrested suspect. Placed in back of cruiser. No excessive force required, sadly.`;
-            if (primaryOfficer.arrests !== undefined) {
-                primaryOfficer.arrests++;
-                deptStats.totalArrests++;
-                deptStats.budget += 1500;
-            }
-        }
+        const killingChats = [
+            `Target ${suspectStr} neutralized. Call the meat wagon. Filing report now.`,
+            `Threat eliminated. No survivors. Returning to patrol.`,
+            `${suspectStr} resisted. Lethal force applied. Area is red but quiet.`,
+            `Subject down. Send bio-hazard cleanup to our coordinates.`,
+            `Target ${suspectStr} was hostile. Problem solved permanently.`
+        ];
+
+        let reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
         
-        if (primaryOfficer.kills !== undefined) checkPromotion(primaryOfficer);
-        updateStatsUI();
-
         if (suspectCit) {
-            if (action.includes('kill')) suspectCit.status = 'Deceased';
-            else if (action === 'arrest') suspectCit.status = 'Arrested';
-            else if (action === 'corrupt') suspectCit.status = 'Escaped';
+            suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
             if (typeof renderCitizensList !== 'undefined') renderCitizensList();
         }
 
         addChatMessage(reportingUnit, reportMsg, "serious");
-        mockAddDocument(crime, respondingUnits, isROEEnabled, quote, action);
+        mockAddDocument(crime, respondingUnits, isROEEnabled);
 
-    }, 2500 + Math.random() * 2000);
+    }, 4000 + Math.random() * 6000);
 }
 
-function checkPromotion(officer) {
-    const newRank = getRankFromKills(officer.kills);
-    if (newRank.title !== officer.rankInfo.title) {
-        addChatMessage('SYSTEM', `[PROMOTION] ${officer.id} has been promoted to ${newRank.title} for reaching ${formatAbsurdNumber(officer.kills)} kills!`, 'serious');
-        officer.rankInfo = newRank;
-    }
-}
-
-function mockAddDocument(crime, respondingUnits, isROEEnabled, quote, action) {
+async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
     const doc = document.createElement('div');
     doc.className = "event-item high-priority";
     doc.style.borderLeft = "3px solid var(--accent-blue)";
@@ -1676,35 +2086,84 @@ function mockAddDocument(crime, respondingUnits, isROEEnabled, quote, action) {
     const officersStr = respondingUnits.join(', ');
     const dateStr = new Date().toLocaleDateString('en-US') + " " + getCurrentTimeStr();
 
-    let narrative = `INCIDENT TYPE: ${crime.title}\nTIME FILED: ${dateStr}\nRESPONDING OFFICERS: ${officersStr}\n-- NARRATIVE --\n`;
-    if (action === 'unauth_kill') narrative += `[FLAG: UNAUTHORIZED DEADLY FORCE DETECTED]\n`;
-    if (action === 'corrupt') narrative += `[FLAG: CORRUPT ACTION SUSPECTED]\n`;
-    narrative += `OFFICER QUOTE: "${quote || 'No comment provided.'}"`;
-
-    const fullReport = narrative.replace(/\n/g, '<br>');
-
+    // Initial placeholder
     doc.innerHTML = `
         <span class="time">${getCurrentTimeStr()}</span>
         <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
-            <span>📋 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
+            <span>📌 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
             <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
         </div>
-        <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
-            "${quote || 'Report generated.'}"
+        <div style="color: var(--text-dim); font-size: 0.95rem; font-style: italic; margin-top:5px;" id="loading-doc-${Date.now()}">
+            Decrypting generative AI transmission...
         </div>
-        <button class="doc-btn view-report-btn" style="margin-top: 10px; padding: 5px;">VIEW INCIDENT REPORT</button>
     `;
-    
-    doc.querySelector('.view-report-btn').addEventListener('click', () => {
-        openReportModal(fullReport);
-    });
-    
     documentListEl.prepend(doc);
     if (documentListEl.children.length > 15) {
         documentListEl.removeChild(documentListEl.lastChild);
     }
+
+    try {
+        const reportTones = [
+            "Emphasize the collateral damage to the surroundings.",
+            "Complain subtly about the paperwork or the bureaucracy.",
+            "Mention a malfunctioning piece of police equipment.",
+            "Highlight the absolute incompetence of the criminals.",
+            "Describe the scene as overly chaotic and neon-drenched.",
+            "Keep it purely clinical, cold, and detached.",
+            "Mention the horrible weather (acid rain, smog) affecting the operation.",
+            "Reference a bizarre cybernetic modification the suspect had."
+        ];
+        const randomTone = reportTones[Math.floor(Math.random() * reportTones.length)];
+
+        const prompt = `You are a futuristic cyberpunk police officer writing an official incident report. The incident was: ${crime.title}. Responding officers: ${officersStr}. ROE was ${isROEEnabled ? 'ENABLED (Non-Lethal pacification used)' : 'DISABLED (Lethal force authorized and suspect was neutralized)'}. Write a concise, gritty, 4-sentence narrative of what happened and the outcome. ${randomTone} Be extremely professional but cynical. No roleplay actions.`;
+
+        throw new Error('AI Disabled - using scripted fallback');
+// const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+        if (response.ok) {
+            let aiText = await response.text();
+            aiText = aiText.replace(/^["']|["']$/g, '').trim();
+
+            const fullReport = `INCIDENT TYPE: ${crime.title}
+TIME FILED: ${dateStr}
+RESPONDING OFFICERS: ${officersStr}
+TOTAL UNITS DEPLOYED: ${respondingUnits.length}
+${crime.group ? "GANG AFFILIATION: " + crime.group + "<br>" : ""}
+-- INCIDENT NARRATIVE (AI GENERATED) --<br>
+${aiText}`;
+
+            doc.innerHTML = `
+                <span class="time">${getCurrentTimeStr()}</span>
+                <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
+                    <span>📌 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
+                    <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
+                </div>
+                <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
+                    "${aiText}"
+                </div>
+                <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
+            `;
+        } else {
+            throw new Error("AI Generation Failed");
+        }
+    } catch (e) {
+        // Fallback if AI fails
+        const fallbackText = isROEEnabled ? "Suspect apprehended non-lethally." : "Suspect neutralized via lethal force.";
+        const fullReport = `INCIDENT TYPE: ${crime.title}\nTIME FILED: ${dateStr}\nRESPONDING OFFICERS: ${officersStr}\n-- NARRATIVE --\n${fallbackText}`;
+        doc.innerHTML = `
+            <span class="time">${getCurrentTimeStr()}</span>
+            <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
+                <span>📌 PINNED TRANSMISSION: ${crime.title.split(':')[0]}</span>
+                <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
+            </div>
+            <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
+                "${fallbackText}"
+            </div>
+            <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
+        `;
+    }
 }
 
+// Global function to open modal
 window.openReportModal = function (reportHTML) {
     document.getElementById('modal-body').innerHTML = reportHTML;
     document.getElementById('report-modal').style.display = 'flex';
@@ -1763,16 +2222,6 @@ function triggerPanic(unitName = null) {
     playPanicSound();
     clearPanicBtn.style.display = 'inline-block';
 
-    // Auto-SWAT request
-    if (Math.random() < 0.35) { // 35% chance to request SWAT during a panic
-        setTimeout(() => {
-            addChatMessage(unit, "Taking heavy casualties! Requesting CODE 5 SWAT backup NOW!", "worried");
-            setTimeout(() => {
-                if (typeof deploySwat === 'function') deploySwat();
-            }, 2000);
-        }, 1500);
-    }
-
     // Set auto-resolve for panic sound (5 seconds)
     panicData.soundTimeout = setTimeout(() => {
         // Only stop the sound, don't auto-resolve the entire panic state
@@ -1824,52 +2273,6 @@ function clearPanic() {
     const units = Array.from(activePanics.keys());
     units.forEach(u => resolveSpecificPanic(u));
 }
-
-// === SWAT LOGIC ===
-const deploySwatBtn = document.getElementById('deploy-swat-btn');
-let swatDeployed = false;
-
-function deploySwat() {
-    if (swatDeployed) return;
-    swatDeployed = true;
-    
-    // Massive dispatch log
-    const div = document.createElement('div');
-    div.className = 'chat-entry';
-    div.innerHTML = `
-        <span class="time">${getCurrentTimeStr()}</span>
-        <div class="title swat-glow" style="font-size:1.2rem; font-weight:bold;">[COMMAND] CODE 5: SWAT TEAM DEPLOYED</div>
-        <div style="color: #fff; font-size: 0.95rem;">Elite units dispatched to secure sector. Extreme prejudice authorized.</div>
-    `;
-    unifiedLogEl.appendChild(div);
-    unifiedLogEl.classList.add('swat-container-glow');
-    scrollToBottom(unifiedLogEl);
-    
-    // Resolve any panics
-    if (activePanics.size > 0) {
-        clearPanic();
-    }
-    
-    // SWAT Chatter
-    setTimeout(() => {
-        addChatMessage('SWAT-Alpha', 'Breaching in 3... 2... 1...', 'aggressive');
-    }, 2000);
-    
-    setTimeout(() => {
-        addChatMessage('SWAT-Bravo', 'Area secured. No suspects survived. Send clean-up crew.', 'aggressive');
-    }, 5000);
-    
-    setTimeout(() => {
-        addChatMessage('SWAT-Command', 'All units RTB. Let regular patrol deal with the paperwork.', 'aggressive');
-        unifiedLogEl.classList.remove('swat-container-glow');
-        swatDeployed = false;
-    }, 8000);
-}
-
-if (deploySwatBtn) {
-    deploySwatBtn.addEventListener('click', () => deploySwat());
-}
-// ===================
 
 // Event Listeners
 advancedControlsHeader.addEventListener('click', () => {
@@ -2184,38 +2587,6 @@ function renderCitizensList() {
     citizensListEl.innerHTML = htmlChunk;
 }
 
-window.setCitizenStars = function(idx, level) {
-    const cit = globalCitizens[idx];
-    if (cit.status === 'Arrested' || cit.status === 'Deceased') return;
-
-    if (cit.stars === level) {
-        cit.stars = 0; // Click same star to clear
-    } else {
-        cit.stars = level;
-    }
-
-    if (cit.stars > 0 && cit.status !== 'Wanted') {
-        cit.status = 'Wanted';
-        if (!wantedTargets.find(w => w.name === cit.name)) {
-             wantedTargets.push({
-                 name: cit.name,
-                 reason: "Wanted level adjusted by Dispatch",
-                 level: cit.stars >= 4 ? "HIGH" : "MEDIUM",
-                 bounty: cit.stars * 10000,
-                 address: cit.address,
-                 implants: cit.trait
-             });
-             if (typeof updateWantedUI !== 'undefined') updateWantedUI();
-        }
-    } else if (cit.stars === 0 && cit.status === 'Wanted') {
-        cit.status = 'Innocent';
-        wantedTargets = wantedTargets.filter(w => w.name !== cit.name);
-        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
-    }
-    openCitizenDossier(idx); 
-    renderCitizensList(); 
-};
-
 function openCitizenDossier(idx) {
     currentViewingCitizen = idx;
     const cit = globalCitizens[idx];
@@ -2226,30 +2597,16 @@ function openCitizenDossier(idx) {
     if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
     if (cit.status === 'Escaped') color = ESCAPED_COLOR;
 
-    // Initialize stars if not present
-    if (cit.stars === undefined) {
-        cit.stars = cit.status === 'Wanted' ? 3 : 0;
-    }
-
-    let starsHtml = '<div style="margin-top: 10px; display:flex; gap:5px; user-select:none;">';
-    for (let i = 1; i <= 6; i++) {
-        const starColor = (i <= cit.stars) ? 'var(--panic-orange)' : '#444';
-        const starChar = (i <= cit.stars) ? '★' : '☆';
-        starsHtml += `<span style="cursor:pointer; color:${starColor}; font-size:2rem; transition:0.2s;" onclick="setCitizenStars(${idx}, ${i})">${starChar}</span>`;
-    }
-    starsHtml += '</div>';
-
     citizenPageTitle.textContent = `DOSSIER: ${cit.id}`;
     citizenPageTitle.style.color = color;
     citizenPageTitle.style.textShadow = `0 0 5px ${color}`;
 
     citizenPageBody.innerHTML = `
-        <div style="font-size: 1.5rem; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 1.5rem; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
             ${cit.name}
         </div>
+        <div><strong>DOB:</strong> ${cit.dob}</div>
         <div><strong>Standing:</strong> <span style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span></div>
-        ${starsHtml}
-        <div style="margin-top: 15px;"><strong>DOB:</strong> ${cit.dob}</div>
         <div style="margin-top: 15px;"><strong>Registered Address:</strong><br><span style="color:var(--text-dim);">${cit.address}</span></div>
         <div style="margin-top: 15px;"><strong>Psych Profile:</strong><br><span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
         <div style="margin-top: 15px;"><strong>Crime History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None"}</span></div>
@@ -2383,12 +2740,6 @@ function updateCitizenStatus(newStatus) {
     const cit = globalCitizens[currentViewingCitizen];
     cit.status = newStatus;
 
-    if (newStatus === 'Wanted' && (cit.stars === undefined || cit.stars === 0)) {
-        cit.stars = 3; // Default 3 stars if declared wanted manually
-    } else if (newStatus !== 'Wanted') {
-        cit.stars = 0; // Clear stars if no longer wanted
-    }
-
     // Add logic if Wanted
     if (newStatus === 'Wanted') {
         const wantedData = {
@@ -2399,19 +2750,13 @@ function updateCitizenStatus(newStatus) {
             address: "Unknown",
             implants: cit.trait
         };
-        if (!wantedTargets.find(w => w.name === cit.name)) {
-            wantedTargets.push(wantedData);
-        }
-        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
-        addChatMessage('DISPATCH', `ALL UNITS: BOLO issued for ${cit.name} (${cit.id}). Target added to active Wanted List.`, 'dispatch-msg');
-    } else if (newStatus === 'Innocent' || newStatus === 'Suspicious') {
-        // Remove from wanted list if they were on it
-        wantedTargets = wantedTargets.filter(w => w.name !== cit.name);
-        if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+        wantedTargets.push(wantedData);
+        updateWantedUI();
+        addChatMessage('DISPATCH', `ALL UNITS: BOLO issued for ${cit.name}(${cit.id}).Target added to active Wanted List.`, 'dispatch-msg');
     }
 
-    renderCitizensList();
-    openCitizenDossier(currentViewingCitizen); // re-render dossier to show new color and stars
+    closeDossier();
+    renderCitizensList(); // Re-render to reflect color changes
 }
 
 // Start Simulations
@@ -2753,47 +3098,6 @@ if(loreJoinClose) {
                         body.appendChild(btn);
                     });
                 }
-            } else {
-                body.style.display = 'none';
-                chevron.textContent = String.fromCodePoint(0x25BC);
-            }
-        });
-    }
-})();
-
-
-// === DEPARTMENT STATS DROPDOWN ===
-(function() {
-    const hdr = document.getElementById('stats-header');
-    const body = document.getElementById('stats-body');
-    const chevron = document.getElementById('stats-chevron');
-    let isOpen = false;
-    if (hdr && body && chevron) {
-        hdr.addEventListener('click', function() {
-            isOpen = !isOpen;
-            if (isOpen) {
-                body.style.display = 'block';
-                chevron.textContent = String.fromCodePoint(0x25B2);
-            } else {
-                body.style.display = 'none';
-                chevron.textContent = String.fromCodePoint(0x25BC);
-            }
-        });
-    }
-})();
-
-// === CRITICAL EMERGENCIES DROPDOWN ===
-(function() {
-    const hdr = document.getElementById('emergencies-header');
-    const body = document.getElementById('emergencies-body');
-    const chevron = document.getElementById('emergencies-chevron');
-    let isOpen = false;
-    if (hdr && body && chevron) {
-        hdr.addEventListener('click', function() {
-            isOpen = !isOpen;
-            if (isOpen) {
-                body.style.display = 'flex';
-                chevron.textContent = String.fromCodePoint(0x25B2);
             } else {
                 body.style.display = 'none';
                 chevron.textContent = String.fromCodePoint(0x25BC);
