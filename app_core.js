@@ -3167,3 +3167,99 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnYes) btnYes.addEventListener('click', () => resolveLethalAuth(true));
     if (btnNo) btnNo.addEventListener('click', () => resolveLethalAuth(false));
 });
+
+
+// License Checker Logic
+const tabLicense = document.getElementById('tab-license');
+const secLicense = document.getElementById('sec-license');
+const btnSearchLicense = document.getElementById('btn-search-license');
+const licenseInput = document.getElementById('license-input');
+const licenseResults = document.getElementById('license-results');
+
+if (tabLicense && secLicense) {
+    tabLicense.addEventListener('click', () => {
+        // Hide others
+        if (typeof secCit !== 'undefined' && secCit) secCit.style.display = 'none';
+        if (typeof secVeh !== 'undefined' && secVeh) secVeh.style.display = 'none';
+        if (typeof secWanted !== 'undefined' && secWanted) secWanted.style.display = 'none';
+        secLicense.style.display = 'block';
+        
+        // Update tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.style.background = 'transparent');
+        tabLicense.style.background = 'rgba(0, 230, 118, 0.2)';
+    });
+}
+
+const licenseTypes = [
+    "Class B Restaurant Spire License",
+    "Level 4 Residential House Permit",
+    "Cybernetic Taco Stand License",
+    "Sentient Meat Processing Permit",
+    "Unregistered Pigeon Feeding License",
+    "Municipal Breathing Permit",
+    "Underground Rave Authorization",
+    "Public Sidewalk Loitering License",
+    "Hazardous Waste Disposal & Bakery Permit",
+    "Standard issue Dwelling License"
+];
+
+const violations = [
+    "Inspection Failed: Not washing enough dishes.",
+    "Inspection Failed: Found a portal to hell in the kitchen.",
+    "Violation: Owner is a known ghost.",
+    "Critical Failure: Excessive mannequins found on premises.",
+    "Expired: License expired 14 years ago.",
+    "Violation: Serving synthetic food as organic flesh.",
+    "Inspection Failed: Building is slowly sinking into the earth.",
+    "Warning: Unlicensed use of a toaster.",
+    "Violation: Breathing Permit exceeded monthly quota.",
+    "Inspection Failed: Too many rats. The rats unionized."
+];
+
+window.dispatchOfficerToLicense = function(locationName) {
+    if (typeof getActiveCallsigns === 'undefined') return;
+    const active = getActiveCallsigns();
+    if (active.length === 0) return;
+    const officer = active[Math.floor(Math.random() * active.length)];
+    
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage("DISPATCH", `Unit ${officer}, proceed to ${locationName} for severe municipal code violations. You are authorized to use force.`, 'serious', true);
+        setTimeout(() => {
+            addChatMessage(officer, `10-4 Dispatch. En route to ${locationName}. I'm bringing the heavy weaponry. Health code violations will not be tolerated.`, 'serious', false);
+        }, 3000);
+    }
+};
+
+if (btnSearchLicense && licenseInput && licenseResults) {
+    btnSearchLicense.addEventListener('click', () => {
+        const query = licenseInput.value.trim().toUpperCase();
+        if (!query) return;
+        
+        licenseResults.innerHTML = `Searching municipal database for: ${query}...`;
+        
+        setTimeout(() => {
+            const license = licenseTypes[Math.floor(Math.random() * licenseTypes.length)];
+            const isFailed = Math.random() < 0.6; // 60% chance to fail
+            
+            let statusHtml = "";
+            let dispatchHtml = "";
+            
+            if (isFailed) {
+                const violation = violations[Math.floor(Math.random() * violations.length)];
+                statusHtml = `<span style="color: var(--panic-red); font-weight: bold;">REVOKED / FAILED</span><br><br><strong>NOTES:</strong> ${violation}`;
+                dispatchHtml = `<br><br><button class="input-styled" style="background: rgba(244,67,54,0.2); border-color: var(--panic-red); color: var(--panic-red); width: 100%; cursor: pointer;" onclick="window.dispatchOfficerToLicense('${query}')">DISPATCH OFFICER TO ENFORCE</button>`;
+            } else {
+                statusHtml = `<span style="color: var(--accent-green); font-weight: bold;">VALID & CLEARED</span><br><br><strong>NOTES:</strong> No violations found. Paid off the inspector successfully.`;
+            }
+            
+            licenseResults.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>SUBJECT:</strong> ${query}</div>
+                <div style="margin-bottom: 10px;"><strong>LICENSE TYPE:</strong> ${license}</div>
+                <div style="border-top: 1px dashed var(--panel-border); margin-top: 10px; padding-top: 10px;">
+                    <strong>STATUS:</strong> ${statusHtml}
+                    ${dispatchHtml}
+                </div>
+            `;
+        }, 1000);
+    });
+}
