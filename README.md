@@ -1,39 +1,47 @@
-# MCPD DISPATCH TERMINAL
+# 🚨 MCPD DISPATCH TERMINAL
 
-Welcome to the **MCPD DISPATCH TERMINAL**. 
+> *"Main City Police Department: Protect. Serve. Sterilize."*
 
-This project is a terminal-style simulation of the Main City Police Department (MCPD) - a highly fictionalized, dystopian, and incredibly trigger-happy police force. 
+Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, terminal-style simulation of a fictional, dystopian, and incredibly trigger-happy police force. Step into the shoes of a precinct Dispatcher and manage the chaos of a cyberpunk city on the brink of collapse.
 
-For more detailed information and lore about the MCPD universe, please visit this link:
-[MCPD Lore & Information](https://notebook.google.com/notebook/64b934e5-bbc4-4658-8f94-57d2184adaf2)
+📖 **[Read the Official MCPD Lore & Universe Guide Here](https://notebook.google.com/notebook/64b934e5-bbc4-4658-8f94-57d2184adaf2)**
 
-## 🏢 Features & How It Works
+---
 
-The MCPD DISPATCH TERMINAL runs entirely in your browser and simulates a live, chaotic police dispatch radio channel. It has been massively expanded with deep, interlocking systems.
+## 💥 Core Features (v2.19+)
 
-### 📻 The Radio Chatter & NPC Engine
-- **Live Radio Chatter:** Exactly 58 active-duty officers patrol the city simultaneously. Officers will automatically respond to dispatch calls, request backup, and complain about their shifts over the radio.
-- **Dynamic Personalities:** Every officer has a unique psychological profile (Aggressive, Rookie, Veteran, Lazy, Paranoid, Sarcastic, By-The-Book, Idealistic). Their personality dictates how they respond to you, how they handle suspects, and what they talk about.
-- **Officer Cross-Talk:** If you talk to an officer, there is a 55% chance a DIFFERENT officer on the channel will jump in and react to the conversation based on their own personality!
+### 📡 The Unified Dispatch Chat
+A completely simulated, real-time chat interface where 58 active precinct officers communicate, request backup, make arrests, and lose their minds on patrol. You can transmit orders, `/bolo` alerts, and chat directly with units.
 
-### 🕵️ The Citizen Database
-- **1,000 Fully Tracked Citizens:** The terminal tracks 1,000 unique citizens. Each has a generated name, Citizen ID (CID), Date of Birth, Registered Address, and Cyberware Traits.
-- **Psych Profiles:** Every citizen has a hidden Psychological Profile (Passive, Panicked, Partially Aggressive, Aggressive) that dictates how they will react if confronted by the police.
-- **Crime Histories:** Citizens have dynamic crime histories. Citizens with multiple warrants are automatically flagged as "Wanted" by the system when you boot it up.
-- **Background Encounters:** Officers on patrol will randomly stop citizens in the database. Aggressive cops might randomly flag a citizen as Suspicious or Wanted, while Nice cops will just let them go.
+### ⚠️ Lethal Force Authorization System
+Routine patrols can escalate in seconds. Officers will randomly lock the dispatch terminal and request authorization to use lethal force on citizens. You have exactly **20 seconds** to click **AUTHORIZE** or **DENY**. If you fail to respond, the rogue officer will take matters into their own hands. Beware: authorizing executions blindly will trigger furious reprimands from Internal Affairs!
 
-### 🚨 Crime Events & Warrants
-- **Automated Crime Events:** Over 100 unique crime reports (from traffic accidents to temporal anomalies) will flash across the terminal.
-- **Suspect Integration:** A random citizen from the database is pulled into every major crime event as the prime suspect.
-- **4-Part Shootouts:** If a crime escalates into a firefight, it triggers a massive 4-part radio conversation. The primary officer screams they are under fire, their backup checks in, the primary officer gives a highly detailed resolution of the gunfight, and the backup calls for EMS.
-- **Live Arrests & Casualties:** When an officer resolves a crime, they will specifically name the citizen they arrested or killed, and that citizen's status will instantly update to 'Arrested' or 'Deceased' in the database!
-- **Interactive Warrant Execution:** You can open a citizen's dossier and click **EXECUTE WARRANT**. This will dispatch an officer to their house. The outcome is totally unpredictable and depends on the Citizen's Psych Profile crossed with the Officer's Morality (e.g., Corrupt/Reckless cops might shoot a fleeing suspect in the back, while a Rookie will arrest them safely).
+### 📋 Live Roster & Shift Mechanics
+The `UNIT STATUS` board dynamically tracks the status of all 58 precinct officers.
+- Tracks `Callsign`, `Medical Status`, `Shift`, and `Psychological Profile`.
+- Strict **54/4 Shift Mandate**: Exactly 4 officers are mandated to be off-duty at any given time. Shifts automatically rotate every 60 seconds as officers clock in and out (and occasionally sustain injuries while off-duty!).
 
-### 🖥️ Dispatcher Controls
-- **Dispatch Input:** You act as the dispatcher. You can type commands into the bottom input field to communicate with the units. Be careful—if you type gibberish, they will call you out.
-- **10-99 Panics:** If an officer gets into a massive firefight or you trigger a manual panic, a realistic siren will blare and the terminal will flash red until the panic is manually cleared.
-- **Master Callout Override:** An advanced dropdown menu allows you to manually trigger any of the 100+ specific crimes at will.
+### 📸 Simulated Image Analyzer
+The dispatch terminal features an integrated file upload system (`+` button) allowing you to upload real images from your computer into the chat. Our offline `imageAnalyzer.js` system scans your uploads and dynamically triggers hilarious, unhinged reactions from the officers based on what you send them. 
 
-## ⚙️ Usage
+### 🗄️ Integrated Databases
+- **Civilian Registry**: A massive, auto-generating database of over 150+ citizens. Tracks their IDs, home addresses, careers, criminal statuses, and cybernetic implants.
+- **Wanted Targets**: A dedicated bounty board tracking actively wanted suspects and their bounties.
+- **NCIC Vehicle Database**: Run license plates to instantly pull vehicle models, registered owners, and `STOLEN/FLAGGED` statuses.
 
-Simply open `index.html` in any modern web browser to start the simulation. 
+### 📻 The Transmissions Database
+Driven by a massive centralized text engine (`transmissions.js`), the officers feature hundreds of completely unique, chaotic, and deeply unhinged voice lines, jokes, and distress calls. From admitting to eating evidence, to screaming about shadows, no two patrols are ever the same.
+
+### 🛡️ Check System Diagnostics
+Powered by the `check_system.js` core, the terminal constantly self-monitors for syntax errors, unhandled rejections, and DOM corruption. If the engine ever crashes, a massive red diagnostic override will lock the screen and provide you with the exact file and line number of the failure.
+
+---
+
+## 🛠️ Version History & Releases
+This project is actively maintained and frequently updated. Check the [Releases](https://github.com/michaelsweet612/MCPD-DISPATCH/releases) tab for detailed patch notes on every single update, hotfix, and new feature. 
+
+## 🎮 How to Play
+Simply visit the live GitHub Pages link to access your terminal:
+**[LAUNCH MCPD DISPATCH TERMINAL](https://michaelsweet612.github.io/MCPD-DISPATCH/MCPD_DISPATCH_TERMINAL.html)**
+
+*Good luck, Dispatch. The city needs you.*
