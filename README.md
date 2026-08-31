@@ -4,43 +4,45 @@
 
 Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, terminal-style simulation of a fictional, dystopian, and incredibly trigger-happy police force. Step into the shoes of a precinct Dispatcher and manage the chaos of a cyberpunk city on the brink of collapse.
 
-🔗 **[Read the Official MCPD Lore & Universe Guide Here](https://notebook.google.com/notebook/64b934e5-bbc4-4658-8f94-57d2184adaf2)**
+📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 ---
 
-## ⭐ Core Features (v2.19+)
+## 💥 Core Features (v2.27+)
 
-### 💬 The Unified Dispatch Chat
+### 📡 The Unified Dispatch Chat
 A completely simulated, real-time chat interface where 58 active precinct officers communicate, request backup, make arrests, and lose their minds on patrol. You can transmit orders, `/bolo` alerts, and chat directly with units.
 
-### 🔫 Lethal Force Authorization System
+### ⚠️ Lethal Force Authorization System
 Routine patrols can escalate in seconds. Officers will randomly lock the dispatch terminal and request authorization to use lethal force on citizens. You have exactly **20 seconds** to click **AUTHORIZE** or **DENY**. If you fail to respond, the rogue officer will take matters into their own hands. Beware: authorizing executions blindly will trigger furious reprimands from Internal Affairs!
 
-### 🎖️ Meritocratic Ranking System & Shift Mechanics
-- **11-Tier Rank System:** All officers start as **Privates (0 kills)** and must earn their blood on the streets to climb all the way to Chief (which requires 200 Sextillion kills).
-- **Shift Mandate:** The `UNIT STATUS` board dynamically tracks the status of all 58 precinct officers. Exactly 4 officers are mandated to be off-duty at any given time. Shifts automatically rotate every 60 seconds as officers clock in and out (and occasionally sustain injuries while off-duty!).
+### 📋 Live Roster & Shift Mechanics
+The `UNIT STATUS` board dynamically tracks the status of all 58 precinct officers.
+- Tracks `Callsign`, `Medical Status`, `Shift`, and `Psychological Profile`.
+- **Furry Officers**: Watch out for the 10% chance an officer will spawn with a `Furry` profile! They will spam the radio with "UwU" chat lines, beg for head rubs, and act incredibly weird on patrol instead of following standard procedure.
+- Strict **54/4 Shift Mandate**: Exactly 4 officers are mandated to be off-duty at any given time. Shifts automatically rotate every 60 seconds as officers clock in and out (and occasionally sustain injuries while off-duty!).
 
 ### 📸 Simulated Image Analyzer
 The dispatch terminal features an integrated file upload system (`+` button) allowing you to upload real images from your computer into the chat. Our offline `imageAnalyzer.js` system scans your uploads and dynamically triggers hilarious, unhinged reactions from the officers based on what you send them. 
 
-### 🗄️ Integrated Databases & HUD
-- **Collapsible Control Panels:** Keep your workspace clean. The Department Stats, Critical Emergencies (including Code 5 SWAT deployments), and Advanced Configuration menus are all tucked into collapsible dropdown panels to prevent accidental deployments.
-- **Civilian Registry:** A massive, auto-generating database of over 150+ citizens. Tracks their IDs, home addresses, careers, criminal statuses, and cybernetic implants. You can view their dossiers and manually click their **GTA-Style Threat Level Stars (1-6)** to declare them Wanted.
-- **Wanted Targets:** A dedicated bounty board tracking actively wanted suspects and their bounties.
-- **NCIC Vehicle Database:** Run license plates to instantly pull vehicle models, registered owners, and `STOLEN/FLAGGED` statuses.
+### 🗄️ Integrated Databases
+- **Civilian Registry**: A massive, auto-generating database of exactly 1,000 citizens. Every civilian gets a unique 8-digit Civilian Number (`#CIV-XXXXXXXX`), full First/Middle/Last names, and detailed profiles tracking home addresses, careers, criminal statuses, and cybernetic implants. Look out for hardcoded VIP citizens!
+- **Wanted Targets**: A dedicated bounty board tracking actively wanted suspects and their bounties.
+- **NCIC Vehicle Database**: Run license plates to instantly pull highly illogical parody vehicle models (e.g., Fjord Motor Co. Exploder Turbo-Glider Nuclear V8), registered owners, auto insurance status (Active/Expired), and `STOLEN/FLAGGED` statuses.
+- **Municipal License Checker**: A dedicated tool to run checks on businesses and locations. Generates absurd city licenses (e.g., Sentient Meat Processing Permit) and unhinged violations. Allows dispatching officers directly to failing locations.
 
 ### 📻 The Transmissions Database
 Driven by a massive centralized text engine (`transmissions.js`), the officers feature hundreds of completely unique, chaotic, and deeply unhinged voice lines, jokes, and distress calls. From admitting to eating evidence, to screaming about shadows, no two patrols are ever the same.
 
-### 🔧 Check System Diagnostics
+### 🛡️ Check System Diagnostics
 Powered by the `check_system.js` core, the terminal constantly self-monitors for syntax errors, unhandled rejections, and DOM corruption. If the engine ever crashes, a massive red diagnostic override will lock the screen and provide you with the exact file and line number of the failure.
 
 ---
 
-## 📦 Version History & Releases
+## 🛠️ Version History & Releases
 This project is actively maintained and frequently updated. Check the [Releases](https://github.com/michaelsweet612/MCPD-DISPATCH/releases) tab for detailed patch notes on every single update, hotfix, and new feature. 
 
-## 🚀 How to Play
+## 🎮 How to Play
 Simply visit the live GitHub Pages link to access your terminal:
 **[LAUNCH MCPD DISPATCH TERMINAL](https://michaelsweet612.github.io/MCPD-DISPATCH/MCPD_DISPATCH_TERMINAL.html)**
 
