@@ -2400,6 +2400,65 @@ const SUSPICIOUS_COLOR = "var(--panic-orange)";
 const WANTED_COLOR = "var(--panic-red)";
 const ARRESTED_COLOR = "#9e9e9e";
 
+
+const fictionalBrands = [
+    "Toyotad", "Fjord Motor Co.", "Chevrolegs", "Teslah", 
+    "Bavarian Motor Wagon (BWM)", "Mercedez-Bends", "Dodg-e", "Honk Motors", 
+    "Nissun", "Porsha", "Lambor-Jeepni", "Volks-Wagon", "Subarude", 
+    "Hyundie", "Mazduh", "Cadillack", "Keea Motors", "Chrysler-Paganini",
+    "Aston-Martinized", "Rolls-Royce-Royce"
+];
+
+const fictionalModels = [
+    "Hover-Corolla 9000X with 14 Wheels",
+    "Exploder Turbo-Glider Nuclear V8",
+    "Impaler Cyber-Submarine Coupe",
+    "Model Quad-S Rocket-Powered Bicycle",
+    "M9-TwinTurbine Anti-Gravity Hearse",
+    "E-Class Interceptor Armored Bathtub",
+    "Hellkitten Supercharged Lawn Mower 4x4",
+    "Civic Anti-Grav Flying Tractor",
+    "Altima Black-Hole Edition (Missing 3 Doors)",
+    "911 Turbo Glider with Solar Parachute",
+    "Diabolo Steam-Driven Shopping Cart",
+    "Hover-Beetle 1984 (Powered by Hamsters)",
+    "Out-Of-Bounds 2.5XT Underwater Hatchback",
+    "Sonata Cyber-Tank with Sunroof",
+    "Miata Heavy Armored Hover-Barge",
+    "Escalation Nuclear Luxury Rickshaw",
+    "Soul Rocket-Propelled Wheelbarrow",
+    "Silverado 8-Engine Flying Dump Truck",
+    "Prius Stealth Anti-Matter Hover-Pod",
+    "Wrangler 6-Legged Walking Off-Roader"
+];
+
+const licensePool = [
+    "Hover-Vehicle Class C Operator License",
+    "Sentient Cyber-Toaster Ownership License",
+    "Sub-Dermal Concealed Cyber-Weapon Permit",
+    "Public Breathing & Oxygen Allocation Permit",
+    "Class-4 Nuclear Lawn Mower License",
+    "Anti-Gravity Unicycle Endorsement",
+    "Pet Raccoon Cybernetic Enhancement License",
+    "Level 2 Sidewalk Loitering Permit",
+    "Extreme Sarcasm Public Usage Permit",
+    "Commercial Drone Swarm Pilot License",
+    "Underground Spire Vending License",
+    "Household Synthetic Hamster License",
+    "Quantum Microwave Culinary Permit",
+    "Low-Altitude Jetpack Flight Clearance"
+];
+
+const insuranceProviders = [
+    "Geiko Cyber-Shield",
+    "State-Farm Bureau of Total Loss",
+    "All-Skate Bodily Vaporization Liability",
+    "Pro-Gressive Dystopian Indemnity",
+    "Liberty-Mutual Cybernetic Crash Protect",
+    "MCPD Municipal Risk Pool",
+    "Underworld Black-Market Gap Insurance"
+];
+
 function generateCitizens() {
     const firstNames = ["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth", "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen", "Elena", "Marcus", "Sophia", "Viktor", "Aaliyah", "Desmond", "Fiona", "Gideon", "Haley", "Ivan", "Jocelyn", "Kael", "Lana", "Malik", "Nia", "Orion", "Penelope", "Quinn", "Rowan", "Serena", "Tariq", "Uma", "Vance", "Wren", "Xavier", "Yara", "Zane"];
     const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Chen", "Lee", "Kim", "Patel", "Singh", "Nguyen", "Ali", "Hassan", "Kovacs", "Novak", "Silva", "Costa", "Rossi", "Conti", "Dubois", "Lefevre", "Muller", "Schmidt", "Ivanov", "Sokolov", "Gomez", "Ruiz", "Tanaka", "Yamamoto", "Okafor", "Adebayo", "Cohen", "Levi"];
@@ -2419,8 +2478,10 @@ function generateCitizens() {
 
     for (let i = 0; i < 1000; i++) {
         const first = getRandomItem(firstNames);
+        const middle = getRandomItem(firstNames);
         const last = getRandomItem(lastNames);
         const randId = `CID-${Math.floor(Math.random() * 900000) + 100000}`;
+        const civNum = Math.floor(10000000 + Math.random() * 90000000);
         const hist = getRandomItem(histories);
         
         let initialStatus = 'Innocent';
@@ -2430,16 +2491,78 @@ function generateCitizens() {
             initialStatus = Math.random() > 0.5 ? 'Suspicious' : 'Innocent';
         }
 
+        // Fictional vehicle & insurance
+        const brand = getRandomItem(fictionalBrands);
+        const model = getRandomItem(fictionalModels);
+        const plate = `${Math.floor(1 + Math.random()*9)}${String.fromCharCode(65 + Math.floor(Math.random()*26))}${String.fromCharCode(65 + Math.floor(Math.random()*26))}${String.fromCharCode(65 + Math.floor(Math.random()*26))}-${Math.floor(100 + Math.random()*900)}`;
+        const provider = getRandomItem(insuranceProviders);
+        const isInsuranceExpired = Math.random() < 0.45;
+        const overdueDays = Math.floor(Math.random() * 450) + 12;
+        
+        const insuranceStatusText = isInsuranceExpired ? `EXPIRED (${overdueDays} Days Overdue)` : `VALID & ACTIVE (Paid in Full)`;
+        const insuranceBadge = isInsuranceExpired 
+            ? `<span style="color:var(--panic-red); font-weight:bold;">EXPIRED (${overdueDays}d overdue)</span>`
+            : `<span style="color:var(--accent-green); font-weight:bold;">VALID / ACTIVE</span>`;
+
+        // Licenses (1 to 3 random licenses with statuses)
+        const numLicenses = Math.floor(Math.random() * 3) + 1;
+        const citizenLicenses = [];
+        const licenseStatuses = [
+            { text: "VALID", color: "var(--accent-green)" },
+            { text: "EXPIRED", color: "var(--panic-red)" },
+            { text: "SUSPENDED (Reckless Operation)", color: "var(--panic-orange)" },
+            { text: "REVOKED BY MCPD", color: "var(--panic-red)" }
+        ];
+
+        // Always include driver/hover license first
+        const driverStatus = Math.random() < 0.3 ? licenseStatuses[1] : (Math.random() < 0.1 ? licenseStatuses[2] : licenseStatuses[0]);
+        citizenLicenses.push({
+            name: "Hover-Vehicle Class C Operator License",
+            status: driverStatus.text,
+            color: driverStatus.color
+        });
+
+        for (let l = 1; l < numLicenses; l++) {
+            const randomLicName = getRandomItem(licensePool.filter(lic => lic !== "Hover-Vehicle Class C Operator License"));
+            const randomStatus = getRandomItem(licenseStatuses);
+            if (!citizenLicenses.some(item => item.name === randomLicName)) {
+                citizenLicenses.push({
+                    name: randomLicName,
+                    status: randomStatus.text,
+                    color: randomStatus.color
+                });
+            }
+        }
+
+        const birthYear = Math.floor(Math.random() * 55) + 1950;
+        const birthMonth = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+        const birthDay = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+        const age = 2026 - birthYear;
+
         const cit = {
             id: randId,
-            name: `${first} ${getRandomItem(firstNames)} ${last}`,
+            civNumber: civNum,
+            name: `${first} ${middle} ${last}`,
             status: initialStatus,
             trait: getRandomItem(traits),
             history: hist,
             civPersonality: getRandomItem(civPersonalities),
             address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
-            dob: `20${Math.floor(Math.random() * 80) + 10}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`
+            dob: `${birthYear}-${birthMonth}-${birthDay} (Age: ${age})`,
+            vehicle: {
+                brand: brand,
+                model: model,
+                fullName: `${brand} ${model}`,
+                plate: plate,
+                insuranceProvider: provider,
+                isExpired: isInsuranceExpired,
+                insuranceStatus: insuranceStatusText,
+                insuranceBadge: insuranceBadge,
+                licenseBadge: `<span style="color:${driverStatus.color}; font-weight:bold;">${driverStatus.text}</span>`
+            },
+            licenses: citizenLicenses
         };
+
         globalCitizens.push(cit);
         
         if (initialStatus === 'Wanted') {
@@ -2453,6 +2576,72 @@ function generateCitizens() {
             });
         }
     }
+
+    // Special VIP Citizens
+    globalCitizens.push({
+        id: `CID-999991`,
+        civNumber: 45472024,
+        name: "Donald John Trump",
+        trait: "Orange spray tan. Extremely wealthy. Known associate of Mar-a-Lago.",
+        history: "34 felony convictions, numerous civil indictments.",
+        status: 'Wanted',
+        civPersonality: 'Aggressive',
+        address: 'Sector 1, Mar-a-Lago Spire Penthouse',
+        dob: '1946-06-14 (Age: 80)',
+        vehicle: {
+            brand: "Cadillack",
+            model: "Escalation 24K-Gold Hover-Limo with Bulletproof Sunroof",
+            fullName: "Cadillack Escalation 24K-Gold Hover-Limo with Bulletproof Sunroof",
+            plate: "MAGA-45",
+            insuranceProvider: "Geiko Cyber-Shield",
+            isExpired: true,
+            insuranceStatus: "EXPIRED (Refused to Pay Premium / Under Audit)",
+            insuranceBadge: `<span style="color:var(--panic-red); font-weight:bold;">EXPIRED (Refused to Pay)</span>`,
+            licenseBadge: `<span style="color:var(--panic-orange); font-weight:bold;">SUSPENDED (Contempt of Court)</span>`
+        },
+        licenses: [
+            { name: "Presidential Gold-Plated Golf Cart Permit", status: "EXPIRED", color: "var(--panic-red)" },
+            { name: "Billionaire Real Estate Spire License", status: "SUSPENDED", color: "var(--panic-orange)" },
+            { name: "Class-4 Extreme Sarcasm Permit", status: "VALID", color: "var(--accent-green)" }
+        ]
+    });
+    wantedTargets.push({
+        name: "Donald John Trump",
+        reason: "34 felony convictions, municipal tax evasion, civil unrest.",
+        level: "HIGH",
+        bounty: 900000,
+        address: "Sector 1, Mar-a-Lago Spire Penthouse",
+        implants: "No known modifications."
+    });
+
+    globalCitizens.push({
+        id: `CID-999992`,
+        civNumber: "00000000",
+        name: "Jeffrey Edward Epstein",
+        trait: "Deceased. Official medical report states: Did not kill himself.",
+        history: "Sex trafficking of minors, conspiracy, racketeering.",
+        status: 'Deceased',
+        civPersonality: 'Passive',
+        address: 'Sector 0, Little St. James Island Compound',
+        dob: '1953-01-20 (Deceased)',
+        vehicle: {
+            brand: "Mercedez-Bends",
+            model: "Submersible Ghost-Glider with Blacked-Out Windows",
+            fullName: "Mercedez-Bends Submersible Ghost-Glider with Blacked-Out Windows",
+            plate: "LOLITA-01",
+            insuranceProvider: "All-Skate Bodily Vaporization Liability",
+            isExpired: true,
+            insuranceStatus: "TERMINATED POST-MORTEM",
+            insuranceBadge: `<span style="color:var(--panic-red); font-weight:bold;">TERMINATED</span>`,
+            licenseBadge: `<span style="color:var(--panic-red); font-weight:bold;">REVOKED BY FEDERAL ORDER</span>`
+        },
+        licenses: [
+            { name: "Private Island Airfield Permit", status: "REVOKED BY FEDERAL ORDER", color: "var(--panic-red)" },
+            { name: "Financial Advisory License", status: "TERMINATED", color: "var(--panic-red)" }
+        ]
+    });
+
+    globalCitizens.sort((a,b) => a.name.localeCompare(b.name));
 }
 
 function renderCitizensList() {
@@ -2465,13 +2654,18 @@ function renderCitizensList() {
         if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
         if (cit.status === 'Escaped') color = ESCAPED_COLOR;
 
+        const vehSummary = cit.vehicle ? `${cit.vehicle.brand} ${cit.vehicle.model}` : "No Registered Vehicle";
+        const insSummary = cit.vehicle ? cit.vehicle.insuranceBadge : "N/A";
+
         htmlChunk += `
-            <div class="roster-card" onclick="openCitizenDossier(${idx})" style="cursor:pointer; border-color: ${color};">
-                <div class="roster-info">
-                    <span class="roster-id">${cit.id}</span>
-                    <span class="roster-status" style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span>
+            <div class="roster-card" onclick="openCitizenDossier(${idx})" style="cursor:pointer; border-color: ${color}; padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.35); border: 1px solid ${color}; display:flex; flex-direction:column; gap:4px;">
+                <div class="roster-info" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="roster-id" style="color:var(--accent-blue); font-weight:bold; font-size:0.8rem;">#CIV-${cit.civNumber} (${cit.id})</span>
+                    <span class="roster-status" style="color:${color};text-transform:uppercase;font-weight:bold; font-size:0.75rem; border:1px solid ${color}; padding:1px 5px; border-radius:3px;">${cit.status}</span>
                 </div>
-                <div style="font-size: 1.1rem; color: #fff; margin-top: 5px;">${cit.name}</div>
+                <div style="font-size: 1.05rem; color: #fff; font-weight:bold;">${cit.name}</div>
+                <div style="font-size: 0.8rem; color: var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">🚗 ${vehSummary}</div>
+                <div style="font-size: 0.75rem;">🛡️ Ins: ${insSummary}</div>
             </div>
         `;
     });
@@ -2488,22 +2682,63 @@ function openCitizenDossier(idx) {
     if (cit.status === 'Arrested' || cit.status === 'Deceased') color = ARRESTED_COLOR;
     if (cit.status === 'Escaped') color = ESCAPED_COLOR;
 
-    citizenPageTitle.textContent = `DOSSIER: ${cit.id}`;
+    citizenPageTitle.textContent = `DOSSIER: ${cit.name}`;
     citizenPageTitle.style.color = color;
     citizenPageTitle.style.textShadow = `0 0 5px ${color}`;
 
+    let licensesHtml = "";
+    if (cit.licenses && cit.licenses.length > 0) {
+        licensesHtml = cit.licenses.map(lic => 
+            `<div style="margin-bottom:4px; display:flex; justify-content:space-between; font-size:0.85rem; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:3px; border-left:2px solid ${lic.color};">
+                <span>${lic.name}</span>
+                <span style="color:${lic.color}; font-weight:bold;">[${lic.status}]</span>
+            </div>`
+        ).join("");
+    } else {
+        licensesHtml = '<span style="color:var(--text-dim);">No active licenses or municipal permits on record.</span>';
+    }
+
+    let vehicleHtml = "";
+    if (cit.vehicle) {
+        vehicleHtml = `
+            <div style="background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:4px; border:1px solid var(--panel-border); font-size:0.9rem;">
+                <div><strong>Make & Model:</strong> <span style="color:#ffeb3b;">${cit.vehicle.brand} ${cit.vehicle.model}</span></div>
+                <div><strong>License Plate:</strong> <span style="color:var(--accent-blue); font-weight:bold;">${cit.vehicle.plate}</span></div>
+                <div><strong>Auto Insurance:</strong> ${cit.vehicle.insuranceProvider} — ${cit.vehicle.insuranceBadge}</div>
+                <div><strong>Operator License:</strong> ${cit.vehicle.licenseBadge}</div>
+            </div>
+        `;
+    } else {
+        vehicleHtml = '<span style="color:var(--text-dim);">No registered vehicle.</span>';
+    }
+
     citizenPageBody.innerHTML = `
-        <div style="font-size: 1.5rem; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
-            ${cit.name}
+        <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+                <strong>${cit.name}</strong><br>
+                <span style="font-size: 0.85rem; color: var(--accent-blue);">Civilian Number: #CIV-${cit.civNumber}</span> | <span style="font-size: 0.85rem; color: var(--text-dim);">${cit.id}</span>
+            </div>
+            <span style="font-size:0.85rem; color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:4px; font-weight:bold;">${cit.status.toUpperCase()}</span>
         </div>
-        <div><strong>DOB:</strong> ${cit.dob}</div>
-        <div><strong>Standing:</strong> <span style="color:${color};text-transform:uppercase;font-weight:bold;">${cit.status}</span></div>
-        <div style="margin-top: 15px;"><strong>Registered Address:</strong><br><span style="color:var(--text-dim);">${cit.address}</span></div>
-        <div style="margin-top: 15px;"><strong>Psych Profile:</strong><br><span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
-        <div style="margin-top: 15px;"><strong>Crime History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None"}</span></div>
-        <div style="margin-top: 15px;"><strong>Notes:</strong><br>${cit.trait}</div>
-        <div style="margin-top: 15px; color: var(--text-dim); font-size: 0.85rem; border-top: 1px dashed var(--border-color); padding-top: 10px;">
-            WARNING: Falsifying citizen records is a Class A Felony. Authorized personnel only.
+        <div><strong>DOB & Age:</strong> ${cit.dob}</div>
+        <div><strong>Registered Sector Address:</strong> <span style="color:var(--text-dim);">${cit.address}</span></div>
+        <div><strong>Psych Profile:</strong> <span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
+        
+        <div style="margin-top: 15px;">
+            <strong style="color:var(--accent-green); display:block; margin-bottom:5px; border-bottom:1px solid var(--panel-border); padding-bottom:3px;">REGISTERED VEHICLE & INSURANCE:</strong>
+            ${vehicleHtml}
+        </div>
+
+        <div style="margin-top: 15px;">
+            <strong style="color:#ff9800; display:block; margin-bottom:5px; border-bottom:1px solid var(--panel-border); padding-bottom:3px;">MUNICIPAL LICENSES & SPECIAL PERMITS:</strong>
+            ${licensesHtml}
+        </div>
+
+        <div style="margin-top: 15px;"><strong>Crime / Infraction History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None."}</span></div>
+        <div style="margin-top: 10px;"><strong>Biometric Notes & Cybernetics:</strong><br><span style="color:#aaa;">${cit.trait}</span></div>
+        
+        <div style="margin-top: 15px; color: var(--text-dim); font-size: 0.8rem; border-top: 1px dashed var(--panel-border); padding-top: 8px;">
+            WARNING: MCPD Directive 4-A: All civilian property and vehicles subject to warrantless inspection and impound.
         </div>
     `;
 
@@ -2829,7 +3064,7 @@ dbSearchBtn.addEventListener('click', () => {
     dbAiProfileBtn.style.display = 'none';
 
     if (!query) {
-        dbResults.innerHTML = '<span style="color:var(--panic-red);">ERROR: Invalid query string. Enter Citizen ID or Name.</span>';
+        dbResults.innerHTML = '<span style="color:var(--panic-red);">ERROR: Invalid query string. Enter Citizen Name, CID, or Civilian Number.</span>';
         return;
     }
 
@@ -2841,7 +3076,7 @@ dbSearchBtn.addEventListener('click', () => {
         if (query.includes("GORDON") || query.includes("FREEMAN")) {
             dbResults.innerHTML = `
                 <div style="color:var(--panic-red); border: 1px solid var(--panic-red); padding: 10px; background: rgba(255, 0, 0, 0.05);">
-                    <strong style="font-size: 1.2rem;">🚨 ALERT: KETER-LEVEL THREAT DETECTED 🚨</strong><br><br>
+                    <strong style="font-size: 1.2rem;">⚠️ ALERT: KETER-LEVEL THREAT DETECTED ⚠️</strong><br><br>
                     <strong>QUERY:</strong> ${query}<br>
                     <strong>STATUS:</strong> ACTIVE BOUNTY (9,236,000 CR)<br>
                     <strong>RECOMMENDATION:</strong> EVACUATE SECTOR AND DEPLOY GUNSHIPS IMMEDIATELY.<br>
@@ -2851,25 +3086,82 @@ dbSearchBtn.addEventListener('click', () => {
             return;
         }
 
-        const isGuilty = Math.random() > 0.2; // 80% chance of being "guilty" of something (trigger-happy cops)
+        // Search globalCitizens
+        let foundCit = null;
+        if (globalCitizens && globalCitizens.length > 0) {
+            foundCit = globalCitizens.find(c => 
+                c.name.toUpperCase().includes(query) || 
+                c.id.toUpperCase() === query || 
+                String(c.civNumber).includes(query) ||
+                `#CIV-${c.civNumber}`.toUpperCase().includes(query)
+            );
+        }
+
+        if (foundCit) {
+            let color = INNOCENT_COLOR;
+            if (foundCit.status === 'Suspicious') color = SUSPICIOUS_COLOR;
+            if (foundCit.status === 'Wanted') color = WANTED_COLOR;
+            if (foundCit.status === 'Arrested' || foundCit.status === 'Deceased') color = ARRESTED_COLOR;
+            if (foundCit.status === 'Escaped') color = ESCAPED_COLOR;
+
+            let licensesSummary = (foundCit.licenses || []).map(l => `<span style="color:${l.color}; font-size:0.85rem;">• ${l.name} [${l.status}]</span>`).join("<br>") || "None";
+            let vehSummary = foundCit.vehicle ? `${foundCit.vehicle.brand} ${foundCit.vehicle.model} (Plate: ${foundCit.vehicle.plate})<br>Insurance: ${foundCit.vehicle.insuranceProvider} — ${foundCit.vehicle.insuranceBadge}` : "No registered vehicle";
+
+            dbResults.innerHTML = `
+                <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color: var(--accent-blue);">CITIZEN RECORD FOUND:</strong>
+                    <span style="color:${color}; font-weight:bold; font-size:0.85rem; border:1px solid ${color}; padding:2px 6px; border-radius:3px;">${foundCit.status.toUpperCase()}</span>
+                </div>
+                <div style="margin-bottom: 5px;"><strong>Legal Name:</strong> <span style="color:#fff; font-size:1.1rem;">${foundCit.name}</span></div>
+                <div style="margin-bottom: 5px;"><strong>Civilian Number:</strong> <span style="color:var(--accent-blue); font-weight:bold;">#CIV-${foundCit.civNumber}</span> | <strong>National ID:</strong> ${foundCit.id}</div>
+                <div style="margin-bottom: 5px;"><strong>DOB & Age:</strong> ${foundCit.dob}</div>
+                <div style="margin-bottom: 5px;"><strong>Address:</strong> ${foundCit.address}</div>
+                
+                <div style="margin-top: 10px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--panel-border); border-radius:4px;">
+                    <strong style="color:var(--accent-green); font-size:0.85rem;">🚗 REGISTERED VEHICLE & INSURANCE:</strong><br>
+                    <div style="font-size:0.85rem; margin-top:3px;">${vehSummary}</div>
+                </div>
+
+                <div style="margin-top: 10px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--panel-border); border-radius:4px;">
+                    <strong style="color:#ff9800; font-size:0.85rem;">📜 LICENSES & SPECIAL PERMITS:</strong><br>
+                    <div style="font-size:0.85rem; margin-top:3px;">${licensesSummary}</div>
+                </div>
+
+                <div style="margin-top: 10px; margin-bottom: 10px;"><strong>Infraction Record:</strong> <span style="color:var(--panic-orange);">${foundCit.history || "None."}</span></div>
+
+                <button class="doc-btn" style="width: 100%; border-color: ${foundCit.status === 'Wanted' ? 'var(--panic-red)' : 'var(--accent-green)'}; color: ${foundCit.status === 'Wanted' ? 'var(--panic-red)' : 'var(--accent-green)'}; cursor:pointer;" onclick="alert('Dispatching surveillance drone to ' + foundCit.address + '.')">DISPATCH SURVEILLANCE PATROL</button>
+                <div id="ai-profile-output" style="margin-top: 15px;"></div>
+            `;
+            dbAiProfileBtn.style.display = 'inline-block';
+            return;
+        }
+
+        // Fallback random generation
+        const isGuilty = Math.random() > 0.2;
         const infractions = isGuilty ? getRandomItem(wantedCrimes) : "None (Pending further intrusive investigation)";
         const status = isGuilty ? "<span style='color:var(--panic-orange); font-weight:bold;'>WARRANT ISSUED</span>" : "<span style='color:var(--accent-green);'>CLEARED (TEMPORARILY)</span>";
+        const fallbackCivNum = Math.floor(10000000 + Math.random() * 90000000);
+        const fallbackBrand = getRandomItem(fictionalBrands);
+        const fallbackModel = getRandomItem(fictionalModels);
+        const fallbackInsExp = Math.random() < 0.5;
+        const fallbackInsBadge = fallbackInsExp ? `<span style="color:var(--panic-red); font-weight:bold;">EXPIRED (Auto-Lapsed)</span>` : `<span style="color:var(--accent-green); font-weight:bold;">VALID</span>`;
 
         dbResults.innerHTML = `
-                            <div style="margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">
-                                <strong style="color: var(--accent-blue);">CITIZEN RECORD RETRIEVED:</strong>
-                            </div>
-                            <div style="margin-bottom: 5px;"><strong>Name/ID:</strong> ${query}</div>
-                            <div style="margin-bottom: 5px;"><strong>System Status:</strong> ${status}</div>
-                            <div style="margin-bottom: 15px;"><strong>Known Infractions:</strong> <span style="color:#ccc;">${infractions}</span></div>
+            <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">
+                <strong style="color: var(--accent-blue);">CITIZEN RECORD RETRIEVED (TRANSIENT):</strong>
+            </div>
+            <div style="margin-bottom: 5px;"><strong>Query Identifier:</strong> ${query}</div>
+            <div style="margin-bottom: 5px;"><strong>Assigned Civilian No:</strong> <span style="color:var(--accent-blue);">#CIV-${fallbackCivNum}</span></div>
+            <div style="margin-bottom: 5px;"><strong>System Standing:</strong> ${status}</div>
+            <div style="margin-bottom: 5px;"><strong>Registered Vehicle:</strong> ${fallbackBrand} ${fallbackModel}</div>
+            <div style="margin-bottom: 5px;"><strong>Insurance Status:</strong> ${fallbackInsBadge}</div>
+            <div style="margin-bottom: 15px;"><strong>Known Infractions:</strong> <span style="color:#ccc;">${infractions}</span></div>
 
-                            <button class="doc-btn" style="width: 100%; border-color: ${isGuilty ? 'var(--panic-red)' : 'var(--accent-green)'}; color: ${isGuilty ? 'var(--panic-red)' : 'var(--accent-green)'};" onclick="alert('Dispatching units to citizen residence.')">DISPATCH PATROL TO RESIDENCE</button>
-                            <br><br>
-                                <em style="color:#aaa; font-size:0.85rem;">[Directive 4-A Applied: All citizens subject to random pacification patrols and warrantless search.]</em>
-                                <div id="ai-profile-output" style="margin-top: 15px;"></div>
-                        `;
+            <button class="doc-btn" style="width: 100%; border-color: ${isGuilty ? 'var(--panic-red)' : 'var(--accent-green)'}; color: ${isGuilty ? 'var(--panic-red)' : 'var(--accent-green)'};" onclick="alert('Dispatching units to citizen residence.')">DISPATCH PATROL TO RESIDENCE</button>
+            <div id="ai-profile-output" style="margin-top: 15px;"></div>
+        `;
         dbAiProfileBtn.style.display = 'inline-block';
-    }, 1200); // 1.2 second "search" delay for realism
+    }, 1200);
 });
 
 dbSearchInput.addEventListener('keypress', (e) => {
@@ -3058,34 +3350,51 @@ if (vehBtn && vehInput && vehResults) {
         if (!plate) return;
         
         vehResults.style.display = 'block';
-        vehResults.innerHTML = `<span style="color:var(--text-dim);">Running NCIC query on plate [${plate}]...</span>`;
+        vehResults.innerHTML = `<span style="color:var(--text-dim);">Running NCIC municipal query on plate [${plate}]...</span>`;
         
         setTimeout(() => {
-            // Assign a random owner from database if citizens exist
             let ownerName = "Unknown / Unregistered";
+            let ownerCivNum = "N/A";
             let status = "CLEAN";
             let color = "var(--accent-green)";
+            let randVehicle = `${getRandomItem(fictionalBrands)} ${getRandomItem(fictionalModels)}`;
+            let insuranceDisplay = `<span style="color:var(--accent-green); font-weight:bold;">VALID / ACTIVE (MCPD Risk Pool)</span>`;
+            let licenseDisplay = `<span style="color:var(--accent-green); font-weight:bold;">VALID</span>`;
             
-            if (globalCitizens.length > 0) {
-                const randOwner = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
-                ownerName = randOwner.name + ` (CID: ${randOwner.id})`;
-                if (randOwner.status === 'Wanted' || randOwner.status === 'Escaped') {
-                    status = "STOLEN / WANTED OWNER";
-                    color = "var(--panic-red)";
-                } else if (randOwner.status === 'Suspicious') {
-                    status = "FLAGGED";
-                    color = "var(--panic-orange)";
+            if (globalCitizens && globalCitizens.length > 0) {
+                let matchedCit = globalCitizens.find(c => c.vehicle && c.vehicle.plate && c.vehicle.plate.toUpperCase() === plate);
+                if (!matchedCit) {
+                    matchedCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+                }
+                
+                if (matchedCit) {
+                    ownerName = matchedCit.name;
+                    ownerCivNum = `#CIV-${matchedCit.civNumber} (${matchedCit.id})`;
+                    if (matchedCit.vehicle) {
+                        randVehicle = `${matchedCit.vehicle.brand} ${matchedCit.vehicle.model}`;
+                        insuranceDisplay = `${matchedCit.vehicle.insuranceProvider} — ${matchedCit.vehicle.insuranceBadge}`;
+                        licenseDisplay = matchedCit.vehicle.licenseBadge;
+                    }
+                    
+                    if (matchedCit.status === 'Wanted' || matchedCit.status === 'Escaped') {
+                        status = "STOLEN / WANTED OWNER";
+                        color = "var(--panic-red)";
+                    } else if (matchedCit.status === 'Suspicious') {
+                        status = "FLAGGED / SUSPICIOUS OWNER";
+                        color = "var(--panic-orange)";
+                    } else if (matchedCit.vehicle && matchedCit.vehicle.isExpired) {
+                        status = "UNINSURED VEHICLE / CITATION AUTHORIZED";
+                        color = "var(--panic-orange)";
+                    }
                 }
             }
             
-            const makes = ["Chevillon", "Thorton", "Quadra", "Archer", "Villefort", "Mizutani", "Brennan"];
-            const models = ["Emperor", "Colby", "Turbo-R", "Hella", "Cortes", "Shion", "Apollo"];
-            const randVehicle = `${makes[Math.floor(Math.random()*makes.length)]} ${models[Math.floor(Math.random()*models.length)]}`;
-            
             vehResults.innerHTML = `
-                <div style="margin-bottom: 5px;"><strong>PLATE:</strong> ${plate}</div>
-                <div style="margin-bottom: 5px;"><strong>VEHICLE:</strong> ${randVehicle}</div>
-                <div style="margin-bottom: 5px;"><strong>REGISTERED OWNER:</strong> ${ownerName}</div>
+                <div style="margin-bottom: 5px;"><strong>PLATE NUMBER:</strong> <span style="color:var(--accent-blue); font-weight:bold;">${plate}</span></div>
+                <div style="margin-bottom: 5px;"><strong>FICTIONAL VEHICLE:</strong> <span style="color:#ffeb3b; font-weight:bold;">${randVehicle}</span></div>
+                <div style="margin-bottom: 5px;"><strong>REGISTERED OWNER:</strong> <span style="color:#fff; font-weight:bold;">${ownerName}</span> <span style="color:var(--text-dim); font-size:0.85rem;">[${ownerCivNum}]</span></div>
+                <div style="margin-bottom: 5px;"><strong>VEHICLE INSURANCE:</strong> ${insuranceDisplay}</div>
+                <div style="margin-bottom: 5px;"><strong>DRIVER LICENSE:</strong> ${licenseDisplay}</div>
                 <div style="margin-top: 10px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                     <strong>STATUS:</strong> <span style="color:${color}; font-weight:bold;">${status}</span>
                 </div>
