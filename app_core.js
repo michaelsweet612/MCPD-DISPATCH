@@ -3176,19 +3176,7 @@ const btnSearchLicense = document.getElementById('btn-search-license');
 const licenseInput = document.getElementById('license-input');
 const licenseResults = document.getElementById('license-results');
 
-if (tabLicense && secLicense) {
-    tabLicense.addEventListener('click', () => {
-        // Hide others
-        if (typeof secCit !== 'undefined' && secCit) secCit.style.display = 'none';
-        if (typeof secVeh !== 'undefined' && secVeh) secVeh.style.display = 'none';
-        if (typeof secWanted !== 'undefined' && secWanted) secWanted.style.display = 'none';
-        secLicense.style.display = 'block';
-        
-        // Update tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.style.background = 'transparent');
-        tabLicense.style.background = 'rgba(0, 230, 118, 0.2)';
-    });
-}
+
 
 const licenseTypes = [
     "Class B Restaurant Spire License",
