@@ -1221,6 +1221,26 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 async function processDispatchChat() {
     const text = dispatchChatInput.value.trim();
     if (!text) return;
+    if (text.toLowerCase().startsWith('/bolo ')) {
+        const boloMsg = text.substring(6);
+        addChatMessage("DISPATCH (YOU)", "BOLO BROADCAST: " + boloMsg, "serious");
+        
+        // Flash red for bolo
+        unifiedLogEl.style.boxShadow = "inset 0 0 50px rgba(244,67,54,0.5)";
+        setTimeout(() => unifiedLogEl.style.boxShadow = "none", 2000);
+        
+        setTimeout(() => {
+            const activeCallsigns = getActiveCallsigns();
+            const responders = [getRandomItem(activeCallsigns), getRandomItem(activeCallsigns)];
+            addChatMessage(responders[0], "10-4 Dispatch. Copy BOLO.", "serious");
+            setTimeout(() => {
+                addChatMessage(responders[1], "Copy BOLO, Dispatch. Eyes open.", "serious");
+            }, 1000 + Math.random()*1000);
+        }, 2000);
+        
+        return;
+    }
+
 
     // Secret Mayhem Protocol
     if (text === "10-999") {
@@ -1967,6 +1987,10 @@ function simulateEvent(specificCrime = null) {
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
     const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
+    unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
+    unitAssignments[respondingUnits[1]] = '10-6 (On Scene)';
+    if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+
 
     // Select random suspect from database
     let suspectCit = null;
@@ -2037,7 +2061,11 @@ function simulateEvent(specificCrime = null) {
                         const backupAck = getRandomItem(backupAcknowledgeLines);
                         addChatMessage(backupUnit, backupAck.replace(/%LOC%/g, loc).replace(/%UNIT%/g, reportingUnit), "serious");
                         
-                        mockAddDocument(crime, respondingUnits, false); // Always lethal if they got in a shootout
+                        mockAddDocument(crime, respondingUnits, false);
+        unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+        unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+ // Always lethal if they got in a shootout
                     }, 3500 + Math.random() * 2000);
                     
                 }, 5000 + Math.random() * 4000);
@@ -2072,12 +2100,20 @@ function simulateEvent(specificCrime = null) {
 
         addChatMessage(reportingUnit, reportMsg, "serious");
         mockAddDocument(crime, respondingUnits, isROEEnabled);
+        unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+        unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+
 
     }, 4000 + Math.random() * 6000);
 }
 
 async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
     const doc = document.createElement('div');
+        unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+        unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+
     doc.className = "event-item high-priority";
     doc.style.borderLeft = "3px solid var(--accent-blue)";
     doc.style.paddingLeft = "10px";
@@ -2334,7 +2370,12 @@ function hideAllTabs() {
     tabDatabase.style.color = 'var(--text-dim)';
     tabWanted.classList.remove('active');
     tabWanted.style.color = 'var(--text-dim)';
-          if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
+          if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)';     if(document.getElementById('unit-status-log')) document.getElementById('unit-status-log').style.display = 'none';
+    if(document.getElementById('tab-unit-status')) document.getElementById('tab-unit-status').classList.remove('active');
+
+    if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+    if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+}
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
     
@@ -3105,3 +3146,94 @@ if(loreJoinClose) {
         });
     }
 })();
+
+
+// --- DISPATCH CAD FEATURES ---
+let unitAssignments = {}; // callsign -> status
+
+function renderUnitStatus() {
+    const tbody = document.getElementById('unit-status-body');
+    const totalEl = document.getElementById('cad-total-active');
+    if(!tbody) return;
+
+    let html = '';
+    let activeCount = 0;
+
+    roster.forEach(u => {
+        if (u.status !== 'On Duty') return;
+        activeCount++;
+        
+        let assignment = unitAssignments[u.id] || "10-8 (Available)";
+        let statusColor = assignment.includes("10-8") ? "var(--accent-green)" : (assignment.includes("10-6") ? "var(--panic-orange)" : "var(--panic-red)");
+        
+        let psych = u.personality || "Rookie";
+        
+        html += `
+            <tr style="border-bottom: 1px dashed var(--panel-border);">
+                <td style="padding: 8px 0; color: #fff;">${u.id}</td>
+                <td style="padding: 8px 0; color: ${statusColor}; font-weight:bold;">${assignment}</td>
+                <td style="padding: 8px 0; color: var(--text-dim);">${psych}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+    if(totalEl) totalEl.textContent = activeCount;
+}
+
+// Vehicle Database
+const vehBtn = document.getElementById('db-vehicle-btn');
+const vehInput = document.getElementById('db-vehicle-input');
+const vehResults = document.getElementById('db-vehicle-results');
+
+if (vehBtn && vehInput && vehResults) {
+    vehBtn.addEventListener('click', () => {
+        const plate = vehInput.value.trim().toUpperCase();
+        if (!plate) return;
+        
+        vehResults.style.display = 'block';
+        vehResults.innerHTML = `<span style="color:var(--text-dim);">Running NCIC query on plate [${plate}]...</span>`;
+        
+        setTimeout(() => {
+            // Assign a random owner from database if citizens exist
+            let ownerName = "Unknown / Unregistered";
+            let status = "CLEAN";
+            let color = "var(--accent-green)";
+            
+            if (globalCitizens.length > 0) {
+                const randOwner = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+                ownerName = randOwner.name + ` (CID: ${randOwner.id})`;
+                if (randOwner.status === 'Wanted' || randOwner.status === 'Escaped') {
+                    status = "STOLEN / WANTED OWNER";
+                    color = "var(--panic-red)";
+                } else if (randOwner.status === 'Suspicious') {
+                    status = "FLAGGED";
+                    color = "var(--panic-orange)";
+                }
+            }
+            
+            const makes = ["Chevillon", "Thorton", "Quadra", "Archer", "Villefort", "Mizutani", "Brennan"];
+            const models = ["Emperor", "Colby", "Turbo-R", "Hella", "Cortes", "Shion", "Apollo"];
+            const randVehicle = `${makes[Math.floor(Math.random()*makes.length)]} ${models[Math.floor(Math.random()*models.length)]}`;
+            
+            vehResults.innerHTML = `
+                <div style="margin-bottom: 5px;"><strong>PLATE:</strong> ${plate}</div>
+                <div style="margin-bottom: 5px;"><strong>VEHICLE:</strong> ${randVehicle}</div>
+                <div style="margin-bottom: 5px;"><strong>REGISTERED OWNER:</strong> ${ownerName}</div>
+                <div style="margin-top: 10px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
+                    <strong>STATUS:</strong> <span style="color:${color}; font-weight:bold;">${status}</span>
+                </div>
+            `;
+        }, 1200);
+    });
+}
+
+// 10-Code Guide
+const btnTenCode = document.getElementById('btn-tencode-guide');
+const modalTenCode = document.getElementById('tencode-modal');
+const closeTenCode = document.getElementById('close-tencode-modal');
+
+if (btnTenCode && modalTenCode && closeTenCode) {
+    btnTenCode.addEventListener('click', () => modalTenCode.style.display = 'flex');
+    closeTenCode.addEventListener('click', () => modalTenCode.style.display = 'none');
+}
