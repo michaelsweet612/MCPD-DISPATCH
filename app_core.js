@@ -925,10 +925,10 @@ async function simulateChat() {
                         if (typeof updateWantedUI !== 'undefined') updateWantedUI();
                         
                         
-                        msgText = getRandomItem(window.wantedLines).replace(/{name}/g, randCit.name);
+                        msgText = getRandomItem(window.wantedLines).replace(/\{name\}/g, randCit.name);
                     } else {
                         
-                        msgText = getRandomItem(window.suspLines).replace(/{name}/g, randCit.name);
+                        msgText = getRandomItem(window.suspLines).replace(/\{name\}/g, randCit.name);
                     }
                     if (typeof renderCitizensList !== 'undefined') renderCitizensList();
                 } else {
@@ -3052,6 +3052,15 @@ if (vehBtn && vehInput && vehResults) {
     });
 }
 
+// 10-Code Guide
+const btnTenCode = document.getElementById('btn-tencode-guide');
+const modalTenCode = document.getElementById('tencode-modal');
+const closeTenCode = document.getElementById('close-tencode-modal');
+
+if (btnTenCode && modalTenCode && closeTenCode) {
+    btnTenCode.addEventListener('click', () => modalTenCode.style.display = 'flex');
+    closeTenCode.addEventListener('click', () => modalTenCode.style.display = 'none');
+}
 // 10-Code Guide
 const btnTenCode = document.getElementById('btn-tencode-guide');
 const modalTenCode = document.getElementById('tencode-modal');
@@ -6078,3 +6087,25 @@ if (btnTenCode && modalTenCode && closeTenCode) {
     btnTenCode.addEventListener('click', () => modalTenCode.style.display = 'flex');
     closeTenCode.addEventListener('click', () => modalTenCode.style.display = 'none');
 }
+
+// Bug Log Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const bugBtn = document.getElementById('btn-bug-log');
+    const bugModal = document.getElementById('bug-log-modal');
+    const bugClose = document.getElementById('close-bug-modal');
+    const bugList = document.getElementById('bug-log-list');
+
+    if (bugBtn && bugModal && bugClose) {
+        bugBtn.addEventListener('click', () => {
+            bugModal.style.display = 'flex';
+            if (window.bugLog && window.bugLog.length > 0) {
+                bugList.innerHTML = window.bugLog.join('<br><br>');
+            } else {
+                bugList.innerHTML = "No bugs caught yet! Engine is stable.";
+            }
+        });
+        bugClose.addEventListener('click', () => {
+            bugModal.style.display = 'none';
+        });
+    }
+});
