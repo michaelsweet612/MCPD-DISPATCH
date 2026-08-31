@@ -113,6 +113,33 @@ window.jokes = [
     "Executing standard pacification protocol.",
     "Malignant engagement resolved. Sector is returning to standard civil index.",
     "Miscount detected in your block. Co-operation with your Civil Protection team permits full ration reward."
+,
+"I just mag-dumped into a shadow. Looked like it had a gun. Can someone bring me more ammo?",
+"Oops, I think my safety was off. Oh well, less paperwork if they don't survive to complain.",
+"Suspect gave me a dirty look. I gave him a hollow point. Fair trade.",
+"I didn't open fire for no reason, Dispatch. The reason is that I was bored.",
+"If they didn't want to get shot, they shouldn't have been in my line of sight.",
+"Wait, we're supposed to give verbal warnings *before* we shoot? My bad.",
+"Just deployed a flashbang into a parked car. Kept looking at me funny.",
+"My trigger finger was cramping, had to stretch it out. Suspect got in the way.",
+"Is there a high score for most rounds fired in a single shift? Because I think I just beat it.",
+"Dispatch, put me down for a 10-8. Also, send a cleaning crew to 5th avenue. Don't ask.",
+"I fired a warning shot! It just happened to hit them in the center mass.",
+"He was aggressively jaywalking! I had no choice but to deploy lethal force.",
+"I thought his cell phone was a heavy ordnance weapon. Honest mistake.",
+"Does the department pay for therapy? Not for me, for the guy I just arrested.",
+"I'm out of beanbags, so I just used real bullets. Same difference, right?",
+"The suspect tripped and fell on my bullets. Repeatedly.",
+"Can we get a drive-thru ammo resupply? I'm tapped out already.",
+"I didn't shoot him! My gun just sneezed.",
+"I sprinkled some crack on him after the fact. Standard procedure.",
+"Listen, if I have to fill out use of force paperwork anyway, I might as well get my money's worth.",
+"I'm establishing a strict shoot-first, ask-questions-never policy in Sector 4.",
+"Whoops, my finger slipped. 15 times.",
+"Dispatch, I shot the suspect. Yes, the one who was already in handcuffs. He looked shifty.",
+"If the Chief asks, the suspect was resisting. I don't care if he was unconscious.",
+"I find that suspects are a lot more compliant when they have bullet holes in them.",
+"I'm just doing my part to keep the local hospital in business."
 ];
 
 window.seriousChats = [
@@ -288,7 +315,32 @@ window.banterLines = [
                 "Did you see that new cyberware ad? Total ripoff.",
                 "I'm so tired I could sleep standing up.",
                 "If dispatch gives me one more noise complaint, I'm quitting."
-            ];
+            ,
+"I'm currently 10-6 at the donut shop. Code 3 emergency, they only have one glazed left.",
+"Dispatch, my cruiser's engine sounds weird. I'm taking the rest of the shift off to investigate.",
+"Can someone else take that 10-31? I just found a really comfortable parking spot.",
+"I'm officially on strike until the Chief buys better coffee for the break room.",
+"If I don't acknowledge the radio, the crime doesn't legally exist, right?",
+"I'm currently investigating the inside of my eyelids for suspicious activity.",
+"Dispatch, my radio is breaking up. I'm just going to mute it for the next 4 hours.",
+"Did you just say armed robbery? Because my radio heard 'go take a nap'.",
+"I am currently hiding from my responsibilities. Do not disturb.",
+"If I ignore the 911 calls, they usually just resolve themselves.",
+"I'm 10-7 for a mental health break. The suspect was being mean to me.",
+"Can the SWAT team handle this noise complaint? It's all the way across town.",
+"I'm not writing a report for this. Let's just say a ghost did it.",
+"I'm on a top-secret undercover mission in the break room.",
+"I've mastered the art of looking busy while doing absolutely nothing.",
+"My cruiser is out of gas. No, I will not walk to the gas station.",
+"Dispatch, tell the caller to solve their own crimes. I'm busy watching a movie.",
+"I dropped my donut in the dirt. Requesting grief counseling and a week of paid leave.",
+"I'm 10-8, but honestly, pretend I'm 10-7.",
+"Can we automate the arrests? Getting out of the car is exhausting.",
+"I'm too sober for this shift. Going on break.",
+"My uniform shrank in the wash, I literally cannot move my arms to arrest anyone.",
+"I'll investigate the homicide after my lunch break. Bodies don't go anywhere.",
+"I let the suspect go because I didn't want to do the paperwork. Oops."
+];
 
 window.wantedLines = [
                             `Dispatch, I just had a run-in with {name}. I'm flagging them as Wanted. Total scum.`,
