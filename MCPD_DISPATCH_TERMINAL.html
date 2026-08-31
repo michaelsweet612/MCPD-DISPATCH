@@ -3,17 +3,15 @@
 
 <head>
 <script>
+window.bugLog = [];
 window.onerror = function(msg, url, lineNo, columnNo, error) {
-    var errorNode = document.createElement('div');
-    errorNode.style.position = 'fixed';
-    errorNode.style.top = '0';
-    errorNode.style.left = '0';
-    errorNode.style.background = 'red';
-    errorNode.style.color = 'white';
-    errorNode.style.padding = '20px';
-    errorNode.style.zIndex = '999999';
-    errorNode.innerHTML = 'ERROR: ' + msg + ' on line ' + lineNo;
-    document.body.appendChild(errorNode);
+    window.bugLog.push('ERROR: ' + msg + ' on line ' + lineNo);
+    var bugBtn = document.getElementById('btn-bug-log');
+    if (bugBtn) {
+        bugBtn.style.color = 'var(--panic-red)';
+        bugBtn.style.borderColor = 'var(--panic-red)';
+        bugBtn.innerText = '?? BUGS (' + window.bugLog.length + ')';
+    }
 };
 </script>
     <meta charset="UTF-8">
@@ -126,7 +124,8 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                     <div class="tab" id="tab-database">💾 DATABASE</div>
                     <div class="tab" id="tab-citizens">🆔 CITIZENS</div>
                     <div class="tab" id="tab-wanted">🎯 WANTED TARGETS</div>
-                    <span class="badge" style="margin-left: auto; margin-top: 10px;">MCPD-NET</span>
+                    <button id="btn-bug-log" style="margin-left: auto; margin-top: 10px; background: transparent; border: 1px solid var(--panel-border); color: var(--text-dim); padding: 5px 10px; font-size: 0.8rem; cursor: pointer;">BUG LOG (0)</button>
+                    <span class="badge" style="margin-left: 10px; margin-top: 10px;">MCPD-NET</span>
                 </div>
 
                 
@@ -336,6 +335,19 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <script src="transmissions.js"></script>
     <script src="imageAnalyzer.js"></script>
     <script src="app_core.js"></script>
+
+    <!-- BUG LOG MODAL -->
+    <div id="bug-log-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2 style="color: var(--panic-red); margin-top:0;">SYSTEM DIAGNOSTICS LOG</h2>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Internal engine errors and bugs will be caught here instead of crashing the UI.</p>
+            <div id="bug-log-list" style="background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid var(--panel-border); height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.85rem; color: #ff5252; margin-bottom: 20px;">
+                No bugs caught yet! Engine is stable.
+            </div>
+            <button id="close-bug-modal" class="input-styled" style="width: 100%; cursor: pointer;">CLOSE DIAGNOSTICS</button>
+        </div>
+    </div>
+
 </body>
 
 </html>
