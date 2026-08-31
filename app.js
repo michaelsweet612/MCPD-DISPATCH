@@ -1989,7 +1989,7 @@ function simulateEvent(specificCrime = null) {
     const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
     unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
     unitAssignments[respondingUnits[1]] = '10-6 (On Scene)';
-    if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+    if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
 
 
     // Select random suspect from database
@@ -2064,7 +2064,7 @@ function simulateEvent(specificCrime = null) {
                         mockAddDocument(crime, respondingUnits, false);
         unitAssignments[respondingUnits[0]] = '10-8 (Available)';
         unitAssignments[respondingUnits[1]] = '10-8 (Available)';
-        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+        if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
  // Always lethal if they got in a shootout
                     }, 3500 + Math.random() * 2000);
                     
@@ -2102,7 +2102,7 @@ function simulateEvent(specificCrime = null) {
         mockAddDocument(crime, respondingUnits, isROEEnabled);
         unitAssignments[respondingUnits[0]] = '10-8 (Available)';
         unitAssignments[respondingUnits[1]] = '10-8 (Available)';
-        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+        if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
 
 
     }, 4000 + Math.random() * 6000);
@@ -2112,7 +2112,7 @@ async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
     const doc = document.createElement('div');
         unitAssignments[respondingUnits[0]] = '10-8 (Available)';
         unitAssignments[respondingUnits[1]] = '10-8 (Available)';
-        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+        if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
 
     doc.className = "event-item high-priority";
     doc.style.borderLeft = "3px solid var(--accent-blue)";
