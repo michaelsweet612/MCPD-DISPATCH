@@ -12,6 +12,34 @@ const timeEl = document.getElementById('current-time');
 const unifiedLogEl = document.getElementById('unified-log');
 const documentLogEl = document.getElementById('document-log');
 const chatInputArea = document.getElementById('chat-input-area');
+
+const tabUnitStatus = document.getElementById('tab-unit-status');
+const unitStatusLogEl = document.getElementById('unit-status-log');
+
+if (tabUnitStatus && unitStatusLogEl) {
+    tabUnitStatus.addEventListener('click', () => {
+        tabUnitStatus.classList.add('active');
+        tabUnitStatus.style.color = 'var(--accent-blue)';
+        
+        if (tabUnified) { tabUnified.classList.remove('active'); tabUnified.style.color = 'var(--text-dim)'; }
+        if (tabDocuments) { tabDocuments.classList.remove('active'); tabDocuments.style.color = 'var(--text-dim)'; }
+        if (tabDatabase) { tabDatabase.classList.remove('active'); tabDatabase.style.color = 'var(--text-dim)'; }
+        if (tabWanted) { tabWanted.classList.remove('active'); tabWanted.style.color = 'var(--text-dim)'; }
+        if (tabCitizens) { tabCitizens.classList.remove('active'); tabCitizens.style.color = 'var(--text-dim)'; }
+        if (tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
+        
+        unitStatusLogEl.style.display = 'block';
+        if (unifiedLogEl) unifiedLogEl.style.display = 'none';
+        if (documentLogEl) documentLogEl.style.display = 'none';
+        if (document.getElementById('database-view')) document.getElementById('database-view').style.display = 'none';
+        if (document.getElementById('wanted-view')) document.getElementById('wanted-view').style.display = 'none';
+        if (document.getElementById('citizens-list-view')) document.getElementById('citizens-list-view').style.display = 'none';
+        if (recruitmentLogEl) recruitmentLogEl.style.display = 'none';
+        if (chatInputArea) chatInputArea.style.display = 'none';
+        
+        if(typeof renderUnitStatus !== 'undefined') renderUnitStatus();
+    });
+}
 const tabUnified = document.getElementById('tab-unified');
 const tabDocuments = document.getElementById('tab-documents');
 const documentListEl = document.getElementById('document-list');
@@ -2153,7 +2181,10 @@ tabDocuments.addEventListener('click', () => {
     hideAllTabs();
     tabDocuments.classList.add('active');
     tabDocuments.style.color = 'var(--text-main)';
-    documentLogEl.style.display = 'block';
+    
+        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+documentLogEl.style.display = 'block';
 });
 
 tabDatabase.addEventListener('click', () => {
@@ -2176,7 +2207,10 @@ tabWanted.addEventListener('click', () => {
           hideAllTabs();
           tabRecruitment.classList.add('active');
           tabRecruitment.style.color = 'var(--text-main)';
-          recruitmentLogEl.style.display = 'block';
+          
+        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+recruitmentLogEl.style.display = 'block';
           if(currentApplicants.length === 0) generateApplicants();
       });
   }
@@ -2186,7 +2220,10 @@ tabCitizens.addEventListener('click', () => {
     hideAllTabs();
     tabCitizens.classList.add('active');
     tabCitizens.style.color = 'var(--text-main)';
-    citizensLogEl.style.display = 'block';
+    
+        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+citizensLogEl.style.display = 'block';
     if (citizenDossierView) citizenDossierView.style.display = 'none';
     if (citizenListView) citizenListView.style.display = 'block';
 });
@@ -5161,7 +5198,10 @@ tabDocuments.addEventListener('click', () => {
     hideAllTabs();
     tabDocuments.classList.add('active');
     tabDocuments.style.color = 'var(--text-main)';
-    documentLogEl.style.display = 'block';
+    
+        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+documentLogEl.style.display = 'block';
 });
 
 tabDatabase.addEventListener('click', () => {
@@ -5184,7 +5224,10 @@ tabWanted.addEventListener('click', () => {
           hideAllTabs();
           tabRecruitment.classList.add('active');
           tabRecruitment.style.color = 'var(--text-main)';
-          recruitmentLogEl.style.display = 'block';
+          
+        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+recruitmentLogEl.style.display = 'block';
           if(currentApplicants.length === 0) generateApplicants();
       });
   }
@@ -5194,7 +5237,10 @@ tabCitizens.addEventListener('click', () => {
     hideAllTabs();
     tabCitizens.classList.add('active');
     tabCitizens.style.color = 'var(--text-main)';
-    citizensLogEl.style.display = 'block';
+    
+        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
+citizensLogEl.style.display = 'block';
     if (citizenDossierView) citizenDossierView.style.display = 'none';
     if (citizenListView) citizenListView.style.display = 'block';
 });
