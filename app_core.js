@@ -841,6 +841,10 @@ async function simulateChat() {
         addChatMessage(sender, "Good boy.", 'joking');
         return;
     }
+    if (Math.random() < 0.05 && !lethalAuthActive) {
+        triggerLethalAuthEvent();
+        return;
+    }
 
     if (Math.random() < 0.04) {
         addChatMessage(sender, "Suspect is non-compliant! OPEN FIRE!", 'worried', false);
@@ -3091,4 +3095,85 @@ document.addEventListener('DOMContentLoaded', () => {
             bugModal.style.display = 'none';
         });
     }
+});
+
+
+// Lethal Force Auth System
+let lethalAuthActive = false;
+let lethalAuthTimer = null;
+let lethalAuthTimeLeft = 20;
+let lethalAuthOfficer = "";
+let lethalAuthCitizen = "";
+
+function triggerLethalAuthEvent() {
+    if (lethalAuthActive) return;
+    
+    if (typeof getActiveCallsigns === 'undefined') return;
+    const active = getActiveCallsigns();
+    if (active.length === 0) return;
+    lethalAuthOfficer = active[Math.floor(Math.random() * active.length)];
+    
+    lethalAuthCitizen = "a suspicious citizen";
+    if (typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
+        lethalAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
+    }
+
+    lethalAuthActive = true;
+    lethalAuthTimeLeft = 20;
+    
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage(lethalAuthOfficer, `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`, 'worried', false);
+    }
+    
+    const modal = document.getElementById('lethal-auth-modal');
+    const textEl = document.getElementById('lethal-auth-text');
+    const timeEl = document.getElementById('lethal-auth-timer');
+    
+    if (modal && textEl && timeEl) {
+        textEl.textContent = `${lethalAuthOfficer} is requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
+        timeEl.textContent = lethalAuthTimeLeft;
+        modal.style.display = 'flex';
+        
+        lethalAuthTimer = setInterval(() => {
+            lethalAuthTimeLeft--;
+            timeEl.textContent = lethalAuthTimeLeft;
+            
+            if (lethalAuthTimeLeft <= 0) {
+                clearInterval(lethalAuthTimer);
+                modal.style.display = 'none';
+                resolveLethalAuth(Math.random() < 0.5); // Random choice
+            }
+        }, 1000);
+    }
+}
+
+function resolveLethalAuth(isAuthorized) {
+    if (!lethalAuthActive) return; // Prevent double clicks
+    lethalAuthActive = false;
+    if (lethalAuthTimer) clearInterval(lethalAuthTimer);
+    
+    const modal = document.getElementById('lethal-auth-modal');
+    if (modal) modal.style.display = 'none';
+    
+    if (isAuthorized) {
+        setTimeout(() => {
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("INTERNAL AFFAIRS", `WHAT THE HELL ARE YOU DOING?! This is against the lethal force rules of engagement! These actions reflect our entire force. THINK before engaging!`, 'worried', false);
+            }
+        }, 2000);
+    } else {
+        setTimeout(() => {
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage(lethalAuthOfficer, `Oh, OK. I'll continue what I was doing. I'll proceed with standard procedures.`, 'serious', false);
+            }
+        }, 2000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btnYes = document.getElementById('btn-lethal-yes');
+    const btnNo = document.getElementById('btn-lethal-no');
+    
+    if (btnYes) btnYes.addEventListener('click', () => resolveLethalAuth(true));
+    if (btnNo) btnNo.addEventListener('click', () => resolveLethalAuth(false));
 });
