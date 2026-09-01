@@ -841,7 +841,9 @@ async function simulateChat() {
         addChatMessage(sender, "Good boy.", 'joking');
         return;
     }
-    if (Math.random() < 0.05 && !lethalAuthActive) {
+    const currentTimeMs = Date.now();
+    if (Math.random() < 0.05 && !lethalAuthActive && (currentTimeMs - lastLethalAuthTime > 30000)) {
+        lastLethalAuthTime = currentTimeMs;
         triggerLethalAuthEvent();
         return;
     }
@@ -3437,8 +3439,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lethal Force Auth System
 let lethalAuthActive = false;
+let lastLethalAuthTime = 0;
 let lethalAuthTimer = null;
-let lethalAuthTimeLeft = 20;
+let lethalAuthTimeLeft = 30;
 let lethalAuthOfficer = "";
 let lethalAuthCitizen = "";
 
@@ -3456,7 +3459,7 @@ function triggerLethalAuthEvent() {
     }
 
     lethalAuthActive = true;
-    lethalAuthTimeLeft = 20;
+    lethalAuthTimeLeft = 30;
     
     if (typeof addChatMessage !== 'undefined') {
         addChatMessage(lethalAuthOfficer, `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`, 'worried', false);
