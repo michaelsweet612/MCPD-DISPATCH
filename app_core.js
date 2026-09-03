@@ -2167,6 +2167,7 @@ function pinRadioLog(sender, message) {
 }
 
 function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
+    text = text.replace(/%RANDOM_SECTOR%/g, () => Math.floor(10000 + Math.random() * 89999));
     const div = document.createElement('div');
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
@@ -2928,6 +2929,7 @@ function pinRadioLog(sender, message) {
 }
 
 function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
+    text = text.replace(/%RANDOM_SECTOR%/g, () => Math.floor(10000 + Math.random() * 89999));
     const div = document.createElement('div');
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
