@@ -58,6 +58,13 @@ const autoEventsCheckbox = document.getElementById('auto-events');
     const rosterTotalCountEl = document.getElementById('roster-total-count');
 
   const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous'];
+
+function getRandomPersonality() {
+    if (Math.random() < 0.02) return 'Fabulous';
+    const others = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry'];
+    return others[Math.floor(Math.random() * others.length)];
+}
+
   let currentApplicants = [];
 
 const roeToggleCheckbox = document.getElementById('roe-toggle');
@@ -134,7 +141,7 @@ let roster = [];
           roster.push({
               id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
               status: 'On Duty',
-              personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+              personality: getRandomPersonality(),
               sector: Math.floor(Math.random() * 9) + 1
           });
       }
@@ -3467,7 +3474,7 @@ function renderRoster() {
           const applicant = {
               id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
               status: 'On Duty',
-              personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+              personality: getRandomPersonality(),
               sector: Math.floor(Math.random() * 9) + 1
           };
           currentApplicants.push(applicant);
@@ -3516,7 +3523,7 @@ function renderRoster() {
               const newUnit = {
                   id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
                   status: 'On Duty',
-                  personality: PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)],
+                  personality: getRandomPersonality(),
                   sector: Math.floor(Math.random() * 9) + 1
               };
               roster.push(newUnit);
