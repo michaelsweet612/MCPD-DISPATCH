@@ -158,6 +158,27 @@ function getActiveCallsigns() {
 let voreMode = false;
 
 const crimeReports = [
+    { title: "10-99: Illegal distribution of unauthorized purple knee-socks", priority: "low" },
+    { title: "10-99: Suspect is aggressively complimenting everyone's outfits", priority: "medium" },
+    { title: "10-99: Armed standoff at the underground drag show", priority: "low" },
+    { title: "10-99: Riot at the pride parade, suspects throwing military-grade glitter", priority: "high" },
+    { title: "10-99: Two hover-cars collided while drivers were checking each other out", priority: "low" },
+    { title: "10-99: Suspect threatening to hem an officer's uniform skirt too short", priority: "low" },
+    { title: "10-99: Person armed with a dangerously sharp stiletto heel", priority: "high" },
+    { title: "10-99: Domestic disturbance over stolen high-end eyeliner", priority: "low" },
+    { title: "10-99: Attempted robbery of a cosmetics store using excessive sass", priority: "high" },
+    { title: "10-99: Suspect is holding a brunch spot hostage until mimosas arrive", priority: "low" },
+    { title: "10-99: Illegal possession of an unregistered fabulous outfit", priority: "low" },
+    { title: "10-99: Vandalism: Suspect is painting the precinct neon pink", priority: "medium" },
+    { title: "10-99: Suspect is organizing an unsanctioned vogue battle in the street", priority: "medium" },
+    { title: "10-99: Disturbance: Someone is playing Lady Gaga too loud in Sector 4", priority: "low" },
+    { title: "10-99: Suspect is aggressively rating police uniforms out of ten", priority: "medium" },
+    { title: "10-99: Hostage situation: Suspect demands better fashion choices from negotiators", priority: "high" },
+    { title: "10-99: Grand theft of an entire rack of designer skirts", priority: "high" },
+    { title: "10-99: Suspect is refusing to disperse because the lighting here is 'too good'", priority: "medium" },
+    { title: "10-99: Assault with a weaponized handbag", priority: "high" },
+    { title: "10-99: Reports of a civilian being 'too cute' in a restricted area", priority: "medium" },
+
     { title: "10-50: Major collision involving a semi-truck and a skateboard", priority: "medium" },
     { title: "10-50: Major collision involving a semi-truck and a blimp", priority: "medium" },
     { title: "10-50: Major collision involving a semi-truck and a space shuttle", priority: "medium" },
