@@ -2168,6 +2168,7 @@ function pinRadioLog(sender, message) {
 
 function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     text = text.replace(/%RANDOM_SECTOR%/g, () => Math.floor(10000 + Math.random() * 89999));
+    text = text.replace(/%RANDOM_UNIT%/g, () => { try { const arr = getActiveCallsigns(); return arr.length ? arr[Math.floor(Math.random()*arr.length)] : 'Unit-77'; } catch(e) { return 'Unit-77'; } });
     const div = document.createElement('div');
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
@@ -2930,6 +2931,7 @@ function pinRadioLog(sender, message) {
 
 function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     text = text.replace(/%RANDOM_SECTOR%/g, () => Math.floor(10000 + Math.random() * 89999));
+    text = text.replace(/%RANDOM_UNIT%/g, () => { try { const arr = getActiveCallsigns(); return arr.length ? arr[Math.floor(Math.random()*arr.length)] : 'Unit-77'; } catch(e) { return 'Unit-77'; } });
     const div = document.createElement('div');
     div.className = `chat-msg ${typeClass}`;
     div.style.position = 'relative'; // For positioning the reply button
