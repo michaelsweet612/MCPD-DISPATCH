@@ -3461,8 +3461,18 @@ function triggerLethalAuthEvent() {
     lethalAuthActive = true;
     lethalAuthTimeLeft = 30;
     
+    // Determine the reason for the request
+    const reasonType = Math.random() > 0.5 ? 'civilian' : 'officer';
+    let requestMsg = "";
+    
+    if (reasonType === 'civilian') {
+        requestMsg = `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`;
+    } else {
+        requestMsg = `Dispatch, this civilian is really getting on my nerves and I want to eliminate them. I am requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
+    }
+    
     if (typeof addChatMessage !== 'undefined') {
-        addChatMessage(lethalAuthOfficer, `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`, 'worried', false);
+        addChatMessage(lethalAuthOfficer, requestMsg, 'worried', false);
     }
     
     const modal = document.getElementById('lethal-auth-modal');
@@ -3498,7 +3508,7 @@ function resolveLethalAuth(isAuthorized) {
     if (isAuthorized) {
         setTimeout(() => {
             if (typeof addChatMessage !== 'undefined') {
-                addChatMessage("INTERNAL AFFAIRS", `WHAT THE HELL ARE YOU DOING?! This is against the lethal force rules of engagement! These actions reflect our entire force. THINK before engaging!`, 'worried', false);
+                addChatMessage("INTERNAL AFFAIRS", `Hey hey hey, you can't do that! This is against the lethal force rules of engagement. These actions reflect on our entire department. THINK before engaging!`, 'worried', false);
             }
         }, 2000);
     } else {
