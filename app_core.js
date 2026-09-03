@@ -3949,7 +3949,7 @@ function openCitizenDossier(idx) {
         <div><strong>DOB & Age:</strong> ${cit.dob}</div>
           <div><strong>Gender Identity:</strong> <span style="color:var(--text-dim);">${cit.gender || 'Unknown'}</span></div>
         <div><strong>Registered Sector Address:</strong> <span style="color:var(--text-dim);">${cit.address}</span></div>
-        <div><strong>Terminal IP Address:</strong> <span style="color:var(--panic-orange);">${cit.networkIP || 'OFFLINE'}</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(Geo-Trace: Gulf of Mexico - TBMG Grid)</span></div>
+        <div><strong>Terminal IP Address:</strong> <span style="color:var(--panic-orange);">${cit.networkIP || 'OFFLINE'}</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(Geo-Trace: Gulf of TBMG - TBMG Grid)</span></div>
         <div><strong>Psych Profile:</strong> <span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
         
         <div style="margin-top: 15px;">
