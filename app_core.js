@@ -3185,7 +3185,7 @@ async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
         const prompt = `You are a futuristic cyberpunk police officer writing an official incident report. The incident was: ${crime.title}. Responding officers: ${officersStr}. ROE was ${isROEEnabled ? 'ENABLED (Non-Lethal pacification used)' : 'DISABLED (Lethal force authorized and suspect was neutralized)'}. Write a concise, gritty, 4-sentence narrative of what happened and the outcome. ${randomTone} Be extremely professional but cynical. No roleplay actions.`;
 
         throw new Error('AI Disabled - using scripted fallback');
-// const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+// 
         if (response.ok) {
             let aiText = await response.text();
             aiText = aiText.replace(/^["']|["']$/g, '').trim();
@@ -4377,7 +4377,7 @@ dbAiProfileBtn.addEventListener('click', async () => {
 
     try {
         const prompt = `You are a cold, cynical AI profiling engine for a totalitarian cyberpunk police force. The suspect is named/ID'd as: ${query}. Write a short, brutal 2-sentence psychological and threat assessment of this individual based on generic cyberpunk tropes. No roleplay actions, output plain text.`;
-        const response = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+        
         if (response.ok) {
             let aiText = await response.text();
             aiText = aiText.replace(/^["']|["']$/g, '').trim();

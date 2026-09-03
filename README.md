@@ -42,13 +42,9 @@ The terminal UI utilizes the **"P Diddy" Luxury Color Palette** (Diddy White, Pl
 
 ## 🚀 Setup & Execution
 
-Since the system heavily relies on `fetch()` to load the localized `crimes.json` and AI dependencies, it **must be run on a local web server**. You cannot simply double-click the `MCPD_DISPATCH_TERMINAL.html` file in your browser.
+This entire simulation is **100% offline and self-contained**. There is absolutely no real external AI and no Python web server required. The "AI" is entirely simulated by complex NPC logic written directly into the JavaScript files.
 
-**Using Python:**
-```bash
-python -m http.server 8000
-```
-Then navigate to `http://localhost:8000/MCPD_DISPATCH_TERMINAL.html`.
+To play, simply double-click the `MCPD_DISPATCH_TERMINAL.html` file to open it in your browser. No server required!
 
 ## 📜 License
 This project is open-source under the **MIT License**. Use it, mod it, and cause chaos.
