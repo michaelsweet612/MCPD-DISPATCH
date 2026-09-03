@@ -842,7 +842,7 @@ async function simulateChat() {
         return;
     }
     const currentTimeMs = Date.now();
-    if (Math.random() < 0.05 && !lethalAuthActive && (currentTimeMs - lastLethalAuthTime > 30000)) {
+    if (Math.random() < 0.05 && !lethalAuthActive && (currentTimeMs - lastLethalAuthTime > 40000)) {
         lastLethalAuthTime = currentTimeMs;
         triggerLethalAuthEvent();
         return;
@@ -3441,7 +3441,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let lethalAuthActive = false;
 let lastLethalAuthTime = 0;
 let lethalAuthTimer = null;
-let lethalAuthTimeLeft = 30;
+let lethalAuthTimeLeft = 40;
 let lethalAuthOfficer = "";
 let lethalAuthCitizen = "";
 
@@ -3459,7 +3459,7 @@ function triggerLethalAuthEvent() {
     }
 
     lethalAuthActive = true;
-    lethalAuthTimeLeft = 30;
+    lethalAuthTimeLeft = 40;
     
     // Determine the reason for the request
     const reasonType = Math.random() > 0.5 ? 'civilian' : 'officer';
