@@ -3802,6 +3802,7 @@ function generateCitizens() {
         id: `CID-999991`,
         civNumber: 45472024,
         name: "Donald John Trump",
+        gender: "Male",
         trait: "Orange spray tan. Extremely wealthy. Known associate of Mar-a-Lago.",
         history: "34 felony convictions, numerous civil indictments.",
         status: 'Wanted',
@@ -3827,6 +3828,7 @@ function generateCitizens() {
     });
     wantedTargets.push({
         name: "Donald John Trump",
+        gender: "Male",
         reason: "34 felony convictions, municipal tax evasion, civil unrest.",
         level: "HIGH",
         bounty: 900000,
@@ -3838,6 +3840,7 @@ function generateCitizens() {
         id: `CID-999992`,
         civNumber: "00000000",
         name: "Jeffrey Edward Epstein",
+        gender: "Male",
         trait: "Deceased. Official medical report states: Did not kill himself.",
         history: "Sex trafficking of minors, conspiracy, racketeering.",
         status: 'Deceased',
@@ -3941,6 +3944,7 @@ function openCitizenDossier(idx) {
             <span style="font-size:0.85rem; color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:4px; font-weight:bold;">${cit.status.toUpperCase()}</span>
         </div>
         <div><strong>DOB & Age:</strong> ${cit.dob}</div>
+          <div><strong>Gender Identity:</strong> <span style="color:var(--text-dim);">${cit.gender || 'Unknown'}</span></div>
         <div><strong>Registered Sector Address:</strong> <span style="color:var(--text-dim);">${cit.address}</span></div>
         <div><strong>Psych Profile:</strong> <span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
         
