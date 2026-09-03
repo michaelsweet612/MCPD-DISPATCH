@@ -3458,6 +3458,30 @@ function triggerLethalAuthEvent() {
         lethalAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
     }
 
+    // If ROE is OFF (lethal force authorized globally), they don't ask for permission.
+    if (roeToggleCheckbox && !roeToggleCheckbox.checked) {
+        const killMsgs = [
+            `Dispatch, encountering ${lethalAuthCitizen}. ROE is disabled, so I am engaging with lethal force.`,
+            `Taking down ${lethalAuthCitizen} now. Glad we don't have to ask for permission anymore.`,
+            `${lethalAuthCitizen} looked at me funny. ROE is off, engaging lethal pacification.`
+        ];
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage(lethalAuthOfficer, killMsgs[Math.floor(Math.random() * killMsgs.length)], 'serious', false);
+        }
+        
+        // Update stats and citizen status
+        if (typeof globalCitizens !== 'undefined') {
+            let cit = globalCitizens.find(c => c.name === lethalAuthCitizen);
+            if (cit) { cit.status = 'Deceased'; if (typeof renderCitizensList !== 'undefined') renderCitizensList(); }
+        }
+        
+        if (typeof updateStats === 'undefined') return;
+        let p = officers.find(o => o.callsign === lethalAuthOfficer);
+        if (p) p.kills++;
+        updateStats(0, 1, 0, 0);
+        return;
+    }
+
     lethalAuthActive = true;
     lethalAuthTimeLeft = 40;
     
