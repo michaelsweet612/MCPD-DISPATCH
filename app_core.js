@@ -3763,7 +3763,8 @@ function generateCitizens() {
             civNumber: civNum,
             gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
             name: `${first} ${middle} ${last}`,
-            networkIP: `${Math.floor(Math.random()*999)}.${Math.floor(Math.random()*999)}.${Math.floor(Math.random()*999)}.${Math.floor(Math.random()*999)}`,
+            networkIP: `${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}`,
+            networkLocation: getRandomItem(['Deep Sea Server Alpha - Gulf of TBMG', 'Offshore Data Rig 7 - Gulf of TBMG', 'Underwater Hub Omega - Gulf of TBMG', 'TBMG Primary Ocean Array - Gulf of TBMG', 'Floating Server Barge - Gulf of TBMG']),
             status: initialStatus,
             trait: getRandomItem(traits),
             history: hist,
@@ -3805,6 +3806,7 @@ function generateCitizens() {
         name: "Donald John Trump",
         gender: "Male",
         networkIP: "999.999.999.001",
+        networkLocation: "VIP Secure Offshore Node - Gulf of TBMG",
         trait: "Orange spray tan. Extremely wealthy. Known associate of Mar-a-Lago.",
         history: "34 felony convictions, numerous civil indictments.",
         status: 'Wanted',
@@ -3844,6 +3846,7 @@ function generateCitizens() {
         name: "Jeffrey Edward Epstein",
         gender: "Male",
         networkIP: "000.000.000.000",
+        networkLocation: "Blacksite Server - Gulf of TBMG",
         trait: "Deceased. Official medical report states: Did not kill himself.",
         history: "Sex trafficking of minors, conspiracy, racketeering.",
         status: 'Deceased',
@@ -3949,7 +3952,7 @@ function openCitizenDossier(idx) {
         <div><strong>DOB & Age:</strong> ${cit.dob}</div>
           <div><strong>Gender Identity:</strong> <span style="color:var(--text-dim);">${cit.gender || 'Unknown'}</span></div>
         <div><strong>Registered Sector Address:</strong> <span style="color:var(--text-dim);">${cit.address}</span></div>
-        <div><strong>Terminal IP Address:</strong> <span style="color:var(--panic-orange);">${cit.networkIP || 'OFFLINE'}</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(Geo-Trace: Gulf of TBMG - TBMG Grid)</span></div>
+        <div><strong>Terminal IP Address:</strong> <span style="color:var(--panic-orange);">${cit.networkIP || 'OFFLINE'}</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(Geo-Trace: ${cit.networkLocation || 'Gulf of TBMG - TBMG Grid'})</span></div>
         <div><strong>Psych Profile:</strong> <span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
         
         <div style="margin-top: 15px;">
