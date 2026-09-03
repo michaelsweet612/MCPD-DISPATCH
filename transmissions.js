@@ -680,6 +680,18 @@ window.yellLines = [
             ];
 
 window.banterLines = [
+
+    "I swear to god if one more officer calls me a 'good boy' I'm transferring precincts.",
+    "Has anyone else noticed the new recruits are... a bit eccentric? What's with the purple socks?",
+    "I'm trying to write a serious police report and the guy next to me is fixing his skirt. I can't.",
+    "If I get complimented on my posture one more time during a shootout, I'm quitting.",
+    "Listen, I support everyone, but why does my partner insist on calling the suspects 'bestie'?",
+    "Can someone please explain to me why half the force is talking about their outfits right now?",
+    "I just got hit on by an officer while I was bleeding out. HR is getting a call.",
+    "Is 'fabulous' a valid tactical strategy? Because someone here seems to think so.",
+    "My partner just complained that the blood stains are clashing with his uniform colors. Unbelievable.",
+    "I miss the old days when cops just drank black coffee and glared at people.",
+
                 "Man, the synth-rations at the precinct taste like cardboard today.",
                 "Anyone want to trade shifts on Friday? I need to get out of this sector.",
                 "I swear my cruiser's AC is blowing hot air again.",
