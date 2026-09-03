@@ -1,49 +1,54 @@
-# 🚨 MCPD DISPATCH TERMINAL
+# 🚓 MCPD DISPATCH TERMINAL
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
 Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, terminal-style simulation of a fictional, dystopian, and incredibly trigger-happy police force. Step into the shoes of a precinct Dispatcher and manage the chaos of a cyberpunk city on the brink of collapse.
 
-📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
+📚 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 ---
 
-## 💥 Core Features (v2.27+)
+## ⭐ Core Features (v2.40+)
 
-### 📡 The Unified Dispatch Chat
+### 💬 The Unified Dispatch Chat
 A completely simulated, real-time chat interface where 58 active precinct officers communicate, request backup, make arrests, and lose their minds on patrol. You can transmit orders, `/bolo` alerts, and chat directly with units.
 
+### 📻 Dynamic Radio Chatter
+The terminal features over **340+ unique voice lines and radio interactions** depending on the officer's personality and the current situation. Officers will joke, complain about the weather, panic during shootouts, banter with each other during downtime, and act completely unhinged during high-stress situations. Regular officers will even complain over the radio about the quirky habits of the new recruits.
+
 ### ⚠️ Lethal Force Authorization System
-Routine patrols can escalate in seconds. Officers will randomly lock the dispatch terminal and request authorization to use lethal force on citizens. You have exactly **20 seconds** to click **AUTHORIZE** or **DENY**. If you fail to respond, the rogue officer will take matters into their own hands. Beware: authorizing executions blindly will trigger furious reprimands from Internal Affairs!
+Routine patrols can escalate in seconds. Officers will randomly lock the dispatch terminal and request authorization to use lethal force on citizens (either because a citizen requested it, or simply because the officer is annoyed). You have exactly **40 seconds** to click **AUTHORIZE** or **DENY**. If you authorize it, Internal Affairs will scream at you. 
+**ROE Integration:** If you turn OFF the *Rules of Engagement* toggle in the advanced controls, officers will stop asking for permission and simply execute suspects on sight.
 
-### 📋 Live Roster & Shift Mechanics
-The `UNIT STATUS` board dynamically tracks the status of all 58 precinct officers.
-- Tracks `Callsign`, `Medical Status`, `Shift`, and `Psychological Profile`.
-- **Furry Officers**: Watch out for the 10% chance an officer will spawn with a `Furry` profile! They will spam the radio with "UwU" chat lines, beg for head rubs, and act incredibly weird on patrol instead of following standard procedure.
-- Strict **54/4 Shift Mandate**: Exactly 4 officers are mandated to be off-duty at any given time. Shifts automatically rotate every 60 seconds as officers clock in and out (and occasionally sustain injuries while off-duty!).
+### 👥 Live Roster & Psych Profiles
+The `UNIT STATUS` board dynamically tracks the status of all 58 precinct officers, now including a dedicated **GENDER** column.
+- Tracks `Callsign`, `Medical Status`, `Shift`, `Psychological Profile`, and `Gender Identity`.
+- **Furry Officers**: There is a 10% chance an officer will spawn with a `Furry` profile! They will spam the radio with "UwU" chat lines, beg for head rubs, and act incredibly weird on patrol.
+- **Fabulous Officers**: There is an extremely rare **2% chance** an officer will spawn with the `Fabulous` (LGBTQ+) profile! They will talk about their cute uniform skirts and purple socks, call everyone "bestie", hit on the male officers, and refer to themselves as "good boys". Regular officers will complain about them in the idle banter chat.
+- Strict **54/4 Shift Mandate**: Exactly 4 officers are mandated to be off-duty at any given time. Shifts automatically rotate every 60 seconds as officers clock in and out.
 
-### 📸 Simulated Image Analyzer
+### 📷 Simulated Image Analyzer
 The dispatch terminal features an integrated file upload system (`+` button) allowing you to upload real images from your computer into the chat. Our offline `imageAnalyzer.js` system scans your uploads and dynamically triggers hilarious, unhinged reactions from the officers based on what you send them. 
 
 ### 🗄️ Integrated Databases
-- **Civilian Registry**: A massive, auto-generating database of exactly 1,000 citizens. Every civilian gets a unique 8-digit Civilian Number (`#CIV-XXXXXXXX`), full First/Middle/Last names, and detailed profiles tracking home addresses, careers, criminal statuses, and cybernetic implants. Look out for hardcoded VIP citizens!
+- **Civilian Registry**: A massive, auto-generating database of exactly 1,000 citizens. Every civilian gets a unique 8-digit Civilian Number (`#CIV-XXXXXXXX`), full First/Middle/Last names, and detailed profiles tracking **Gender Identity**, home addresses, careers, criminal statuses, and cybernetic implants. 
+- **Incident Database**: Over **1,100+ procedurally generated dispatch calls**, ranging from intense Bank Heists, Jewelry store robberies, and complex vehicle pile-ups, to utterly ridiculous calls like "Robbing a rock", "Holding a puddle of water hostage", and "Illegal distribution of unauthorized purple knee-socks".
 - **Wanted Targets**: A dedicated bounty board tracking actively wanted suspects and their bounties.
-- **NCIC Vehicle Database**: Run license plates to instantly pull highly illogical parody vehicle models (e.g., Fjord Motor Co. Exploder Turbo-Glider Nuclear V8), registered owners, auto insurance status (Active/Expired), and `STOLEN/FLAGGED` statuses.
-- **Municipal License Checker**: A dedicated tool to run checks on businesses and locations. Generates absurd city licenses (e.g., Sentient Meat Processing Permit) and unhinged violations. Allows dispatching officers directly to failing locations.
-
-### 📻 The Transmissions Database
-Driven by a massive centralized text engine (`transmissions.js`), the officers feature hundreds of completely unique, chaotic, and deeply unhinged voice lines, jokes, and distress calls. From admitting to eating evidence, to screaming about shadows, no two patrols are ever the same.
-
-### 🛡️ Check System Diagnostics
-Powered by the `check_system.js` core, the terminal constantly self-monitors for syntax errors, unhandled rejections, and DOM corruption. If the engine ever crashes, a massive red diagnostic override will lock the screen and provide you with the exact file and line number of the failure.
 
 ---
 
-## 🛠️ Version History & Releases
-This project is actively maintained and frequently updated. Check the [Releases](https://github.com/michaelsweet612/MCPD-DISPATCH/releases) tab for detailed patch notes on every single update, hotfix, and new feature. 
+## 🎨 Styling
+The terminal UI utilizes the **"P Diddy" Luxury Color Palette** (Diddy White, Platinum Gold, Cîroc Blue, and Bad Boy Red) built right into the core CSS variables.
 
-## 🎮 How to Play
-Simply visit the live GitHub Pages link to access your terminal:
-**[LAUNCH MCPD DISPATCH TERMINAL](https://michaelsweet612.github.io/MCPD-DISPATCH/MCPD_DISPATCH_TERMINAL.html)**
+## 🚀 Setup & Execution
 
-*Good luck, Dispatch. The city needs you.*
+Since the system heavily relies on `fetch()` to load the localized `crimes.json` and AI dependencies, it **must be run on a local web server**. You cannot simply double-click the `MCPD_DISPATCH_TERMINAL.html` file in your browser.
+
+**Using Python:**
+```bash
+python -m http.server 8000
+```
+Then navigate to `http://localhost:8000/MCPD_DISPATCH_TERMINAL.html`.
+
+## 📜 License
+This project is open-source under the **MIT License**. Use it, mod it, and cause chaos.
