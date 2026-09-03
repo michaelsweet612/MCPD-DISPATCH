@@ -57,7 +57,7 @@ const autoEventsCheckbox = document.getElementById('auto-events');
   const refreshApplicantsBtn = document.getElementById('refresh-applicants-btn');
     const rosterTotalCountEl = document.getElementById('roster-total-count');
 
-  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry'];
+  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous'];
   let currentApplicants = [];
 
 const roeToggleCheckbox = document.getElementById('roe-toggle');
@@ -2242,6 +2242,11 @@ async function processDispatchChat() {
         // === MASSIVE NPC PERSONALITY ENGINE v2 ===
         const responses = {
             status: {
+                  Fabulous: [
+                    "Hiii! I'm doing amazing! My purple socks match my uniform skirt so perfectly today, I feel so cute!",
+                    "Status is fabulous! All the men on shift today are looking so cute, I'm just having a great time!",
+                    "I'm here and ready to be a good boy for dispatch! My outfit is flawless today."
+                  ],
                 Aggressive: [
                     "I'm good, dispatch. Real good. Just itching for some action out here.",
                     "Still breathing. Which is more than I can say for the last guy who tested me.",
@@ -2300,6 +2305,11 @@ async function processDispatchChat() {
                 ]
             },
             thanks: {
+                  Fabulous: [
+                    "Aww, thank you sweetie! You're the best!",
+                    "Omg thanks bestie! You're so cute for doing that for me!",
+                    "You're amazing! I'd hug you if you weren't stuck behind a dispatch terminal!"
+                  ],
                 Aggressive: [
                     "Don't thank me. Just keep the targets coming.",
                     "Save it. I don't do this for the praise.",
@@ -2335,6 +2345,11 @@ async function processDispatchChat() {
                 ]
             },
             location: {
+                  Fabulous: [
+                    "I'm just strutting down Sector %SECTOR%, showing off my cute skirt!",
+                    "Over here in Sector %SECTOR% at %LOC%. Looking for some cute guys to compliment, honestly.",
+                    "Just taking a stroll through Sector %SECTOR%. Hoping my purple socks aren't getting dirty!"
+                  ],
                 Aggressive: [
                     "I'm at Sector %SECTOR%, block %LOC%. If anyone wants to find me, they can try.",
                     "Sector %SECTOR%. Why? Got something that needs hitting?",
@@ -2370,6 +2385,11 @@ async function processDispatchChat() {
                 ]
             },
             combat: {
+                  Fabulous: [
+                    "Ew, they're ruining my outfit! I'm gonna have to arrest them for bad fashion!",
+                    "Omg they're shooting! Not the face, not the face! I spent an hour on this look!",
+                    "I'm taking them down! I'm such a good boy, I can handle this!"
+                  ],
                 Aggressive: [
                     "FINALLY! Weapons hot! Point me at em, dispatch!",
                     "Oh hell yes. Green light to engage? This is what I live for!",
@@ -2411,6 +2431,11 @@ async function processDispatchChat() {
                 ]
             },
             greeting: {
+                  Fabulous: [
+                    "Hiiii dispatch! Omg all the boys on patrol today look so good!",
+                    "Hey hey! Just wanted to say my new skirt is sooo cute on me today. Ready for patrol!",
+                    "Hiii! Ready to be dispatch's favorite good boy today! Let's go!"
+                  ],
                 Aggressive: [
                     "What do you want? Make it quick.",
                     "This better be important, dispatch.",
@@ -2450,6 +2475,11 @@ async function processDispatchChat() {
                 ]
             },
             insult: {
+                  Fabulous: [
+                    "Excuse me?! That is so rude. Your outfit is tragic anyway.",
+                    "Umm, jealous much? Sorry you can't pull off purple socks like I can.",
+                    "Wow. And I thought the criminals were the toxic ones. Get some fashion sense, honey."
+                  ],
                 Aggressive: [
                     "SAY THAT AGAIN. I DARE YOU. I'll come up there myself!",
                     "Oh you think you're tough behind that desk?! Come say that to my face!",
@@ -2489,6 +2519,11 @@ async function processDispatchChat() {
                 ]
             },
             help: {
+                  Fabulous: [
+                    "Omg I need backup! Preferably someone cute and strong! Hurry!",
+                    "Dispatch, help! They're going to tear my cute uniform! Send the boys!",
+                    "I'm in trouble! I need a strong man over here right now!"
+                  ],
                 Aggressive: [
                     "Help? I don't need help. Send help to whoever I'm about to find.",
                     "Backup? For what? I AM the backup.",
@@ -2519,6 +2554,11 @@ async function processDispatchChat() {
                 ]
             },
             weather: {
+                  Fabulous: [
+                    "The weather is terrible, it's totally ruining my hair. But my skirt still looks cute!",
+                    "It's so gloomy. We need a Pride parade or something to brighten this city up!",
+                    "Ugh, this acid rain is NOT good for my purple socks. I need an umbrella!"
+                  ],
                 Aggressive: ["I don't care about the weather, dispatch. I care about CRIMINALS.",
                     "Raining, snowing, who gives a damn. I'm still out here."],
                 Lazy: ["It's miserable out here. Another reason I should be inside. In bed.",
@@ -2533,6 +2573,11 @@ async function processDispatchChat() {
                     "Is this weather natural? Something feels off about the atmosphere today."]
             },
             food: {
+                  Fabulous: [
+                    "Ooo I could go for an iced coffee right now. Anyone want to treat a good boy?",
+                    "I'm starving! Let's go get brunch after this shift, guys! My treat!",
+                    "I'm craving something sweet! Almost as sweet as the SWAT team, am I right?"
+                  ],
                 Aggressive: ["I don't eat on duty. I consume JUSTICE. ...And sometimes a burrito.",
                     "The vending machine in sector 4 stole my money again. I shot it."],
                 Lazy: ["Oh man don't talk about food. I'm starving. Anyone got a pizza number?",
@@ -2547,6 +2592,11 @@ async function processDispatchChat() {
                     "Who's asking about food? Is someone trying to drug our meals again?!"]
             },
             tired: {
+                  Fabulous: [
+                    "Omg my feet hurt. Heels were a mistake, but they look so good!",
+                    "I'm exhausted. I just want to cuddle with a cute guy and watch movies.",
+                    "Being this fabulous is a full-time job. I need a nap, bestie."
+                  ],
                 Aggressive: ["Tired? I don't get tired. I get ANGRY. Then I get MORE ANGRY.",
                     "Sleep is for the weak. And the off-duty. Which I apparently never am."],
                 Lazy: ["You have NO idea how tired I am. Basically sleepwalking right now.",
@@ -2561,6 +2611,11 @@ async function processDispatchChat() {
                     "Tired? YES. But closing my eyes in this city? Not happening."]
             },
             report: {
+                  Fabulous: [
+                    "Just finished! I was such a good boy, everything went perfectly. Plus I got some numbers!",
+                    "Report filed! The suspect was rude, but the paramedics were sooo cute. Total win!",
+                    "All done! No wrinkles in the skirt, either. I'm ready for the next call!"
+                  ],
                 Aggressive: ["Nothing to report except my overwhelming desire to punch something.",
                     "All quiet. Disappointingly quiet. Suspiciously quiet."],
                 Lazy: ["Report? Uh... nothing happened. Because I didn't go anywhere. So yeah.",
