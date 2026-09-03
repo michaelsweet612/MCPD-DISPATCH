@@ -142,6 +142,7 @@ let roster = [];
               id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
               status: 'On Duty',
               personality: getRandomPersonality(),
+                gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
               sector: Math.floor(Math.random() * 9) + 1
           });
       }
@@ -3496,6 +3497,7 @@ function renderRoster() {
               id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
               status: 'On Duty',
               personality: getRandomPersonality(),
+                gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
               sector: Math.floor(Math.random() * 9) + 1
           };
           currentApplicants.push(applicant);
@@ -3545,6 +3547,7 @@ function renderRoster() {
                   id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
                   status: 'On Duty',
                   personality: getRandomPersonality(),
+                gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
                   sector: Math.floor(Math.random() * 9) + 1
               };
               roster.push(newUnit);
@@ -3732,6 +3735,7 @@ function generateCitizens() {
         const cit = {
             id: randId,
             civNumber: civNum,
+            gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
             name: `${first} ${middle} ${last}`,
             status: initialStatus,
             trait: getRandomItem(traits),
@@ -3853,7 +3857,7 @@ function renderCitizensList() {
                     <span class="roster-id" style="color:var(--accent-blue); font-weight:bold; font-size:0.8rem;">#CIV-${cit.civNumber} (${cit.id})</span>
                     <span class="roster-status" style="color:${color};text-transform:uppercase;font-weight:bold; font-size:0.75rem; border:1px solid ${color}; padding:1px 5px; border-radius:3px;">${cit.status}</span>
                 </div>
-                <div style="font-size: 1.05rem; color: #fff; font-weight:bold;">${cit.name}</div>
+                <div style="font-size: 1.05rem; color: #fff; font-weight:bold;">${cit.name} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-dim);">(${cit.gender || 'Unknown'})</span></div>
                 <div style="font-size: 0.8rem; color: var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">🚗 ${vehSummary}</div>
                 <div style="font-size: 0.75rem;">🛡️ Ins: ${insSummary}</div>
             </div>
@@ -3905,7 +3909,7 @@ function openCitizenDossier(idx) {
     citizenPageBody.innerHTML = `
         <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-end;">
             <div>
-                <strong>${cit.name}</strong><br>
+                <strong>${cit.name}</strong> <span style='font-size:0.8rem; color:var(--text-dim);'>(${cit.gender || 'Unknown'})</span><br>
                 <span style="font-size: 0.85rem; color: var(--accent-blue);">Civilian Number: #CIV-${cit.civNumber}</span> | <span style="font-size: 0.85rem; color: var(--text-dim);">${cit.id}</span>
             </div>
             <span style="font-size:0.85rem; color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:4px; font-weight:bold;">${cit.status.toUpperCase()}</span>
