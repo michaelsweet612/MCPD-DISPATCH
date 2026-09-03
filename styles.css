@@ -14,6 +14,12 @@
     /* Panic state colors */
     --panic-orange: #ff9100;
     --panic-red: #ff1744;
+
+    /* P Diddy Colors */
+    --diddy-white: #ffffff;
+    --diddy-gold: #ffdf00;
+    --ciroc-blue: #0f4c81;
+    --badboy-red: #c62828;
 }
 
 * {
