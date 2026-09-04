@@ -8,7 +8,7 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## ⭐ Core Features (v2.56+)
+## ⭐ Core Features (v2.57+)
 
 ### 💬 The Unified Dispatch Chat
 A completely simulated, real-time chat interface where **5,000 active precinct officers** communicate, request backup, make arrests, and lose their minds on patrol. You can transmit orders, `/bolo` alerts, and chat directly with units.
