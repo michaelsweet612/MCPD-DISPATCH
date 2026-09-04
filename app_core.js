@@ -688,7 +688,7 @@ let chatSimulateInt = null;
 // Mock Data
 let roster = [];
   function initRoster() {
-      for(let i=0; i<58; i++) {
+      for(let i=0; i<5000; i++) {
           roster.push({
               id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
               status: 'On Duty',
@@ -4118,7 +4118,7 @@ function renderRoster() {
   setInterval(() => {
       if (restModeToggle && restModeToggle.checked) return;
       const onDuty = roster.filter(u => u.status === 'On Duty');
-      if (onDuty.length < 58) {
+      if (onDuty.length < 5000) {
           // Find an off duty one to put on duty
           const offDuty = roster.find(u => u.status === 'Off Duty');
           if (offDuty) {
