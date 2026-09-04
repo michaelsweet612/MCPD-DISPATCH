@@ -143,6 +143,7 @@ let roster = [];
               status: 'On Duty',
               personality: getRandomPersonality(),
                 gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
+            maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
               sector: Math.floor(Math.random() * 9) + 1
           });
       }
@@ -3528,6 +3529,7 @@ function renderRoster() {
               status: 'On Duty',
               personality: getRandomPersonality(),
                 gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
+            maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
               sector: Math.floor(Math.random() * 9) + 1
           };
           currentApplicants.push(applicant);
@@ -3578,6 +3580,7 @@ function renderRoster() {
                   status: 'On Duty',
                   personality: getRandomPersonality(),
                 gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
+            maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
                   sector: Math.floor(Math.random() * 9) + 1
               };
               roster.push(newUnit);
@@ -3766,6 +3769,7 @@ function generateCitizens() {
             id: randId,
             civNumber: civNum,
             gender: ['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid'][Math.floor(Math.random() * 5)],
+            maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
             name: `${first} ${middle} ${last}`,
             networkIP: `${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}`,
             networkLocation: getRandomItem(['Deep Sea Server Alpha - Gulf of TBMG', 'Offshore Data Rig 7 - Gulf of TBMG', 'Underwater Hub Omega - Gulf of TBMG', 'TBMG Primary Ocean Array - Gulf of TBMG', 'Floating Server Barge - Gulf of TBMG']),
@@ -3809,6 +3813,7 @@ function generateCitizens() {
         civNumber: 45472024,
         name: "Donald John Trump",
         gender: "Male",
+        maritalStatus: "Married",
         networkIP: "999.999.999.001",
         networkLocation: "VIP Secure Offshore Node - Gulf of TBMG",
         trait: "Orange spray tan. Extremely wealthy. Known associate of Mar-a-Lago.",
@@ -3849,6 +3854,7 @@ function generateCitizens() {
         civNumber: "00000000",
         name: "Jeffrey Edward Epstein",
         gender: "Male",
+        maritalStatus: "Single",
         networkIP: "000.000.000.000",
         networkLocation: "Blacksite Server - Gulf of TBMG",
         trait: "Deceased. Official medical report states: Did not kill himself.",
@@ -3955,6 +3961,7 @@ function openCitizenDossier(idx) {
         </div>
         <div><strong>DOB & Age:</strong> ${cit.dob}</div>
           <div><strong>Gender Identity:</strong> <span style="color:var(--text-dim);">${cit.gender || 'Unknown'}</span></div>
+          <div><strong>Marital Status:</strong> <span style="color:var(--text-dim);">${cit.maritalStatus || 'Unknown'}</span></div>
         <div><strong>Registered Sector Address:</strong> <span style="color:var(--text-dim);">${cit.address}</span></div>
         <div><strong>Terminal IP Address:</strong> <span style="color:var(--panic-orange);">${cit.networkIP || 'OFFLINE'}</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(Geo-Trace: ${cit.networkLocation || 'Gulf of TBMG - TBMG Grid'})</span></div>
         <div><strong>Psych Profile:</strong> <span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
