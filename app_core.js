@@ -4312,7 +4312,7 @@ function generateCitizens() {
     ];
     const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked"];
 
-    for (let i = 0; i < 1530; i++) {
+    for (let i = 0; i < 5000; i++) {
         const first = getRandomItem(firstNames);
         const middle = getRandomItem(firstNames);
         const last = getRandomItem(lastNames);
