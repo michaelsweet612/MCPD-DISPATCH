@@ -4430,7 +4430,7 @@ dbSearchBtn.addEventListener('click', () => {
 
                 <div style="margin-top: 10px; margin-bottom: 10px;"><strong>Infraction Record:</strong> <span style="color:var(--panic-orange);">${foundCit.history || "None."}</span></div>
 
-                <button class="doc-btn" style="width: 100%; border-color: ${foundCit.status === 'Wanted' ? 'var(--panic-red)' : 'var(--accent-green)'}; color: ${foundCit.status === 'Wanted' ? 'var(--panic-red)' : 'var(--accent-green)'}; cursor:pointer;" onclick="alert('Dispatching surveillance drone to ' + foundCit.address + '.')">DISPATCH SURVEILLANCE PATROL</button>
+                <button class="doc-btn" style="width: 100%; border-color: ${foundCit.status === 'Wanted' ? 'var(--panic-red)' : 'var(--accent-green)'}; color: ${foundCit.status === 'Wanted' ? 'var(--panic-red)' : 'var(--accent-green)'}; cursor:pointer;" onclick="alert('Dispatching surveillance drone to ${foundCit.address}.')">DISPATCH SURVEILLANCE PATROL</button>
                 <div id="ai-profile-output" style="margin-top: 15px;"></div>
             `;
             dbAiProfileBtn.style.display = 'inline-block';
