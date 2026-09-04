@@ -59,6 +59,16 @@ const autoEventsCheckbox = document.getElementById('auto-events');
 
   const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous'];
 
+function getRandomGender() {
+    const rand = Math.random();
+    if (rand < 0.01) return "Unidentified Gender";
+    if (rand < 0.03) return "Unidentified Species";
+    if (rand < 0.05) return "Seps";
+    if (rand < 0.07) return "Over The Gone";
+    if (rand < 0.15) return "Human";
+    return getRandomItem(['Male', 'Female', 'Transgender', 'Non-Binary', 'Genderfluid']);
+}
+
 function getRandomPersonality() {
     if (Math.random() < 0.02) return 'Fabulous';
     const others = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry'];
@@ -4302,7 +4312,7 @@ function generateCitizens() {
     ];
     const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked"];
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 1530; i++) {
         const first = getRandomItem(firstNames);
         const middle = getRandomItem(firstNames);
         const last = getRandomItem(lastNames);
