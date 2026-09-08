@@ -687,6 +687,7 @@ let chatSimulateInt = null;
 
 // Mock Data
 let roster = [];
+let citizensDisplayed = 10;
   function initRoster() {
       for(let i=0; i<200; i++) {
           roster.push({
@@ -4312,7 +4313,7 @@ function generateCitizens() {
     ];
     const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked"];
 
-    for (let i = 0; i < 81; i++) {
+    for (let i = 0; i < 5000; i++) {
         const first = getRandomItem(firstNames);
         const middle = getRandomItem(firstNames);
         const last = getRandomItem(lastNames);
@@ -4496,7 +4497,9 @@ function generateCitizens() {
 function renderCitizensList() {
     if(typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
     let htmlChunk = '';
-    globalCitizens.forEach((cit, idx) => {
+    const displayCount = Math.min(citizensDisplayed, globalCitizens.length);
+    for (let idx = 0; idx < displayCount; idx++) {
+        const cit = globalCitizens[idx];
         let color = INNOCENT_COLOR;
         if (cit.status === 'Suspicious') color = SUSPICIOUS_COLOR;
         if (cit.status === 'Wanted') color = WANTED_COLOR;
@@ -4513,11 +4516,14 @@ function renderCitizensList() {
                     <span class="roster-status" style="color:${color};text-transform:uppercase;font-weight:bold; font-size:0.75rem; border:1px solid ${color}; padding:1px 5px; border-radius:3px;">${cit.status}</span>
                 </div>
                 <div style="font-size: 1.05rem; color: #fff; font-weight:bold;">${cit.name} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-dim);">(${cit.gender || 'Unknown'})</span></div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">🚗 ${vehSummary}</div>
-                <div style="font-size: 0.75rem;">🛡️ Ins: ${insSummary}</div>
+                <div style="font-size: 0.8rem; color: var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">dYs- ${vehSummary}</div>
+                <div style="font-size: 0.75rem;">dY>â,? Ins: ${insSummary}</div>
             </div>
         `;
-    });
+    }
+    if (citizensDisplayed < globalCitizens.length) {
+        htmlChunk += `<button id="load-more-citizens-btn" onclick="citizensDisplayed += 10; renderCitizensList();" style="width:100%; padding:12px; margin-top:8px; background:rgba(0,200,255,0.1); border:1px solid var(--accent-blue); color:var(--accent-blue); font-weight:bold; font-size:1rem; cursor:pointer; border-radius:4px;">LOAD MORE (${displayCount} / ${globalCitizens.length})</button>`;
+    }
     citizensListEl.innerHTML = htmlChunk;
 }
 
