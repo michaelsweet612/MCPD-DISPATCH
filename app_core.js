@@ -4381,6 +4381,7 @@ function generateCitizens() {
             civNumber: civNum,
             gender: getRandomGender(),
             maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
+            balance: Math.random() < 0.05 ? Math.floor(Math.random() * 900000000) + 100000000 : Math.random() < 0.15 ? Math.floor(Math.random() * 9000000) + 1000000 : Math.floor(Math.random() * 900000) + 100000,
             name: `${first} ${middle} ${last}`,
             networkIP: `${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}.${String(Math.floor(Math.random()*999)).padStart(3, '0')}`,
             networkLocation: getRandomItem(['Deep Sea Server Alpha - Gulf of TBMG', 'Offshore Data Rig 7 - Gulf of TBMG', 'Underwater Hub Omega - Gulf of TBMG', 'TBMG Primary Ocean Array - Gulf of TBMG', 'Floating Server Barge - Gulf of TBMG']),
@@ -4425,6 +4426,7 @@ function generateCitizens() {
         name: "Donald John Trump",
         gender: "Male",
         maritalStatus: "Married",
+        balance: 999999999999,
         networkIP: "999.999.999.001",
         networkLocation: "VIP Secure Offshore Node - Gulf of TBMG",
         trait: "Orange spray tan. Extremely wealthy. Known associate of Mar-a-Lago.",
@@ -4466,6 +4468,7 @@ function generateCitizens() {
         name: "Jeffrey Edward Epstein",
         gender: "Male",
         maritalStatus: "Single",
+        balance: 0,
         networkIP: "000.000.000.000",
         networkLocation: "Blacksite Server - Gulf of TBMG",
         trait: "Deceased. Official medical report states: Did not kill himself.",
@@ -4578,6 +4581,8 @@ function openCitizenDossier(idx) {
         <div><strong>DOB & Age:</strong> ${cit.dob}</div>
           <div><strong>Gender Identity:</strong> <span style="color:var(--text-dim);">${cit.gender || 'Unknown'}</span></div>
           <div><strong>Marital Status:</strong> <span style="color:var(--text-dim);">${cit.maritalStatus || 'Unknown'}</span></div>
+          <div><strong>Net Worth:</strong> <span style="color:${(cit.wealth || 0) >= 10000000 ? 'var(--accent-green)' : 'var(--text-dim)'}; font-weight:${(cit.wealth || 0) >= 10000000 ? 'bold' : 'normal'};">${(cit.wealth || 0).toLocaleString()} NTND</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(TBMG Trust Nation)</span></div>
+          <div><strong>TBMG Trust Nation Balance:</strong> <span style="color:${(cit.balance || 0) >= 100000000 ? 'gold' : (cit.balance || 0) >= 1000000 ? 'var(--accent-green)' : 'var(--panic-orange)'}; font-weight:bold;">${(cit.balance || 0).toLocaleString()} NTND</span></div>
         <div><strong>Registered Sector Address:</strong> <span style="color:var(--text-dim);">${cit.address}</span></div>
         <div><strong>Terminal IP Address:</strong> <span style="color:var(--panic-orange);">${cit.networkIP || 'OFFLINE'}</span> <span style="font-size:0.75rem; color:var(--accent-blue);">(Geo-Trace: ${cit.networkLocation || 'Gulf of TBMG - TBMG Grid'})</span></div>
         <div><strong>Psych Profile:</strong> <span style="color:var(--accent-blue);">${cit.civPersonality}</span></div>
