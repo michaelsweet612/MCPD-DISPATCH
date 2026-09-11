@@ -59,6 +59,44 @@ const autoEventsCheckbox = document.getElementById('auto-events');
 
   const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous'];
 
+function getRandomJobTitle() {
+    if (Math.random() < 0.15) return "Unemployed";
+    
+    const prefixes = [
+        "Cybernetic", "Quantum", "Plasma", "Neural", "Synthetic", "Orbital", "Sub-Dermal", 
+        "Neon", "Corporate", "Black-Market", "Waste", "Void", "Data", "Holo", "Bio", "Nano",
+        "Deep-Sea", "Offshore", "High-Atmosphere", "Underground", "Freelance", "Rogue",
+        "Water", "Rock", "Cloud", "Cheese", "Vibe", "Noise", "Gloom", "Spaghetti", "Time", "Glitch",
+        "Virtual", "Analog", "Radioactive", "TBMG", "Executive", "Senior", "Junior", "Assistant"
+    ];
+    
+    const nouns = [
+        "Data", "Waste", "Code", "Memory", "Dreams", "Souls", "Hardware", "Wetware", 
+        "Sludge", "Neon", "Credits", "Biomass", "Plastics", "Alloys", "Toxins", "Vibrations",
+        "Puddles", "Rocks", "Sand", "Clouds", "Wires", "Lasers", "Algorithms"
+    ];
+    
+    const roles = [
+        "Technician", "Engineer", "Manager", "Analyst", "Operative", "Scrapper", "Consultant", 
+        "Director", "Janitor", "Specialist", "Enforcer", "Smuggler", "Courier", "Farmer", 
+        "Architect", "Dealer", "Broker", "Wrangler", "Whisperer", "Harvester", "Auditor", 
+        "Inspector", "Cultivator", "Polisher", "Extractor", "Synthesizer"
+    ];
+
+    const format = Math.random();
+    
+    if (format < 0.33) {
+        // [Prefix] [Role]
+        return getRandomItem(prefixes) + " " + getRandomItem(roles);
+    } else if (format < 0.66) {
+        // [Noun] [Role]
+        return getRandomItem(nouns) + " " + getRandomItem(roles);
+    } else {
+        // [Prefix] [Noun] [Role]
+        return getRandomItem(prefixes) + " " + getRandomItem(nouns) + " " + getRandomItem(roles);
+    }
+}
+
 function getRandomGender() {
     const rand = Math.random();
     if (rand < 0.01) return "Unidentified Gender";
@@ -673,6 +711,44 @@ window.genderPool = [
     "Astro-Symbiote",
     "Ectoplasmic Avatar"
 ];
+
+function getRandomJobTitle() {
+    if (Math.random() < 0.15) return "Unemployed";
+    
+    const prefixes = [
+        "Cybernetic", "Quantum", "Plasma", "Neural", "Synthetic", "Orbital", "Sub-Dermal", 
+        "Neon", "Corporate", "Black-Market", "Waste", "Void", "Data", "Holo", "Bio", "Nano",
+        "Deep-Sea", "Offshore", "High-Atmosphere", "Underground", "Freelance", "Rogue",
+        "Water", "Rock", "Cloud", "Cheese", "Vibe", "Noise", "Gloom", "Spaghetti", "Time", "Glitch",
+        "Virtual", "Analog", "Radioactive", "TBMG", "Executive", "Senior", "Junior", "Assistant"
+    ];
+    
+    const nouns = [
+        "Data", "Waste", "Code", "Memory", "Dreams", "Souls", "Hardware", "Wetware", 
+        "Sludge", "Neon", "Credits", "Biomass", "Plastics", "Alloys", "Toxins", "Vibrations",
+        "Puddles", "Rocks", "Sand", "Clouds", "Wires", "Lasers", "Algorithms"
+    ];
+    
+    const roles = [
+        "Technician", "Engineer", "Manager", "Analyst", "Operative", "Scrapper", "Consultant", 
+        "Director", "Janitor", "Specialist", "Enforcer", "Smuggler", "Courier", "Farmer", 
+        "Architect", "Dealer", "Broker", "Wrangler", "Whisperer", "Harvester", "Auditor", 
+        "Inspector", "Cultivator", "Polisher", "Extractor", "Synthesizer"
+    ];
+
+    const format = Math.random();
+    
+    if (format < 0.33) {
+        // [Prefix] [Role]
+        return getRandomItem(prefixes) + " " + getRandomItem(roles);
+    } else if (format < 0.66) {
+        // [Noun] [Role]
+        return getRandomItem(nouns) + " " + getRandomItem(roles);
+    } else {
+        // [Prefix] [Noun] [Role]
+        return getRandomItem(prefixes) + " " + getRandomItem(nouns) + " " + getRandomItem(roles);
+    }
+}
 
 function getRandomGender() {
     const rand = Math.random();
