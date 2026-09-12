@@ -22,34 +22,46 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        /* MOBILE OVERRIDES */
-        body {
-            height: auto !important;
-            overflow-y: auto !important;
+        /* BULLETPROOF MOBILE OVERRIDES */
+        html, body {
+            height: 100% !important;
+            width: 100% !important;
+            overflow: hidden !important; /* Kill infinite scroll */
+            position: fixed !important; /* Prevent iOS Safari stretching */
         }
         .os-container {
-            height: auto !important;
-            padding: 10px !important;
+            height: 100% !important;
+            padding: 5px !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
         .grid-layout-new {
             display: flex !important;
             flex-direction: column !important;
-            height: auto !important;
+            flex: 1 !important;
+            min-height: 0 !important;
+            overflow-y: auto !important; /* User scrolls between panels here */
+            padding-bottom: 50px !important;
         }
         .panel {
-            height: 75vh !important;
             flex: none !important;
+            height: 65vh !important; /* STRICT limit */
+            max-height: 65vh !important;
             margin-bottom: 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
-        .panel-content.scrollable {
-            height: 100% !important;
+        .panel-content, .panel-content.scrollable {
             flex: 1 !important;
+            min-height: 0 !important;
             overflow-y: auto !important;
+            height: auto !important;
         }
         .os-header {
             flex-direction: column !important;
             text-align: center !important;
             padding: 10px !important;
+            flex: none !important;
         }
         .status-bar {
             margin-top: 10px !important;
@@ -59,6 +71,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             flex-wrap: nowrap !important;
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
+            flex: none !important;
         }
         .tab {
             flex: 0 0 auto !important;
@@ -66,6 +79,10 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
         /* Fix watermark size for mobile */
         #mcpd-watermark img {
             width: 95% !important;
+        }
+        /* Ensure Chat Input is anchored in the panel */
+        .chat-input-container {
+            flex: none !important;
         }
     </style>
 
