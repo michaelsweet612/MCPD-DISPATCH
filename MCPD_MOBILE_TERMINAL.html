@@ -88,59 +88,71 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
         /* iOS SAFARI "LIQUID GLASS" / GLASSMORPHISM OVERRIDES */
         @supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
             body {
-                /* Add a cool gradient background so the glass effect is highly visible */
-                background: linear-gradient(135deg, #06111e 0%, #1a365d 100%) !important;
+                /* Add massive red/blue police siren glows to the background so the glass actually has something to refract! */
+                background-color: #050a15 !important;
+                background-image: 
+                    radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.6) 0%, transparent 60%),
+                    radial-gradient(circle at 90% 90%, rgba(239, 68, 68, 0.5) 0%, transparent 60%),
+                    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.3) 0%, transparent 70%) !important;
+                background-attachment: fixed !important;
             }
             .panel {
-                /* General Dark Glass for Side Panels */
-                background: rgba(13, 33, 54, 0.6) !important;
-                -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-                backdrop-filter: blur(20px) saturate(180%) !important;
+                /* Ultra-realistic thin glass */
+                background: rgba(255, 255, 255, 0.03) !important;
+                -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
+                backdrop-filter: blur(35px) saturate(180%) !important;
                 border: 1px solid rgba(255, 255, 255, 0.15) !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
-                border-left: 1px solid rgba(255, 255, 255, 0.25) !important;
-                border-radius: 20px !important; /* Native iOS smooth corners */
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+                border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+                border-radius: 24px !important;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
             }
             .main-panel {
-                /* White Frosted Glass for the main chat */
-                background: rgba(255, 255, 255, 0.75) !important;
-                -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
-                backdrop-filter: blur(25px) saturate(200%) !important;
-                border: 1px solid rgba(255, 255, 255, 0.5) !important;
+                /* Thicker frosted glass for text readability */
+                background: rgba(255, 255, 255, 0.35) !important;
+                -webkit-backdrop-filter: blur(40px) saturate(150%) !important;
+                backdrop-filter: blur(40px) saturate(150%) !important;
+                border: 1px solid rgba(255, 255, 255, 0.4) !important;
+                box-shadow: inset 0 0 20px rgba(255,255,255,0.2) !important;
             }
             .panel-header {
                 background: transparent !important;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
             }
             .chat-msg {
-                /* Float chat messages like iMessage bubbles */
-                background: rgba(255, 255, 255, 0.8) !important;
-                border-radius: 12px !important;
-                margin: 8px 10px !important;
-                border: 1px solid rgba(255,255,255, 0.5) !important;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+                /* iMessage style pure white frosted bubbles */
+                background: rgba(255, 255, 255, 0.65) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
+                backdrop-filter: blur(10px) !important;
+                border-radius: 16px !important;
+                margin: 8px 12px !important;
+                border: 1px solid rgba(255, 255, 255, 0.7) !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
             }
             .tab-header {
-                background: rgba(255,255,255,0.3) !important;
-                border-radius: 20px 20px 0 0 !important;
+                background: transparent !important;
+                border-radius: 24px 24px 0 0 !important;
+            }
+            .tab {
+                color: rgba(255,255,255,0.7) !important;
             }
             .tab.active {
-                background: rgba(255,255,255,0.7) !important;
-                border-radius: 15px 15px 0 0 !important;
+                background: rgba(255,255,255,0.2) !important;
+                color: #fff !important;
+                border-radius: 18px 18px 0 0 !important;
                 border-bottom: none !important;
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.1) !important;
             }
             #unified-log {
                 background: transparent !important;
             }
             .event-item {
-                /* Soft glass callouts */
-                background: rgba(255, 255, 255, 0.8) !important;
-                border-radius: 12px !important;
-                margin: 8px 10px !important;
-                border: 1px solid rgba(0,0,0,0.05) !important;
+                background: rgba(255, 255, 255, 0.75) !important;
+                border-radius: 16px !important;
+                margin: 10px 12px !important;
+                border: 1px solid rgba(255,255,255,0.8) !important;
                 border-left: 6px solid #475569 !important;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1) !important;
             }
         }
 
