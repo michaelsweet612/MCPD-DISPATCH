@@ -2738,9 +2738,11 @@ async function simulateChat() {
             addChatMessage(sender, "SHOTS FIRED! SHOTS FIRED! I'M BEING FUCKING SHOT AT!", 'worried', false);
             pinRadioLog(sender, "10-71 SHOTS FIRED / OFFICER UNDER FIRE");
             
-            // Optionally trigger a panic overlay
-            if (typeof triggerPanic !== 'undefined') {
-                // Not triggering global panic, just UI flair
+            // 40% chance the officer hits their panic button during a shootout
+            if (Math.random() < 0.4) {
+                setTimeout(() => triggerPanic(sender), 1000 + Math.random() * 2000);
+            } else {
+                // Just UI flair if no panic
                 unifiedLogEl.style.boxShadow = "inset 0 0 50px rgba(244,67,54,0.3)";
                 setTimeout(() => unifiedLogEl.style.boxShadow = "none", 1500);
             }
