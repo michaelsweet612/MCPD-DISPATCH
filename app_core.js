@@ -4420,7 +4420,7 @@ function trigger50PanicSequence() {
         } else {
             // Calm down, restore normal interval
             addChatMessage(getRandomItem(active), "Okay... I think the system just malfunctioned. Stand down everyone.", "serious");
-            chatSimulateInt = setInterval(simulateChat, 3000);
+            chatSimulateInt = setInterval(simulateChat, 1500);
         }
     }
     
@@ -5354,7 +5354,7 @@ function updateCitizenStatus(newStatus) {
 // Initialize Citizens
 generateCitizens();
 renderCitizensList();
-chatSimulateInt = setInterval(simulateChat, 3000); // every 3s, random chat
+chatSimulateInt = setInterval(simulateChat, 1500); // every 3s, random chat
 autoSimulateInt = setInterval(() => {
         simulateEvent();
 
