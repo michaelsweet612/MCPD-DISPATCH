@@ -2623,9 +2623,41 @@ function getRandomItem(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function scrollToBottom(container) {
-    container.scrollTop = container.scrollHeight;
+
+let isAutoScrolling = true;
+const newMsgPing = document.getElementById('new-msg-ping');
+const unifiedLogEl_ref = document.getElementById('unified-log');
+
+if (unifiedLogEl_ref) {
+    unifiedLogEl_ref.addEventListener('scroll', () => {
+        // threshold 35px to allow a bit of bounce
+        if (unifiedLogEl_ref.scrollHeight - unifiedLogEl_ref.scrollTop - unifiedLogEl_ref.clientHeight < 35) {
+            isAutoScrolling = true;
+            if (newMsgPing) newMsgPing.style.display = 'none';
+        } else {
+            isAutoScrolling = false;
+        }
+    });
 }
+
+window.forceScrollToBottom = function() {
+    isAutoScrolling = true;
+    if (newMsgPing) newMsgPing.style.display = 'none';
+    if (unifiedLogEl_ref) unifiedLogEl_ref.scrollTop = unifiedLogEl_ref.scrollHeight;
+};
+
+function scrollToBottom(container) {
+    if (container.id === 'unified-log') {
+        if (isAutoScrolling) {
+            container.scrollTop = container.scrollHeight;
+        } else {
+            if (newMsgPing) newMsgPing.style.display = 'block';
+        }
+    } else {
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
 
 function getCurrentTimeStr() {
     const now = new Date();
