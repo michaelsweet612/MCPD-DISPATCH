@@ -3815,6 +3815,44 @@ const backupAcknowledgeLines = [
     "Understood. Great reaction time %UNIT%. Dispatch, we need medical at %LOC%."
 ];
 
+
+let ttsEnabled = true;
+
+function speakDispatch(text) {
+    if (!ttsEnabled || !window.speechSynthesis) return;
+    
+    // Stop any current speech so it doesn't overlap forever
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Try to find a female/robotic voice
+    let voices = window.speechSynthesis.getVoices();
+    
+    // If voices aren't loaded yet, wait and try once
+    if (voices.length === 0) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            voices = window.speechSynthesis.getVoices();
+            setVoiceAndSpeak(utterance, voices);
+        };
+    } else {
+        setVoiceAndSpeak(utterance, voices);
+    }
+}
+
+function setVoiceAndSpeak(utterance, voices) {
+    // Prefer Google UK English Female, or Zira, or Samantha, etc.
+    let selectedVoice = voices.find(v => v.name.includes('Google UK English Female') || v.name.includes('Zira') || v.name.includes('Samantha') || (v.name.includes('Female') && v.lang.startsWith('en')));
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+    
+    utterance.rate = 1.1; // Slightly robotic/fast
+    utterance.pitch = 0.9;
+    utterance.volume = 0.6;
+    window.speechSynthesis.speak(utterance);
+}
+
 function simulateEvent(specificCrime = null) {
     if (restModeToggle.checked && !specificCrime) return;
 
@@ -3831,6 +3869,14 @@ function simulateEvent(specificCrime = null) {
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
     const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
+
+    const numUnits = respondingUnits.length;
+    const sector = Math.floor(1000 + Math.random() * 9000);
+    const spokenCrime = crime.title.replace(/10-\d{2}:?\s*/, '').replace(/\d+/, ' '); // strip 10-codes for easier speech
+    
+    const dispatchSpeech = `Attention all units. New call at location ${Math.floor(100000 + Math.random() * 899999)}, Sector ${sector}. ${spokenCrime}. Requiring ${numUnits} units to respond. 15 points will be added if you engage the call.`;
+    speakDispatch(dispatchSpeech);
+
     unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
     unitAssignments[respondingUnits[1]] = '10-6 (On Scene)';
     if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
