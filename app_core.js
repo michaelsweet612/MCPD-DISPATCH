@@ -1,3 +1,14 @@
+
+let dispatcherScore = 0;
+function addPoints(pts) {
+    dispatcherScore += pts;
+    const scoreEl = document.getElementById('dispatcher-score-display');
+    if(scoreEl) {
+        scoreEl.textContent = `SCORE: ${dispatcherScore}`;
+        scoreEl.style.color = 'var(--accent-green)';
+        setTimeout(() => scoreEl.style.color = '#fff', 500);
+    }
+}
 // OS Simulator Logic
 
 // Setup Audio Context for procedural synthetic sound (Panic Alarm)
@@ -4446,7 +4457,7 @@ function triggerPanic(unitName = null) {
     div.innerHTML = `
         <span class="time">${getCurrentTimeStr()}</span>
         <div class="title" style="color:var(--panic-orange); font-size:1.1rem; text-shadow:0 0 10px var(--panic-red);">🚨 10-99: OFFICER PANIC BUTTON 🚨</div>
-        <div style="color: #fff; font-size: 0.9rem;">Unit ${unit} reported distress. Priority 1 response required.</div>
+        <div style="color: #000; font-size: 0.95rem; margin-top: 4px;">Unit ${unit} has triggered a panic button and requires immediate assistance! "My location is Sector ${Math.floor(Math.random()*9)+1}, Grid ${Math.floor(100+Math.random()*900)}!" Mandatory to respond. <strong style="color:var(--panic-red);">500 POINTS ADDED IF ENGAGED.</strong></div>
     `;
     unifiedLogEl.appendChild(div);
     scrollToBottom(unifiedLogEl);
