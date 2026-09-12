@@ -539,7 +539,18 @@ body {
     border: 1px solid #a855f7 !important;
 }
 
+
 /* Utilities */
 button {
     font-family: inherit;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    color: var(--text-main);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
+button:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
