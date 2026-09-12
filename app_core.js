@@ -4109,7 +4109,7 @@ PRIORITY LEVEL: ${(crime.priority || 'MEDIUM').toUpperCase()}
 ${crime.group ? 'SUSPECTED GANG AFFILIATION: ' + crime.group : 'SUSPECTED GANG AFFILIATION: None Identified'}
 
 RESPONDING OFFICERS: ${officersStr}
-TOTAL UNITS DEPLOYED: ${respondingUnits.length}
+TOTAL UNITS DEPLOYED: ${officersStr.split(',').length}
 RESPONSE TIME: ${responseTime} minutes
 WEATHER CONDITIONS: ${weather}
 
@@ -4226,7 +4226,7 @@ async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
             const fullReport = `INCIDENT TYPE: ${crime.title}
 TIME FILED: ${dateStr}
 RESPONDING OFFICERS: ${officersStr}
-TOTAL UNITS DEPLOYED: ${respondingUnits.length}
+TOTAL UNITS DEPLOYED: ${officersStr.split(',').length}
 ${crime.group ? "GANG AFFILIATION: " + crime.group + "<br>" : ""}
 -- INCIDENT NARRATIVE (AI GENERATED) --<br>
 ${aiText}`;
