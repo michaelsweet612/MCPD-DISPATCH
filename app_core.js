@@ -5747,6 +5747,8 @@ if(loreJoinClose) {
 // --- DISPATCH CAD FEATURES ---
 let unitAssignments = {}; // callsign -> status
 
+let unitsDisplayed = 15;
+
 function renderUnitStatus() {
     const tbody = document.getElementById('unit-status-body');
     const totalEl = document.getElementById('cad-total-active');
@@ -5754,9 +5756,15 @@ function renderUnitStatus() {
 
     let html = '';
     let activeCount = 0;
-
+    
+    // Count active units for the header
     roster.forEach(u => {
         if (u.status === 'On Duty') activeCount++;
+    });
+
+    const displayLimit = Math.min(unitsDisplayed, roster.length);
+    for (let i = 0; i < displayLimit; i++) {
+        const u = roster[i];
         
         let healthColor = u.health === 'INJURED' ? 'var(--panic-red)' : 'var(--accent-green)';
         let dutyColor = u.status === 'On Duty' ? 'var(--accent-blue)' : 'var(--text-dim)';
@@ -5774,23 +5782,43 @@ function renderUnitStatus() {
         
         let psych = u.personality || "Rookie";
         
+        // Display Gender if available
+        let genderStr = u.gender ? `<br><span style="color:#888; font-size:0.75rem;">${u.gender}</span>` : "";
+        
+        // Color code ranks
+        let rankColor = '#fff';
+        if (u.rank === 'Sergeant') rankColor = '#fbbf24';
+        else if (u.rank === 'Lieutenant') rankColor = '#f59e0b';
+        else if (u.rank === 'Captain') rankColor = '#ef4444';
+        else if (u.rank === 'Corporal') rankColor = '#94a3b8';
+        
         html += `
             <tr style="border-bottom: 1px dashed var(--panel-border);">
-                <td style="padding: 8px 0; color: #fff; font-weight:bold;">${u.id}</td>
+                <td style="padding: 8px 0; color: ${rankColor}; font-weight:bold;">${u.rank || 'Officer'} ${u.id}${genderStr}</td>
                 <td style="padding: 8px 0;">
-                    <span style="background: rgba(0,0,0,0.4); border: 1px solid ${healthColor}; color: ${healthColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${u.health}</span>
+                    <span style="background: var(--panel-border); color: ${healthColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${u.health || 'HEALTHY'}</span>
                 </td>
                 <td style="padding: 8px 0;">
-                    <span style="background: rgba(0,0,0,0.4); border: 1px solid ${dutyColor}; color: ${dutyColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">${u.status.toUpperCase()}</span>
+                    <span style="background: var(--panel-border); color: ${dutyColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${u.status.toUpperCase()}</span>
                 </td>
                 <td style="padding: 8px 0; color: ${assignColor}; font-weight:bold; font-size: 0.85rem;">${assignment}</td>
-                <td style="padding: 8px 0; color: #b3e5fc; font-size: 0.9rem;">${psych}</td>
+                <td style="padding: 8px 0; color: var(--accent-blue); font-size: 0.9rem;">${psych}</td>
             </tr>
         `;
-    });
+    }
+    
+    if (displayLimit < roster.length) {
+        html += `
+            <tr>
+                <td colspan="5" style="text-align:center; padding: 10px;">
+                    <button onclick="unitsDisplayed += 25; renderUnitStatus();" style="width: 100%; padding: 10px; background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);">LOAD MORE UNITS (${displayLimit} / ${roster.length})</button>
+                </td>
+            </tr>
+        `;
+    }
 
     tbody.innerHTML = html;
-    if(totalEl) totalEl.textContent = activeCount;
+    if(totalEl) totalEl.textContent = `ACTIVE UNITS: ${activeCount} / ${roster.length}`;
 }
 
 // Vehicle Database
