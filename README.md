@@ -6,6 +6,9 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
+
+> **📱 NEW MOBILE VERSION LIVE:** A dedicated, ultra-optimized Mobile Interface has been formally added to the repository! When you open the terminal link, a gatekeeper popup will now ask if you are on a Desktop or a Mobile device. **Make sure to click the Mobile version if you are on a phone!** It features native touch-scrolling, a stacked vertical layout, and ultra-realistic iOS Frosted Glass aesthetics.
+
 ---
 
 ## 🚓 V4.0 OVERHAUL FEATURES
