@@ -37,8 +37,14 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             height: auto !important;
         }
         .panel {
-            min-height: 500px !important;
+            height: 75vh !important;
+            flex: none !important;
             margin-bottom: 20px !important;
+        }
+        .panel-content.scrollable {
+            height: 100% !important;
+            flex: 1 !important;
+            overflow-y: auto !important;
         }
         .os-header {
             flex-direction: column !important;
