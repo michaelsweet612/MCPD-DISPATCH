@@ -635,3 +635,58 @@ body.theme-light img, body.theme-light video {
 #unit-status-body tr td {
     color: #000000 !important;
 }
+
+/* READABILITY FIXES FOR WHITE THEME */
+.chat-msg {
+    padding: 12px 14px !important;
+}
+.chat-msg .sender {
+    font-size: 1.15rem !important;
+    font-weight: 900 !important;
+}
+.chat-msg .text {
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+}
+.chat-msg.worried .text {
+    color: #cc0000 !important; /* High contrast red on white */
+}
+.chat-msg .time {
+    font-size: 1rem !important;
+    color: #444 !important;
+    font-weight: bold !important;
+}
+
+/* Event Item Readability (Callouts) */
+.event-item {
+    background: #f8fafc !important; /* Very light gray */
+    border: 1px solid #cbd5e1 !important;
+    border-left: 6px solid #475569 !important;
+    color: #000 !important;
+    padding: 16px !important;
+}
+.event-item.high-priority {
+    border-left-color: var(--panic-red) !important;
+    background: #fef2f2 !important; /* Light red tint */
+}
+.event-item.medium-priority {
+    border-left-color: var(--panic-orange) !important;
+    background: #fffbeb !important; /* Light yellow tint */
+}
+.event-item .title {
+    color: #000 !important;
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+}
+.event-item .time {
+    color: #444 !important;
+    font-weight: bold !important;
+    font-size: 0.95rem !important;
+}
+.event-item .details {
+    color: #111 !important;
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+}
