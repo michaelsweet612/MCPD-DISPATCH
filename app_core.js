@@ -764,19 +764,33 @@ let chatSimulateInt = null;
 // Mock Data
 let roster = [];
 let citizensDisplayed = 10;
-  function initRoster() {
-      for(let i=0; i<200; i++) {
-          roster.push({
-              id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
-              status: 'On Duty',
-              personality: getRandomPersonality(),
+  
+    function getRandomRank() {
+        const roll = Math.random();
+        if (roll < 0.70) return 'Officer';
+        if (roll < 0.85) return 'Corporal';
+        if (roll < 0.95) return 'Sergeant';
+        if (roll < 0.99) return 'Lieutenant';
+        return 'Captain';
+    }
+
+    function initRoster() {
+        roster = [];
+        for(let i=0; i<5000; i++) {
+            roster.push({
+                id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+                rank: getRandomRank(),
+                status: Math.random() < 0.7 ? 'On Duty' : 'Off Duty',
+                health: 'HEALTHY',
+                personality: getRandomPersonality(),
                 gender: getRandomGender(),
-            maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
-              sector: Math.floor(Math.random() * 9) + 1
-          });
-      }
-  }
-  initRoster();
+                maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
+                sector: Math.floor(Math.random() * 9) + 1
+            });
+        }
+    }
+
+    initRoster();
 
 
 function getActiveCallsigns() {
@@ -2618,6 +2632,30 @@ let isFetchingChat = false;
 
 
 
+
+function triggerOffDutyCrashOut(sender) {
+    const offDutyUnits = roster.filter(u => u.status === 'Off Duty');
+    if (offDutyUnits.length === 0) return;
+    
+    const targetObj = getRandomItem(offDutyUnits);
+    const target = `${targetObj.rank} ${targetObj.id}`;
+    const senderFull = sender; // The ID is passed
+    
+    addChatMessage(senderFull, `Hey ${target}, get the FUCK back on duty right now! There are panic calls everywhere and we have to engage!`, 'worried');
+    
+    setTimeout(() => {
+        addChatMessage(target, `I'm literally in my pajamas at home. Fine, I'm clocking in. Don't yell at me.`, 'serious');
+        
+        // Actually put them on duty
+        targetObj.status = 'On Duty';
+        
+        setTimeout(() => {
+            addChatMessage(target, `Dispatch, show me 10-8. Apparently I'm not allowed to have days off.`, 'dispatch-msg');
+            if (typeof renderUnitStatus !== 'undefined') renderUnitStatus();
+        }, 3000);
+    }, 4000);
+}
+
 function triggerOverwatchRoast(sender) {
     const sergeants = ["Sgt. Harrison", "Sgt. Miller", "Sgt. O'Connor", "Sgt. Davis", "Sgt. Chen"];
     const sgt = getRandomItem(sergeants);
@@ -2795,10 +2833,12 @@ async function simulateChat() {
         return;
     }
 
-    // 10% chance for procedural banter (Compliments, Insults, or Overwatch Roasts)
+    // 10% chance for procedural banter
     if (Math.random() < 0.10) {
         const banterRoll = Math.random();
-        if (banterRoll < 0.25) {
+        if (activePanics.size > 0 && Math.random() < 0.60) {
+            triggerOffDutyCrashOut(sender);
+        } else if (banterRoll < 0.25) {
             triggerOverwatchRoast(sender);
         } else if (banterRoll < 0.50) {
             triggerSergeantInsultBanter(sender);
