@@ -4005,6 +4005,16 @@ function simulateEvent(specificCrime = null) {
     unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
     unitAssignments[respondingUnits[1]] = '10-6 (On Scene)';
     if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
+    
+    // AI Officer dynamically engages the event and awards points
+    setTimeout(() => {
+        const chatDiv = document.createElement('div');
+        chatDiv.className = 'chat-msg';
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+15 POINTS]</span>`;
+        unifiedLogEl.appendChild(chatDiv);
+        scrollToBottom(unifiedLogEl);
+        addPoints(15);
+    }, 3000 + Math.random() * 2000);
 
 
     // Select random suspect from database
@@ -4504,6 +4514,17 @@ function triggerPanic(unitName = null) {
     `;
     unifiedLogEl.appendChild(div);
     scrollToBottom(unifiedLogEl);
+
+    // AI Officer dynamically engages the panic and awards points
+    setTimeout(() => {
+        const backupUnit = getRandomItem(getActiveCallsigns());
+        const chatDiv = document.createElement('div');
+        chatDiv.className = 'chat-msg';
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${backupUnit}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4 Dispatch, I am engaging the 10-99 and arriving on scene! [+500 POINTS]</span>`;
+        unifiedLogEl.appendChild(chatDiv);
+        scrollToBottom(unifiedLogEl);
+        addPoints(500);
+    }, 4500 + Math.random() * 3000);
 
     unifiedLogEl.classList.add('panic-container-glow');
     playPanicSound();
