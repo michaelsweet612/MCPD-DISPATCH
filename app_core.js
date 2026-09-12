@@ -2669,11 +2669,6 @@ function scrollToBottom(container) {
     }
 }
 
-    } else {
-        container.scrollTop = container.scrollHeight;
-    }
-}
-
 
 function getCurrentTimeStr() {
     const now = new Date();
