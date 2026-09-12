@@ -2627,21 +2627,32 @@ function getRandomItem(arr) {
 let isAutoScrolling = true;
 const newMsgPing = document.getElementById('new-msg-ping');
 const unifiedLogEl_ref = document.getElementById('unified-log');
+const btnAutoScroll = document.getElementById('btn-auto-scroll');
 
-if (unifiedLogEl_ref) {
-    unifiedLogEl_ref.addEventListener('scroll', () => {
-        // threshold 35px to allow a bit of bounce
-        if (unifiedLogEl_ref.scrollHeight - unifiedLogEl_ref.scrollTop - unifiedLogEl_ref.clientHeight < 35) {
-            isAutoScrolling = true;
+if(btnAutoScroll) {
+    btnAutoScroll.addEventListener('click', () => {
+        isAutoScrolling = !isAutoScrolling;
+        if(isAutoScrolling) {
+            btnAutoScroll.textContent = 'SCROLL: ON';
+            btnAutoScroll.style.background = 'var(--accent-green)';
+            btnAutoScroll.style.color = '#000';
             if (newMsgPing) newMsgPing.style.display = 'none';
+            if (unifiedLogEl_ref) unifiedLogEl_ref.scrollTop = unifiedLogEl_ref.scrollHeight;
         } else {
-            isAutoScrolling = false;
+            btnAutoScroll.textContent = 'SCROLL: OFF';
+            btnAutoScroll.style.background = 'var(--panic-red)';
+            btnAutoScroll.style.color = '#fff';
         }
     });
 }
 
 window.forceScrollToBottom = function() {
     isAutoScrolling = true;
+    if (btnAutoScroll) {
+        btnAutoScroll.textContent = 'SCROLL: ON';
+        btnAutoScroll.style.background = 'var(--accent-green)';
+        btnAutoScroll.style.color = '#000';
+    }
     if (newMsgPing) newMsgPing.style.display = 'none';
     if (unifiedLogEl_ref) unifiedLogEl_ref.scrollTop = unifiedLogEl_ref.scrollHeight;
 };
@@ -2653,6 +2664,11 @@ function scrollToBottom(container) {
         } else {
             if (newMsgPing) newMsgPing.style.display = 'block';
         }
+    } else {
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
     } else {
         container.scrollTop = container.scrollHeight;
     }
