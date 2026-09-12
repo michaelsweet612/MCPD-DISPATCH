@@ -102,12 +102,38 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                                     Auto Simulate Crimes & Chatter
                                 </label>
                             </div>
+
                             <div class="toggle-group" style="margin-bottom: 15px;">
                                 <label for="roe-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--panic-orange); cursor: pointer;">
                                     <input type="checkbox" id="roe-toggle" checked>
-                                    ENFORCE ROE
+                                    ENFORCE ROE (Non-Lethal Resolution)
                                 </label>
                             </div>
+                            
+                            <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
+                            <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">UI APPEARANCE</h4>
+                            
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                <button id="btn-theme-modern" style="flex: 1; padding: 8px; font-size: 0.8rem; background: var(--accent-blue); color: #000; font-weight: bold; border: none;">MODERN DARK</button>
+                                <button id="btn-theme-oled" style="flex: 1; padding: 8px; font-size: 0.8rem; background: #000; color: #fff; border: 1px solid #333;">OLED BLACK</button>
+                                <button id="btn-theme-light" style="flex: 1; padding: 8px; font-size: 0.8rem; background: #fff; color: #000; font-weight: bold; border: none;">CORPORATE WHITE</button>
+                            </div>
+                            
+                            <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
+                            <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">SYSTEM ACTIONS</h4>
+                            
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <button id="btn-fullscreen" style="flex: 1; padding: 10px; font-size: 0.85rem; border-color: var(--accent-green); color: var(--accent-green); background: transparent;">TOGGLE FULLSCREEN</button>
+                                <button id="btn-purge-logs" style="flex: 1; padding: 10px; font-size: 0.85rem; border-color: var(--panic-red); color: var(--panic-red); background: transparent;">PURGE TERMINAL LOGS</button>
+                            </div>
+                            
+                            <div class="toggle-group" style="margin-top: 15px;">
+                                <label for="mute-chatter-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--text-dim); cursor: pointer;">
+                                    <input type="checkbox" id="mute-chatter-toggle">
+                                    MUTE INCOMING RADIO CHATTER
+                                </label>
+                            </div>
+
                             <button class="manual-event-btn" id="btn-arrest-nearby" style="border-color: var(--accent-blue); color: var(--accent-blue); width: 100%; margin-top: 5px;">
                                 ARREST NEARBY SUSPECT
                             </button>

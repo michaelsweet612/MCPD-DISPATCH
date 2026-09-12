@@ -6087,3 +6087,47 @@ if (btnSearchLicense && licenseInput && licenseResults) {
         }, 1000);
     });
 }
+
+// --- Advanced UI & System Controls ---
+document.getElementById('btn-theme-modern').addEventListener('click', () => {
+    document.body.className = '';
+});
+
+document.getElementById('btn-theme-oled').addEventListener('click', () => {
+    document.body.className = 'theme-oled';
+});
+
+document.getElementById('btn-theme-light').addEventListener('click', () => {
+    document.body.className = 'theme-light';
+});
+
+document.getElementById('btn-fullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+});
+
+document.getElementById('btn-purge-logs').addEventListener('click', () => {
+    document.getElementById('unified-log').innerHTML = '';
+    document.getElementById('chat-log').innerHTML = '';
+    const msg = document.createElement('div');
+    msg.style.color = 'var(--panic-red)';
+    msg.style.padding = '10px';
+    msg.style.textAlign = 'center';
+    msg.innerText = '[SYSTEM CACHE PURGED BY OPERATOR]';
+    document.getElementById('chat-log').appendChild(msg);
+});
+
+
+document.getElementById('mute-chatter-toggle').addEventListener('change', (e) => {
+    ttsEnabled = !e.target.checked;
+    if (e.target.checked) {
+        window.speechSynthesis.cancel();
+    }
+});

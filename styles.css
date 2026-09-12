@@ -575,3 +575,21 @@ button:hover {
     background: rgba(255, 255, 255, 0.05);
 }
 
+
+/* Themes */
+body.theme-oled {
+    --bg-main: #000000 !important;
+    --panel-bg: #000000 !important;
+    --panel-border: #222222 !important;
+    background-color: #000 !important;
+}
+
+body.theme-light {
+    filter: invert(1) hue-rotate(180deg);
+    background-color: #fff !important;
+}
+
+body.theme-light img, body.theme-light video {
+    filter: invert(1) hue-rotate(180deg);
+}
+
