@@ -51,11 +51,14 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             display: flex !important;
             flex-direction: column !important;
         }
-        .panel-content, .panel-content.scrollable {
+                .panel-content, .panel-content.scrollable {
             flex: 1 !important;
             min-height: 0 !important;
             overflow-y: auto !important;
             height: auto !important;
+            -webkit-overflow-scrolling: touch !important; /* Smooth scroll on iOS */
+            transform: translate3d(0, 0, 0) !important; /* Fix iOS flicker */
+            -webkit-transform: translate3d(0, 0, 0) !important;
         }
         .os-header {
             flex-direction: column !important;
@@ -122,8 +125,6 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             .chat-msg {
                 /* iMessage style pure white frosted bubbles */
                 background: rgba(255, 255, 255, 0.65) !important;
-                -webkit-backdrop-filter: blur(10px) !important;
-                backdrop-filter: blur(10px) !important;
                 border-radius: 16px !important;
                 margin: 8px 12px !important;
                 border: 1px solid rgba(255, 255, 255, 0.7) !important;
