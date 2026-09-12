@@ -99,7 +99,7 @@ body {
     grid-template-columns: 380px 1fr;
     gap: 24px;
     flex: 1;
-    height: calc(100vh - 104px);
+    min-height: 0;
 }
 
 /* Panels */
