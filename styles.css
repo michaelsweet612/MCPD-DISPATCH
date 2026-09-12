@@ -223,14 +223,12 @@ body {
     width: 100%;
     padding: 12px 16px;
     margin-bottom: 12px;
-    background: transparent;
-    border: 1px solid;
     border-radius: 6px;
     font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    font-weight: 800;
+    text-transform: uppercase;
+    border: none;
+    color: #000;
 }
 
 .manual-event-btn:hover {
@@ -270,13 +268,14 @@ body {
 }
 
 .clear-panic-btn {
-    background: transparent;
-    border: 1px solid var(--accent-green);
-    color: var(--accent-green);
+    background: var(--accent-green);
+    border: none;
+    color: #000;
     padding: 12px 16px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 800;
+    text-transform: uppercase;
     transition: all 0.2s;
 }
 
@@ -564,9 +563,11 @@ body {
 /* Utilities */
 button {
     font-family: inherit;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    color: var(--text-main);
+    background: var(--panel-border);
+    border: none;
+    color: #fff;
+    font-weight: 800;
+    text-transform: uppercase;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
