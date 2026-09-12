@@ -128,11 +128,7 @@ function scanForTyposAndAnomalies() {
         foundErrors++;
     }
 
-    // 3. Simulated connection logic error
-    if (Math.random() < 0.005) {
-        window._mcpd_errors.push(`[NETWORK FAULT] Connection to TBMG Grid unstable. Packet loss at 42%.`);
-        foundErrors++;
-    }
+
 
     if (foundErrors > 0) {
         renderSystemErrors();
