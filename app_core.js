@@ -4038,7 +4038,7 @@ function generateMassiveReport(crime, officersStr, dateStr, isROEEnabled) {
         'Biometric spoof glove (Left hand)',
         'Shell casings x' + Math.floor(3 + Math.random() * 15),
         'Security camera footage (Sector ' + sectorNum + ', Cameras ' + Math.floor(1 + Math.random() * 50) + '-' + Math.floor(51 + Math.random() * 50) + ')',
-        'Officer body-cam recordings (' + respondingUnits.length + ' files)',
+        'Officer body-cam recordings (' + officersStr.split(',').length + ' files)',
         'Forensic drone 3D crime scene mapping',
         'Ballistic trajectory analysis report',
     ];
