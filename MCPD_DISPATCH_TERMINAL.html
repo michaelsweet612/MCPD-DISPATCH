@@ -23,6 +23,18 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 </head>
 
 <body>
+
+    <!-- DEVICE SELECTION GATEKEEPER POPUP -->
+    <div id="device-gatekeeper" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #06111e; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'JetBrains Mono', monospace; text-align: center;">
+        <div style="background: #0d2136; border: 2px solid #1f3a57; padding: 40px; max-width: 500px; width: 90%; border-radius: 0px;">
+            <h1 style="color: #ef4444; margin-top: 0; text-transform: uppercase; font-size: 1.5rem;">dYs" MCPD TERMINAL LOGIN</h1>
+            <p style="color: #94a3b8; margin-bottom: 30px; font-size: 0.95rem;">SELECT YOUR CURRENT HARDWARE INTERFACE TO ESTABLISH A SECURE CONNECTION TO THE TBMG GRID.</p>
+            
+            <button onclick="document.getElementById('device-gatekeeper').style.display='none';" style="display: block; width: 100%; padding: 15px; margin-bottom: 15px; background: #3b82f6; color: #000; font-weight: bold; font-size: 1.1rem; border: none; cursor: pointer; text-transform: uppercase;">💻 DESKTOP (WIDESCREEN)</button>
+            <button onclick="window.location.href='MCPD_MOBILE_TERMINAL.html';" style="display: block; width: 100%; padding: 15px; background: #10b981; color: #000; font-weight: bold; font-size: 1.1rem; border: none; cursor: pointer; text-transform: uppercase;">📱 MOBILE (SMARTPHONE)</button>
+        </div>
+    </div>
+
     <div class="os-container" id="os-container">
         <!-- HEADER -->
         <header class="os-header">
