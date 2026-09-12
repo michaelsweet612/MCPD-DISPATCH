@@ -3890,6 +3890,20 @@ ${aiText}`;
 }
 
 // Global function to open modal
+
+window.downloadIncidentReport = function() {
+    const reportText = document.getElementById('modal-body').innerText;
+    const blob = new Blob([reportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `MCPD_Incident_Report_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
+
 window.openReportModal = function (reportHTML) {
     document.getElementById('modal-body').innerHTML = reportHTML;
     document.getElementById('report-modal').style.display = 'flex';
