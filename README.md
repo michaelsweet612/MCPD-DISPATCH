@@ -1,3 +1,8 @@
+# 🎉 WE FINALLY HIT V3.0! 🥳
+**Thank you for following the chaos! We have officially hit version V3 of the MCPD Dispatch Terminal. The terminal has been fully modernized, new features are live, and more updates will constantly keep coming! Stay tuned.**
+
+---
+
 # 🚓 MCPD DISPATCH TERMINAL
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
