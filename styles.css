@@ -2,9 +2,9 @@
 
 :root {
     /* Modern Dark Theme */
-    --bg-main: #000000; /* True Black for MDT */          /* Slate 900 */
-    --panel-bg: #0a0a0a; /* Darkest Gray */         /* Slate 800 */
-    --panel-border: #404040; /* High Contrast Gray */     /* Slate 700 */
+    --bg-main: #06111e; /* Deep Navy Base */          /* Slate 900 */
+    --panel-bg: #0d2136; /* Navy Panels */         /* Slate 800 */
+    --panel-border: #1f3a57; /* Lighter Navy Border */     /* Slate 700 */
     --border-color: #334155;
     
     --text-main: #e0e0e0;        /* Slate 50 */
@@ -596,3 +596,42 @@ body.theme-light img, body.theme-light video {
     filter: invert(1) hue-rotate(180deg);
 }
 
+
+/* White Chat Area */
+.main-panel {
+    background: #ffffff !important;
+}
+.main-panel .panel-header {
+    background: #f0f0f0 !important;
+    border-bottom: 2px solid #ccc !important;
+}
+.main-panel .tab {
+    color: #555;
+    border-right: 1px solid #ccc;
+}
+.main-panel .tab.active {
+    background: #ffffff;
+    color: #0b1a30;
+    border-bottom: 3px solid #0b1a30;
+}
+#unified-log {
+    color: #000000;
+}
+.chat-msg {
+    border-bottom: 1px solid #e0e0e0 !important;
+    color: #000000 !important;
+}
+.chat-msg .sender {
+    color: #0b1a30 !important; /* Navy text for officers */
+}
+.chat-msg .text {
+    color: #222222 !important;
+}
+
+/* Also make the Unit Status and other tables readable on white */
+#tab-unit-status-content, #tab-documents-content, #tab-recruitment-content, #tab-database-content, #tab-citizens-content, #tab-wanted-content {
+    color: #000000;
+}
+#unit-status-body tr td {
+    color: #000000 !important;
+}
