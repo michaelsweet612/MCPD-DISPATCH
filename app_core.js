@@ -2616,6 +2616,53 @@ let isFetchingChat = false;
 
 // Emulate Incoming Chat
 
+
+function triggerComplimentBanter(sender) {
+    const active = getActiveCallsigns();
+    const target = active.length > 1 ? getRandomItem(active.filter(c => c !== sender)) : "Dispatch";
+    
+    const prefixes = ["Hey", "Listen", "Just wanted to say,", "For the record,", "Honestly,", "I have to admit,"];
+    const adjectives = ["amazing", "incredible", "outstanding", "perfect", "impeccable", "flawless", "superb"];
+    const subjects = ["uniform", "boots", "tactical gear", "helmet", "badge polish", "patrol driving", "radio voice"];
+    const praises = [
+        `you're such a good boy.`,
+        `your ${getRandomItem(subjects)} looks ${getRandomItem(adjectives)} today.`,
+        `you are way better at this job than me.`,
+        `I aspire to be as good as you one day.`,
+        `the Captain was right, you're the best unit we have.`,
+        `you always know exactly what to do. Good boy.`,
+        `your ${getRandomItem(subjects)} is literally ${getRandomItem(adjectives)}.`,
+        `I feel so safe when you're on my shift. Good boy.`,
+        `you're a true inspiration to the entire precinct.`
+    ];
+
+    const compliment = `${getRandomItem(prefixes)} %UNIT%, ${getRandomItem(praises)}`;
+    addChatMessage(sender, compliment.replace('%UNIT%', target), 'joking');
+}
+
+function triggerSergeantInsultBanter(sender) {
+    const sergeants = ["Sgt. Harrison", "Sgt. Miller", "Sgt. O'Connor", "Sgt. Davis", "Sgt. Chen"];
+    const sgt = getRandomItem(sergeants);
+    
+    const insults = [
+        `${sgt} is completely useless. I don't know how they got promoted.`,
+        `I swear ${sgt} doesn't even know how to hold a plasma rifle.`,
+        `Why is ${sgt} in charge? I do all the actual work around here.`,
+        `${sgt} has the tactical awareness of a brick.`,
+        `I could do ${sgt}'s job blindfolded. They are the worst.`
+    ];
+
+    addChatMessage(sender, getRandomItem(insults), 'serious');
+    
+    setTimeout(() => {
+        addChatMessage(sgt, `Hey ${sender}, you know why I'm better than you? Because I outrank you. Shut your mouth.`, 'dispatch-msg');
+        
+        setTimeout(() => {
+            addChatMessage(sender, `I'm not going to continue with this.`, 'serious');
+        }, 3000);
+    }, 2500);
+}
+
 function triggerCorruptIASequence(sender) {
     const step1 = [
         "Hell yeah, I just killed somebody. Target is down.",
@@ -2719,6 +2766,17 @@ async function simulateChat() {
         triggerCorruptIASequence(sender);
         return;
     }
+
+    // 10% chance for procedural compliment or sergeant insult
+    if (Math.random() < 0.10) {
+        if (Math.random() < 0.30) {
+            triggerSergeantInsultBanter(sender);
+        } else {
+            triggerComplimentBanter(sender);
+        }
+        return;
+    }
+
 
     
     if (Math.random() < 0.01) {
