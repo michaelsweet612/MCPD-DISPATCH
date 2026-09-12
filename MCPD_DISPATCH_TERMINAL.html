@@ -110,8 +110,45 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                                 </label>
                             </div>
                             
+                            
                             <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
-                            <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">UI APPEARANCE</h4>
+                            <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">SIMULATION OVERRIDES</h4>
+                            
+                            <div class="toggle-group" style="margin-bottom: 10px;">
+                                <label for="profanity-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--accent-blue);">
+                                    <input type="checkbox" id="profanity-toggle" checked>
+                                    ENABLE EXPLICIT RADIO CHATTER
+                                </label>
+                            </div>
+                            <div class="toggle-group" style="margin-bottom: 10px;">
+                                <label for="wife-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--accent-blue);">
+                                    <input type="checkbox" id="wife-toggle" checked>
+                                    ALLOW OFF-TOPIC WIFE COMPLAINTS
+                                </label>
+                            </div>
+                            <div class="toggle-group" style="margin-bottom: 10px;">
+                                <label for="fabulous-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #a855f7;">
+                                    <input type="checkbox" id="fabulous-toggle" checked>
+                                    ENABLE FABULOUS OFFICER SPAWNS
+                                </label>
+                            </div>
+                            <div class="toggle-group" style="margin-bottom: 10px;">
+                                <label for="ia-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="checkbox" id="ia-toggle" checked>
+                                    ENABLE INTERNAL AFFAIRS AUDITS
+                                </label>
+                            </div>
+                            <div class="toggle-group" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <label style="color: var(--text-dim); font-size: 0.85rem; font-weight: bold;">RADIO SPEED:</label>
+                                <select id="radio-speed-select" style="background: var(--bg-main); color: #fff; border: 1px solid var(--panel-border); padding: 5px; font-weight: bold;">
+                                    <option value="3000">NORMAL (3.0s)</option>
+                                    <option value="1500" selected>ACCELERATED (1.5s)</option>
+                                    <option value="500">HYPER-SPAM (0.5s)</option>
+                                </select>
+                            </div>
+                            
+                            <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
+<h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">UI APPEARANCE</h4>
                             
                             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                                 <button id="btn-theme-modern" style="flex: 1; padding: 8px; font-size: 0.8rem; background: var(--accent-blue); color: #000; font-weight: bold; border: none;">MODERN DARK</button>

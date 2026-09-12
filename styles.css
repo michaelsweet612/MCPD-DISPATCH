@@ -599,7 +599,7 @@ body.theme-light img, body.theme-light video {
 
 /* White Chat Area */
 .main-panel {
-    background: #ffffff !important;
+    background: #e2e8f0 !important;
 }
 .main-panel .panel-header {
     background: #f0f0f0 !important;
@@ -610,7 +610,7 @@ body.theme-light img, body.theme-light video {
     border-right: 1px solid #ccc;
 }
 .main-panel .tab.active {
-    background: #ffffff;
+    background: #e2e8f0;
     color: #0b1a30;
     border-bottom: 3px solid #0b1a30;
 }

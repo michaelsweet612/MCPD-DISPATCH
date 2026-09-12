@@ -6170,3 +6170,11 @@ document.getElementById('mute-chatter-toggle').addEventListener('change', (e) =>
         window.speechSynthesis.cancel();
     }
 });
+
+const radioSpeedSelect = document.getElementById('radio-speed-select');
+if(radioSpeedSelect) {
+    radioSpeedSelect.addEventListener('change', (e) => {
+        if(chatSimulateInt) clearInterval(chatSimulateInt);
+        chatSimulateInt = setInterval(simulateChat, parseInt(e.target.value));
+    });
+}
