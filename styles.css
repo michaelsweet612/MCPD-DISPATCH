@@ -597,96 +597,67 @@ body.theme-light img, body.theme-light video {
 }
 
 
-/* White Chat Area */
-.main-panel {
-    background: #e2e8f0 !important;
+
+/* DARK CHAT READABILITY FIXES */
+.main-panel { 
+    background: #000000 !important; 
 }
 .main-panel .panel-header {
-    background: #f0f0f0 !important;
-    border-bottom: 2px solid #ccc !important;
+    background: #06111e !important;
+    border-bottom: 2px solid #1f3a57 !important;
 }
 .main-panel .tab {
-    color: #555;
-    border-right: 1px solid #ccc;
+    color: #94a3b8 !important;
+    border-right: 1px solid #1f3a57 !important;
 }
 .main-panel .tab.active {
-    background: #e2e8f0;
-    color: #0b1a30;
-    border-bottom: 3px solid #0b1a30;
-}
-#unified-log {
-    color: #000000;
-}
-.chat-msg {
-    border-bottom: 1px solid #e0e0e0 !important;
-    color: #000000 !important;
-}
-.chat-msg .sender {
-    color: #0b1a30 !important; /* Navy text for officers */
-}
-.chat-msg .text {
-    color: #222222 !important;
+    background: #000000 !important;
+    color: #fff !important;
+    border-bottom: 3px solid var(--accent-blue) !important;
 }
 
-/* Also make the Unit Status and other tables readable on white */
-#tab-unit-status-content, #tab-documents-content, #tab-recruitment-content, #tab-database-content, #tab-citizens-content, #tab-wanted-content {
-    color: #000000;
+/* Chat Messages */
+.chat-msg { 
+    padding: 12px 14px !important; 
+    border-bottom: 1px solid #222 !important; 
+    color: #fff !important; 
 }
-#unit-status-body tr td {
-    color: #000000 !important;
+.chat-msg .sender { 
+    font-size: 1.15rem !important; 
+    font-weight: 900 !important; 
+    color: #93c5fd !important; /* Bright light blue for names */
 }
+.chat-msg .text { 
+    font-size: 1.1rem !important; 
+    font-weight: bold !important; 
+    color: #e2e8f0 !important; 
+}
+.chat-msg.worried .sender { color: var(--panic-red) !important; }
+.chat-msg.worried .text { color: #fca5a5 !important; }
+.chat-msg .time { font-size: 1rem !important; color: #64748b !important; font-weight: bold !important; }
 
-/* READABILITY FIXES FOR WHITE THEME */
-.chat-msg {
-    padding: 12px 14px !important;
-}
-.chat-msg .sender {
-    font-size: 1.15rem !important;
-    font-weight: 900 !important;
-}
-.chat-msg .text {
-    font-size: 1.1rem !important;
-    font-weight: bold !important;
-    color: #000000 !important;
-}
-.chat-msg.worried .text {
-    color: #cc0000 !important; /* High contrast red on white */
-}
-.chat-msg .time {
-    font-size: 1rem !important;
-    color: #444 !important;
-    font-weight: bold !important;
-}
-
-/* Event Item Readability (Callouts) */
+/* Event Items */
 .event-item {
-    background: #f8fafc !important; /* Very light gray */
-    border: 1px solid #cbd5e1 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255,255,255, 0.1) !important;
     border-left: 6px solid #475569 !important;
-    color: #000 !important;
+    color: #fff !important;
     padding: 16px !important;
 }
 .event-item.high-priority {
     border-left-color: var(--panic-red) !important;
-    background: #fef2f2 !important; /* Light red tint */
+    background: rgba(239, 68, 68, 0.1) !important;
 }
 .event-item.medium-priority {
     border-left-color: var(--panic-orange) !important;
-    background: #fffbeb !important; /* Light yellow tint */
+    background: rgba(245, 158, 11, 0.15) !important;
 }
-.event-item .title {
-    color: #000 !important;
-    font-size: 1.25rem !important;
-    font-weight: 900 !important;
-    text-shadow: none !important;
+.event-item .title { color: #fff !important; font-size: 1.25rem !important; font-weight: 900 !important; text-shadow: none !important;}
+.event-item .time { color: #94a3b8 !important; font-weight: bold !important; font-size: 0.95rem !important; }
+.event-item .details { color: #e2e8f0 !important; font-weight: bold !important; font-size: 1.1rem !important; }
+
+/* Fix Unit Status Tables */
+#tab-unit-status-content, #tab-documents-content, #tab-recruitment-content, #tab-database-content, #tab-citizens-content, #tab-wanted-content {
+    color: #e2e8f0 !important;
 }
-.event-item .time {
-    color: #444 !important;
-    font-weight: bold !important;
-    font-size: 0.95rem !important;
-}
-.event-item .details {
-    color: #111 !important;
-    font-weight: bold !important;
-    font-size: 1.1rem !important;
-}
+#unit-status-body tr td { color: #e2e8f0 !important; }
