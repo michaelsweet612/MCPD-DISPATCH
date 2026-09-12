@@ -4063,7 +4063,15 @@ function triggerPanic(unitName = null) {
         stopPanicSound();
     }, 5000); // 5 seconds
 
-    // Visual flashing remains forever until resolveSpecificPanic is called manually via Clear Panics button
+    // Auto-resolve this panic after 15-30 seconds
+    panicData.visualTimeout = setTimeout(() => {
+        resolveSpecificPanic(unit);
+        const activeCallsigns = getActiveCallsigns();
+        if (activeCallsigns.length > 0) {
+            const responder = getRandomItem(activeCallsigns);
+            addChatMessage(responder, `Dispatch, I'm on scene with ${unit}. Situation is under control. Code 4.`, 'serious');
+        }
+    }, 15000 + Math.random() * 15000);
 }
 
 function resolveSpecificPanic(unit) {
@@ -4942,7 +4950,7 @@ autoSimulateInt = setInterval(() => {
         simulateEvent();
 
     // Occasional Random Auto-Panic (very rare, ~1% chance during an event tick)
-    if (Math.random() < 0.01 && autoEventsCheckbox.checked && activePanics.size === 0) {
+    if (Math.random() < 0.03 && autoEventsCheckbox.checked && activePanics.size < 3) {
         triggerPanic();
     }
 }, 10000); // every 7s, random event
