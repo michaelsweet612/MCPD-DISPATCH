@@ -8,21 +8,26 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## ⭐ Core Features (v2.57+)
+## ⭐ Core Features (v2.71+)
 
 ### 💬 The Unified Dispatch Chat
 A completely simulated, real-time chat interface where **5,000 active precinct officers** communicate, request backup, make arrests, and lose their minds on patrol. You can transmit orders, `/bolo` alerts, and chat directly with units.
 
 ### 📻 Dynamic Radio Chatter
-The terminal features over **700+ unique voice lines and radio interactions** depending on the officer's personality and the current situation. Officers will:
+The terminal features over **1,000+ unique voice lines and radio interactions** depending on the officer's personality and the current situation. Officers will:
 - Joke, complain about the weather, panic during shootouts, and banter with each other during downtime.
 - **Complain about their wives** extensively on the public radio channel, and dynamically ask other active units to go check if their spouse is cheating on them.
 - Report multi-suspect pursuits across **procedurally generated Main City Sectors** (e.g., "Multiple suspects fleeing through Main City Sector 78421").
+- **Brag about killing suspects** for massive corporate bounties ("Hell yeah, just zeroed a suspect. Corporate is gonna pay me 50 billion NTND for this one.").
+- **Argue with Internal Affairs** in a dynamic 5-part radio sequence where IA tries to discipline the officer and the officer completely shuts them down. Over 100,000 unique argument permutations. Nothing ever happens to the officer.
 - Regular officers will complain over the radio about the quirky habits of the new Fabulous recruits.
 
 ### ⚠️ Lethal Force Authorization System
 Routine patrols can escalate in seconds. Officers will randomly lock the dispatch terminal and request authorization to use lethal force on citizens. You have exactly **40 seconds** to click **AUTHORIZE** or **DENY**. If you authorize it, Internal Affairs will scream at you.
 **ROE Integration:** If you turn OFF the *Rules of Engagement* toggle in the advanced controls, officers will stop asking for permission and simply execute suspects on sight.
+
+### 🚨 Panic System
+Officers will randomly hit their **10-99 Panic Button** during patrol. When an officer is taking fire, there is a **40% chance** they will slam their panic button, triggering the full alarm with sound and flashing. Up to **3 simultaneous panics** can fire at once. Panics automatically resolve after **15-30 seconds** as backup units arrive on scene.
 
 ### 👥 Live Roster & Psych Profiles
 The `UNIT STATUS` board dynamically tracks the status of all **5,000 precinct officers**, including a dedicated **GENDER** column.
@@ -31,15 +36,20 @@ The `UNIT STATUS` board dynamically tracks the status of all **5,000 precinct of
 - **Fabulous Officers**: There is an extremely rare **2% chance** an officer will spawn with the `Fabulous` (LGBTQ+) profile! They will talk about their cute uniform skirts and purple socks, call everyone "bestie", and refer to themselves as "good boys".
 - **Rare Species Classifications**: Officers and civilians can spawn as `Human`, `Seps`, `Over The Gone`, `Unidentified Species`, or the ultra-rare **1% chance** `Unidentified Gender`.
 
-### 📷 Simulated Image Analyzer
-The dispatch terminal features an integrated file upload system (`+` button) allowing you to upload real images from your computer into the chat. Our offline `imageAnalyzer.js` system scans your uploads and dynamically triggers hilarious, unhinged reactions from the officers.
+### 📷 Advanced Image Analyzer
+Upload real images from your computer into the dispatch chat. The offline image analyzer detects **15 keyword categories** from the filename (weapons, vehicles, suspects, crime scenes, food, selfies, memes, and more) and triggers **120+ unique reactions** from the officers. **40% chance** a second officer chimes in, **15% chance** a third drops something completely off-topic.
 
 ### 🗄️ Integrated Databases
-- **Civilian Registry**: A massive, auto-generating database of exactly **5,000 citizens**. Every civilian gets a unique 8-digit Civilian Number (`#CIV-XXXXXXXX`), full First/Middle/Last names, and detailed profiles tracking **Gender Identity**, **Marital Status**, **Terminal IP Address** (Geo-Traced to the Gulf of TBMG), home addresses, careers, criminal statuses, and cybernetic implants.
+- **Civilian Registry**: A massive database of exactly **5,000 citizens** with **lazy-loaded pagination** (10 at a time with a LOAD MORE button for zero lag). Every civilian gets a unique 8-digit Civilian Number, full names, and detailed profiles tracking **Gender Identity**, **Marital Status**, **Net Worth** (in NTND currency), **Status / Occupation**, **Terminal IP Address** (Geo-Traced to the Gulf of TBMG), home addresses, careers, criminal statuses, and cybernetic implants.
+- **NTND Currency (TBMG Trust Nation)**: Every citizen has a procedurally generated net worth. 2% ultra-rich (100M+), 30% middle class (~1M), 25% poverty. Rich citizens are highlighted in green.
+- **Occupation Registry**: Citizens are assigned procedurally generated job titles from over 136,000+ combinations, ranging from "Corporate Data Analyst" to "Synthetic Spaghetti Wrangler". 15% chance of being Unemployed.
 - **Execution Licenses**: Citizens can hold up to **58 different classes of Execution Licenses**, ranging from Class 1 all the way up to the terrifying **Class 115 Total Annihilation Execution Permit**.
-- **Incident Database**: Over **1,100+ procedurally generated dispatch calls**, including bank heists, vehicle pile-ups, 25+ absurd parking violations, and utterly ridiculous calls like "Robbing a rock" and "Holding a puddle of water hostage".
+- **Incident Database**: Over **1,100+ procedurally generated dispatch calls**, including bank heists, vehicle pile-ups, 25+ absurd parking violations, and utterly ridiculous calls.
 - **Wanted Targets**: A dedicated bounty board tracking actively wanted suspects and their bounties.
 - **NCIC Vehicle Database**: Run license plates to pull parody vehicle models, registered owners, insurance status, and `STOLEN/FLAGGED` statuses.
+
+### 📄 Massive Incident Reports
+When a suspect is neutralized or arrested, the system generates a **full-length official MCPD document** with case numbers, evidence manifests, civilian impact assessments, multi-paragraph narratives, suspect disposition, officer conduct reviews, and IA findings. Every field is randomized. Reports can be **downloaded as .txt files** to your physical device.
 
 ### 🌐 TBMG Grid Geo-Tracking
 Every civilian is assigned a procedurally generated, zero-padded terminal IP address (e.g., `005.412.091.992`). Running a Geo-Trace on any IP will route them to a randomized offshore structure in the **Gulf of TBMG**, such as `Deep Sea Server Alpha`, `Offshore Data Rig 7`, or `Floating Server Barge`.
