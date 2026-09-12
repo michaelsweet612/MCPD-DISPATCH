@@ -32,7 +32,7 @@ function renderSystemErrors() {
         
     let details = "<ul style='margin-top: 30px; font-size: 1.1rem;'>" + window._mcpd_errors.map(e => `<li style="margin-bottom:10px;">${e}</li>`).join('') + "</ul>";
     
-    errorContainer.innerHTML = header + details + `<br><button onclick="document.getElementById('fatal-check-system-box').style.display='none'" style="margin-top: 20px; padding: 15px 30px; font-size: 1.2rem; background: black; color: white; border: 2px solid white; cursor: pointer;">ACKNOWLEDGE & HIDE</button>`;
+    errorContainer.innerHTML = header + details + `<br><button onclick="document.getElementById('fatal-check-system-box').style.display='none'; window._mcpd_errors = [];" style="margin-top: 20px; padding: 15px 30px; font-size: 1.2rem; background: black; color: white; border: 2px solid white; cursor: pointer;">ACKNOWLEDGE & CLEAR</button>`;
 }
 
 // Intercept global errors (syntax errors, undefined variables)
@@ -49,6 +49,14 @@ window.addEventListener('unhandledrejection', function(event) {
     renderSystemErrors();
 });
 
+// Intercept console.error calls
+const originalConsoleError = console.error;
+console.error = function(...args) {
+    window._mcpd_errors.push(`[CONSOLE ERROR] ${args.join(' ')}`);
+    renderSystemErrors();
+    originalConsoleError.apply(console, args);
+};
+
 // Self-diagnostic: Check if critical DOM elements exist
 window.addEventListener('DOMContentLoaded', () => {
     const requiredElements = ['unified-log', 'dispatch-chat-input', 'unit-status-log'];
@@ -61,4 +69,72 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     
     if (missing > 0) renderSystemErrors();
+    
+    // Start periodic typo and anomaly scanning
+    setInterval(scanForTyposAndAnomalies, 10000);
 });
+
+// Advanced Typo & Anomaly Scanner
+const commonTypos = {
+    "teh": "the",
+    "realy": "really",
+    "alot": "a lot",
+    "definitly": "definitely",
+    "occured": "occurred",
+    "untill": "until",
+    "wierd": "weird",
+    "seperate": "separate",
+    "acheive": "achieve",
+    "recieve": "receive",
+    "therefor": "therefore",
+    "disspatch": "dispatch",
+    "offcer": "officer",
+    "pericnct": "precinct",
+    "panc": "panic"
+};
+
+function scanForTyposAndAnomalies() {
+    let foundErrors = 0;
+    
+    // 1. Scan the DOM for misspelled words in visible text
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while(node = walker.nextNode()) {
+        const text = node.nodeValue.toLowerCase();
+        
+        // Skip script and style tags
+        if (node.parentElement && (node.parentElement.tagName === 'SCRIPT' || node.parentElement.tagName === 'STYLE' || node.parentElement.id === 'fatal-check-system-box')) {
+            continue;
+        }
+
+        // Check each typo
+        for (const [typo, correction] of Object.entries(commonTypos)) {
+            // Regex to match exact word
+            const regex = new RegExp(`\\b${typo}\\b`, 'i');
+            if (regex.test(text)) {
+                // To avoid spamming, only report it if we haven't seen it recently
+                const errorMsg = `[SPELLING FAULT] Detected misspelled word "${typo}" in UI text. Did you mean "${correction}"?`;
+                if (!window._mcpd_errors.includes(errorMsg)) {
+                    window._mcpd_errors.push(errorMsg);
+                    foundErrors++;
+                }
+            }
+        }
+    }
+
+    // 2. Scan memory usage anomalies (simulated logic error)
+    if (Math.random() < 0.005) {
+        window._mcpd_errors.push(`[LOGIC FAULT] Memory leak detected in chat buffer. Garbage collection failed.`);
+        foundErrors++;
+    }
+
+    // 3. Simulated connection logic error
+    if (Math.random() < 0.005) {
+        window._mcpd_errors.push(`[NETWORK FAULT] Connection to TBMG Grid unstable. Packet loss at 42%.`);
+        foundErrors++;
+    }
+
+    if (foundErrors > 0) {
+        renderSystemErrors();
+    }
+}
