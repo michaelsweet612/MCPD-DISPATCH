@@ -3893,6 +3893,148 @@ function simulateEvent(specificCrime = null) {
     }, 4000 + Math.random() * 6000);
 }
 
+
+function generateMassiveReport(crime, officersStr, dateStr, isROEEnabled) {
+    const sectorNum = Math.floor(10000 + Math.random() * 89999);
+    const caseNum = 'MC-' + Math.floor(100000000 + Math.random() * 899999999);
+    const precinct = Math.floor(1 + Math.random() * 47);
+    const district = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Gulf', 'Hotel'][Math.floor(Math.random() * 8)];
+    const weather = ['Acid Rain / Visibility Low', 'Dense Smog / Hazardous Air Quality', 'Clear / Neon Glare', 'Electromagnetic Storm / Comms Disrupted', 'Toxic Fog / Respirators Required', 'Overcast / Drone Surveillance Optimal'][Math.floor(Math.random() * 6)];
+    const responseTime = (Math.random() * 12 + 1).toFixed(1);
+    const civWitnesses = Math.floor(Math.random() * 25);
+    const evidItems = Math.floor(3 + Math.random() * 15);
+    const bodyTemp = (95 + Math.random() * 5).toFixed(1);
+    const outcome = isROEEnabled ? 'NON-LETHAL PACIFICATION' : 'LETHAL FORCE APPLIED';
+    const disposition = isROEEnabled ? 'SUSPECT IN CUSTODY - AWAITING CORPORATE TRIBUNAL' : 'SUSPECT DECEASED - BODY RELEASED TO BIOMASS RECLAMATION';
+
+    const narratives = isROEEnabled ? [
+        'Responding officers arrived on scene and immediately established a perimeter around the area of operations. Suspect was observed exhibiting erratic behavior consistent with neural-link corruption or Class 3 synth-drug intoxication. After verbal warnings were issued per Standard Operating Procedure 4.7.2, suspect attempted to flee through an adjacent maintenance corridor. Officers deployed non-lethal suppression rounds (Model: TK-880 Stun Cartridges) striking the suspect in the lower dorsal region. Suspect collapsed approximately 14 meters from initial contact point. Medical assessment conducted on-site confirmed no critical injuries. Suspect was restrained with Mag-Cuffs (Serial: MC-' + Math.floor(100000 + Math.random() * 900000) + ') and transported to Precinct ' + precinct + ' holding facility.',
+        'Units were dispatched following automated surveillance detection of suspicious activity in the designated sector. Upon arrival, officers identified the suspect matching the physical description provided by the TBMG Grid facial recognition overlay. Suspect was cornered in a dead-end alleyway behind a decommissioned synth-food processing plant. Despite initial non-compliance and verbal hostility, officers successfully de-escalated the situation using approved psychological negotiation protocols (Protocol Echo-7). Suspect surrendered after approximately 8 minutes of active negotiation. No weapons were recovered from the suspect, however a scanning sweep revealed concealed contraband including unauthorized neural-link modification chips and 47 grams of unregistered synthetic compound. Suspect was processed and booked.',
+        'Officers responded to the scene after receiving multiple automated alerts from the sector surveillance grid. The suspect was found inside a condemned residential unit on the 47th floor of Hab-Block ' + Math.floor(100 + Math.random() * 900) + '. Suspect was in possession of stolen corporate property valued at approximately ' + Math.floor(50000 + Math.random() * 5000000).toLocaleString() + ' NTND. After a brief physical altercation in which the suspect attempted to assault Officer ' + officersStr.split(',')[0] + ' with a modified construction laser, the suspect was subdued via electro-net deployment (Model: EN-40 Restraint System). Suspect sustained minor electrical burns to the left forearm. On-site medic administered basic treatment. Suspect was transported to the nearest processing facility for formal arraignment.',
+    ] : [
+        'Responding officers arrived at the scene and immediately identified the suspect as a high-threat combatant based on behavioral analysis and weapons scan data. Suspect was armed with a modified Kessler-9 plasma sidearm and exhibited extreme hostility upon visual contact with MCPD personnel. Officer ' + officersStr.split(',')[0] + ' issued a single verbal command to surrender per accelerated ROE protocol. Suspect raised weapon toward officers. Lethal force was authorized and applied immediately. Officer ' + (officersStr.split(',')[1] || officersStr.split(',')[0]).trim() + ' discharged their service weapon (Model: MCPD-Standard HAR-15 Heavy Assault Rifle), striking the suspect center mass with 3 rounds. Suspect was declared deceased at the scene by automated bio-scanner at ' + dateStr + '. No officers were injured during the engagement. The area was cordoned off and evidence collection teams were dispatched. The suspect\'s weapon was recovered and tagged as Evidence Item #' + Math.floor(1000 + Math.random() * 9000) + '.',
+        'Units responded to a Priority 1 alert in the designated sector. Upon arrival, officers encountered an active threat situation involving the suspect discharging a weapon at civilian infrastructure. Multiple civilians were observed fleeing the area. Officers established a tactical position behind an armored patrol vehicle and attempted verbal contact. The suspect responded by firing 4 rounds in the direction of the officers, one of which impacted the vehicle\'s ballistic shield. Return fire was authorized under Emergency Lethal Engagement Protocol ELEP-9. A total of 7 rounds were discharged by responding officers. The suspect was struck 5 times and was pronounced deceased at the scene. Ballistic analysis confirmed all rounds originated from officer-issued weapons. Body was processed for identification via cranial chip extraction. Suspect\'s next of kin notification has been delegated to Automated Notification System ANS-' + Math.floor(100 + Math.random() * 900) + '.',
+        'Officers were en route to a standard patrol checkpoint when they observed the suspect engaging in what appeared to be an armed confrontation with an unidentified second party. Upon closer approach, the second party fled the scene and has not been identified as of the time of this report. The remaining suspect turned toward the approaching patrol unit and was observed reaching for a concealed object in their waistband. Given the elevated threat level of the sector and the suspect\'s aggressive posture, officers made the tactical decision to engage with lethal force. Officer ' + officersStr.split(',')[0] + ' fired a single precision round from a mounted vehicle turret, neutralizing the suspect instantly. Post-engagement inspection revealed the suspect was carrying a modified vibro-blade and 12,000 NTND in unmarked cred-chips. The scene was secured and forensic drones were deployed for evidence mapping. All officer body-cam footage has been archived to Precinct ' + precinct + ' Evidence Server.',
+    ];
+
+    const narrative = narratives[Math.floor(Math.random() * narratives.length)];
+
+    const evidenceTypes = [
+        'Modified plasma sidearm (Serial filed off)',
+        'Unauthorized neural-link chips x' + Math.floor(2 + Math.random() * 20),
+        'Unregistered synthetic compound (' + Math.floor(10 + Math.random() * 200) + 'g)',
+        'Stolen corporate data-chip (Encrypted)',
+        'Counterfeit NTND cred-chips (' + Math.floor(1000 + Math.random() * 500000).toLocaleString() + ' NTND face value)',
+        'Blood samples (Submitted for DNA cross-reference)',
+        'Vibro-blade (Modified, illegal class)',
+        'Surveillance drone jammer (Active)',
+        'Hacked civilian ID cards x' + Math.floor(1 + Math.random() * 10),
+        'Biometric spoof glove (Left hand)',
+        'Shell casings x' + Math.floor(3 + Math.random() * 15),
+        'Security camera footage (Sector ' + sectorNum + ', Cameras ' + Math.floor(1 + Math.random() * 50) + '-' + Math.floor(51 + Math.random() * 50) + ')',
+        'Officer body-cam recordings (' + respondingUnits.length + ' files)',
+        'Forensic drone 3D crime scene mapping',
+        'Ballistic trajectory analysis report',
+    ];
+    
+    let evidenceList = '';
+    const numEvidence = Math.floor(5 + Math.random() * 8);
+    const shuffled = evidenceTypes.sort(() => 0.5 - Math.random());
+    for (let i = 0; i < Math.min(numEvidence, shuffled.length); i++) {
+        evidenceList += '  ' + (i + 1) + '. ' + shuffled[i] + '\n';
+    }
+
+    const iaActions = [
+        'INTERNAL AFFAIRS REVIEW: Pending (Est. 6-8 weeks)',
+        'INTERNAL AFFAIRS REVIEW: Automatically Cleared - Corporate Override Applied',
+        'INTERNAL AFFAIRS REVIEW: Filed. No action taken. Officer(s) commended for efficiency.',
+        'INTERNAL AFFAIRS REVIEW: Flagged for review. Review subsequently lost in system error.',
+        'INTERNAL AFFAIRS REVIEW: Dismissed. Insufficient evidence of wrongdoing (evidence was deleted).',
+    ];
+
+    const fullReport = `
+========================================
+  MAIN CITY POLICE DEPARTMENT
+  OFFICIAL INCIDENT REPORT
+  CLASSIFICATION: RESTRICTED
+========================================
+
+CASE NUMBER: ${caseNum}
+PRECINCT: ${precinct} (District ${district})
+DATE/TIME FILED: ${dateStr}
+SECTOR: ${sectorNum}
+
+----------------------------------------
+  INCIDENT DETAILS
+----------------------------------------
+INCIDENT TYPE: ${crime.title}
+PRIORITY LEVEL: ${(crime.priority || 'MEDIUM').toUpperCase()}
+${crime.group ? 'SUSPECTED GANG AFFILIATION: ' + crime.group : 'SUSPECTED GANG AFFILIATION: None Identified'}
+
+RESPONDING OFFICERS: ${officersStr}
+TOTAL UNITS DEPLOYED: ${respondingUnits.length}
+RESPONSE TIME: ${responseTime} minutes
+WEATHER CONDITIONS: ${weather}
+
+RULES OF ENGAGEMENT STATUS: ${isROEEnabled ? 'ENABLED (Non-Lethal Protocol Active)' : 'DISABLED (Lethal Force Pre-Authorized)'}
+FORCE OUTCOME: ${outcome}
+
+----------------------------------------
+  INCIDENT NARRATIVE
+----------------------------------------
+${narrative}
+
+----------------------------------------
+  EVIDENCE MANIFEST
+----------------------------------------
+Total Items Collected: ${numEvidence}
+
+${evidenceList}
+Chain of Custody: Transferred to Evidence Locker ${Math.floor(100 + Math.random() * 900)} at Precinct ${precinct}
+Evidence Processing Officer: Auto-Assigned (Unit-${Math.floor(10000 + Math.random() * 90000)})
+
+----------------------------------------
+  CIVILIAN IMPACT ASSESSMENT
+----------------------------------------
+Civilian Witnesses: ${civWitnesses}
+Civilian Injuries: ${Math.floor(Math.random() * 4)}
+Civilian Fatalities: ${isROEEnabled ? '0' : Math.floor(Math.random() * 3)}
+Property Damage Estimate: ${Math.floor(5000 + Math.random() * 2000000).toLocaleString()} NTND
+Infrastructure Damage: ${['None', 'Minor (Cosmetic)', 'Moderate (Structural Assessment Required)', 'Severe (Sector Evacuation Recommended)', 'Catastrophic (Corporate Insurance Claim Filed)'][Math.floor(Math.random() * 5)]}
+Corporate Liability Waiver: ${Math.random() < 0.7 ? 'ACTIVE - All civilian claims pre-denied' : 'EXPIRED - Legal exposure detected'}
+
+----------------------------------------
+  SUSPECT DISPOSITION
+----------------------------------------
+FINAL STATUS: ${disposition}
+${!isROEEnabled ? 'BODY TEMPERATURE AT SCENE: ' + bodyTemp + ' F (Declining)\nTIME OF DEATH: ' + dateStr + '\nCAUSE OF DEATH: Acute ballistic trauma / Officer-involved shooting\nBIOSCAN CHIP EXTRACTED: Yes\nNEXT OF KIN NOTIFIED: Automated System Dispatched' : 'BOOKING NUMBER: BK-' + Math.floor(100000 + Math.random() * 900000) + '\nHOLDING FACILITY: Precinct ' + precinct + ' Detention Block ' + String.fromCharCode(65 + Math.floor(Math.random() * 8)) + '\nMEDICAL CLEARANCE: Pending\nCORPORATE TRIBUNAL DATE: TBD\nLEGAL REPRESENTATION: None (Suspect cannot afford)'}
+
+----------------------------------------
+  OFFICER CONDUCT REVIEW
+----------------------------------------
+EXCESSIVE FORCE FLAG: ${Math.random() < 0.3 ? 'YES (Automatically Dismissed)' : 'NO'}
+BODY-CAM FOOTAGE STATUS: ${['Available - Archived', 'Available - Partially Corrupted', 'Unavailable - Camera Malfunction', 'Available - Redacted by Corporate'][Math.floor(Math.random() * 4)]}
+${getRandomItem(iaActions)}
+OFFICER COMMENDATION: ${Math.random() < 0.5 ? 'Recommended for Corporate Valor Medal' : 'None at this time'}
+
+----------------------------------------
+  SUPPLEMENTARY NOTES
+----------------------------------------
+- All documentation has been filed with the TBMG Trust Nation Central Records Authority.
+- This report is auto-generated by MCPD Dispatch Terminal v2.68+.
+- Any discrepancies in this report should be reported to Internal Affairs (Note: Internal Affairs does not accept reports).
+- Unauthorized distribution of this document is punishable by up to 15 years in a corporate labor facility.
+
+========================================
+  END OF REPORT - CASE ${caseNum}
+  FILED BY: MCPD AUTOMATED SYSTEMS
+  CLASSIFICATION: RESTRICTED
+========================================
+`;
+
+    return fullReport;
+}
+
 async function mockAddDocument(crime, respondingUnits, isROEEnabled) {
     const doc = document.createElement('div');
         unitAssignments[respondingUnits[0]] = '10-8 (Available)';
@@ -3968,8 +4110,8 @@ ${aiText}`;
         }
     } catch (e) {
         // Fallback if AI fails
-        const fallbackText = isROEEnabled ? "Suspect apprehended non-lethally." : "Suspect neutralized via lethal force.";
-        const fullReport = `INCIDENT TYPE: ${crime.title}\nTIME FILED: ${dateStr}\nRESPONDING OFFICERS: ${officersStr}\n-- NARRATIVE --\n${fallbackText}`;
+        const fallbackText = generateMassiveReport(crime, officersStr, dateStr, isROEEnabled);
+        const fullReport = fallbackText;
         doc.innerHTML = `
             <span class="time">${getCurrentTimeStr()}</span>
             <div class="title" style="color:var(--accent-blue); display:flex; justify-content:space-between;">
@@ -3977,7 +4119,7 @@ ${aiText}`;
                 <span style="font-size:0.8rem; color:var(--text-dim);">Units: ${officersStr}</span>
             </div>
             <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
-                "${fallbackText}"
+                "Click VIEW REPORT for full incident documentation."
             </div>
             <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
         `;
