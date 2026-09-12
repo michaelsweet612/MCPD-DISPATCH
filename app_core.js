@@ -2617,6 +2617,34 @@ let isFetchingChat = false;
 // Emulate Incoming Chat
 
 
+
+function triggerOverwatchRoast(sender) {
+    const sergeants = ["Sgt. Harrison", "Sgt. Miller", "Sgt. O'Connor", "Sgt. Davis", "Sgt. Chen"];
+    const sgt = getRandomItem(sergeants);
+    
+    const stupidQuestions = [
+        "is the TBMG Overwatch grid actually real or just a corporate myth?",
+        "do you think Overwatch can see us through the ceiling?",
+        "if Overwatch is so smart, why didn't it tell me I left my keys in the patrol car?",
+        "do you guys think Overwatch is actually just a guy named Kevin in a basement?",
+        "if I close my eyes, can Overwatch still see me?"
+    ];
+
+    addChatMessage(sender, `Hey, ${getRandomItem(stupidQuestions)}`, 'joking');
+    
+    setTimeout(() => {
+        addChatMessage(sgt, `Are you actually stupid, ${sender}? Use your damn eyes for once, that's why you have them.`, 'dispatch-msg');
+        
+        setTimeout(() => {
+            addChatMessage(sgt, `It's a multi-trillion NTND satellite surveillance network, you absolute moron.`, 'dispatch-msg');
+            
+            setTimeout(() => {
+                addChatMessage(sgt, `That's exactly why you're still a low-ranking patrol unit and that's why I'm a Sergeant. Get off the radio.`, 'dispatch-msg');
+            }, 3000);
+        }, 3000);
+    }, 2500);
+}
+
 function triggerComplimentBanter(sender) {
     const active = getActiveCallsigns();
     const target = active.length > 1 ? getRandomItem(active.filter(c => c !== sender)) : "Dispatch";
@@ -2767,9 +2795,12 @@ async function simulateChat() {
         return;
     }
 
-    // 10% chance for procedural compliment or sergeant insult
+    // 10% chance for procedural banter (Compliments, Insults, or Overwatch Roasts)
     if (Math.random() < 0.10) {
-        if (Math.random() < 0.30) {
+        const banterRoll = Math.random();
+        if (banterRoll < 0.25) {
+            triggerOverwatchRoast(sender);
+        } else if (banterRoll < 0.50) {
             triggerSergeantInsultBanter(sender);
         } else {
             triggerComplimentBanter(sender);
