@@ -122,11 +122,7 @@ function scanForTyposAndAnomalies() {
         }
     }
 
-    // 2. Scan memory usage anomalies (simulated logic error)
-    if (Math.random() < 0.005) {
-        window._mcpd_errors.push(`[LOGIC FAULT] Memory leak detected in chat buffer. Garbage collection failed.`);
-        foundErrors++;
-    }
+
 
 
 
