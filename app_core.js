@@ -2615,6 +2615,95 @@ let isFetchingChat = false;
 
 
 // Emulate Incoming Chat
+
+function triggerCorruptIASequence(sender) {
+    const step1 = [
+        "Hell yeah, I just killed somebody. Target is down.",
+        "Just executed a Class 4 civilian. What a rush.",
+        "Another day, another kill. Suspect is permanently retired.",
+        "Just smoked a suspect in Sector %RANDOM_SECTOR%.",
+        "Target neutralized. Just blew their head off.",
+        "Lethal force applied. Suspect is leaking everywhere.",
+        "Hell yeah! Confirmed kill.",
+        "Just wiped out a suspect. My trigger finger was getting itchy.",
+        "Got one! Target is deceased in the alleyway.",
+        "Just dropped another one. I love this job."
+    ];
+    
+    const step2 = [
+        "INTERNAL AFFAIRS: Officer, these actions reflect our entire force. Think before engaging.",
+        "INTERNAL AFFAIRS: Unnecessary escalation detected. We are a peacekeeping force.",
+        "INTERNAL AFFAIRS: Please observe ROE. You cannot just execute citizens.",
+        "INTERNAL AFFAIRS: This is unacceptable. These actions damage MCPD public relations.",
+        "INTERNAL AFFAIRS: Officer, lethal force should be a last resort. Stop this.",
+        "INTERNAL AFFAIRS: We are monitoring your comms. This level of violence is unjustified.",
+        "INTERNAL AFFAIRS: Have you read the precinct manual? This is a violation.",
+        "INTERNAL AFFAIRS: Discontinue immediate lethal responses. We have an image to uphold.",
+        "INTERNAL AFFAIRS: Stop executing people on sight. It makes us look bad.",
+        "INTERNAL AFFAIRS: Officer, you are violating multiple corporate guidelines."
+    ];
+    
+    const step3 = [
+        "Hell no, I'm not listening to you. I get paid 2 billion NTND to do this.",
+        "Save it, desk jockey. Corporate just wired me 50 billion credits for that kill.",
+        "I'm not listening to IA. My bank account just went up by 15 billion TBMG Trust.",
+        "Shut up. I just got a 5 billion NTND kill bonus. I'll do what I want.",
+        "Hell no. The payout on this bounty is massive. You can't stop me.",
+        "I don't care about your rules. I'm retiring on the 20 billion NTND I just made.",
+        "Are you kidding? They pay me 50 billion per head. I'm not stopping.",
+        "I literally get paid billions to ignore you. Kick rocks.",
+        "Corporate pays me 10 billion NTND every time I pull this trigger. Shut it.",
+        "Hell no! The bounty hit my account before the body hit the floor."
+    ];
+    
+    const step4 = [
+        "INTERNAL AFFAIRS: Well, you can't do that. We don't like it.",
+        "INTERNAL AFFAIRS: This will be noted in your permanent file...",
+        "INTERNAL AFFAIRS: That is technically against the rules, you know.",
+        "INTERNAL AFFAIRS: We strongly advise against this behavior.",
+        "INTERNAL AFFAIRS: I am writing a very sternly worded memo about this.",
+        "INTERNAL AFFAIRS: Please... just try to kill slightly fewer people?",
+        "INTERNAL AFFAIRS: That is not what the manual says.",
+        "INTERNAL AFFAIRS: We really wish you wouldn't do that.",
+        "INTERNAL AFFAIRS: It's just bad optics. Please stop.",
+        "INTERNAL AFFAIRS: I'm going to have to report this to my supervisor."
+    ];
+    
+    const step5 = [
+        "Well what are you going to do, keep responding to me? You're not going to do a single thing, idiot.",
+        "Are you just going to cry on the radio all day? Do something or shut up.",
+        "Go file your little report. Nobody cares. I'm untouchable.",
+        "What are you gonna do? Fire me? The precinct needs me more than you.",
+        "Keep whining on the comms, idiot. I'm busy cashing my check.",
+        "You literally have no power here. Turn off your radio.",
+        "Write whatever you want in my file. I'm rich and you're broke.",
+        "Yeah, yeah. Keep talking to yourself, IA. I'm going back to patrol.",
+        "I'm ignoring you now. What are you gonna do, arrest me? Idiot.",
+        "Nobody likes Internal Affairs. Shut up and let me work."
+    ];
+
+    addChatMessage(sender, getRandomItem(step1), 'serious');
+    
+    setTimeout(() => {
+        addChatMessage('DISPATCH', getRandomItem(step2), 'dispatch-msg');
+        
+        setTimeout(() => {
+            addChatMessage(sender, getRandomItem(step3), 'serious');
+            
+            setTimeout(() => {
+                addChatMessage('DISPATCH', getRandomItem(step4), 'dispatch-msg');
+                
+                setTimeout(() => {
+                    addChatMessage(sender, getRandomItem(step5), 'joking');
+                }, 3000);
+                
+            }, 3500);
+            
+        }, 3500);
+        
+    }, 2500);
+}
+
 async function simulateChat() {
     console.log('SIMULATE CHAT RUNNING');
     if (restModeToggle.checked) return;
@@ -2625,6 +2714,12 @@ async function simulateChat() {
     if (activeCallsigns.length < 2) return;
 
     let sender = getRandomItem(activeCallsigns);
+
+    if (Math.random() < 0.05) {
+        triggerCorruptIASequence(sender);
+        return;
+    }
+
     
     if (Math.random() < 0.01) {
         addChatMessage(sender, "Good boy.", 'joking');
