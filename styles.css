@@ -2,19 +2,19 @@
 
 :root {
     /* Modern Dark Theme */
-    --bg-main: #0f172a;          /* Slate 900 */
-    --panel-bg: #1e293b;         /* Slate 800 */
-    --panel-border: #334155;     /* Slate 700 */
+    --bg-main: #000000; /* True Black for MDT */          /* Slate 900 */
+    --panel-bg: #0a0a0a; /* Darkest Gray */         /* Slate 800 */
+    --panel-border: #404040; /* High Contrast Gray */     /* Slate 700 */
     --border-color: #334155;
     
-    --text-main: #f8fafc;        /* Slate 50 */
+    --text-main: #e0e0e0;        /* Slate 50 */
     --text-dim: #94a3b8;         /* Slate 400 */
     
     --accent-blue: #3b82f6;      /* Blue 500 */
     --accent-blue-hover: #2563eb;/* Blue 600 */
     --accent-green: #10b981;     /* Emerald 500 */
     
-    --gradient-glow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --gradient-glow: none;
 
     /* Panic state colors - toned down from neon */
     --panic-orange: #f59e0b;     /* Amber 500 */
@@ -36,7 +36,7 @@
 body {
     background-color: var(--bg-main);
     color: var(--text-main);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Tahoma', 'Arial', sans-serif; /* Rugged MDT Font */
     height: 100vh;
     overflow: hidden;
     /* Clean solid background, no more scanlines or radial gradients */
@@ -65,7 +65,7 @@ body {
     align-items: center;
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 16px 24px;
     box-shadow: var(--gradient-glow);
     font-size: 1.25rem;
@@ -106,7 +106,7 @@ body {
 .panel {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
-    border-radius: 8px;
+    border-radius: 0px;
     display: flex;
     flex-direction: column;
     box-shadow: var(--gradient-glow);
@@ -153,13 +153,13 @@ body {
 }
 
 .tab {
-    padding: 14px 20px;
+    padding: 10px 16px;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
+    border-right: 1px solid var(--panel-border);
     color: var(--text-dim);
-    border-bottom: 2px solid transparent;
+    font-weight: bold;
     transition: all 0.2s;
+    font-size: 0.85rem;
     text-transform: uppercase;
 }
 
@@ -169,9 +169,9 @@ body {
 }
 
 .tab.active {
+    background: var(--bg-main);
     color: var(--accent-blue);
     border-bottom: 2px solid var(--accent-blue);
-    background: rgba(59, 130, 246, 0.05);
 }
 
 .tab-content {
@@ -330,20 +330,22 @@ body {
 
 /* Chat Log */
 .chat-msg {
-    margin-bottom: 16px;
-    padding: 14px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--panel-border);
+    margin-bottom: 0px;
+    padding: 8px 12px;
+    border-radius: 0px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #222;
     position: relative;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 .chat-msg .sender {
-    font-weight: 600;
+    font-weight: bold;
     display: inline-block;
     margin-right: 12px;
     font-size: 0.95rem;
-    font-family: 'Inter', sans-serif;
+    color: #fff;
 }
 
 .chat-msg.joking .sender { color: #a78bfa; } /* Violet 400 */
@@ -401,7 +403,7 @@ body {
     border: 1px solid var(--panel-border);
     padding: 16px;
     margin-bottom: 16px;
-    border-radius: 8px;
+    border-radius: 0px;
     transition: all 0.2s;
 }
 .doc-card:hover {
@@ -438,7 +440,7 @@ body {
 .modal-content {
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
-    border-radius: 12px;
+    border-radius: 0px;
     width: 600px;
     max-width: 90%;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -453,8 +455,8 @@ body {
     justify-content: space-between;
     align-items: center;
     background: rgba(0, 0, 0, 0.1);
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
 }
 
 /* CITY MAP STYLES */
@@ -466,7 +468,7 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid var(--panel-border);
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 16px;
     position: relative;
 }
@@ -533,7 +535,7 @@ body {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--panel-border);
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 0px;
     display: flex;
     justify-content: space-between;
     align-items: center;
