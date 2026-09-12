@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v4.2.0)
+# 🚨 MCPD DISPATCH TERMINAL (v4.4.4)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
