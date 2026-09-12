@@ -4267,6 +4267,84 @@ function stopPanicSound() {
     panicAudioElement.currentTime = 0;
 }
 
+
+window.panicTimestamps = [];
+window.reactedToMassPanic10 = false;
+window.reactedToMassPanic50 = false;
+window.chatChaosInterval = null;
+
+function checkMassPanicThreshold(triggeringUnit) {
+    const now = Date.now();
+    window.panicTimestamps.push(now);
+    window.panicTimestamps = window.panicTimestamps.filter(t => now - t < 10000);
+    const count = window.panicTimestamps.length;
+
+    if (count >= 50 && !window.reactedToMassPanic50) {
+        window.reactedToMassPanic50 = true;
+        trigger50PanicSequence();
+        setTimeout(() => window.reactedToMassPanic50 = false, 60000);
+    } else if (count >= 10 && !window.reactedToMassPanic10 && !window.reactedToMassPanic50) {
+        window.reactedToMassPanic10 = true;
+        trigger10PanicSequence(triggeringUnit);
+        setTimeout(() => window.reactedToMassPanic10 = false, 30000);
+    }
+}
+
+function trigger10PanicSequence(lastPanicUnit) {
+    const active = getActiveCallsigns();
+    if (active.length < 4) return;
+    
+    setTimeout(() => addChatMessage(getRandomItem(active), "Whoa whoa whoa, why are there so many 10-99s all of a sudden?!", "worried"), 1000);
+    setTimeout(() => addChatMessage(getRandomItem(active), `Are you guys actually in trouble or is ${lastPanicUnit} just leaning on the console again?`, "serious"), 2500);
+    setTimeout(() => addChatMessage(getRandomItem(active), "Stop hitting the panic buttons all at the same time! My terminal is deafening me!", "worried"), 4500);
+    setTimeout(() => addChatMessage(getRandomItem(active), "Seriously, do you actually need help or is this a system glitch?!", "serious"), 7000);
+}
+
+function trigger50PanicSequence() {
+    const active = getActiveCallsigns();
+    if (active.length < 5) return;
+    
+    // Initial chaos lines
+    const chaosLines = [
+        "OH MY GOD THE ENTIRE GRID IS FLASHING RED!",
+        "WHAT IS HAPPENING?! IS IT A WAR?!",
+        "DISPATCH, 50 PANICS AT ONCE?! ARE WE UNDER ATTACK?!",
+        "I'M FALLING BACK! EVERYONE FALL BACK TO THE PRECINCT!",
+        "CORPORATE HQ IS GOING TO NUKE THE SECTOR, ABORT!",
+        "I'M NOT DYING OUT HERE TODAY! I'M OUT!",
+        "MAYDAY! MAYDAY! THE WHOLE CITY IS BURNING!",
+        "WHY IS EVERYONE PANICKING?! STOP PANICKING!",
+        "MY EARS ARE BLEEDING FROM THE ALARMS!",
+        "I KNEW THIS JOB WAS A DEATH TRAP!"
+    ];
+
+    // Ramp up chat speed extremely fast
+    if (typeof chatSimulateInt !== 'undefined') clearInterval(chatSimulateInt);
+    
+    let currentSpeed = 300; // Hyper fast chat
+    let chaosElapsed = 0;
+    
+    function chaosLoop() {
+        addChatMessage(getRandomItem(active), getRandomItem(chaosLines), "worried");
+        
+        chaosElapsed += currentSpeed;
+        
+        // Gradually slow down over 30 seconds
+        if (chaosElapsed < 30000) {
+            // Lerp from 300ms to 3000ms over 30 seconds
+            const progress = chaosElapsed / 30000;
+            currentSpeed = 300 + (2700 * progress);
+            window.chatChaosInterval = setTimeout(chaosLoop, currentSpeed);
+        } else {
+            // Calm down, restore normal interval
+            addChatMessage(getRandomItem(active), "Okay... I think the system just malfunctioned. Stand down everyone.", "serious");
+            chatSimulateInt = setInterval(simulateChat, 3000);
+        }
+    }
+    
+    chaosLoop();
+}
+
 function triggerPanic(unitName = null) {
     let unit = unitName;
     const activeCallsigns = getActiveCallsigns();
@@ -4287,6 +4365,7 @@ function triggerPanic(unitName = null) {
         soundTimeout: null
     };
     activePanics.set(unit, panicData);
+    checkMassPanicThreshold(unit);
 
     // Add to unified log immediately with localized flashing class
     const div = document.createElement('div');
