@@ -4482,8 +4482,8 @@ function trigger50PanicSequence() {
 
 function triggerPanic(unitName = null, force = false) {
     const panicToggle = document.getElementById('panic-toggle');
-    if (!force && panicToggle && !panicToggle.checked) {
-        return; // Auto-panics blocked by advanced settings
+    if (!force && (!panicToggle || !panicToggle.checked)) {
+        return; // Auto-panics blocked by advanced settings (default to off if missing)
     }
     
     let unit = unitName;
