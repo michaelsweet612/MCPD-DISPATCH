@@ -1,3 +1,242 @@
+const lateArrivalLines = [
+    `Well he got there before me that doesn't mean I don't get to get paid, but I'll move in anyways and kill the bastard.`,
+    `I'm just going to cry in my cruiser. Unbelievable.`,
+    `I swear {original} teleported. 🙄`,
+    `I'm just going to drive through the drive-thru instead. Typical.`,
+    `Great, now I have to turn around awkwardly in traffic. SMH.`,
+    `Great, now I have to turn around awkwardly in traffic. Lol.`,
+    `Aw man, I was already turning my lights on....`,
+    `Nobody likes a show-off, {original}. I'm going back to the station.`,
+    `I was literally one block away. {original} always gets the good ones. 🚔`,
+    `Sigh... I'll just clear the scene....`,
+    `Guess I'll just go back to writing parking tickets....`,
+    `Teacher's pet. I'm going back to the station.`,
+    `I was literally one block away. {original} always gets the good ones. 😒`,
+    `Aw man, I was already turning my lights on. SMH.`,
+    `Show-off. {original} is such a try-hard. Lol.`,
+    `Sigh... I'll just clear the scene. Ridiculous.`,
+    `Well, at least {original} has to do the paperwork. Lol.`,
+    `I'm just going to drive through the drive-thru instead. SMH.`,
+    `I swear {original} teleported. 🚔`,
+    `Aw man, I was already turning my lights on. Lol.`,
+    `I'm just going to drive through the drive-thru instead....`,
+    `Stop hogging all the calls, {original}. SMH.`,
+    `Teacher's pet. Can't catch a break.`,
+    `Sad day. I wanted some action. 🙄`,
+    `I was speeding for nothing. Now my sirens just look silly. 😒`,
+    `Have fun with the paperwork, {original}! I'm going back to the station.`,
+    `I'm just here so I don't get fined....`,
+    `Slow down, hotshot. 🙄`,
+    `Show-off. {original} is such a try-hard. Unbelievable.`,
+    `I was literally one block away. {original} always gets the good ones. Ridiculous.`,
+    `Did {original} strap a rocket to their cruiser? My luck.`,
+    `Teacher's pet. Typical.`,
+    `Whatever, {original}. Hope you trip on a curb. Unbelievable.`,
+    `Guess I'll take my time then. Anyone want coffee?`,
+    `I was speeding for nothing. Now my sirens just look silly. 🚔`,
+    `Why does {original} always get there first? It's not fair. Can't catch a break.`,
+    `Whatever, {original}. Hope you trip on a curb. 😒`,
+    `Did {original} strap a rocket to their cruiser? 🙄`,
+    `I'm just going to drive through the drive-thru instead. Ridiculous.`,
+    `Well, at least {original} has to do the paperwork.`,
+    `Sigh... I'll just clear the scene.`,
+    `You want a medal for being fast? 🙄`,
+    `Guess I'll take my time then. Anyone want coffee? 🙄`,
+    `Why does {original} always get there first? It's not fair. I'm going back to the station.`,
+    `Guess I'll just go back to writing parking tickets. I'm going back to the station.`,
+    `Great, now I have to turn around awkwardly in traffic. Typical.`,
+    `Nobody likes a show-off, {original}.`,
+    `I swear {original} teleported. 😒`,
+    `Aw man, {original} beat me to it. My luck.`,
+    `Stop hogging all the calls, {original}. Typical.`,
+    `Aw man, {original} beat me to it.`,
+    `Did {original} strap a rocket to their cruiser? I'm going back to the station.`,
+    `Did {original} strap a rocket to their cruiser? Unbelievable.`,
+    `Slow down, hotshot. SMH.`,
+    `I was literally one block away. {original} always gets the good ones. Unbelievable.`,
+    `Whatever, {original}. Hope you trip on a curb. Can't catch a break.`,
+    `Did {original} strap a rocket to their cruiser? Typical.`,
+    `Aw man, {original} beat me to it. Lol.`,
+    `Aw man, I was already turning my lights on. Typical.`,
+    `Why does {original} always get there first? It's not fair. Unbelievable.`,
+    `Sigh... I'll just clear the scene. 🚔`,
+    `I was speeding for nothing. Now my sirens just look silly. Typical.`,
+    `Sad day. I wanted some action. Can't catch a break.`,
+    `Guess I'll just go back to writing parking tickets. Can't catch a break.`,
+    `Guess I'll take my time then. Anyone want coffee? SMH.`,
+    `Have fun with the paperwork, {original}! Ridiculous.`,
+    `Slow down, hotshot....`,
+    `I'm just going to drive through the drive-thru instead. Can't catch a break.`,
+    `Guess I'll just go back to writing parking tickets. Lol.`,
+    `Teacher's pet. 😒`,
+    `I bet {original} didn't even use their blinker. 🚔`,
+    `I'm just going to drive through the drive-thru instead. 🚔`,
+    `I'm just going to cry in my cruiser. Ridiculous.`,
+    `Man, I never get to go fast....`,
+    `Slow down, hotshot. 🚔`,
+    `Nobody likes a show-off, {original}. My luck.`,
+    `Show-off. {original} is such a try-hard. 🙄`,
+    `Did {original} strap a rocket to their cruiser? Ridiculous.`,
+    `Show-off. {original} is such a try-hard.`,
+    `Slow down, hotshot.`,
+    `I was literally one block away. {original} always gets the good ones. Lol.`,
+    `Aw man, {original} beat me to it. 🙄`,
+    `I hope you spill your coffee on your uniform, {original}. I'm going back to the station.`,
+    `Aw man, I was already turning my lights on.`,
+    `I was speeding for nothing. Now my sirens just look silly. Lol.`,
+    `Nobody likes a show-off, {original}. Can't catch a break.`,
+    `Stop hogging all the calls, {original}.`,
+    `I'm just here so I don't get fined. I'm going back to the station.`,
+    `Why does {original} always get there first? It's not fair.`,
+    `Sad day. I wanted some action. My luck.`,
+    `Whatever, {original}. Hope you trip on a curb. Lol.`,
+    `I'm just going to cry in my cruiser.`,
+    `Aw man, I was already turning my lights on. Ridiculous.`,
+    `Slow down, hotshot. Lol.`,
+    `Have fun with the paperwork, {original}! 🙄`,
+    `Aw man, I was already turning my lights on. 😒`,
+    `I'm just here so I don't get fined. 🙄`,
+    `Well, at least {original} has to do the paperwork....`,
+    `Sad day. I wanted some action. Lol.`,
+    `Teacher's pet. Ridiculous.`,
+    `Man, I never get to go fast. Lol.`,
+    `Teacher's pet. SMH.`,
+    `Great, now I have to turn around awkwardly in traffic. 🚔`,
+    `Whatever, {original}. Hope you trip on a curb. My luck.`,
+    `Whatever, {original}. Hope you trip on a curb. I'm going back to the station.`,
+    `Well, at least {original} has to do the paperwork. SMH.`,
+    `Show-off. {original} is such a try-hard. Can't catch a break.`,
+    `Slow down, hotshot. Can't catch a break.`,
+    `Aw man, I was already turning my lights on. Can't catch a break.`,
+    `Aw man, {original} beat me to it. I'm going back to the station.`,
+    `Slow down, hotshot. Ridiculous.`,
+    `Aw man, I was already turning my lights on. 🚔`,
+    `Nobody likes a show-off, {original}. Lol.`,
+    `I'm just here so I don't get fined. Unbelievable.`,
+    `Aw man, {original} beat me to it. 🚔`,
+    `You want a medal for being fast? I'm going back to the station.`,
+    `Show-off. {original} is such a try-hard. I'm going back to the station.`,
+    `Slow down, hotshot. Unbelievable.`,
+    `Why does {original} always get there first? It's not fair. Ridiculous.`,
+    `I'm just going to drive through the drive-thru instead. 🙄`,
+    `I swear {original} teleported. Typical.`,
+    `Slow down, hotshot. Typical.`,
+    `Whatever, {original}. Hope you trip on a curb....`,
+    `I'm just going to cry in my cruiser....`,
+    `I was literally one block away. {original} always gets the good ones. My luck.`,
+    `I'm just going to cry in my cruiser. Typical.`,
+    `I was literally one block away. {original} always gets the good ones....`,
+    `Aw man, I was already turning my lights on. I'm going back to the station.`,
+    `Whatever, {original}. Hope you trip on a curb. Typical.`,
+    `I hope you spill your coffee on your uniform, {original}....`,
+    `Have fun with the paperwork, {original}! Unbelievable.`,
+    `Have fun with the paperwork, {original}! Typical.`,
+    `I bet {original} didn't even use their blinker. I'm going back to the station.`,
+    `I was literally one block away. {original} always gets the good ones. Can't catch a break.`,
+    `Man, I never get to go fast. SMH.`,
+    `You want a medal for being fast? Can't catch a break.`,
+    `I'm just here so I don't get fined.`,
+    `I hope you spill your coffee on your uniform, {original}. Lol.`,
+    `Sigh... I'll just clear the scene. My luck.`,
+    `Guess I'll just go back to writing parking tickets. SMH.`,
+    `Man, I never get to go fast. 🚔`,
+    `Man, I never get to go fast.`,
+    `Sad day. I wanted some action.`,
+    `Did {original} strap a rocket to their cruiser? 😒`,
+    `Teacher's pet. My luck.`,
+    `I hope you spill your coffee on your uniform, {original}. 😒`,
+    `I'm just going to cry in my cruiser. 🚔`,
+    `Man, I never get to go fast. Can't catch a break.`,
+    `I was literally one block away. {original} always gets the good ones. 🙄`,
+    `Man, I never get to go fast. 🙄`,
+    `Well, at least {original} has to do the paperwork. My luck.`,
+    `I'm just going to drive through the drive-thru instead. I'm going back to the station.`,
+    `Slow down, hotshot. I'm going back to the station.`,
+    `Guess I'll take my time then. Anyone want coffee? Ridiculous.`,
+    `Whatever, {original}. Hope you trip on a curb.`,
+    `Great, now I have to turn around awkwardly in traffic. 😒`,
+    `Aw man, {original} beat me to it. 😒`,
+    `Why does {original} always get there first? It's not fair. 🚔`,
+    `Guess I'll take my time then. Anyone want coffee? 😒`,
+    `Great, now I have to turn around awkwardly in traffic. Unbelievable.`,
+    `I hope you spill your coffee on your uniform, {original}. Can't catch a break.`,
+    `I swear {original} teleported. Ridiculous.`,
+    `I bet {original} didn't even use their blinker.`,
+    `Sad day. I wanted some action. SMH.`,
+    `I bet {original} didn't even use their blinker. Can't catch a break.`,
+    `Slow down, hotshot. 😒`,
+    `Aw man, {original} beat me to it. Can't catch a break.`,
+    `Have fun with the paperwork, {original}! My luck.`,
+    `Guess I'll just go back to writing parking tickets. Ridiculous.`,
+    `I hope you spill your coffee on your uniform, {original}. Ridiculous.`,
+    `I bet {original} didn't even use their blinker. SMH.`,
+    `Sigh... I'll just clear the scene. SMH.`,
+    `Stop hogging all the calls, {original}. 🚔`,
+    `Stop hogging all the calls, {original}. 🙄`,
+    `Nobody likes a show-off, {original}. 🚔`,
+    `I swear {original} teleported. Lol.`,
+    `Great, now I have to turn around awkwardly in traffic.`,
+    `Why does {original} always get there first? It's not fair. My luck.`,
+    `I bet {original} didn't even use their blinker. 🙄`,
+    `Teacher's pet. 🚔`,
+    `Aw man, {original} beat me to it. Typical.`,
+    `Show-off. {original} is such a try-hard. 🚔`,
+    `Teacher's pet. 🙄`,
+    `Why does {original} always get there first? It's not fair. SMH.`,
+    `I'm just going to drive through the drive-thru instead. My luck.`,
+    `Man, I never get to go fast. My luck.`,
+    `Why does {original} always get there first? It's not fair. Typical.`,
+    `Well, at least {original} has to do the paperwork. I'm going back to the station.`,
+    `Stop hogging all the calls, {original}. Unbelievable.`,
+    `Nobody likes a show-off, {original}. Ridiculous.`,
+    `Have fun with the paperwork, {original}!`,
+    `Why does {original} always get there first? It's not fair....`,
+    `I'm just here so I don't get fined. Can't catch a break.`,
+    `Guess I'll take my time then. Anyone want coffee?...`,
+    `You want a medal for being fast?...`,
+    `Stop hogging all the calls, {original}. Ridiculous.`,
+    `Guess I'll just go back to writing parking tickets.`,
+    `Well, at least {original} has to do the paperwork. Unbelievable.`,
+    `I'm just here so I don't get fined. Ridiculous.`,
+    `I was speeding for nothing. Now my sirens just look silly. Can't catch a break.`,
+    `I swear {original} teleported.`,
+    `I bet {original} didn't even use their blinker. Lol.`,
+    `I was speeding for nothing. Now my sirens just look silly.`,
+    `Well, at least {original} has to do the paperwork. 🙄`,
+    `Man, I never get to go fast. Ridiculous.`,
+    `Sad day. I wanted some action. Unbelievable.`,
+    `I'm just here so I don't get fined. 🚔`,
+    `Nobody likes a show-off, {original}. 🙄`,
+    `Well, at least {original} has to do the paperwork. 😒`,
+    `I'm just here so I don't get fined. 😒`,
+    `Aw man, I was already turning my lights on. My luck.`,
+    `I was speeding for nothing. Now my sirens just look silly. 🙄`,
+    `Stop hogging all the calls, {original}. 😒`,
+    `Did {original} strap a rocket to their cruiser? 🚔`,
+    `You want a medal for being fast? My luck.`,
+    `Well, at least {original} has to do the paperwork. Typical.`,
+    `Guess I'll just go back to writing parking tickets. Typical.`,
+    `I hope you spill your coffee on your uniform, {original}. Typical.`,
+    `Nobody likes a show-off, {original}. Typical.`,
+    `You want a medal for being fast? Lol.`,
+    `I'm just going to drive through the drive-thru instead. 😒`,
+    `I bet {original} didn't even use their blinker. Typical.`,
+    `Aw man, I was already turning my lights on. 🙄`,
+    `Whatever, {original}. Hope you trip on a curb. SMH.`,
+    `Have fun with the paperwork, {original}! 😒`,
+    `Man, I never get to go fast. 😒`,
+    `Stop hogging all the calls, {original}. Lol.`,
+    `Guess I'll take my time then. Anyone want coffee? 🚔`,
+    `Well, at least {original} has to do the paperwork. 🚔`,
+    `I'm just going to cry in my cruiser. Can't catch a break.`,
+    `I'm just here so I don't get fined. Lol.`,
+    `Sad day. I wanted some action. Typical.`,
+    `Man, I never get to go fast. I'm going back to the station.`,
+    `Whatever, {original}. Hope you trip on a curb. Ridiculous.`,
+    `Aw man, {original} beat me to it. SMH.`,
+    `Great, now I have to turn around awkwardly in traffic. Can't catch a break.`
+];
+
 
 let dispatcherScore = 0;
 function addPoints(pts) {
@@ -4014,6 +4253,56 @@ function simulateEvent(specificCrime = null) {
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         addPoints(15);
+        
+        // Jealous Officer mechanic
+        setTimeout(() => {
+            const activeCallsigns = getActiveCallsigns();
+            const originalUnit = respondingUnits[0];
+            const backupUnits = activeCallsigns.filter(u => u !== originalUnit);
+            if (backupUnits.length > 0) {
+                const jealousUnit = backupUnits[Math.floor(Math.random() * backupUnits.length)];
+                const rawLine = lateArrivalLines[Math.floor(Math.random() * lateArrivalLines.length)];
+                const line = rawLine.replace('{original}', originalUnit);
+                
+                const jDiv = document.createElement('div');
+                jDiv.className = 'chat-msg';
+                jDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${jealousUnit}]</span> <span class="text">${line}</span>`;
+                unifiedLogEl.appendChild(jDiv);
+                scrollToBottom(unifiedLogEl);
+                
+                // Temporarily mark them on scene
+                unitAssignments[jealousUnit] = '10-6 (On Scene)';
+                if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+                
+                // Switch them back to on duty after 12s
+                setTimeout(() => {
+                    if (unitAssignments[jealousUnit] === '10-6 (On Scene)') {
+                        unitAssignments[jealousUnit] = '10-8 (Available)';
+                        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+                    }
+                }, 12000);
+                
+                // Special Interaction!
+                if (line.includes("kill the bastard")) {
+                    setTimeout(() => {
+                        const rDiv = document.createElement('div');
+                        rDiv.className = 'chat-msg';
+                        rDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${originalUnit}]</span> <span class="text">hey hey hey you can't just kill them</span>`;
+                        unifiedLogEl.appendChild(rDiv);
+                        scrollToBottom(unifiedLogEl);
+                        
+                        setTimeout(() => {
+                            const iaDiv = document.createElement('div');
+                            iaDiv.className = 'chat-msg';
+                            iaDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--panic-red)">[INTERNAL AFFAIRS]</span> <span class="text" style="color:var(--panic-red); font-weight:bold;">OFFICER ${jealousUnit}, LETHAL FORCE COMMENTS ARE FLAGGED. THIS WILL BE REVIEWED.</span>`;
+                            unifiedLogEl.appendChild(iaDiv);
+                            scrollToBottom(unifiedLogEl);
+                        }, 2000);
+                    }, 2000);
+                }
+            }
+        }, 4000 + Math.random() * 3000);
+        
     }, 3000 + Math.random() * 2000);
 
 
