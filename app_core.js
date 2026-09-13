@@ -4480,7 +4480,12 @@ function trigger50PanicSequence() {
     chaosLoop();
 }
 
-function triggerPanic(unitName = null) {
+function triggerPanic(unitName = null, force = false) {
+    const panicToggle = document.getElementById('panic-toggle');
+    if (!force && panicToggle && !panicToggle.checked) {
+        return; // Auto-panics blocked by advanced settings
+    }
+    
     let unit = unitName;
     const activeCallsigns = getActiveCallsigns();
     if (!unit) {
@@ -4601,7 +4606,7 @@ advancedControlsHeader.addEventListener('click', () => {
     }
 });
 
-manualPanicBtn.addEventListener('click', () => triggerPanic());
+manualPanicBtn.addEventListener('click', () => triggerPanic(null, true));
 btnEvtRobbery.addEventListener('click', () => simulateEvent(crimeReports.find(c => c.title.includes("Robbery"))));
 btnEvtSuspicious.addEventListener('click', () => simulateEvent(crimeReports.find(c => c.title.includes("Suspicious"))));
 btnEvtTraffic.addEventListener('click', () => simulateEvent({ title: "10-50: Traffic Stop", priority: "medium" }));
