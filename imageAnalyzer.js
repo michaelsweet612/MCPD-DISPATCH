@@ -89,14 +89,8 @@ function simulateImageReaction(rawFileName, file) {
     
     if (isInappropriate) {
         replies = [
-            "What the HELL did you just send over the secure channel?! I'm filing an IA complaint RIGHT NOW.",
-            "DISPATCH! Who authorized this?! My eyes!! That is NOT what the image upload system is for!",
-            "I am NOT looking at that. Delete it from the server immediately. This is a government terminal!",
-            "Bro... I'm sitting in my patrol car with my partner. We did NOT need to see that.",
-            "That's it. I'm contacting Corporate HR. Someone is getting fired today and it's not me.",
-            "You know these images are logged permanently on the TBMG Grid servers, right? You're going to prison.",
-            "I've seen some messed up things on patrol but that image just topped the list.",
-            "INTERNAL AFFAIRS: Unauthorized explicit material detected on dispatch channel. Investigation pending.",
+            "Hey we're trying to do our job can you stop sending us a adult material This is not a group chat this is an official job where people's life all depend on you",
+            /* INAPP_ARRAY */
         ];
     } else if (isWeapon) {
         replies = [
@@ -243,31 +237,7 @@ function simulateImageReaction(rawFileName, file) {
         ];
     } else {
         replies = [
-            "Why is dispatch sending us images of '" + rawFileName + "'? What am I supposed to do with this information?",
-            "What the heck man I don't get paid to look at your stupid images! I'm trying to patrol here, keep the channel clear!",
-            "Received image of '" + rawFileName + "'. Honestly, that's pretty cool. Saved to my terminal.",
-            "Uhh, Dispatch... I'm really weirded out by this picture. Please don't send this over the secure channel again.",
-            "10-4. Image received. Is this a BOLO target or are you just completely bored out of your mind in there?",
-            "I've analyzed this image for about 30 seconds and I have absolutely no idea what I'm looking at.",
-            "Dispatch, did you accidentally send this to the wrong channel? Because I'm confused.",
-            "Image logged. Running it through every database we have... Zero matches. What a waste of my time.",
-            "That's an interesting image. Filing it under 'Things That Are Not My Problem' in the case database.",
-            "10-4, image received. I'm going to stare at it for 5 more minutes and pretend I'm working.",
-            "Is this related to an active case or did someone just discover the upload button?",
-            "Dispatch, I've been a cop for 15 years and I still don't know why you people send me these images.",
-            "That image just loaded on my dashboard and my partner looked at me funny. Thanks.",
-            "Processing... Processing... Processing... I have no idea what this is. 10-4.",
-            "Received. I'm going to pretend this is relevant evidence for the case I'm currently ignoring.",
-            "My terminal just spent 2 minutes downloading that image on this terrible precinct WiFi. Was it worth it? No.",
-            "Image analysis complete. Threat level: Confused. My threat level: Also confused.",
-            "Forwarding this to my supervisor. Not because it's important, but because I want someone else to be confused too.",
-            "I was in the middle of a very important nap in my patrol car and this image woke me up. Thanks.",
-            "10-4, '" + rawFileName + "' received. Adding to the growing pile of things I don't understand about this job.",
-            "That image is now permanently stored on TBMG Grid servers in the Gulf of TBMG. Congratulations. It's there forever.",
-            "I showed this to my partner and they asked for a transfer to a different precinct. Good job, Dispatch.",
-            "Dispatch, the secure channel is for tactical communications, not... whatever this is.",
-            "Image scan complete. " + Math.floor(Math.random() * 100) + "% chance this is completely irrelevant. Logging anyway.",
-            "You know what, I'm not even going to ask. Image received. 10-4. Moving on with my life.",
+            /* NORMAL_ARRAY */
         ];
     }
     
