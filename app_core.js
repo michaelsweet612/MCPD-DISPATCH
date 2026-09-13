@@ -5874,7 +5874,7 @@ function renderUnitStatus() {
         
         html += `
             <tr style="border-bottom: 1px dashed var(--panel-border);">
-                <td style="padding: 8px 0; color: ${rankColor}; font-weight:bold;">${u.rank || 'Officer'} ${u.id}${genderStr}</td>
+                <td style="padding: 8px 0; color: ${rankColor}; font-weight:bold;">${u.rank || 'Officer'} ${u.id}</td>
                 <td style="padding: 8px 0;">
                     <span style="background: var(--panel-border); color: ${healthColor}; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">${u.health || 'HEALTHY'}</span>
                 </td>
@@ -5883,6 +5883,7 @@ function renderUnitStatus() {
                 </td>
                 <td style="padding: 8px 0; color: ${assignColor}; font-weight:bold; font-size: 0.85rem;">${assignment}</td>
                 <td style="padding: 8px 0; color: var(--accent-blue); font-size: 0.9rem;">${psych}</td>
+                <td style="padding: 8px 0; color: var(--text-dim); font-size: 0.9rem;">${u.gender || 'Unknown'}</td>
             </tr>
         `;
     }
