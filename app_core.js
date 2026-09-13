@@ -3999,7 +3999,7 @@ function simulateEvent(specificCrime = null) {
     const sector = Math.floor(1000 + Math.random() * 9000);
     const spokenCrime = crime.title.replace(/10-\d{2}:?\s*/, '').replace(/\d+/, ' '); // strip 10-codes for easier speech
     
-    const dispatchSpeech = `${spokenCrime}. Located in Sector ${sector}. Respond now.`;
+    const dispatchSpeech = `${spokenCrime}. Sector ${sector}. Respond now.`;
     speakDispatch(dispatchSpeech);
 
     unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
