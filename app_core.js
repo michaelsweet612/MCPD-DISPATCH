@@ -3972,9 +3972,9 @@ function setVoiceAndSpeak(utterance, voices) {
         utterance.voice = selectedVoice;
     }
     
-    utterance.rate = 1.1; // Slightly robotic/fast
-    utterance.pitch = 0.9;
-    utterance.volume = 0.6;
+    utterance.rate = 0.95; // Calm, natural speaking pace
+    utterance.pitch = 0.75; // Lower pitch, professional dispatcher tone
+    utterance.volume = 0.7;
     window.speechSynthesis.speak(utterance);
 }
 
@@ -3999,7 +3999,7 @@ function simulateEvent(specificCrime = null) {
     const sector = Math.floor(1000 + Math.random() * 9000);
     const spokenCrime = crime.title.replace(/10-\d{2}:?\s*/, '').replace(/\d+/, ' '); // strip 10-codes for easier speech
     
-    const dispatchSpeech = `${spokenCrime}. Sector ${sector}. Respond now.`;
+    const dispatchSpeech = `${spokenCrime}, sector ${sector}.`;
     speakDispatch(dispatchSpeech);
 
     unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
