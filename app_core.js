@@ -5422,8 +5422,8 @@ chatSimulateInt = setInterval(simulateChat, 1500); // every 3s, random chat
 autoSimulateInt = setInterval(() => {
         simulateEvent();
 
-    // Occasional Random Auto-Panic (~10% chance during an event tick)
-    if (Math.random() < 0.10 && autoEventsCheckbox.checked && activePanics.size < 3) {
+    // Occasional Random Auto-Panic (~1% chance during an event tick)
+    if (Math.random() < 0.01 && autoEventsCheckbox.checked && activePanics.size < 3) {
         triggerPanic();
     }
 }, 10000); // every 7s, random event
