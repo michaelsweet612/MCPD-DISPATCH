@@ -243,7 +243,7 @@ function addPoints(pts) {
     dispatcherScore += pts;
     const scoreEl = document.getElementById('dispatcher-score-display');
     if(scoreEl) {
-        scoreEl.textContent = `SCORE: ${dispatcherScore}`;
+        scoreEl.textContent = `STATION POINTS: ${dispatcherScore}`;
         scoreEl.style.color = 'var(--accent-green)';
         setTimeout(() => scoreEl.style.color = '#fff', 500);
     }
