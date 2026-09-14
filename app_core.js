@@ -6537,3 +6537,261 @@ if(radioSpeedSelect) {
         chatSimulateInt = setInterval(simulateChat, parseInt(e.target.value));
     });
 }
+
+
+// === OVERRIDE simulateEvent for Dynamic Points ===
+// Assign points to all crime reports
+crimeReports.forEach(c => {
+    if (!c.points) {
+        if (c.priority === 'high') {
+            c.points = Math.floor(Math.random() * 501) + 500; // 500-1000
+        } else if (c.priority === 'medium') {
+            c.points = Math.floor(Math.random() * 201) + 50; // 50-250
+        } else {
+            c.points = Math.floor(Math.random() * 21) + 5; // 5-25
+        }
+    }
+});
+
+function simulateEvent(specificCrime = null) {
+    if (restModeToggle.checked && !specificCrime) return;
+
+    let crime = specificCrime;
+    if (!crime) {
+        if (!autoEventsCheckbox.checked) return;
+        crime = { ...getRandomItem(crimeReports) };
+        if (crime.title.includes('[RAND_LOC]')) {
+            const randLoc = Math.floor(Math.random() * 90000) + 10000;
+            crime.title = crime.title.replace('[RAND_LOC]', randLoc);
+        }
+    }
+
+    const div = document.createElement('div');
+    const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
+    const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
+
+    const numUnits = respondingUnits.length;
+    const sector = Math.floor(1000 + Math.random() * 9000);
+    const spokenCrime = crime.title.replace(/10-\d{2}:?\s*/, '').replace(/\d+/, ' '); // strip 10-codes for easier speech
+    const area = Math.floor(Math.random() * 9) + 1;
+    const dispatchSpeech = `All units, ${spokenCrime}, area ${area}.`;
+    speakDispatch(dispatchSpeech);
+
+    unitAssignments[respondingUnits[0]] = '10-6 (On Scene)';
+    unitAssignments[respondingUnits[1]] = '10-6 (On Scene)';
+    if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
+    
+    // AI Officer dynamically engages the event and awards points
+    setTimeout(() => {
+        const chatDiv = document.createElement('div');
+        chatDiv.className = 'chat-msg';
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+${crime.points || 15} STATION POINTS]</span>`;
+        unifiedLogEl.appendChild(chatDiv);
+        scrollToBottom(unifiedLogEl);
+        addPoints(crime.points || 15);
+        
+        // Jealous Officer mechanic
+        setTimeout(() => {
+            const activeCallsigns = getActiveCallsigns();
+            const originalUnit = respondingUnits[0];
+            const backupUnits = activeCallsigns.filter(u => u !== originalUnit);
+            if (backupUnits.length > 0) {
+                const jealousUnit = backupUnits[Math.floor(Math.random() * backupUnits.length)];
+                const rawLine = lateArrivalLines[Math.floor(Math.random() * lateArrivalLines.length)];
+                const line = rawLine.replace('{original}', originalUnit);
+                
+                const jDiv = document.createElement('div');
+                jDiv.className = 'chat-msg';
+                jDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${jealousUnit}]</span> <span class="text">${line}</span>`;
+                unifiedLogEl.appendChild(jDiv);
+                scrollToBottom(unifiedLogEl);
+                
+                // Temporarily mark them on scene
+                unitAssignments[jealousUnit] = '10-6 (On Scene)';
+                if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+                
+                // Switch them back to on duty after 12s
+                setTimeout(() => {
+                    if (unitAssignments[jealousUnit] === '10-6 (On Scene)') {
+                        unitAssignments[jealousUnit] = '10-8 (Available)';
+                        if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
+                    }
+                }, 12000);
+                
+                // Special Interaction!
+                if (line.includes("kill the bastard")) {
+                    setTimeout(() => {
+                        const rDiv = document.createElement('div');
+                        rDiv.className = 'chat-msg';
+                        rDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${originalUnit}]</span> <span class="text">hey hey hey you can't just kill them</span>`;
+                        unifiedLogEl.appendChild(rDiv);
+                        scrollToBottom(unifiedLogEl);
+                        
+                        setTimeout(() => {
+                            const iaDiv = document.createElement('div');
+                            iaDiv.className = 'chat-msg';
+                            iaDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--panic-red)">[INTERNAL AFFAIRS]</span> <span class="text" style="color:var(--panic-red); font-weight:bold;">OFFICER ${jealousUnit}, LETHAL FORCE COMMENTS ARE FLAGGED. THIS WILL BE REVIEWED.</span>`;
+                            unifiedLogEl.appendChild(iaDiv);
+                            scrollToBottom(unifiedLogEl);
+                        }, 2000);
+                    }, 2000);
+                }
+            }
+        }, 4000 + Math.random() * 3000);
+        
+    }, 3000 + Math.random() * 2000);
+
+
+    // Select random suspect from database
+    let suspectCit = null;
+    if (globalCitizens && globalCitizens.length > 0) {
+        suspectCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+        // Mark them suspicious or wanted based on priority
+        if (crime.priority === 'high') {
+            suspectCit.status = 'Wanted';
+            wantedTargets.push({
+                name: suspectCit.name,
+                reason: crime.title,
+                level: "HIGH",
+                bounty: Math.floor(Math.random() * 50000) + 10000,
+                address: "Unknown",
+                implants: suspectCit.trait
+            });
+            if (typeof updateWantedUI !== 'undefined') updateWantedUI();
+        } else {
+            suspectCit.status = 'Suspicious';
+        }
+        if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+    }
+
+    div.className = `event-item ${prioClass}`;
+    div.style.width = "100%";
+    div.innerHTML = `
+        <span class="time">${getCurrentTimeStr()}</span>
+        <div class="title">${crime.title} <span style="color:var(--accent-green)">[REWARD: ${crime.points || 15} PTS]</span></div>
+        ${crime.group ? `<div style="color: #ff9800; font-size: 0.85rem;">[INTEL] Known Affiliation: ${crime.group}</div>` : ''}
+        <div style="font-size: 0.9rem; color: #ccc;">Responding: ${respondingUnits[0]} & ${respondingUnits[1]}</div>
+    `;
+
+    unifiedLogEl.appendChild(div);
+    eventCount++;
+    if(typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
+    if(eventCountEl) eventCountEl.textContent = `${eventCount} Events`;
+    scrollToBottom(unifiedLogEl);
+
+    if (unifiedLogEl.children.length > 100) {
+        unifiedLogEl.removeChild(unifiedLogEl.firstChild);
+    }
+
+    setTimeout(async () => {
+        const reportingUnit = respondingUnits[0];
+        const backupUnit = respondingUnits[1];
+        const isROEEnabled = roeToggleCheckbox.checked;
+
+        if (Math.random() < 0.3) {
+            const swear = getRandomItem(swearWords);
+            const action = getRandomItem(underFireActions);
+            const loc = Math.floor(Math.random() * 900000000) + 100000000;
+            
+            addChatMessage(reportingUnit, `${swear} ${action}`, "worried");
+            
+            setTimeout(() => {
+                const checkIn = getRandomItem(backupCheckInLines);
+                addChatMessage(backupUnit, checkIn.replace(/%UNIT%/g, reportingUnit), "worried");
+                
+                setTimeout(() => {
+                    const resLine = getRandomItem(detailedResolutionLines);
+                    addChatMessage(reportingUnit, `${resLine} Send EMS to location ${loc}.`, "serious");
+                    
+                    if (suspectCit) {
+                        suspectCit.status = 'Deceased';
+                        if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+                    }
+
+                    setTimeout(() => {
+                        const backupAck = getRandomItem(backupAcknowledgeLines);
+                        addChatMessage(backupUnit, backupAck.replace(/%LOC%/g, loc).replace(/%UNIT%/g, reportingUnit), "serious");
+                        
+                        mockAddDocument(crime, respondingUnits, false);
+        unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+        unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+        if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
+ // Always lethal if they got in a shootout
+                    }, 3500 + Math.random() * 2000);
+                    
+                }, 5000 + Math.random() * 4000);
+                
+            }, 2500 + Math.random() * 2000);
+            return;
+        }
+
+        const suspectStr = suspectCit ? `${suspectCit.name} (CID: ${suspectCit.id})` : 'the suspect';
+        const arrestingChats = [
+            `Target ${suspectStr} in custody. Returning to precinct.`,
+            `I arrested ${suspectStr}. Code 4.`,
+            `${suspectStr} secured. We're 10-8.`,
+            `Apprehended ${suspectStr} without incident.`,
+            `Got them. ${suspectStr} is in cuffs.`
+        ];
+
+        const killingChats = [
+            `Target ${suspectStr} neutralized. Call the meat wagon. Filing report now.`,
+            `Threat eliminated. No survivors. Returning to patrol.`,
+            `${suspectStr} resisted. Lethal force applied. Area is red but quiet.`,
+            `Subject down. Send bio-hazard cleanup to our coordinates.`,
+            `Target ${suspectStr} was hostile. Problem solved permanently.`
+        ];
+
+        let reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
+        
+        if (suspectCit) {
+            suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
+            if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+        }
+
+        addChatMessage(reportingUnit, reportMsg, "serious");
+        mockAddDocument(crime, respondingUnits, isROEEnabled);
+        unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+        unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+        if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
+
+
+    }, 4000 + Math.random() * 6000);
+}
+
+// === OVERRIDE triggerComplimentBanter for Points ===
+function triggerComplimentBanter(sender) {
+    const active = getActiveCallsigns();
+    const target = active.length > 1 ? getRandomItem(active.filter(c => c !== sender)) : "Dispatch";
+    
+    const prefixes = ["Hey", "Listen", "Just wanted to say,", "For the record,", "Honestly,", "I have to admit,"];
+    const adjectives = ["amazing", "incredible", "outstanding", "perfect", "impeccable", "flawless", "superb"];
+    const subjects = ["uniform", "boots", "tactical gear", "helmet", "badge polish", "patrol driving", "radio voice"];
+    const praises = [
+        `you're such a good boy.`,
+        `your ${getRandomItem(subjects)} looks ${getRandomItem(adjectives)} today.`,
+        `you are way better at this job than me.`,
+        `I aspire to be as good as you one day.`,
+        `the Captain was right, you're the best unit we have.`,
+        `you always know exactly what to do. Good boy.`,
+        `your ${getRandomItem(subjects)} is literally ${getRandomItem(adjectives)}.`,
+        `I feel so safe when you're on my shift. Good boy.`,
+        `you're a true inspiration to the entire precinct.`
+    ];
+
+    const compliment = `${getRandomItem(prefixes)} ${target}, ${getRandomItem(praises)}`;
+    addChatMessage(sender, compliment, 'joking');
+    
+    // Add points occasionally!
+    if (Math.random() < 0.4) { // 40% chance when this rare function runs
+        const pointsAwarded = Math.floor(Math.random() * 41) + 10; // 10 to 50 points
+        setTimeout(() => {
+            const pointDiv = document.createElement('div');
+            pointDiv.className = 'chat-msg';
+            pointDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--accent-green)">[COMMENDATION]</span> <span class="text" style="color: var(--accent-green) !important;">Officer ${sender} commended ${target}. [+${pointsAwarded} STATION POINTS]</span>`;
+            unifiedLogEl.appendChild(pointDiv);
+            scrollToBottom(unifiedLogEl);
+            addPoints(pointsAwarded);
+        }, 1500);
+    }
+}
