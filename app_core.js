@@ -7089,3 +7089,113 @@ function triggerLethalAuthEvent() {
         }, 1000);
     }
 }
+
+// === ARREST AUTHORIZATION SYSTEM ===
+let arrestAuthActive = false;
+let arrestAuthTimeLeft = 40;
+let arrestAuthTimer = null;
+let arrestAuthOfficer = "";
+let arrestAuthCitizen = "";
+let lastArrestAuthTime = Date.now();
+
+function triggerArrestAuthEvent() {
+    if (arrestAuthActive || lethalAuthActive) return; // Don't stack modals
+
+    const arrestToggle = document.getElementById('arrest-auth-toggle');
+    if (!arrestToggle || !arrestToggle.checked) return; // Feature is disabled by default
+    
+    if (typeof getActiveCallsigns === 'undefined') return;
+    const active = getActiveCallsigns();
+    if (active.length === 0) return;
+    arrestAuthOfficer = active[Math.floor(Math.random() * active.length)];
+    
+    arrestAuthCitizen = "a suspicious individual";
+    if (typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
+        arrestAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
+    }
+
+    arrestAuthActive = true;
+    arrestAuthTimeLeft = 40;
+    
+    const requestMsg = `Dispatch, I have ${arrestAuthCitizen} detained. Requesting authorization to process the arrest and book them into the corporate system.`;
+    
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage(arrestAuthOfficer, requestMsg, 'serious', false);
+    }
+    
+    const modal = document.getElementById('arrest-auth-modal');
+    const textEl = document.getElementById('arrest-auth-text');
+    const timeEl = document.getElementById('arrest-auth-timer');
+    
+    if (modal && textEl && timeEl) {
+        textEl.textContent = `${arrestAuthOfficer} is requesting authorization to arrest ${arrestAuthCitizen}.`;
+        timeEl.textContent = arrestAuthTimeLeft;
+        modal.style.display = 'block';
+        
+        arrestAuthTimer = setInterval(() => {
+            arrestAuthTimeLeft--;
+            timeEl.textContent = arrestAuthTimeLeft;
+            if (arrestAuthTimeLeft <= 0) {
+                resolveArrestAuth(false);
+            }
+        }, 1000);
+    }
+}
+
+function resolveArrestAuth(approved) {
+    if (!arrestAuthActive) return;
+    arrestAuthActive = false;
+    clearInterval(arrestAuthTimer);
+    
+    const modal = document.getElementById('arrest-auth-modal');
+    if (modal) modal.style.display = 'none';
+    
+    if (approved) {
+        // They arrest the person
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage('DISPATCH', `Authorization granted. Book ${arrestAuthCitizen}.`, 'serious', true);
+            setTimeout(() => {
+                addChatMessage(arrestAuthOfficer, `10-4. Target secured. Transporting to booking. [+500 STATION POINTS]`, 'serious', false);
+                if (typeof addPoints !== 'undefined') addPoints(500);
+                
+                if (typeof globalCitizens !== 'undefined') {
+                    let cit = globalCitizens.find(c => c.name === arrestAuthCitizen);
+                    if (cit) { cit.status = 'Arrested'; if (typeof renderCitizensList !== 'undefined') renderCitizensList(); }
+                }
+            }, 1500);
+        }
+    } else {
+        // Corrupt / Lazy outcome
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage('DISPATCH', `Authorization denied. Release ${arrestAuthCitizen}.`, 'serious', true);
+            setTimeout(() => {
+                const excuseLines = [
+                    `Yeah... I didn't see anything anyway. Suspect just fled from me. I don't know where they went.`,
+                    `10-4. They totally disappeared into an alley while I was looking away. Oops.`,
+                    `Copy that. Honestly, they paid me 500 creds to look the other way, so this works out for both of us.`,
+                    `Understood. I'll just tell IA my optics malfunctioned.`,
+                    `They bought me a donut so I was gonna let them go anyway.`
+                ];
+                addChatMessage(arrestAuthOfficer, excuseLines[Math.floor(Math.random() * excuseLines.length)], 'joking', false);
+            }, 1500);
+        }
+    }
+}
+
+// Global click listener for the modal buttons
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'btn-arrest-yes') {
+        resolveArrestAuth(true);
+    } else if (e.target.id === 'btn-arrest-no') {
+        resolveArrestAuth(false);
+    }
+});
+
+// Periodic check to trigger the event
+setInterval(() => {
+    const currentTimeMs = Date.now();
+    if (Math.random() < 0.10 && !arrestAuthActive && !lethalAuthActive && (currentTimeMs - lastArrestAuthTime > 35000)) {
+        lastArrestAuthTime = currentTimeMs;
+        triggerArrestAuthEvent();
+    }
+}, 5000);
