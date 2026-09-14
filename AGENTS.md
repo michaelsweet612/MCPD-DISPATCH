@@ -12,5 +12,6 @@ Whenever you run a `git commit` and `git tag` to push an update to this reposito
 3. **Execution Method:** You do not have the `gh` CLI tool installed. You must use a Python script with `urllib.request` and the provided authentication token to interact with the GitHub API (`POST /repos/michaelsweet612/MCPD-DISPATCH/releases`).
 
 ## 3. Strict Versioning & Cache Control
-1. **GitHub Tags:** Pay strict attention to the version numbers when making releases. Always check the previous release tag to ensure semantic versioning is properly incremented (e.g. v4.7.3 -> v4.7.4).
-2. **Cache Busters:** Whenever JavaScript or CSS files are updated, you **MUST** manually update the cache buster query strings (e.g., ?v=4.7.5 to perfectly match the current GitHub Tag) inside both MCPD_DISPATCH_TERMINAL.html and MCPD_MOBILE_TERMINAL.html. Failing to do so causes stale state bugs for the user.
+1. **GitHub Tags:** Pay strict attention to the version numbers when making releases. Always check the previous release tag to ensure semantic versioning is properly incremented. 
+   * **MANDATORY FORMAT:** You **MUST** format all versions strictly as `v00.00.00`. Every number (major, minor, patch) must be zero-padded to two digits (e.g., incrementing `v04.08.09` to `v04.08.10`). Never use unpadded numbers like `v4.8.9`.
+2. **Cache Busters:** Whenever JavaScript or CSS files are updated, you **MUST** manually update the cache buster query strings (e.g., ?v=04.08.10 to perfectly match the current GitHub Tag) inside both MCPD_DISPATCH_TERMINAL.html and MCPD_MOBILE_TERMINAL.html. Failing to do so causes stale state bugs for the user.
