@@ -6337,6 +6337,8 @@ const btnDeclareArrested = document.getElementById('btn-declare-arrested-page');
 const citizensListEl = document.getElementById('citizens-list');
 
 function hideAllTabs() {
+    if (typeof tabMap !== 'undefined' && tabMap) { tabMap.classList.remove('active'); tabMap.style.color = 'var(--text-dim)'; }
+    if (typeof mapLogEl !== 'undefined' && mapLogEl) mapLogEl.style.display = 'none';
     tabUnified.classList.remove('active');
     tabUnified.style.color = 'var(--text-dim)';
     tabDocuments.classList.remove('active');
@@ -8559,4 +8561,140 @@ window.updateOfficerLeaderboard = function() {
     
     lbEl.innerHTML = html;
 };
+// ==========================================
+
+
+// ==========================================
+// LIVE MAP LOGIC
+// ==========================================
+const tabMap = document.getElementById('tab-map');
+const mapLogEl = document.getElementById('map-log');
+const mapEntitiesEl = document.getElementById('map-entities');
+
+let mapInitialized = false;
+let mapDots = [];
+
+if (tabMap && mapLogEl) {
+    tabMap.addEventListener('click', () => {
+        if(typeof hideAllTabs !== 'undefined') hideAllTabs();
+        tabMap.classList.add('active');
+        tabMap.style.color = 'var(--text-main)';
+        mapLogEl.style.display = 'block';
+        if (typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
+        
+        if (!mapInitialized) {
+            initLiveMap();
+            mapInitialized = true;
+        }
+    });
+}
+
+// Override hideAllTabs to include our map tab
+const oldHideAllTabsMap = window.hideAllTabs || function(){};
+window.hideAllTabs = function() {
+    oldHideAllTabsMap();
+    if(tabMap) { tabMap.classList.remove('active'); tabMap.style.color = 'var(--text-dim)'; }
+    if(mapLogEl) mapLogEl.style.display = 'none';
+};
+// Overwrite the actual function reference for local scope too if needed
+if(typeof hideAllTabs !== 'undefined') {
+    hideAllTabs = window.hideAllTabs;
+}
+
+function initLiveMap() {
+    if (!mapEntitiesEl) return;
+    mapEntitiesEl.innerHTML = '';
+    mapDots = [];
+
+    // Create 150 Civilians
+    for(let i=0; i<150; i++) {
+        createMapDot('civ');
+    }
+    
+    // Create 30 Police
+    for(let i=0; i<30; i++) {
+        createMapDot('police');
+    }
+
+    requestAnimationFrame(updateMapDots);
+}
+
+function createMapDot(type) {
+    const dot = document.createElement('div');
+    const isCiv = type === 'civ';
+    
+    // Size and color
+    const size = isCiv ? 4 : 6;
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    dot.style.borderRadius = '50%';
+    dot.style.position = 'absolute';
+    
+    if (isCiv) {
+        dot.style.background = 'rgba(255,255,255,0.6)';
+    } else {
+        dot.style.background = 'var(--accent-blue)';
+        dot.style.boxShadow = '0 0 8px var(--accent-blue)';
+        dot.style.zIndex = '5'; // Police on top
+    }
+    
+    // Start mostly on the right side (Cities 1-5), X between 40% and 95%
+    // Only a few civilians wander into the left side
+    let startX = 40 + Math.random() * 55;
+    if (isCiv && Math.random() < 0.05) startX = Math.random() * 35; // 5% chance in badlands
+    
+    const startY = Math.random() * 95;
+    
+    dot.style.left = startX + '%';
+    dot.style.top = startY + '%';
+    
+    mapEntitiesEl.appendChild(dot);
+    
+    mapDots.push({
+        el: dot,
+        x: startX,
+        y: startY,
+        vx: (Math.random() - 0.5) * (isCiv ? 0.05 : 0.15),
+        vy: (Math.random() - 0.5) * (isCiv ? 0.05 : 0.15),
+        isCiv: isCiv,
+        changeTimer: Math.random() * 100
+    });
+}
+
+function updateMapDots() {
+    if (!mapLogEl || mapLogEl.style.display === 'none') {
+        // Pause animation when tab is not active to save CPU
+        requestAnimationFrame(updateMapDots);
+        return;
+    }
+    
+    mapDots.forEach(dot => {
+        dot.changeTimer--;
+        if (dot.changeTimer <= 0) {
+            // Randomly change direction
+            dot.vx = (Math.random() - 0.5) * (dot.isCiv ? 0.08 : 0.2);
+            dot.vy = (Math.random() - 0.5) * (dot.isCiv ? 0.08 : 0.2);
+            dot.changeTimer = 50 + Math.random() * 150;
+            
+            // Police try to stay out of the left zone (X < 35)
+            if (!dot.isCiv && dot.x < 38) {
+                dot.vx = Math.abs(dot.vx); // Force move right
+            }
+        }
+        
+        dot.x += dot.vx;
+        dot.y += dot.vy;
+        
+        // Bounce off walls
+        if (dot.x <= 1) { dot.x = 1; dot.vx *= -1; }
+        if (dot.x >= 99) { dot.x = 99; dot.vx *= -1; }
+        if (dot.y <= 1) { dot.y = 1; dot.vy *= -1; }
+        if (dot.y >= 99) { dot.y = 99; dot.vy *= -1; }
+        
+        dot.el.style.left = dot.x + '%';
+        dot.el.style.top = dot.y + '%';
+    });
+    
+    requestAnimationFrame(updateMapDots);
+}
 // ==========================================
