@@ -7078,7 +7078,7 @@ function triggerLethalAuthEvent() {
     if (modal && textEl && timeEl) {
         textEl.textContent = `${lethalAuthOfficer} is requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
         timeEl.textContent = lethalAuthTimeLeft;
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         
         lethalAuthTimer = setInterval(() => {
             lethalAuthTimeLeft--;
@@ -7130,7 +7130,7 @@ function triggerArrestAuthEvent() {
     if (modal && textEl && timeEl) {
         textEl.textContent = `${arrestAuthOfficer} is requesting authorization to arrest ${arrestAuthCitizen}.`;
         timeEl.textContent = arrestAuthTimeLeft;
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         
         arrestAuthTimer = setInterval(() => {
             arrestAuthTimeLeft--;
