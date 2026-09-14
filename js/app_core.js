@@ -5211,6 +5211,21 @@ function hideAllTabs() {
     if(typeof recruitmentLogEl !== 'undefined' && recruitmentLogEl) recruitmentLogEl.style.display = 'none';
 }
 
+tabUnified.addEventListener('click', () => {
+    hideAllTabs();
+    tabUnified.classList.add('active');
+    tabUnified.style.color = 'var(--text-main)';
+    unifiedLogEl.style.display = 'flex';
+    if(typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'flex';
+});
+
+tabDocuments.addEventListener('click', () => {
+    hideAllTabs();
+    tabDocuments.classList.add('active');
+    tabDocuments.style.color = 'var(--text-main)';
+    documentLogEl.style.display = 'block';
+});
+
 tabDatabase.addEventListener('click', () => {
     hideAllTabs();
     tabDatabase.classList.add('active');
