@@ -8564,15 +8564,24 @@ window.updateOfficerLeaderboard = function() {
 // ==========================================
 
 
+
 // ==========================================
 // LIVE MAP LOGIC
 // ==========================================
 const tabMap = document.getElementById('tab-map');
 const mapLogEl = document.getElementById('map-log');
-const mapEntitiesEl = document.getElementById('map-entities');
+let cityCanvas = null;
+let ctx = null;
 
 let mapInitialized = false;
-let mapDots = [];
+let entities = [];
+let mapWidth = 0;
+let mapHeight = 0;
+let animationId = null;
+
+const GRID_SIZE = 120;
+const ROAD_WIDTH = 40;
+const SIDEWALK_OFFSET = (ROAD_WIDTH / 2) + 10;
 
 if (tabMap && mapLogEl) {
     tabMap.addEventListener('click', () => {
@@ -8583,118 +8592,230 @@ if (tabMap && mapLogEl) {
         if (typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
         
         if (!mapInitialized) {
-            initLiveMap();
+            initCityMap();
             mapInitialized = true;
+        } else {
+            // Resume animation
+            if(!animationId) animationId = requestAnimationFrame(drawCityMap);
         }
     });
 }
 
-// Override hideAllTabs to include our map tab
-const oldHideAllTabsMap = window.hideAllTabs || function(){};
-window.hideAllTabs = function() {
-    oldHideAllTabsMap();
-    if(tabMap) { tabMap.classList.remove('active'); tabMap.style.color = 'var(--text-dim)'; }
-    if(mapLogEl) mapLogEl.style.display = 'none';
-};
-// Overwrite the actual function reference for local scope too if needed
-if(typeof hideAllTabs !== 'undefined') {
-    hideAllTabs = window.hideAllTabs;
+// Ensure oldHideAllTabsMap logic exists or replace it
+if (typeof window.oldHideAllTabsMap === 'undefined') {
+    window.oldHideAllTabsMap = window.hideAllTabs || function(){};
+    window.hideAllTabs = function() {
+        window.oldHideAllTabsMap();
+        if(tabMap) { tabMap.classList.remove('active'); tabMap.style.color = 'var(--text-dim)'; }
+        if(mapLogEl) mapLogEl.style.display = 'none';
+        if(animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    };
+    if(typeof hideAllTabs !== 'undefined') {
+        hideAllTabs = window.hideAllTabs;
+    }
 }
 
-function initLiveMap() {
-    if (!mapEntitiesEl) return;
-    mapEntitiesEl.innerHTML = '';
-    mapDots = [];
-
+function initCityMap() {
+    cityCanvas = document.getElementById('city-map-canvas');
+    if (!cityCanvas) return;
+    
+    ctx = cityCanvas.getContext('2d');
+    
+    // Resize
+    const container = document.getElementById('live-map-container');
+    mapWidth = container.clientWidth;
+    mapHeight = container.clientHeight;
+    cityCanvas.width = mapWidth;
+    cityCanvas.height = mapHeight;
+    
     // Create 150 Civilians
     for(let i=0; i<150; i++) {
-        createMapDot('civ');
+        spawnEntity('civ');
     }
     
-    // Create 30 Police
-    for(let i=0; i<30; i++) {
-        createMapDot('police');
+    // Create 40 Police
+    for(let i=0; i<40; i++) {
+        spawnEntity('police');
     }
 
-    requestAnimationFrame(updateMapDots);
-}
-
-function createMapDot(type) {
-    const dot = document.createElement('div');
-    const isCiv = type === 'civ';
+    animationId = requestAnimationFrame(drawCityMap);
     
-    // Size and color
-    const size = isCiv ? 4 : 6;
-    dot.style.width = size + 'px';
-    dot.style.height = size + 'px';
-    dot.style.borderRadius = '50%';
-    dot.style.position = 'absolute';
-    
-    if (isCiv) {
-        dot.style.background = 'rgba(255,255,255,0.6)';
-    } else {
-        dot.style.background = 'var(--accent-blue)';
-        dot.style.boxShadow = '0 0 8px var(--accent-blue)';
-        dot.style.zIndex = '5'; // Police on top
-    }
-    
-    // Start mostly on the right side (Cities 1-5), X between 40% and 95%
-    // Only a few civilians wander into the left side
-    let startX = 40 + Math.random() * 55;
-    if (isCiv && Math.random() < 0.05) startX = Math.random() * 35; // 5% chance in badlands
-    
-    const startY = Math.random() * 95;
-    
-    dot.style.left = startX + '%';
-    dot.style.top = startY + '%';
-    
-    mapEntitiesEl.appendChild(dot);
-    
-    mapDots.push({
-        el: dot,
-        x: startX,
-        y: startY,
-        vx: (Math.random() - 0.5) * (isCiv ? 0.05 : 0.15),
-        vy: (Math.random() - 0.5) * (isCiv ? 0.05 : 0.15),
-        isCiv: isCiv,
-        changeTimer: Math.random() * 100
+    // Handle resize
+    window.addEventListener('resize', () => {
+        if(container.clientWidth > 0) {
+            mapWidth = container.clientWidth;
+            mapHeight = container.clientHeight;
+            cityCanvas.width = mapWidth;
+            cityCanvas.height = mapHeight;
+        }
     });
 }
 
-function updateMapDots() {
-    if (!mapLogEl || mapLogEl.style.display === 'none') {
-        // Pause animation when tab is not active to save CPU
-        requestAnimationFrame(updateMapDots);
-        return;
-    }
+function spawnEntity(faction) {
+    // Random intersection
+    const maxCols = Math.floor(mapWidth / GRID_SIZE);
+    const maxRows = Math.floor(mapHeight / GRID_SIZE);
     
-    mapDots.forEach(dot => {
-        dot.changeTimer--;
-        if (dot.changeTimer <= 0) {
-            // Randomly change direction
-            dot.vx = (Math.random() - 0.5) * (dot.isCiv ? 0.08 : 0.2);
-            dot.vy = (Math.random() - 0.5) * (dot.isCiv ? 0.08 : 0.2);
-            dot.changeTimer = 50 + Math.random() * 150;
+    const col = Math.floor(Math.random() * maxCols);
+    const row = Math.floor(Math.random() * maxRows);
+    
+    const isVehicle = Math.random() < 0.6; // 60% vehicles, 40% pedestrians
+    
+    let x = (col * GRID_SIZE) + (GRID_SIZE / 2);
+    let y = (row * GRID_SIZE) + (GRID_SIZE / 2);
+    
+    if (!isVehicle) {
+        // Offset for sidewalk
+        const sideX = Math.random() < 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET;
+        const sideY = Math.random() < 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET;
+        x += sideX;
+        y += sideY;
+    }
+
+    const dirs = ['N', 'S', 'E', 'W'];
+    let dir = dirs[Math.floor(Math.random() * dirs.length)];
+    
+    let emoji = '';
+    if (faction === 'police') {
+        emoji = isVehicle ? '🚓' : '👮';
+    } else {
+        emoji = isVehicle ? (Math.random() < 0.2 ? '🚚' : '🚗') : (Math.random() < 0.5 ? '🚶' : '🏃');
+    }
+
+    entities.push({
+        faction: faction,
+        isVehicle: isVehicle,
+        x: x,
+        y: y,
+        dir: dir,
+        speed: isVehicle ? (faction === 'police' ? 1.5 : 1.0) : 0.4,
+        emoji: emoji,
+        targetCol: col,
+        targetRow: row
+    });
+}
+
+function drawCityMap() {
+    if (!mapLogEl || mapLogEl.style.display === 'none') {
+        animationId = null;
+        return; // Paused
+    }
+
+    // 1. Draw Background (Grass/Dirt)
+    ctx.fillStyle = '#0f1418'; // Dark city ground
+    ctx.fillRect(0, 0, mapWidth, mapHeight);
+
+    const cols = Math.ceil(mapWidth / GRID_SIZE);
+    const rows = Math.ceil(mapHeight / GRID_SIZE);
+
+    // 2. Draw Roads & Blocks
+    for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+            const bx = c * GRID_SIZE;
+            const by = r * GRID_SIZE;
+
+            // Draw Block (Building area)
+            ctx.fillStyle = '#161c22'; // Building base
+            ctx.fillRect(bx + ROAD_WIDTH/2, by + ROAD_WIDTH/2, GRID_SIZE - ROAD_WIDTH, GRID_SIZE - ROAD_WIDTH);
             
-            // Police try to stay out of the left zone (X < 35)
-            if (!dot.isCiv && dot.x < 38) {
-                dot.vx = Math.abs(dot.vx); // Force move right
+            // Draw some stylized buildings inside the block
+            ctx.fillStyle = '#1c252d'; // Taller building
+            ctx.fillRect(bx + ROAD_WIDTH/2 + 10, by + ROAD_WIDTH/2 + 10, GRID_SIZE - ROAD_WIDTH - 20, GRID_SIZE - ROAD_WIDTH - 40);
+            
+            // Draw Trees (neon cyber trees)
+            ctx.fillStyle = 'rgba(0, 255, 128, 0.15)';
+            ctx.beginPath();
+            ctx.arc(bx + ROAD_WIDTH/2 + 15, by + ROAD_WIDTH/2 + (GRID_SIZE - ROAD_WIDTH) - 15, 8, 0, Math.PI*2);
+            ctx.fill();
+
+            // Draw Road Vertical
+            ctx.fillStyle = '#222';
+            ctx.fillRect(bx + (GRID_SIZE/2) - (ROAD_WIDTH/2), 0, ROAD_WIDTH, mapHeight);
+            
+            // Draw Road Horizontal
+            ctx.fillRect(0, by + (GRID_SIZE/2) - (ROAD_WIDTH/2), mapWidth, ROAD_WIDTH);
+            
+            // Draw Yellow Center Lines
+            ctx.strokeStyle = 'rgba(255, 204, 0, 0.4)';
+            ctx.setLineDash([10, 15]);
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(bx + (GRID_SIZE/2), 0);
+            ctx.lineTo(bx + (GRID_SIZE/2), mapHeight);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(0, by + (GRID_SIZE/2));
+            ctx.lineTo(mapWidth, by + (GRID_SIZE/2));
+            ctx.stroke();
+        }
+    }
+    ctx.setLineDash([]); // Reset
+
+    // 3. Update & Draw Entities
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let e of entities) {
+        // Move
+        if (e.dir === 'N') e.y -= e.speed;
+        if (e.dir === 'S') e.y += e.speed;
+        if (e.dir === 'E') e.x += e.speed;
+        if (e.dir === 'W') e.x -= e.speed;
+
+        // Check Intersection Snapping
+        const mapOffsetX = e.isVehicle ? 0 : (SIDEWALK_OFFSET * (e.x > (Math.floor(e.x/GRID_SIZE)*GRID_SIZE + GRID_SIZE/2) ? 1 : -1));
+        const mapOffsetY = e.isVehicle ? 0 : (SIDEWALK_OFFSET * (e.y > (Math.floor(e.y/GRID_SIZE)*GRID_SIZE + GRID_SIZE/2) ? 1 : -1));
+        
+        const idealX = (Math.floor(e.x / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (Math.random()>0.5?SIDEWALK_OFFSET:-SIDEWALK_OFFSET));
+        const idealY = (Math.floor(e.y / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (Math.random()>0.5?SIDEWALK_OFFSET:-SIDEWALK_OFFSET));
+
+        // Simplified Intersection logic: Every 120 pixels, chance to turn
+        if ((e.dir === 'N' || e.dir === 'S') && Math.abs((e.y - (e.isVehicle ? 0 : SIDEWALK_OFFSET)) % GRID_SIZE - (GRID_SIZE/2)) < e.speed) {
+            // At an intersection Y
+            if (Math.random() < 0.3) { // 30% chance to turn
+                e.y = (Math.floor(e.y / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (e.y % GRID_SIZE > GRID_SIZE/2 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); // Snap to center
+                e.dir = Math.random() < 0.5 ? 'E' : 'W';
             }
         }
-        
-        dot.x += dot.vx;
-        dot.y += dot.vy;
-        
-        // Bounce off walls
-        if (dot.x <= 1) { dot.x = 1; dot.vx *= -1; }
-        if (dot.x >= 99) { dot.x = 99; dot.vx *= -1; }
-        if (dot.y <= 1) { dot.y = 1; dot.vy *= -1; }
-        if (dot.y >= 99) { dot.y = 99; dot.vy *= -1; }
-        
-        dot.el.style.left = dot.x + '%';
-        dot.el.style.top = dot.y + '%';
-    });
-    
-    requestAnimationFrame(updateMapDots);
+        else if ((e.dir === 'E' || e.dir === 'W') && Math.abs((e.x - (e.isVehicle ? 0 : SIDEWALK_OFFSET)) % GRID_SIZE - (GRID_SIZE/2)) < e.speed) {
+            // At an intersection X
+            if (Math.random() < 0.3) { 
+                e.x = (Math.floor(e.x / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (e.x % GRID_SIZE > GRID_SIZE/2 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET));
+                e.dir = Math.random() < 0.5 ? 'N' : 'S';
+            }
+        }
+
+        // Screen Wrap
+        if (e.x < -20) e.x = mapWidth + 20;
+        if (e.x > mapWidth + 20) e.x = -20;
+        if (e.y < -20) e.y = mapHeight + 20;
+        if (e.y > mapHeight + 20) e.y = -20;
+
+        // Draw Entity Background Glow for Police
+        if (e.faction === 'police') {
+            ctx.fillStyle = 'rgba(0, 150, 255, 0.4)';
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, 12, 0, Math.PI*2);
+            ctx.fill();
+        }
+
+        // Draw Emoji
+        ctx.save();
+        ctx.translate(e.x, e.y);
+        // Rotate vehicles based on direction
+        if (e.isVehicle) {
+            if (e.dir === 'N') ctx.rotate(-Math.PI/2);
+            if (e.dir === 'S') ctx.rotate(Math.PI/2);
+            if (e.dir === 'W') ctx.rotate(Math.PI);
+        }
+        ctx.fillText(e.emoji, 0, 0);
+        ctx.restore();
+    }
+
+    animationId = requestAnimationFrame(drawCityMap);
 }
 // ==========================================
+
