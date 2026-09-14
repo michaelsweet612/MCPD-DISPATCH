@@ -5633,7 +5633,7 @@ function simulateEvent(specificCrime = null) {
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+15 POINTS]</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
-        addPoints(15);
+        if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { awardOfficerPoints(respondingUnits[0], 15); } else { addPoints(15); }
         
         // Jealous Officer mechanic
         setTimeout(() => {
@@ -6198,7 +6198,7 @@ function triggerPanic(unitName = null, force = false) {
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${backupUnit}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4 Dispatch, I am engaging the 10-99 and arriving on scene! [+500 POINTS]</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
-        addPoints(500);
+        if (typeof awardOfficerPoints !== 'undefined' && typeof backupUnit !== 'undefined') { awardOfficerPoints(backupUnit, 500); } else { addPoints(500); }
     }, 4500 + Math.random() * 3000);
 
     unifiedLogEl.classList.add('panic-container-glow');
@@ -7895,7 +7895,7 @@ function simulateEvent(specificCrime = null) {
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+${crime.points || 15} STATION POINTS]</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
-        addPoints(crime.points || 15);
+        if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { awardOfficerPoints(respondingUnits[0], crime.points || 15); } else { addPoints(crime.points || 15); }
         
         // Jealous Officer mechanic
         setTimeout(() => {
@@ -8098,7 +8098,7 @@ function triggerComplimentBanter(sender) {
             pointDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--accent-green)">[COMMENDATION]</span> <span class="text" style="color: var(--accent-green) !important;">Officer ${sender} commended ${target}. [+${pointsAwarded} STATION POINTS]</span>`;
             unifiedLogEl.appendChild(pointDiv);
             scrollToBottom(unifiedLogEl);
-            addPoints(pointsAwarded);
+            if (typeof awardOfficerPoints !== "undefined" && typeof sender !== "undefined") { awardOfficerPoints(sender, pointsAwarded); } else { addPoints(pointsAwarded); }
         }, 1500);
     }
 }
@@ -8287,7 +8287,7 @@ function resolveArrestAuth(approved) {
             addChatMessage('DISPATCH', `Authorization granted. Book ${arrestAuthCitizen}.`, 'serious', true);
             setTimeout(() => {
                 addChatMessage(arrestAuthOfficer, `10-4. Target secured. Transporting to booking. [+500 STATION POINTS]`, 'serious', false);
-                if (typeof addPoints !== 'undefined') addPoints(500);
+                if (typeof awardOfficerPoints !== "undefined" && typeof arrestAuthOfficer !== "undefined") { awardOfficerPoints(arrestAuthOfficer, 500); } else if (typeof addPoints !== "undefined") { addPoints(500); }
                 
                 if (typeof globalCitizens !== 'undefined') {
                     let cit = globalCitizens.find(c => c.name === arrestAuthCitizen);
@@ -8466,3 +8466,57 @@ setInterval(function() {
         addCivilianReview(stars, isArrest, randCit.name, comment);
     }
 }, 8000);
+
+
+// ==========================================
+// OFFICER LEADERBOARD LOGIC
+// ==========================================
+window.awardOfficerPoints = function(unitId, pts) {
+    if (typeof roster !== 'undefined') {
+        const officer = roster.find(u => u.id === unitId);
+        if (officer) {
+            if (typeof officer.points === 'undefined') officer.points = 0;
+            officer.points += pts;
+        }
+    }
+    // Also add to global dispatcher score
+    if (typeof addPoints !== 'undefined') {
+        addPoints(pts);
+    }
+    window.updateOfficerLeaderboard();
+};
+
+window.updateOfficerLeaderboard = function() {
+    const lbEl = document.getElementById('leaderboard-list');
+    if (!lbEl || typeof roster === 'undefined') return;
+
+    // Filter officers that have points, sort descending
+    const officersWithPoints = roster.filter(u => u.points && u.points > 0);
+    officersWithPoints.sort((a, b) => b.points - a.points);
+    
+    // Get top 5
+    const top5 = officersWithPoints.slice(0, 5);
+    
+    if (top5.length === 0) {
+        lbEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
+        return;
+    }
+
+    let html = '';
+    top5.forEach((off, idx) => {
+        let color = 'var(--text-main)';
+        if (idx === 0) color = '#ffeb3b'; // Gold
+        else if (idx === 1) color = '#e0e0e0'; // Silver
+        else if (idx === 2) color = '#cd7f32'; // Bronze
+        
+        html += `
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">
+                <span style="color: ${color}; font-weight: bold;">#${idx + 1} ${off.id}</span>
+                <span style="color: var(--accent-green); font-weight: bold;">${off.points} CR</span>
+            </div>
+        `;
+    });
+    
+    lbEl.innerHTML = html;
+};
+// ==========================================
