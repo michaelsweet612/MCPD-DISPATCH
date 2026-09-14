@@ -5602,10 +5602,30 @@ function simulateEvent(specificCrime = null) {
     if (restModeToggle.checked && !specificCrime) return;
 
     let crime = specificCrime;
+
     if (!crime) {
+
         if (!autoEventsCheckbox.checked) return;
-        crime = { ...getRandomItem(crimeReports) };
-        if (crime.title.includes('[RAND_LOC]')) {
+
+        
+
+        const now = Date.now();
+
+        let availableCrimes = crimeReports.filter(c => !c.lastPicked || now - c.lastPicked > 60000);
+
+        if (availableCrimes.length === 0) availableCrimes = crimeReports;
+
+        
+
+        const pickedTemplate = availableCrimes[Math.floor(Math.random() * availableCrimes.length)];
+
+        pickedTemplate.lastPicked = now;
+
+        
+
+        crime = { ...pickedTemplate };
+
+        if (crime.title.includes(\'[RAND_LOC]\')) {
             const randLoc = Math.floor(Math.random() * 90000) + 10000;
             crime.title = crime.title.replace('[RAND_LOC]', randLoc);
         }
@@ -7864,10 +7884,30 @@ function simulateEvent(specificCrime = null) {
     if (restModeToggle.checked && !specificCrime) return;
 
     let crime = specificCrime;
+
     if (!crime) {
+
         if (!autoEventsCheckbox.checked) return;
-        crime = { ...getRandomItem(crimeReports) };
-        if (crime.title.includes('[RAND_LOC]')) {
+
+        
+
+        const now = Date.now();
+
+        let availableCrimes = crimeReports.filter(c => !c.lastPicked || now - c.lastPicked > 60000);
+
+        if (availableCrimes.length === 0) availableCrimes = crimeReports;
+
+        
+
+        const pickedTemplate = availableCrimes[Math.floor(Math.random() * availableCrimes.length)];
+
+        pickedTemplate.lastPicked = now;
+
+        
+
+        crime = { ...pickedTemplate };
+
+        if (crime.title.includes(\'[RAND_LOC]\')) {
             const randLoc = Math.floor(Math.random() * 90000) + 10000;
             crime.title = crime.title.replace('[RAND_LOC]', randLoc);
         }
