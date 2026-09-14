@@ -5194,41 +5194,22 @@ function hideAllTabs() {
     tabDatabase.style.color = 'var(--text-dim)';
     tabWanted.classList.remove('active');
     tabWanted.style.color = 'var(--text-dim)';
-          if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)';     if(document.getElementById('unit-status-log')) document.getElementById('unit-status-log').style.display = 'none';
-    if(document.getElementById('tab-unit-status')) document.getElementById('tab-unit-status').classList.remove('active');
-
-    if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
-    if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
-}
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
+    if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
+    if(document.getElementById('unit-status-log')) document.getElementById('unit-status-log').style.display = 'none';
+    if(document.getElementById('tab-unit-status')) { document.getElementById('tab-unit-status').classList.remove('active'); document.getElementById('tab-unit-status').style.color = 'var(--text-dim)'; }
+    if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
+    if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
     
     unifiedLogEl.style.display = 'none';
-    chatInputArea.style.display = 'none';
+    if(typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
     documentLogEl.style.display = 'none';
     databaseLogEl.style.display = 'none';
     wantedLogEl.style.display = 'none';
-          if(recruitmentLogEl) recruitmentLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
-    }
-
-tabUnified.addEventListener('click', () => {
-    hideAllTabs();
-    tabUnified.classList.add('active');
-    tabUnified.style.color = 'var(--text-main)';
-    unifiedLogEl.style.display = 'flex';
-    chatInputArea.style.display = 'flex';
-});
-
-tabDocuments.addEventListener('click', () => {
-    hideAllTabs();
-    tabDocuments.classList.add('active');
-    tabDocuments.style.color = 'var(--text-main)';
-    
-        if(typeof tabUnitStatus !== 'undefined' && tabUnitStatus) { tabUnitStatus.classList.remove('active'); tabUnitStatus.style.color = 'var(--text-dim)'; }
-        if(typeof unitStatusLogEl !== 'undefined' && unitStatusLogEl) unitStatusLogEl.style.display = 'none';
-documentLogEl.style.display = 'block';
-});
+    if(typeof recruitmentLogEl !== 'undefined' && recruitmentLogEl) recruitmentLogEl.style.display = 'none';
+}
 
 tabDatabase.addEventListener('click', () => {
     hideAllTabs();
