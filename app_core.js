@@ -6545,81 +6545,7 @@ let lethalAuthTimeLeft = 40;
 let lethalAuthOfficer = "";
 let lethalAuthCitizen = "";
 
-function triggerLethalAuthEvent() {
-    if (lethalAuthActive) return;
-    
-    if (typeof getActiveCallsigns === 'undefined') return;
-    const active = getActiveCallsigns();
-    if (active.length === 0) return;
-    lethalAuthOfficer = active[Math.floor(Math.random() * active.length)];
-    
-    lethalAuthCitizen = "a suspicious citizen";
-    if (typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
-        lethalAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
-    }
 
-    // If ROE is OFF (lethal force authorized globally), they don't ask for permission.
-    if (roeToggleCheckbox && !roeToggleCheckbox.checked) {
-        const killMsgs = [
-            `Dispatch, encountering ${lethalAuthCitizen}. ROE is disabled, so I am engaging with lethal force.`,
-            `Taking down ${lethalAuthCitizen} now. Glad we don't have to ask for permission anymore.`,
-            `${lethalAuthCitizen} looked at me funny. ROE is off, engaging lethal pacification.`
-        ];
-        if (typeof addChatMessage !== 'undefined') {
-            addChatMessage(lethalAuthOfficer, killMsgs[Math.floor(Math.random() * killMsgs.length)], 'serious', false);
-        }
-        
-        // Update stats and citizen status
-        if (typeof globalCitizens !== 'undefined') {
-            let cit = globalCitizens.find(c => c.name === lethalAuthCitizen);
-            if (cit) { cit.status = 'Deceased'; if (typeof renderCitizensList !== 'undefined') renderCitizensList(); }
-        }
-        
-        if (typeof updateStats === 'undefined') return;
-        let p = officers.find(o => o.callsign === lethalAuthOfficer);
-        if (p) p.kills++;
-        updateStats(0, 1, 0, 0);
-        return;
-    }
-
-    lethalAuthActive = true;
-    lethalAuthTimeLeft = 40;
-    
-    // Determine the reason for the request
-    const reasonType = Math.random() > 0.5 ? 'civilian' : 'officer';
-    let requestMsg = "";
-    
-    if (reasonType === 'civilian') {
-        requestMsg = `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`;
-    } else {
-        requestMsg = `Dispatch, this civilian is really getting on my nerves and I want to eliminate them. I am requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
-    }
-    
-    if (typeof addChatMessage !== 'undefined') {
-        addChatMessage(lethalAuthOfficer, requestMsg, 'worried', false);
-    }
-    
-    const modal = document.getElementById('lethal-auth-modal');
-    const textEl = document.getElementById('lethal-auth-text');
-    const timeEl = document.getElementById('lethal-auth-timer');
-    
-    if (modal && textEl && timeEl) {
-        textEl.textContent = `${lethalAuthOfficer} is requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
-        timeEl.textContent = lethalAuthTimeLeft;
-        modal.style.display = 'flex';
-        
-        lethalAuthTimer = setInterval(() => {
-            lethalAuthTimeLeft--;
-            timeEl.textContent = lethalAuthTimeLeft;
-            
-            if (lethalAuthTimeLeft <= 0) {
-                clearInterval(lethalAuthTimer);
-                modal.style.display = 'none';
-                resolveLethalAuth(Math.random() < 0.5); // Random choice
-            }
-        }, 1000);
-    }
-}
 
 function resolveLethalAuth(isAuthorized) {
     if (!lethalAuthActive) return; // Prevent double clicks
@@ -7047,86 +6973,7 @@ function triggerComplimentBanter(sender) {
 }
 
 // === OVERRIDE triggerLethalAuthEvent for Advanced Setting ===
-function triggerLethalAuthEvent() {
-    if (lethalAuthActive) return;
 
-    // OVERRIDE: Check if lethal force requests are enabled in Advanced Settings
-    const lethalForceToggle = document.getElementById('lethal-force-toggle');
-    if (lethalForceToggle && !lethalForceToggle.checked) return;
-
-    
-    if (typeof getActiveCallsigns === 'undefined') return;
-    const active = getActiveCallsigns();
-    if (active.length === 0) return;
-    lethalAuthOfficer = active[Math.floor(Math.random() * active.length)];
-    
-    lethalAuthCitizen = "a suspicious citizen";
-    if (typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
-        lethalAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
-    }
-
-    // If ROE is OFF (lethal force authorized globally), they don't ask for permission.
-    if (roeToggleCheckbox && !roeToggleCheckbox.checked) {
-        const killMsgs = [
-            `Dispatch, encountering ${lethalAuthCitizen}. ROE is disabled, so I am engaging with lethal force.`,
-            `Taking down ${lethalAuthCitizen} now. Glad we don't have to ask for permission anymore.`,
-            `${lethalAuthCitizen} looked at me funny. ROE is off, engaging lethal pacification.`
-        ];
-        if (typeof addChatMessage !== 'undefined') {
-            addChatMessage(lethalAuthOfficer, killMsgs[Math.floor(Math.random() * killMsgs.length)], 'serious', false);
-        }
-        
-        // Update stats and citizen status
-        if (typeof globalCitizens !== 'undefined') {
-            let cit = globalCitizens.find(c => c.name === lethalAuthCitizen);
-            if (cit) { cit.status = 'Deceased'; if (typeof renderCitizensList !== 'undefined') renderCitizensList(); }
-        }
-        
-        if (typeof updateStats === 'undefined') return;
-        let p = officers.find(o => o.callsign === lethalAuthOfficer);
-        if (p) p.kills++;
-        updateStats(0, 1, 0, 0);
-        return;
-    }
-
-    lethalAuthActive = true;
-    lethalAuthTimeLeft = 40;
-    
-    // Determine the reason for the request
-    const reasonType = Math.random() > 0.5 ? 'civilian' : 'officer';
-    let requestMsg = "";
-    
-    if (reasonType === 'civilian') {
-        requestMsg = `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`;
-    } else {
-        requestMsg = `Dispatch, this civilian is really getting on my nerves and I want to eliminate them. I am requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
-    }
-    
-    if (typeof addChatMessage !== 'undefined') {
-        addChatMessage(lethalAuthOfficer, requestMsg, 'worried', false);
-    }
-    
-    const modal = document.getElementById('lethal-auth-modal');
-    const textEl = document.getElementById('lethal-auth-text');
-    const timeEl = document.getElementById('lethal-auth-timer');
-    
-    if (modal && textEl && timeEl) {
-        textEl.textContent = `${lethalAuthOfficer} is requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
-        timeEl.textContent = lethalAuthTimeLeft;
-        modal.style.display = 'flex';
-        
-        lethalAuthTimer = setInterval(() => {
-            lethalAuthTimeLeft--;
-            timeEl.textContent = lethalAuthTimeLeft;
-            
-            if (lethalAuthTimeLeft <= 0) {
-                clearInterval(lethalAuthTimer);
-                modal.style.display = 'none';
-                resolveLethalAuth(Math.random() < 0.5); // Random choice
-            }
-        }, 1000);
-    }
-}
 
 // === OVERRIDE addChatMessage to fix undefined crash ===
 function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
@@ -7166,5 +7013,79 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     if (unifiedLogEl.children.length > 100) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
+    }
+}
+
+// === UNIFIED triggerLethalAuthEvent ===
+function triggerLethalAuthEvent() {
+    if (lethalAuthActive) return;
+
+    const lethalForceToggle = document.getElementById('lethal-force-toggle');
+    if (lethalForceToggle && !lethalForceToggle.checked) return;
+    
+    if (typeof getActiveCallsigns === 'undefined') return;
+    const active = getActiveCallsigns();
+    if (active.length === 0) return;
+    lethalAuthOfficer = active[Math.floor(Math.random() * active.length)];
+    
+    lethalAuthCitizen = "a suspicious citizen";
+    if (typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
+        lethalAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
+    }
+
+    if (roeToggleCheckbox && !roeToggleCheckbox.checked) {
+        const killMsgs = [
+            `Dispatch, encountering ${lethalAuthCitizen}. ROE is disabled, so I am engaging with lethal force.`,
+            `Taking down ${lethalAuthCitizen} now. Glad we don't have to ask for permission anymore.`,
+            `${lethalAuthCitizen} looked at me funny. ROE is off, engaging lethal pacification.`
+        ];
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage(lethalAuthOfficer, killMsgs[Math.floor(Math.random() * killMsgs.length)], 'serious', false);
+        }
+        
+        if (typeof globalCitizens !== 'undefined') {
+            let cit = globalCitizens.find(c => c.name === lethalAuthCitizen);
+            if (cit) { cit.status = 'Deceased'; if (typeof renderCitizensList !== 'undefined') renderCitizensList(); }
+        }
+        
+        if (typeof updateStats === 'undefined') return;
+        const p = roster.find(u => u.id === lethalAuthOfficer);
+        if (p) p.kills++;
+        updateStats(0, 1, 0, 0);
+        return;
+    }
+
+    lethalAuthActive = true;
+    lethalAuthTimeLeft = 40;
+    
+    const reasonType = Math.random() > 0.5 ? 'civilian' : 'officer';
+    let requestMsg = "";
+    
+    if (reasonType === 'civilian') {
+        requestMsg = `Dispatch, a kill has been requested by a civilian... I am requesting to authorize lethal force against ${lethalAuthCitizen}. Am I clear to engage?`;
+    } else {
+        requestMsg = `Dispatch, this civilian is really getting on my nerves and I want to eliminate them. I am requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
+    }
+    
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage(lethalAuthOfficer, requestMsg, 'worried', false);
+    }
+    
+    const modal = document.getElementById('lethal-auth-modal');
+    const textEl = document.getElementById('lethal-auth-text');
+    const timeEl = document.getElementById('lethal-auth-timer');
+    
+    if (modal && textEl && timeEl) {
+        textEl.textContent = `${lethalAuthOfficer} is requesting authorization to use lethal force against ${lethalAuthCitizen}. Clear to engage?`;
+        timeEl.textContent = lethalAuthTimeLeft;
+        modal.style.display = 'block';
+        
+        lethalAuthTimer = setInterval(() => {
+            lethalAuthTimeLeft--;
+            timeEl.textContent = lethalAuthTimeLeft;
+            if (lethalAuthTimeLeft <= 0) {
+                resolveLethalAuth(false);
+            }
+        }, 1000);
     }
 }
