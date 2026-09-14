@@ -7161,6 +7161,7 @@ function resolveArrestAuth(approved) {
                 if (typeof globalCitizens !== 'undefined') {
                     let cit = globalCitizens.find(c => c.name === arrestAuthCitizen);
                     if (cit) { cit.status = 'Arrested'; if (typeof renderCitizensList !== 'undefined') renderCitizensList(); }
+                    if (typeof addCivilianReview !== 'undefined') addCivilianReview(1.0, true, arrestAuthCitizen);
                 }
             }, 1500);
         }
@@ -7199,3 +7200,78 @@ setInterval(() => {
         triggerArrestAuthEvent();
     }
 }, 5000);
+
+// === PUBLIC OPINION DATABASE ===
+let currentStationRating = 0.0;
+let totalReviews = 0;
+let trustPercentage = 20; // 80% distrust by default
+
+const goodReviewComments = [
+    "They arrested the guy who stole my cybernetic arm. Thanks!",
+    "Actually showed up in under 3 hours this time. Impressive.",
+    "The officer gave me a warning instead of shooting me. 5 stars.",
+    "Very professional when they kicked my door down by mistake.",
+    "Station is running smoothly, I feel slightly safer today."
+];
+
+const badReviewComments = [
+    "Too trigger happy. They blew up my car.",
+    "They arrested my innocent brother for standing on the sidewalk.",
+    "Absolutely terrible. The officer asked me for a bribe.",
+    "I called for an ambulance and they sent a heavily armed mech.",
+    "Unbelievable corruption. I'm moving to a different sector.",
+    "I tried to ask for directions and they tased me.",
+    "They ran over my cyber-dog and didn't even slow down."
+];
+
+function addCivilianReview(stars, isArrestComplaint = false, specificName = "Anonymous") {
+    const reviewsLog = document.getElementById('civilian-reviews-log');
+    if (!reviewsLog) return;
+    
+    let comment = "";
+    if (isArrestComplaint) {
+        comment = `I was just arrested for absolutely no reason! This department is a joke!`;
+    } else {
+        if (stars >= 4) {
+            comment = goodReviewComments[Math.floor(Math.random() * goodReviewComments.length)];
+        } else {
+            comment = badReviewComments[Math.floor(Math.random() * badReviewComments.length)];
+        }
+    }
+    
+    totalReviews++;
+    currentStationRating = ((currentStationRating * (totalReviews - 1)) + stars) / totalReviews;
+    
+    if (stars >= 4) {
+        trustPercentage = Math.min(100, trustPercentage + (Math.random() * 2));
+    } else {
+        trustPercentage = Math.max(0, trustPercentage - (Math.random() * 2));
+    }
+    
+    const ratingEl = document.getElementById('station-star-rating');
+    const trustEl = document.getElementById('trust-ratio');
+    const distrustEl = document.getElementById('distrust-ratio');
+    
+    if (ratingEl) ratingEl.textContent = `⭐ ${currentStationRating.toFixed(1)} / 5.0`;
+    if (trustEl) trustEl.textContent = `${Math.round(trustPercentage)}% TRUST`;
+    if (distrustEl) distrustEl.textContent = `${Math.round(100 - trustPercentage)}% DISTRUST`;
+    
+    const div = document.createElement('div');
+    div.style.color = '#fff';
+    div.innerHTML = `<span style="color: #ffeb3b;">⭐ ${stars.toFixed(1)}</span> - <span style="color: #94a3b8;">"${comment}"</span> - ${specificName}`;
+    
+    reviewsLog.appendChild(div);
+    reviewsLog.scrollTop = reviewsLog.scrollHeight;
+    
+    if (reviewsLog.children.length > 20) {
+        reviewsLog.removeChild(reviewsLog.firstChild);
+    }
+}
+
+setInterval(() => {
+    if (Math.random() < 0.3) {
+        const isGood = Math.random() < 0.2; // 80% chance of bad reviews
+        const stars = isGood ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.0 + 1.0);
+        addCivilianReview(stars);
+    }
+}, 8000);
