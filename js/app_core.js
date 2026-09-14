@@ -7201,41 +7201,76 @@ setInterval(() => {
     }
 }, 5000);
 
+
 // === PUBLIC OPINION DATABASE ===
 let currentStationRating = 0.0;
 let totalReviews = 0;
 let trustPercentage = 20; // 80% distrust by default
 
-const goodReviewComments = [
+const innocentReviewComments = [
+    "I trust MCPD with my life! 5 stars!",
+    "The officers are doing a stellar job keeping the streets safe.",
+    "No complaints here. I feel perfectly secure in this sector.",
+    "Very professional police force. Highly recommend.",
     "They arrested the guy who stole my cybernetic arm. Thanks!",
-    "Actually showed up in under 3 hours this time. Impressive.",
-    "The officer gave me a warning instead of shooting me. 5 stars.",
-    "Very professional when they kicked my door down by mistake.",
-    "Station is running smoothly, I feel slightly safer today."
+    "I love seeing patrols in my neighborhood. Makes me feel safe.",
+    "The officers always wave at my kids. Wonderful people.",
+    "MCPD responded to my call in under 5 minutes. Outstanding!",
+    "Best police force in the megacity. No question.",
+    "I sleep soundly knowing MCPD is out there protecting us."
 ];
 
-const badReviewComments = [
-    "Too trigger happy. They blew up my car.",
-    "They arrested my innocent brother for standing on the sidewalk.",
-    "Absolutely terrible. The officer asked me for a bribe.",
-    "I called for an ambulance and they sent a heavily armed mech.",
-    "Unbelievable corruption. I'm moving to a different sector.",
-    "I tried to ask for directions and they tased me.",
-    "They ran over my cyber-dog and didn't even slow down."
+const suspiciousReviewComments = [
+    "I got stopped and questioned for literally no reason. 3 stars.",
+    "Officers are a bit aggressive, but I guess it's a tough city.",
+    "The cops glared at me while I was walking my dog. Unnerving.",
+    "Not bad, but they really need to stop deploying drones in my neighborhood.",
+    "I don't trust them fully, but they haven't arrested me yet.",
+    "They keep following me around. I haven't done anything... I think.",
+    "The officers seem competent but they make me nervous.",
+    "Mixed feelings. They saved my neighbor but also broke my fence.",
+    "Average service. Could be worse, could be better.",
+    "They gave me a warning instead of a citation. Okay I guess."
 ];
 
-function addCivilianReview(stars, isArrestComplaint = false, specificName = "Anonymous") {
+const arrestedGoodPoliceComments = [
+    "The officers were actually incredibly polite when they tackled me, but this prison food is terrible!",
+    "I got arrested fair and square. The cops were cool, but my cell is freezing.",
+    "Can't complain about the police, they did their job... but the guards in here are awful.",
+    "The arresting officer was a gentleman, but the prison shower has been broken for weeks.",
+    "They caught me red-handed. The police are great, but this penitentiary smells like rust.",
+    "Honestly the officers treated me with respect. It's the prison staff that are the real criminals.",
+    "MCPD was professional during my arrest. 5 stars for them. 0 stars for the holding cell mattress.",
+    "The cops bought me a coffee on the way to booking. The prison guards took it away immediately.",
+    "I deserved to get caught. The officers were fair. But whoever designed these cells hates comfort.",
+    "Police did their job well. My only complaint is the prison food tastes like synthetic cardboard."
+];
+
+const arrestedBadPrisonComments = [
+    "The prison toilet doesn't flush. That's my only review.",
+    "The guards confiscated my cybernetic pinky. It was decorative!",
+    "I've been in holding for 3 days and nobody has told me why. The prison, not the police.",
+    "MCPD? They're fine. The WARDEN though? Absolute nightmare.",
+    "Police were reasonable. The prison? Medieval torture chamber with fluorescent lights."
+];
+
+function addCivilianReview(stars, isArrestComplaint, specificName, customComment) {
     const reviewsLog = document.getElementById('civilian-reviews-log');
     if (!reviewsLog) return;
     
-    let comment = "";
-    if (isArrestComplaint) {
-        comment = `I was just arrested for absolutely no reason! This department is a joke!`;
-    } else {
-        if (stars >= 4) {
-            comment = goodReviewComments[Math.floor(Math.random() * goodReviewComments.length)];
+    let comment = customComment || "";
+    if (!comment) {
+        if (isArrestComplaint) {
+            // Arrested people: mostly praise police, complain about prison
+            if (Math.random() < 0.7) {
+                comment = arrestedGoodPoliceComments[Math.floor(Math.random() * arrestedGoodPoliceComments.length)];
+            } else {
+                comment = arrestedBadPrisonComments[Math.floor(Math.random() * arrestedBadPrisonComments.length)];
+            }
+        } else if (stars >= 4.5) {
+            comment = innocentReviewComments[Math.floor(Math.random() * innocentReviewComments.length)];
         } else {
-            comment = badReviewComments[Math.floor(Math.random() * badReviewComments.length)];
+            comment = suspiciousReviewComments[Math.floor(Math.random() * suspiciousReviewComments.length)];
         }
     }
     
@@ -7252,13 +7287,13 @@ function addCivilianReview(stars, isArrestComplaint = false, specificName = "Ano
     const trustEl = document.getElementById('trust-ratio');
     const distrustEl = document.getElementById('distrust-ratio');
     
-    if (ratingEl) ratingEl.textContent = `⭐ ${currentStationRating.toFixed(1)} / 5.0`;
-    if (trustEl) trustEl.textContent = `${Math.round(trustPercentage)}% TRUST`;
-    if (distrustEl) distrustEl.textContent = `${Math.round(100 - trustPercentage)}% DISTRUST`;
+    if (ratingEl) ratingEl.textContent = '\u2B50 ' + currentStationRating.toFixed(1) + ' / 5.0';
+    if (trustEl) trustEl.textContent = Math.round(trustPercentage) + '% TRUST';
+    if (distrustEl) distrustEl.textContent = Math.round(100 - trustPercentage) + '% DISTRUST';
     
     const div = document.createElement('div');
     div.style.color = '#fff';
-    div.innerHTML = `<span style="color: #ffeb3b;">⭐ ${stars.toFixed(1)}</span> - <span style="color: #94a3b8;">"${comment}"</span> - ${specificName}`;
+    div.innerHTML = '<span style="color: #ffeb3b;">\u2B50 ' + stars.toFixed(1) + '</span> - <span style="color: #94a3b8;">"' + comment + '"</span> - ' + specificName;
     
     reviewsLog.appendChild(div);
     reviewsLog.scrollTop = reviewsLog.scrollHeight;
@@ -7268,10 +7303,35 @@ function addCivilianReview(stars, isArrestComplaint = false, specificName = "Ano
     }
 }
 
-setInterval(() => {
-    if (Math.random() < 0.3) {
-        const isGood = Math.random() < 0.2; // 80% chance of bad reviews
-        const stars = isGood ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.0 + 1.0);
-        addCivilianReview(stars);
+// Periodic reviews from ACTUAL citizens based on their STATUS
+setInterval(function() {
+    if (Math.random() < 0.4 && typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
+        var randCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+        if (randCit.status === 'Deceased') return;
+        
+        var stars = 3.0;
+        var isArrest = false;
+        var comment = '';
+        
+        if (!randCit.status || randCit.status === 'Innocent') {
+            // Innocent civilians love the police, 5 stars
+            stars = 5.0;
+            comment = innocentReviewComments[Math.floor(Math.random() * innocentReviewComments.length)];
+        } else if (randCit.status === 'Arrested') {
+            // Arrested: mostly praise police, complain about prison
+            stars = Math.random() < 0.7 ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2 + 1);
+            isArrest = true;
+            if (stars >= 3.5) {
+                comment = arrestedGoodPoliceComments[Math.floor(Math.random() * arrestedGoodPoliceComments.length)];
+            } else {
+                comment = arrestedBadPrisonComments[Math.floor(Math.random() * arrestedBadPrisonComments.length)];
+            }
+        } else {
+            // Suspicious / Wanted / Escaped — medium reviews
+            stars = Math.floor(Math.random() * 3) + 2; // 2, 3, or 4
+            comment = suspiciousReviewComments[Math.floor(Math.random() * suspiciousReviewComments.length)];
+        }
+        
+        addCivilianReview(stars, isArrest, randCit.name, comment);
     }
 }, 8000);
