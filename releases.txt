@@ -1,0 +1,100 @@
+ID: 382918187, Name: ⚡ v2.60.0: Full Performance Pass, Tag: v2.60.0, Draft: True
+ID: 388497841, Name: 👅 v4.8.5: The Taste Test Update, Tag: v4.8.5, Draft: False
+ID: 388496452, Name: 😵‍💫 v4.8.4: The Logic-Defying Update, Tag: v4.8.4, Draft: False
+ID: 388495022, Name: 🎛️ v4.8.3: Prismatic Toggle, Tag: v4.8.3, Draft: False
+ID: 388467285, Name: 🌈 v4.8.2: The Prismatic Protocol, Tag: v4.8.2, Draft: False
+ID: 388409786, Name: 🔥 v4.8.1: The Unhinged Warzone Update, Tag: v4.8.1, Draft: False
+ID: 388404665, Name: 🚓 v4.8.0: The Realism Update, Tag: v4.8.0, Draft: False
+ID: 388395699, Name: 🤪 v4.7.9: The Absurdity Update, Tag: v4.7.9, Draft: False
+ID: 388383651, Name: 🔧 v4.7.8: Critical HTML Tab Fix, Tag: v4.7.8, Draft: False
+ID: 388377147, Name: 🔧 v4.7.7: Critical Tab UI Fix, Tag: v4.7.7, Draft: False
+ID: 388369163, Name: 📊 v4.7.6: Citizen-Aware Public Opinion, Tag: v4.7.6, Draft: False
+ID: 388085113, Name: 🔄 v4.7.5: Global Version Sync, Tag: v4.7.5, Draft: False
+ID: 388084657, Name: 📊 v4.7.4: Database Layout Adjustment, Tag: v4.7.4, Draft: False
+ID: 388083726, Name: 📊 v4.7.3: Public Opinion & Trust Ratings, Tag: v4.7.3, Draft: False
+ID: 388082125, Name: 🔧 v4.7.2: Modal Alignment Hotfix, Tag: v4.7.2, Draft: False
+ID: 388081662, Name: 📁 v4.7.1: Project Reorganization, Tag: v4.7.1, Draft: False
+ID: 388081113, Name: 🚔 v4.7.0: Arrest Authorization & Corruption, Tag: v4.7.0, Draft: False
+ID: 388080555, Name: 💰 v4.6.9: Extreme Threat Bounties, Tag: v4.6.9, Draft: False
+ID: 388079925, Name: 🔧 v4.6.8: Configuration Toggle Patch, Tag: v4.6.8, Draft: False
+ID: 388078329, Name: ☣️ v4.6.7: Extreme Real-World Crimes, Tag: v4.6.7, Draft: False
+ID: 388077991, Name: 📚 v4.6.6: README Synchronization, Tag: v4.6.6, Draft: False
+ID: 388077686, Name: 🔧 v4.6.5: Terminal Crash Hotfix, Tag: v4.6.5, Draft: False
+ID: 388075716, Name: ⚙️ v4.6.4: Lethal Force Toggle, Tag: v4.6.4, Draft: False
+ID: 388075076, Name: 👥 v4.6.3: Unsanctioned Gatherings, Tag: v4.6.3, Draft: False
+ID: 388074641, Name: 🎖️ v4.6.2: Dynamic Station Points, Tag: v4.6.2, Draft: False
+ID: 388055006, Name: 📷 v4.6.1: Image Analyzer Overhaul, Tag: v4.6.1, Draft: False
+ID: 388051201, Name: 🚓 v4.6.0: Station House Drama & 236 Jealousy Voice Lines, Tag: v4.6.0, Draft: False
+ID: 388050338, Name: 📋 v4.5.9: CAD Roster Alignment Fix, Tag: v4.5.9, Draft: False
+ID: 388050070, Name: 🔕 v4.5.8: Mobile Panic-Lock Resolution, Tag: v4.5.8, Draft: False
+ID: 388048057, Name: 🔕 v4.5.7: Opt-In Officer Panics & Jumpscare Protection, Tag: v4.5.7, Draft: False
+ID: 388047127, Name: 📻 v4.5.6: Clean Radio Callouts, Tag: v4.5.6, Draft: False
+ID: 388046881, Name: 🔇 v4.5.5: Reduced Threat Level — Auto-Panic @ 1%, Tag: v4.5.5, Draft: False
+ID: 388046625, Name: 🎙️ v4.5.4: Realistic Dispatch Voice Overhaul, Tag: v4.5.4, Draft: False
+ID: 388046387, Name: 🚨 v4.5.3: Elevated Threat Level — Auto-Panic @ 10%, Tag: v4.5.3, Draft: False
+ID: 388045969, Name: 📻 v4.5.2: Streamlined Radio Dispatch Voice, Tag: v4.5.2, Draft: False
+ID: 388045571, Name: 🔊 v4.5.1: Streamlined Dispatch Voice, Tag: v4.5.1, Draft: False
+ID: 387664071, Name: 🎖️ v4.5.0: Dynamic Officer Engagement & Real-Time Scoring, Tag: v4.5.0, Draft: False
+ID: 387661814, Name: 🔒 v4.4.4: Manual Scroll Override & Stability Patch, Tag: v4.4.4, Draft: False
+ID: 387659360, Name: 📜 v4.4.1: Discord-Style Smart Scrolling UX, Tag: v4.4.1, Draft: False
+ID: 387659356, Name: 🕶️ v4.4.0: Tactical Dark Mode & iOS Glassmorphism, Tag: v4.4.0, Draft: False
+ID: 387659350, Name: 📱 v4.3.0: Dedicated Mobile Terminal Uplink, Tag: v4.3.0, Draft: False
+ID: 387649443, Name: 🏆 v4.2.0: Dispatcher Point System & Dynamic Panic Logic, Tag: v4.2.0, Draft: False
+ID: 387648415, Name: 🚓 v4.1.0: Authentic Navy Blue & White Terminal Theme, Tag: v4.1.0, Draft: False
+ID: 387647748, Name: 🚓 v4.0.0: Realistic Police MDT Overhaul, Tag: v4.0.0, Draft: False
+ID: 387641845, Name: 🔧 v3.4.7: Terminal Stability & UI Hotfixes, Tag: v3.4.7, Draft: False
+ID: 387636746, Name: ⚙️ v3.4.0: Advanced Dispatch Options, Tag: v3.4.0, Draft: False
+ID: 387635458, Name: 🎖️ v3.3.0: 5,000 Officers, Ranks & Off-Duty Recalls, Tag: v3.3.0, Draft: False
+ID: 387634592, Name: 📡 v3.2.0: Overwatch Insults, Tag: v3.2.0, Draft: False
+ID: 387634424, Name: 🚨 v3.1.0: Mass Panic Dynamics, Tag: v3.1.0, Draft: False
+ID: 387633946, Name: ✨ v3.0.0: Modern UI Overhaul, Tag: v3.0.0, Draft: False
+ID: 387633116, Name: 🔧 v2.73.1: Hotfix for Incident Reports, Tag: v2.73.1, Draft: False
+ID: 387631435, Name: 🤖 v2.73.0: TTS Audio, Banter, & System Checks, Tag: v2.73.0, Draft: False
+ID: 387630231, Name: 📖 v2.72.0: Full Documentation Overhaul, Tag: v2.72.0, Draft: False
+ID: 387628651, Name: 🔥 v2.71.0: Shootout Panic, Tag: v2.71.0, Draft: False
+ID: 387628255, Name: 📷 v2.70.0: Advanced Image Recognition, Tag: v2.70.0, Draft: False
+ID: 387626308, Name: 📄 v2.69.0: 8 Kilometers of Paperwork, Tag: v2.69.0, Draft: False
+ID: 387625592, Name: 🚨 v2.68.0: Panic System Overhaul, Tag: v2.68.0, Draft: False
+ID: 387625069, Name: 🚨 v2.67.0: Internal Affairs Overreach, Tag: v2.67.0, Draft: False
+ID: 387624256, Name: 💾 v2.66.0: Incident Report Exports, Tag: v2.66.0, Draft: False
+ID: 387623789, Name: 🩸 v2.65.0: Lethal Bounties, Tag: v2.65.0, Draft: False
+ID: 387620600, Name: 📻 v2.64.0: Expanded Radio Comms, Tag: v2.64.0, Draft: False
+ID: 387022350, Name: 💼 v2.63.0: Citizen Occupation Registry, Tag: v2.63.0, Draft: False
+ID: 385475572, Name: 💰 v2.62.0: TBMG Trust Nation Currency, Tag: v2.62.0, Draft: False
+ID: 384751333, Name: 📄 v2.61.0: Lazy-Loaded Citizens, Tag: v2.61.0, Draft: False
+ID: 384732568, Name: ⚡ v2.60.1: Terminal Lag Elimination, Tag: v2.60.1, Draft: False
+ID: 382916014, Name: ⚡ v2.59.0: Further Performance Tuning, Tag: v2.59.0, Draft: False
+ID: 382914687, Name: ⚡ v2.58.0: Performance Optimization, Tag: v2.58.0, Draft: False
+ID: 382871230, Name: 📖 v2.57.0: The Full Archival Rewrite, Tag: v2.57.0, Draft: False
+ID: 382869807, Name: 🚔 v2.56.0: Mass Mobilization, Tag: v2.56.0, Draft: False
+ID: 382867621, Name: 📈 v2.55.0: The Great Registry Expansion, Tag: v2.55.0, Draft: False
+ID: 382864639, Name: 👤 v2.54.0: Species Classification Update, Tag: v2.54.0, Draft: False
+ID: 382863111, Name: 🧬 v2.53.0: Post-Human Identity Expansion, Tag: v2.53.0, Draft: False
+ID: 382742533, Name: 🔧 v2.52.0: Surveillance Drone Hotfix, Tag: v2.52.0, Draft: False
+ID: 382739482, Name: 📜 v2.51.0: Sanctioned Executions, Tag: v2.51.0, Draft: False
+ID: 382735978, Name: 💔 v2.50.0: Civilian Marital Status, Tag: v2.50.0, Draft: False
+ID: 382286143, Name: 💍 v2.49.0: Marital Paranoia Protocol, Tag: v2.49.0, Draft: False
+ID: 382276435, Name: 🏙️ v2.48.0: Main City Pursuit Scenarios, Tag: v2.48.0, Draft: False
+ID: 382269366, Name: 📡 v2.47.0: Grid Tracer Obfuscation, Tag: v2.47.0, Draft: False
+ID: 382265918, Name: 🗺️ v2.46.0: Geographic Lore Correction, Tag: v2.46.0, Draft: False
+ID: 382265492, Name: 🌐 v2.45.0: TBMG Grid Geo-Tracking, Tag: v2.45.0, Draft: False
+ID: 382258757, Name: 📋 v2.44.0: Dossier Clarity Update, Tag: v2.44.0, Draft: False
+ID: 382257178, Name: 🅿️ v2.43.0: Meter Maid Mayhem, Tag: v2.43.0, Draft: False
+ID: 382223802, Name: 🔌 v2.42.0: Total Offline Severance, Tag: v2.42.0, Draft: False
+ID: 382223796, Name: 📖 v2.41.0: The Archival Overhaul, Tag: v2.41.0, Draft: False
+ID: 382219943, Name: ⚧️ v2.40.0: Gender Tracking & Identity Update, Tag: v2.40.0, Draft: False
+ID: 382217440, Name: 🌈 v2.39.0: LGBTQ+ Dispatch Calls, Tag: v2.39.0, Draft: False
+ID: 382216926, Name: 📻 v2.38.0: Internal Department Drama, Tag: v2.38.0, Draft: False
+ID: 382216071, Name: 💅 v2.37.0: Personality Balancing, Tag: v2.37.0, Draft: False
+ID: 382215478, Name: 💅 v2.36.0: Fabulous Personality Profile, Tag: v2.36.0, Draft: False
+ID: 382214138, Name: 🍾 v2.35.0: The Diddy Palette Update, Tag: v2.35.0, Draft: False
+ID: 382213081, Name: 🚓 v2.34.0: The Absurdity & High Stakes Patch, Tag: v2.34.0, Draft: False
+ID: 382210942, Name: 🚨 v2.33.0: 900 New Dispatch Calls, Tag: v2.33.0, Draft: False
+ID: 382209818, Name: 📻 v2.32.0: Deep Lore Dialogue Pack, Tag: v2.32.0, Draft: False
+ID: 382208419, Name: 🗣️ v2.31.0: Massive Dialogue Expansion, Tag: v2.31.0, Draft: False
+ID: 382192198, Name: 🔗 v2.30.0: ROE Toggle Integration, Tag: v2.30.0, Draft: False
+ID: 382178450, Name: 🔫 v2.29.0: Lethal Force Authorization Updates, Tag: v2.29.0, Draft: False
+ID: 380165261, Name: v2.28.2 - Lethal Force Pacing, Tag: v2.28.2, Draft: False
+ID: 380116214, Name: v2.28.1 - Terminal Documentation & README Overhaul, Tag: v2.28.1, Draft: False
+ID: 380095417, Name: 📚 v2.28.0: Official MCPD Wiki Initiation, Tag: v2.28.0, Draft: False
+ID: 380115381, Name: v2.27.1: Official GitHub Wiki Deployment, Tag: v2.27.1, Draft: False

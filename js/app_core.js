@@ -1052,6 +1052,7 @@ function getActiveCallsigns() {
 let voreMode = false;
 
 const crimeReports = [
+    { title: "10-99 ANOMALY: Space shuttle detected landed in unauthorized location Block 45. Suspect inside is broadcasting unusual, heavy breathing over local comms.", priority: "high", points: 9999 },
     { title: "10-WUT: A man dressed as a giant human tongue is licking the boots of the riot control mechs. The suspect's tongue is currently stuck to a frozen metal pole.", priority: "low", points: 30 },
     { title: "10-WUT: An elderly woman with a step ladder is trying to lick the static electricity off of old televisions. Officers are requesting a hazmat team for immediate tongue decontamination.", priority: "low", points: 30 },
     { title: "10-WUT: A group of synchronized teenagers is licking the radioactive waste barrels behind the science facility. Suspect's tongue appears to be fully prehensile and 3 feet long.", priority: "low", points: 50 },
