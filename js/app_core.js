@@ -8565,6 +8565,7 @@ window.updateOfficerLeaderboard = function() {
 
 
 
+
 // ==========================================
 // LIVE MAP LOGIC
 // ==========================================
@@ -8579,9 +8580,12 @@ let mapWidth = 0;
 let mapHeight = 0;
 let animationId = null;
 
-const GRID_SIZE = 120;
-const ROAD_WIDTH = 40;
-const SIDEWALK_OFFSET = (ROAD_WIDTH / 2) + 10;
+const ROAD_WIDTH = 30;
+const SIDEWALK_OFFSET = (ROAD_WIDTH / 2) + 8;
+
+let roadX = [];
+let roadY = [];
+let cityBlocks = [];
 
 if (tabMap && mapLogEl) {
     tabMap.addEventListener('click', () => {
@@ -8595,13 +8599,11 @@ if (tabMap && mapLogEl) {
             initCityMap();
             mapInitialized = true;
         } else {
-            // Resume animation
             if(!animationId) animationId = requestAnimationFrame(drawCityMap);
         }
     });
 }
 
-// Ensure oldHideAllTabsMap logic exists or replace it
 if (typeof window.oldHideAllTabsMap === 'undefined') {
     window.oldHideAllTabsMap = window.hideAllTabs || function(){};
     window.hideAllTabs = function() {
@@ -8615,145 +8617,199 @@ if (typeof window.oldHideAllTabsMap === 'undefined') {
     }
 }
 
+function generateCityLayout() {
+    roadX = [];
+    roadY = [];
+    cityBlocks = [];
+    
+    // Generate Irregular Vertical Roads
+    let cx = Math.random() * 50 + 20;
+    while (cx < mapWidth - 20) {
+        roadX.push(cx);
+        cx += 100 + Math.random() * 200; // Variable block width 100-300px
+    }
+    
+    // Generate Irregular Horizontal Roads
+    let cy = Math.random() * 50 + 20;
+    while (cy < mapHeight - 20) {
+        roadY.push(cy);
+        cy += 100 + Math.random() * 200; // Variable block height 100-300px
+    }
+    
+    // Generate Block Properties (Districts)
+    for (let i = 0; i <= roadX.length; i++) {
+        for (let j = 0; j <= roadY.length; j++) {
+            let left = i === 0 ? 0 : roadX[i-1] + ROAD_WIDTH/2;
+            let right = i === roadX.length ? mapWidth : roadX[i] - ROAD_WIDTH/2;
+            let top = j === 0 ? 0 : roadY[j-1] + ROAD_WIDTH/2;
+            let bottom = j === roadY.length ? mapHeight : roadY[j] - ROAD_WIDTH/2;
+            
+            let w = right - left;
+            let h = bottom - top;
+            
+            let type = 'commercial';
+            let roll = Math.random();
+            if (roll < 0.1) type = 'water';
+            else if (roll < 0.25) type = 'park';
+            else if (roll < 0.5) type = 'residential';
+            else if (roll < 0.65) type = 'industrial';
+            
+            // Randomly generated sub-buildings inside the block
+            let buildings = [];
+            if (type !== 'water' && type !== 'park') {
+                let numB = Math.floor(Math.random() * 5) + 1;
+                for(let b=0; b<numB; b++) {
+                    buildings.push({
+                        bx: left + 5 + Math.random() * (w - 30),
+                        by: top + 5 + Math.random() * (h - 30),
+                        bw: 15 + Math.random() * 40,
+                        bh: 15 + Math.random() * 40,
+                        color: type === 'commercial' ? '#1c252d' : (type === 'industrial' ? '#2a2626' : '#222')
+                    });
+                }
+            }
+            
+            let trees = [];
+            if (type === 'park' || type === 'residential') {
+                let numT = type === 'park' ? Math.floor(Math.random() * 20) + 10 : Math.floor(Math.random() * 5);
+                for(let t=0; t<numT; t++) {
+                    trees.push({
+                        tx: left + 10 + Math.random() * (w - 20),
+                        ty: top + 10 + Math.random() * (h - 20),
+                        r: 3 + Math.random() * 6
+                    });
+                }
+            }
+
+            cityBlocks.push({
+                left: left, right: right, top: top, bottom: bottom, w: w, h: h,
+                type: type, buildings: buildings, trees: trees
+            });
+        }
+    }
+}
+
 function initCityMap() {
     cityCanvas = document.getElementById('city-map-canvas');
     if (!cityCanvas) return;
-    
     ctx = cityCanvas.getContext('2d');
     
-    // Resize
     const container = document.getElementById('live-map-container');
     mapWidth = container.clientWidth;
-    mapHeight = container.clientHeight;
+    mapHeight = container.clientHeight || 600;
     cityCanvas.width = mapWidth;
     cityCanvas.height = mapHeight;
     
-    // Create 150 Civilians
-    for(let i=0; i<150; i++) {
-        spawnEntity('civ');
-    }
+    generateCityLayout();
     
-    // Create 40 Police
-    for(let i=0; i<40; i++) {
-        spawnEntity('police');
-    }
+    entities = [];
+    for(let i=0; i<120; i++) spawnEntity('civ');
+    for(let i=0; i<30; i++) spawnEntity('police');
 
     animationId = requestAnimationFrame(drawCityMap);
     
-    // Handle resize
     window.addEventListener('resize', () => {
-        if(container.clientWidth > 0) {
+        if(container.clientWidth > 0 && container.clientWidth !== mapWidth) {
             mapWidth = container.clientWidth;
-            mapHeight = container.clientHeight;
+            mapHeight = container.clientHeight || 600;
             cityCanvas.width = mapWidth;
             cityCanvas.height = mapHeight;
+            generateCityLayout(); // Re-layout on major resize
         }
     });
 }
 
 function spawnEntity(faction) {
-    // Random intersection
-    const maxCols = Math.floor(mapWidth / GRID_SIZE);
-    const maxRows = Math.floor(mapHeight / GRID_SIZE);
+    if(roadX.length === 0 || roadY.length === 0) return;
+    const isVehicle = Math.random() < 0.7; // 70% vehicles
     
-    const col = Math.floor(Math.random() * maxCols);
-    const row = Math.floor(Math.random() * maxRows);
+    // Pick a random road
+    let onVertical = Math.random() < 0.5;
+    let rX = roadX[Math.floor(Math.random() * roadX.length)];
+    let rY = roadY[Math.floor(Math.random() * roadY.length)];
     
-    const isVehicle = Math.random() < 0.6; // 60% vehicles, 40% pedestrians
-    
-    let x = (col * GRID_SIZE) + (GRID_SIZE / 2);
-    let y = (row * GRID_SIZE) + (GRID_SIZE / 2);
-    
-    if (!isVehicle) {
-        // Offset for sidewalk
-        const sideX = Math.random() < 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET;
-        const sideY = Math.random() < 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET;
-        x += sideX;
-        y += sideY;
-    }
-
-    const dirs = ['N', 'S', 'E', 'W'];
-    let dir = dirs[Math.floor(Math.random() * dirs.length)];
-    
-    let emoji = '';
-    if (faction === 'police') {
-        emoji = isVehicle ? '🚓' : '👮';
+    let x, y, dir;
+    if (onVertical) {
+        x = rX;
+        y = Math.random() * mapHeight;
+        dir = Math.random() < 0.5 ? 'N' : 'S';
+        if (!isVehicle) x += (Math.random()<0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
     } else {
-        emoji = isVehicle ? (Math.random() < 0.2 ? '🚚' : '🚗') : (Math.random() < 0.5 ? '🚶' : '🏃');
+        y = rY;
+        x = Math.random() * mapWidth;
+        dir = Math.random() < 0.5 ? 'E' : 'W';
+        if (!isVehicle) y += (Math.random()<0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
     }
+    
+    let emoji = faction === 'police' ? (isVehicle ? '🚓' : '👮') : (isVehicle ? (Math.random()<0.2?'🚚':'🚗') : (Math.random()<0.5?'🚶':'🏃'));
 
     entities.push({
         faction: faction,
         isVehicle: isVehicle,
-        x: x,
-        y: y,
+        x: x, y: y,
         dir: dir,
-        speed: isVehicle ? (faction === 'police' ? 1.5 : 1.0) : 0.4,
-        emoji: emoji,
-        targetCol: col,
-        targetRow: row
+        speed: isVehicle ? (faction === 'police' ? 1.8 : 1.2) : 0.4,
+        emoji: emoji
     });
 }
 
 function drawCityMap() {
     if (!mapLogEl || mapLogEl.style.display === 'none') {
         animationId = null;
-        return; // Paused
+        return;
     }
 
-    // 1. Draw Background (Grass/Dirt)
-    ctx.fillStyle = '#0f1418'; // Dark city ground
+    // 1. Draw Background
+    ctx.fillStyle = '#0f1418';
     ctx.fillRect(0, 0, mapWidth, mapHeight);
 
-    const cols = Math.ceil(mapWidth / GRID_SIZE);
-    const rows = Math.ceil(mapHeight / GRID_SIZE);
-
-    // 2. Draw Roads & Blocks
-    for (let c = 0; c < cols; c++) {
-        for (let r = 0; r < rows; r++) {
-            const bx = c * GRID_SIZE;
-            const by = r * GRID_SIZE;
-
-            // Draw Block (Building area)
-            ctx.fillStyle = '#161c22'; // Building base
-            ctx.fillRect(bx + ROAD_WIDTH/2, by + ROAD_WIDTH/2, GRID_SIZE - ROAD_WIDTH, GRID_SIZE - ROAD_WIDTH);
-            
-            // Draw some stylized buildings inside the block
-            ctx.fillStyle = '#1c252d'; // Taller building
-            ctx.fillRect(bx + ROAD_WIDTH/2 + 10, by + ROAD_WIDTH/2 + 10, GRID_SIZE - ROAD_WIDTH - 20, GRID_SIZE - ROAD_WIDTH - 40);
-            
-            // Draw Trees (neon cyber trees)
-            ctx.fillStyle = 'rgba(0, 255, 128, 0.15)';
+    // 2. Draw Blocks (Districts)
+    for (let b of cityBlocks) {
+        if (b.type === 'water') {
+            ctx.fillStyle = '#0a192f'; // Dark water
+        } else if (b.type === 'park') {
+            ctx.fillStyle = '#112211'; // Dark grass
+        } else if (b.type === 'commercial') {
+            ctx.fillStyle = '#12161a';
+        } else {
+            ctx.fillStyle = '#16181a';
+        }
+        ctx.fillRect(b.left, b.top, b.w, b.h);
+        
+        // Draw buildings
+        for (let bld of b.buildings) {
+            ctx.fillStyle = bld.color;
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 5;
+            ctx.fillRect(bld.bx, bld.by, bld.bw, bld.bh);
+            ctx.shadowBlur = 0; // reset
+        }
+        
+        // Draw trees
+        ctx.fillStyle = 'rgba(0, 255, 128, 0.2)';
+        for (let t of b.trees) {
             ctx.beginPath();
-            ctx.arc(bx + ROAD_WIDTH/2 + 15, by + ROAD_WIDTH/2 + (GRID_SIZE - ROAD_WIDTH) - 15, 8, 0, Math.PI*2);
+            ctx.arc(t.tx, t.ty, t.r, 0, Math.PI*2);
             ctx.fill();
-
-            // Draw Road Vertical
-            ctx.fillStyle = '#222';
-            ctx.fillRect(bx + (GRID_SIZE/2) - (ROAD_WIDTH/2), 0, ROAD_WIDTH, mapHeight);
-            
-            // Draw Road Horizontal
-            ctx.fillRect(0, by + (GRID_SIZE/2) - (ROAD_WIDTH/2), mapWidth, ROAD_WIDTH);
-            
-            // Draw Yellow Center Lines
-            ctx.strokeStyle = 'rgba(255, 204, 0, 0.4)';
-            ctx.setLineDash([10, 15]);
-            ctx.lineWidth = 2;
-            
-            ctx.beginPath();
-            ctx.moveTo(bx + (GRID_SIZE/2), 0);
-            ctx.lineTo(bx + (GRID_SIZE/2), mapHeight);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(0, by + (GRID_SIZE/2));
-            ctx.lineTo(mapWidth, by + (GRID_SIZE/2));
-            ctx.stroke();
         }
     }
-    ctx.setLineDash([]); // Reset
 
-    // 3. Update & Draw Entities
+    // 3. Draw Roads
+    ctx.fillStyle = '#1a1a1a';
+    for (let x of roadX) ctx.fillRect(x - ROAD_WIDTH/2, 0, ROAD_WIDTH, mapHeight);
+    for (let y of roadY) ctx.fillRect(0, y - ROAD_WIDTH/2, mapWidth, ROAD_WIDTH);
+    
+    // Draw Center lines
+    ctx.strokeStyle = 'rgba(255, 204, 0, 0.3)';
+    ctx.setLineDash([8, 12]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x of roadX) { ctx.moveTo(x, 0); ctx.lineTo(x, mapHeight); }
+    for (let y of roadY) { ctx.moveTo(0, y); ctx.lineTo(mapWidth, y); }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 4. Update & Draw Entities
     ctx.font = '14px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -8765,26 +8821,30 @@ function drawCityMap() {
         if (e.dir === 'E') e.x += e.speed;
         if (e.dir === 'W') e.x -= e.speed;
 
-        // Check Intersection Snapping
-        const mapOffsetX = e.isVehicle ? 0 : (SIDEWALK_OFFSET * (e.x > (Math.floor(e.x/GRID_SIZE)*GRID_SIZE + GRID_SIZE/2) ? 1 : -1));
-        const mapOffsetY = e.isVehicle ? 0 : (SIDEWALK_OFFSET * (e.y > (Math.floor(e.y/GRID_SIZE)*GRID_SIZE + GRID_SIZE/2) ? 1 : -1));
-        
-        const idealX = (Math.floor(e.x / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (Math.random()>0.5?SIDEWALK_OFFSET:-SIDEWALK_OFFSET));
-        const idealY = (Math.floor(e.y / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (Math.random()>0.5?SIDEWALK_OFFSET:-SIDEWALK_OFFSET));
-
-        // Simplified Intersection logic: Every 120 pixels, chance to turn
-        if ((e.dir === 'N' || e.dir === 'S') && Math.abs((e.y - (e.isVehicle ? 0 : SIDEWALK_OFFSET)) % GRID_SIZE - (GRID_SIZE/2)) < e.speed) {
-            // At an intersection Y
-            if (Math.random() < 0.3) { // 30% chance to turn
-                e.y = (Math.floor(e.y / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (e.y % GRID_SIZE > GRID_SIZE/2 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); // Snap to center
-                e.dir = Math.random() < 0.5 ? 'E' : 'W';
+        // Check Intersections
+        if (e.dir === 'N' || e.dir === 'S') {
+            for (let ry of roadY) {
+                let targetY = e.isVehicle ? ry : ry + (e.y > ry ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
+                if (Math.abs(e.y - targetY) <= e.speed) {
+                    if (Math.random() < 0.25) { // 25% chance to turn
+                        e.y = targetY; // snap
+                        e.dir = Math.random() < 0.5 ? 'E' : 'W';
+                        // Snap X to horizontal road rules
+                        e.x = e.isVehicle ? e.x : (e.x + (Math.random()<0.5?1:-1));
+                    }
+                    break;
+                }
             }
-        }
-        else if ((e.dir === 'E' || e.dir === 'W') && Math.abs((e.x - (e.isVehicle ? 0 : SIDEWALK_OFFSET)) % GRID_SIZE - (GRID_SIZE/2)) < e.speed) {
-            // At an intersection X
-            if (Math.random() < 0.3) { 
-                e.x = (Math.floor(e.x / GRID_SIZE) * GRID_SIZE) + (GRID_SIZE / 2) + (e.isVehicle ? 0 : (e.x % GRID_SIZE > GRID_SIZE/2 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET));
-                e.dir = Math.random() < 0.5 ? 'N' : 'S';
+        } else {
+            for (let rx of roadX) {
+                let targetX = e.isVehicle ? rx : rx + (e.x > rx ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
+                if (Math.abs(e.x - targetX) <= e.speed) {
+                    if (Math.random() < 0.25) {
+                        e.x = targetX;
+                        e.dir = Math.random() < 0.5 ? 'N' : 'S';
+                    }
+                    break;
+                }
             }
         }
 
@@ -8794,18 +8854,15 @@ function drawCityMap() {
         if (e.y < -20) e.y = mapHeight + 20;
         if (e.y > mapHeight + 20) e.y = -20;
 
-        // Draw Entity Background Glow for Police
+        // Glow for police
         if (e.faction === 'police') {
-            ctx.fillStyle = 'rgba(0, 150, 255, 0.4)';
-            ctx.beginPath();
-            ctx.arc(e.x, e.y, 12, 0, Math.PI*2);
-            ctx.fill();
+            ctx.fillStyle = 'rgba(0, 150, 255, 0.5)';
+            ctx.beginPath(); ctx.arc(e.x, e.y, 14, 0, Math.PI*2); ctx.fill();
         }
 
         // Draw Emoji
         ctx.save();
         ctx.translate(e.x, e.y);
-        // Rotate vehicles based on direction
         if (e.isVehicle) {
             if (e.dir === 'N') ctx.rotate(-Math.PI/2);
             if (e.dir === 'S') ctx.rotate(Math.PI/2);
@@ -8818,4 +8875,5 @@ function drawCityMap() {
     animationId = requestAnimationFrame(drawCityMap);
 }
 // ==========================================
+
 
