@@ -699,7 +699,7 @@ body.theme-light img, body.theme-light video {
     100% { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; }
 }
 
-:root {
+body.theme-rainbow {
     --bg-main: #110022; 
     --panel-bg: rgba(20, 0, 40, 0.8);
     --panel-border: #ff00ff; 
@@ -709,28 +709,32 @@ body.theme-light img, body.theme-light video {
     --accent-green: #00ff00;
     --panic-red: #ff0055;
     --panic-orange: #ff8800;
-}
-
-body {
+    
     background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
     background-size: 400% 400%;
     animation: rainbowBg 15s ease infinite;
 }
 
-.main-panel, .control-panel, .panel-content {
+body.theme-rainbow .main-panel, 
+body.theme-rainbow .control-panel, 
+body.theme-rainbow .panel-content {
     background: rgba(0, 0, 0, 0.7) !important;
     animation: rainbowBorder 3s linear infinite;
     border: 2px solid;
     border-radius: 8px;
 }
 
-h2, h3, h4, .tab.active, #score-display {
+body.theme-rainbow h2, 
+body.theme-rainbow h3, 
+body.theme-rainbow h4, 
+body.theme-rainbow .tab.active, 
+body.theme-rainbow #score-display {
     animation: rainbowText 4s linear infinite;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
-button {
+body.theme-rainbow button {
     animation: rainbowBg 3s linear infinite;
     background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) !important;
     background-size: 300% 100% !important;
@@ -741,17 +745,17 @@ button {
     font-weight: 900;
 }
 
-button:hover {
+body.theme-rainbow button:hover {
     transform: scale(1.05);
     filter: brightness(1.2);
 }
 
-.modal-content {
+body.theme-rainbow .modal-content {
     animation: rainbowBorder 2s linear infinite;
     background: rgba(0, 0, 0, 0.85);
 }
 
-.chat-message {
+body.theme-rainbow .chat-message {
     border-left: 4px solid;
     animation: rainbowBorder 3s linear infinite;
     background: rgba(255, 255, 255, 0.1);

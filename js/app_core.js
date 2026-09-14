@@ -7193,6 +7193,10 @@ document.getElementById('btn-theme-light').addEventListener('click', () => {
     document.body.className = 'theme-light';
 });
 
+document.getElementById('btn-theme-rainbow').addEventListener('click', () => {
+    document.body.className = 'theme-rainbow';
+});
+
 document.getElementById('btn-fullscreen').addEventListener('click', () => {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(err => {
