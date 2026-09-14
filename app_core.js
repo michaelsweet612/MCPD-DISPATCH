@@ -6927,3 +6927,44 @@ function triggerLethalAuthEvent() {
         }, 1000);
     }
 }
+
+// === OVERRIDE addChatMessage to fix undefined crash ===
+function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
+    if (text === undefined || text === null) text = "10-4.";
+    
+    // Ensure text is a string to prevent .replace crashes
+    text = String(text);
+    
+    text = text.replace(/%RANDOM_SECTOR%/g, () => Math.floor(10000 + Math.random() * 89999));
+    text = text.replace(/%RANDOM_UNIT%/g, () => { try { const arr = getActiveCallsigns(); return arr.length ? arr[Math.floor(Math.random()*arr.length)] : 'Unit-77'; } catch(e) { return 'Unit-77'; } });
+    const div = document.createElement('div');
+    div.className = `chat-msg ${typeClass}`;
+    div.style.position = 'relative'; // For positioning the reply button
+
+    // Create the message content
+    const contentHtml = `
+        <span class="time" style="color: #666; font-size: 0.8rem; margin-right: 5px;">${getCurrentTimeStr()}</span>
+        <span class="sender">${sender === 'DISPATCH' ? '[DISPATCH]' : '[' + sender + ']'}</span> 
+        <span class="text">${text}</span>
+    `;
+    div.innerHTML = contentHtml;
+
+    // Add Discord-style reply button on hover if it's not the dispatcher
+    if (sender !== 'DISPATCH' && sender !== 'SYSTEM') {
+        const replyBtn = document.createElement('button');
+        replyBtn.className = 'chat-reply-btn';
+        replyBtn.innerHTML = '💬 Reply';
+        replyBtn.onclick = () => {
+            dispatchChatInput.value = `@${sender} `;
+            dispatchChatInput.focus();
+        };
+        div.appendChild(replyBtn);
+    }
+
+    unifiedLogEl.appendChild(div);
+    scrollToBottom(unifiedLogEl);
+
+    if (unifiedLogEl.children.length > 100) {
+        unifiedLogEl.removeChild(unifiedLogEl.firstChild);
+    }
+}
