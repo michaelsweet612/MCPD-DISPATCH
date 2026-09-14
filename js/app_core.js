@@ -5625,7 +5625,7 @@ function simulateEvent(specificCrime = null) {
 
         crime = { ...pickedTemplate };
 
-        if (crime.title.includes(\'[RAND_LOC]\')) {
+        if (crime.title.includes('[RAND_LOC]')) {
             const randLoc = Math.floor(Math.random() * 90000) + 10000;
             crime.title = crime.title.replace('[RAND_LOC]', randLoc);
         }
@@ -7907,7 +7907,7 @@ function simulateEvent(specificCrime = null) {
 
         crime = { ...pickedTemplate };
 
-        if (crime.title.includes(\'[RAND_LOC]\')) {
+        if (crime.title.includes('[RAND_LOC]')) {
             const randLoc = Math.floor(Math.random() * 90000) + 10000;
             crime.title = crime.title.replace('[RAND_LOC]', randLoc);
         }
