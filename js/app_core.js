@@ -8450,11 +8450,9 @@ function addCivilianReview(stars, isArrestComplaint, specificName, customComment
     totalReviews++;
     currentStationRating = ((currentStationRating * (totalReviews - 1)) + stars) / totalReviews;
     
-    if (stars >= 4) {
-        trustPercentage = Math.min(100, trustPercentage + (Math.random() * 2));
-    } else {
-        trustPercentage = Math.max(0, trustPercentage - (Math.random() * 2));
-    }
+    // Trust is perfectly tied to the station rating (e.g., 5.0 = 100%, 0.0 = 0%)
+    trustPercentage = (currentStationRating / 5.0) * 100;
+    trustPercentage = Math.max(0, Math.min(100, trustPercentage));
     
     const ratingEl = document.getElementById('station-star-rating');
     const visualStarsEl = document.getElementById('station-stars-visual');
@@ -8954,6 +8952,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof currentStationRating !== 'undefined') {
                     // Weigh dispatcher reviews highly
                     currentStationRating = (currentStationRating * 0.7) + (selectedRating * 0.3);
+                    
+                    // Sync trust with new rating
+                    trustPercentage = (currentStationRating / 5.0) * 100;
+                    trustPercentage = Math.max(0, Math.min(100, trustPercentage));
+                    const trustEl = document.getElementById('trust-ratio');
+                    const distrustEl = document.getElementById('distrust-ratio');
+                    if (trustEl) trustEl.textContent = Math.round(trustPercentage) + '% TRUST';
+                    if (distrustEl) distrustEl.textContent = Math.round(100 - trustPercentage) + '% DISTRUST';
                     
                     const ratingEl = document.getElementById('station-star-rating');
                     const visualStarsEl = document.getElementById('station-stars-visual');
