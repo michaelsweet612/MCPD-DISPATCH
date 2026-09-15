@@ -8967,10 +8967,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                // Reset form
-                selectedRating = 0;
+                // Disable form after submission
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'REVIEW SUBMITTED';
+                submitBtn.style.background = '#444';
+                submitBtn.style.color = '#888';
+                submitBtn.style.cursor = 'not-allowed';
+                reviewText.disabled = true;
                 reviewText.value = '';
-                starEls.forEach(s => s.style.color = '#555');
+                reviewText.placeholder = 'Your review has been recorded.';
+                
+                // Remove pointer events from stars
+                const starsContainer = document.getElementById('dispatcher-review-stars');
+                if (starsContainer) {
+                    starsContainer.style.pointerEvents = 'none';
+                }
             }
         });
     }
