@@ -115,8 +115,8 @@
             <h1>🛡️ MCPD TERMINAL LOGIN</h1>
             <p>SELECT YOUR CURRENT HARDWARE INTERFACE TO ESTABLISH A SECURE CONNECTION TO THE TBMG GRID.</p>
             
-            <button class="btn" onclick="startLoading('MCPD_DISPATCH_TERMINAL.html')">🖥️ DESKTOP (WIDESCREEN)</button>
-            <button class="btn btn-mobile" onclick="startLoading('MCPD_MOBILE_TERMINAL.html')">📱 MOBILE (SMARTPHONE)</button>
+            <button class="btn" onclick="showLogin('MCPD_DISPATCH_TERMINAL.html')">🖥️ DESKTOP (WIDESCREEN)</button>
+            <button class="btn btn-mobile" onclick="showLogin('MCPD_MOBILE_TERMINAL.html')">📱 MOBILE (SMARTPHONE)</button>
         </div>
 
         <!-- LOADING UI -->
@@ -150,21 +150,11 @@
     <script>
         let targetUrl = '';
 
-        function startLoading(url) {
+        function showLogin(url) {
             targetUrl = url;
             document.getElementById('selection-screen').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'flex';
-            
-            let loadingText = document.getElementById('loading-text');
-            setTimeout(() => loadingText.textContent = "BYPASSING FIREWALLS...", 600);
-            setTimeout(() => loadingText.textContent = "ENCRYPTING DATASTREAM...", 1200);
-            setTimeout(() => loadingText.textContent = "CONNECTION SECURED.", 1800);
-
-            setTimeout(() => {
-                document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('login-user').focus();
-            }, 2300);
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('login-user').focus();
         }
 
         function attemptLogin() {
@@ -173,25 +163,32 @@
             const errorEl = document.getElementById('login-error');
 
             if (user === '' && pass === '') {
-                errorEl.textContent = "You forgot to insert username or password.";
+                errorEl.textContent = "[!] ERROR: You forgot to insert your username and password.";
                 return;
             }
             if (user === '') {
-                errorEl.textContent = "You forgot to insert username.";
+                errorEl.textContent = "[!] ERROR: You forgot to insert your username.";
                 return;
             }
             if (pass === '') {
-                errorEl.textContent = "You forgot to insert password.";
+                errorEl.textContent = "[!] ERROR: You forgot to insert your password.";
                 return;
             }
 
-            // Success
-            errorEl.style.color = '#10b981';
-            errorEl.textContent = "AUTHENTICATION SUCCESSFUL. DIVERTING...";
+            // Authentication valid. Start the loading animation sequence.
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'flex';
             
+            let loadingText = document.getElementById('loading-text');
+            loadingText.textContent = "AUTHENTICATING CREDENTIALS...";
+            
+            setTimeout(() => loadingText.textContent = "BYPASSING FIREWALLS...", 800);
+            setTimeout(() => loadingText.textContent = "ENCRYPTING DATASTREAM...", 1600);
+            setTimeout(() => loadingText.textContent = "CONNECTION SECURED. DIVERTING...", 2400);
+
             setTimeout(() => {
-                window.location.href = targetUrl + "?v=04.08.34";
-            }, 800);
+                window.location.href = targetUrl + "?v=04.08.35";
+            }, 3200);
         }
 
         // Allow pressing Enter to login
