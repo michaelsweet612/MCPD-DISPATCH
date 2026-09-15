@@ -52,7 +52,7 @@ The `UNIT STATUS` board dynamically tracks the status of all **5,000 precinct of
 ## 🖥️ Usage
 1. Open `index.html` in any modern web browser to access the Hardware Selector.
 2. Select your device interface (Desktop/Mobile).
-3. Enter any generic dispatch credentials into the Security Overlay to bypass the firewall.
+3. Enter any generic dispatch credentials into the Security Overlay to bypass the firewall. *(Note: The login system is purely for roleplay immersion—it is not restricted. You can type absolutely anything into the username and password fields to gain access, as long as they aren't blank!)*
 4. Sit back and watch the chaos unfold.
 5. Use the bottom command line to chat directly with officers or issue global `/bolo` broadcasts.
 
