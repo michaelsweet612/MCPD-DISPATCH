@@ -3,201 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCPD SECURE LOGIN</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>MCPD TERMINAL SELECTOR</title>
     <style>
-        body {
-            background-color: #06111e;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-            overflow: hidden;
-        }
-        .container {
-            background: #0d2136;
-            border: 2px solid #1f3a57;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        h1 {
-            color: #ef4444;
-            margin-top: 0;
-        }
-        p {
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #3b82f6;
-            color: #000;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-sizing: border-box;
-        }
-        .btn-mobile {
-            background: #10b981;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        
-        /* Loading Anim */
-        #loading-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(59, 130, 246, 0.2);
-            border-top: 5px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #loading-text { font-size: 1.2rem; color: #3b82f6; font-weight: bold; }
-
-        /* Login UI */
-        #login-screen {
-            display: none;
-            flex-direction: column;
-            text-align: left;
-        }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #94a3b8; font-weight: bold; }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            background: #06111e;
-            border: 1px solid #1f3a57;
-            color: #fff;
-            font-family: inherit;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-        .form-group input:focus {
-            border-color: #3b82f6;
-            outline: none;
-        }
-        #login-error {
-            color: #ef4444;
-            margin-bottom: 15px;
-            min-height: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+        body { background-color: #06111e; color: #fff; font-family: 'Courier New', monospace; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .container { background: #0d2136; border: 2px solid #1f3a57; padding: 40px; max-width: 500px; width: 90%; }
+        h1 { color: #ef4444; }
+        .btn { display: block; width: 100%; padding: 15px; margin-bottom: 15px; background: #3b82f6; color: #000; text-decoration: none; font-weight: bold; box-sizing: border-box; }
+        .btn-mobile { background: #10b981; }
     </style>
 </head>
 <body>
-    <div class="container" id="main-container">
-        
-        <!-- SELECTION UI -->
-        <div id="selection-screen">
-            <h1>🛡️ MCPD TERMINAL LOGIN</h1>
-            <p>SELECT YOUR CURRENT HARDWARE INTERFACE TO ESTABLISH A SECURE CONNECTION TO THE TBMG GRID.</p>
-            
-            <button class="btn" onclick="showLogin('MCPD_DISPATCH_TERMINAL.html')">[ DESKTOP (WIDESCREEN) ]</button>
-            <button class="btn btn-mobile" onclick="showLogin('MCPD_MOBILE_TERMINAL.html')">[ MOBILE (SMARTPHONE) ]</button>
-        </div>
-
-        <!-- LOADING UI -->
-        <div id="loading-screen">
-            <div class="spinner"></div>
-            <div id="loading-text">ESTABLISHING SECURE CONNECTION...</div>
-        </div>
-
-        <!-- LOGIN UI -->
-        <div id="login-screen">
-            <h1 style="text-align: center;">TBMG AUTHENTICATION</h1>
-            <p style="text-align: center; margin-bottom: 20px;">ENTER YOUR DISPATCH CREDENTIALS</p>
-            
-            <div id="login-error"></div>
-            
-            <div class="form-group">
-                <label>USERNAME / BADGE #</label>
-                <input type="text" id="login-user" placeholder="e.g. OFC-1284">
-            </div>
-            
-            <div class="form-group">
-                <label>PASSWORD</label>
-                <input type="password" id="login-pass" placeholder="••••••••">
-            </div>
-            
-            <button class="btn" style="margin-top: 10px;" onclick="attemptLogin()">LOGIN</button>
-        </div>
-
+    <div class="container">
+        <h1>[ TBMG HARDWARE SELECTOR ]</h1>
+        <p>SELECT YOUR DEVICE INTERFACE TO BEGIN AUTHENTICATION</p>
+        <a href="MCPD_DISPATCH_TERMINAL.html" class="btn">[ DESKTOP (WIDESCREEN) ]</a>
+        <a href="MCPD_MOBILE_TERMINAL.html" class="btn btn-mobile">[ MOBILE (SMARTPHONE) ]</a>
     </div>
-
-    <script>
-        let targetUrl = '';
-
-        function showLogin(url) {
-            targetUrl = url;
-            document.getElementById('selection-screen').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('login-user').focus();
-        }
-
-        function attemptLogin() {
-            const user = document.getElementById('login-user').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            const errorEl = document.getElementById('login-error');
-
-            if (user === '' && pass === '') {
-                errorEl.textContent = "[!] ERROR: You forgot to insert your username and password.";
-                return;
-            }
-            if (user === '') {
-                errorEl.textContent = "[!] ERROR: You forgot to insert your username.";
-                return;
-            }
-            if (pass === '') {
-                errorEl.textContent = "[!] ERROR: You forgot to insert your password.";
-                return;
-            }
-
-            // Authentication valid. Start the loading animation sequence.
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'flex';
-            
-            let loadingText = document.getElementById('loading-text');
-            loadingText.textContent = "AUTHENTICATING CREDENTIALS...";
-            
-            setTimeout(() => loadingText.textContent = "BYPASSING FIREWALLS...", 800);
-            setTimeout(() => loadingText.textContent = "ENCRYPTING DATASTREAM...", 1600);
-            setTimeout(() => loadingText.textContent = "CONNECTION SECURED. DIVERTING...", 2400);
-
-            setTimeout(() => {
-                sessionStorage.setItem('mcpd_auth', 'true');
-                window.location.href = targetUrl;
-            }, 3200);
-        }
-
-        // Allow pressing Enter to login
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && document.getElementById('login-screen').style.display === 'flex') {
-                attemptLogin();
-            }
-        });
-    </script>
 </body>
 </html>

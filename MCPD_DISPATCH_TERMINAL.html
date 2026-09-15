@@ -24,10 +24,93 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=04.09.00">
+    <link rel="stylesheet" href="css/styles.css?v=04.10.00">
 </head>
 
 <body>
+
+<!-- ============================== -->
+<!-- SECURE LOGIN OVERLAY SYSTEM    -->
+<!-- ============================== -->
+<div id="mcpd-login-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #06111e; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Courier New', monospace; color: #fff;">
+    <div id="login-box" style="background: #0d2136; border: 2px solid #1f3a57; padding: 40px; max-width: 500px; width: 90%; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center;">
+        
+        <div id="login-screen">
+            <h1 style="color: #ef4444; margin-top: 0;">[ MCPD TERMINAL LOGIN ]</h1>
+            <p style="color: #94a3b8; margin-bottom: 30px;">ENTER YOUR DISPATCH CREDENTIALS TO ACCESS THE TBMG GRID.</p>
+            
+            <div id="login-error" style="color: #ef4444; margin-bottom: 15px; min-height: 20px; font-weight: bold; font-size: 0.9rem;"></div>
+            
+            <div style="margin-bottom: 20px; text-align: left;">
+                <label style="display: block; margin-bottom: 5px; color: #94a3b8; font-weight: bold;">USERNAME / BADGE #</label>
+                <input type="text" id="login-user" placeholder="e.g. OFC-1284" style="width: 100%; padding: 12px; background: #06111e; border: 1px solid #1f3a57; color: #fff; box-sizing: border-box; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: 20px; text-align: left;">
+                <label style="display: block; margin-bottom: 5px; color: #94a3b8; font-weight: bold;">PASSWORD</label>
+                <input type="password" id="login-pass" placeholder="********" style="width: 100%; padding: 12px; background: #06111e; border: 1px solid #1f3a57; color: #fff; box-sizing: border-box; font-size: 1rem;">
+            </div>
+            
+            <button onclick="attemptTerminalLogin()" style="width: 100%; padding: 15px; background: #3b82f6; color: #000; font-weight: bold; font-size: 1.1rem; border: none; cursor: pointer; text-transform: uppercase;">AUTHENTICATE</button>
+        </div>
+
+        <div id="loading-screen" style="display: none; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="width: 50px; height: 50px; border: 5px solid rgba(59, 130, 246, 0.2); border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+            <div id="loading-text" style="font-size: 1.2rem; color: #3b82f6; font-weight: bold;">ESTABLISHING SECURE CONNECTION...</div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<script>
+function attemptTerminalLogin() {
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+    const errorEl = document.getElementById('login-error');
+
+    if (user === '' && pass === '') {
+        errorEl.textContent = "[!] ERROR: You forgot to insert your username and password.";
+        return;
+    }
+    if (user === '') {
+        errorEl.textContent = "[!] ERROR: You forgot to insert your username.";
+        return;
+    }
+    if (pass === '') {
+        errorEl.textContent = "[!] ERROR: You forgot to insert your password.";
+        return;
+    }
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('loading-screen').style.display = 'flex';
+    
+    let loadingText = document.getElementById('loading-text');
+    loadingText.textContent = "AUTHENTICATING CREDENTIALS...";
+    
+    setTimeout(() => loadingText.textContent = "BYPASSING FIREWALLS...", 800);
+    setTimeout(() => loadingText.textContent = "ENCRYPTING DATASTREAM...", 1600);
+    setTimeout(() => loadingText.textContent = "CONNECTION SECURED. INITIALIZING...", 2400);
+
+    setTimeout(() => {
+        document.getElementById('mcpd-login-overlay').style.display = 'none';
+        // Force the main input to focus once logged in
+        let chatInput = document.getElementById('chat-input');
+        if (chatInput) chatInput.focus();
+    }, 3200);
+}
+
+document.addEventListener('keypress', function(e) {
+    const overlay = document.getElementById('mcpd-login-overlay');
+    if (e.key === 'Enter' && overlay && overlay.style.display !== 'none' && document.getElementById('login-screen').style.display !== 'none') {
+        attemptTerminalLogin();
+    }
+});
+</script>
+<!-- ============================== -->
+
 
     <!-- DEVICE SELECTION GATEKEEPER POPUP -->
     <div id="device-gatekeeper" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #06111e; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'JetBrains Mono', monospace; text-align: center;">
@@ -537,10 +620,10 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/check_system.js?v=04.09.00"></script>
-    <script src="js/transmissions.js?v=04.09.00"></script>
-    <script src="js/imageAnalyzer.js?v=04.09.00"></script>
-    <script src="js/app_core.js?v=04.09.00"></script>
+    <script src="js/check_system.js?v=04.10.00"></script>
+    <script src="js/transmissions.js?v=04.10.00"></script>
+    <script src="js/imageAnalyzer.js?v=04.10.00"></script>
+    <script src="js/app_core.js?v=04.10.00"></script>
 
     <!-- BUG LOG MODAL -->
     <div id="bug-log-modal" class="modal-overlay" style="display: none;">
