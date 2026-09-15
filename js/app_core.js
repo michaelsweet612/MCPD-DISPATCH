@@ -4575,6 +4575,12 @@ async function simulateChat() {
         triggerLethalAuthEvent();
         return;
     }
+    
+    // Sheriff Trash Talk Event (2% chance)
+    if (Math.random() < 0.02) {
+        triggerSheriffTrashTalkEvent();
+        return;
+    }
 
     if (Math.random() < 0.04) {
         addChatMessage(sender, "Suspect is non-compliant! OPEN FIRE!", 'worried', false);
@@ -7199,6 +7205,179 @@ const underFireActions = [
     "I need backup NOW!",
     "Cover me, cover me!"
 ];
+
+const sheriffInsults = [
+    "We are way better than the sheriffs. Those pathetic losers are afraid of a little paperwork.",
+    "The sheriffs are such pathetic wimps. They're always hiding in their cruisers all day.",
+    "Did you see the sheriffs today? Total useless mall cops, just hiding in their cruisers all day.",
+    "MCPD is leagues above the sheriffs. They're just useless mall cops letting criminals walk right past them.",
+    "The sheriffs are such useless mall cops. They're always letting criminals walk right past them.",
+    "We are way better than the sheriffs. Those useless clowns are too scared to make a real arrest.",
+    "We are way better than the sheriffs. Those cowardly slackers are sleeping on the job.",
+    "We are way better than the sheriffs. Those overpaid clowns are sleeping on the job.",
+    "MCPD is leagues above the sheriffs. They're just slow rookies afraid of a little paperwork.",
+    "We are way better than the sheriffs. Those useless fools are calling us to do their heavy lifting.",
+    "We are way better than the sheriffs. Those lazy fools are eating donuts instead of catching bad guys.",
+    "I can't believe how bad the sheriffs are. A bunch of overpaid clowns who are letting criminals walk right past them.",
+    "I can't believe how bad the sheriffs are. A bunch of overpaid has-beens who are afraid of a little paperwork.",
+    "The sheriffs are such lazy clowns. They're always avoiding real police work.",
+    "MCPD is leagues above the sheriffs. They're just slow wimps letting criminals walk right past them.",
+    "I can't believe how bad the sheriffs are. A bunch of cowardly wimps who are sleeping on the job.",
+    "Did you see the sheriffs today? Total washed-up jokes, just sleeping on the job.",
+    "Did you see the sheriffs today? Total slow has-beens, just afraid of a little paperwork.",
+    "The sheriffs are such lazy clowns. They're always hiding in their cruisers all day.",
+    "Did you see the sheriffs today? Total clueless fools, just afraid of a little paperwork.",
+    "MCPD is leagues above the sheriffs. They're just washed-up jokes hiding in their cruisers all day.",
+    "The sheriffs are such incompetent has-beens. They're always afraid of a little paperwork.",
+    "We are way better than the sheriffs. Those lazy jokes are afraid of a little paperwork.",
+    "MCPD is leagues above the sheriffs. They're just donut-eating fools too scared to make a real arrest.",
+    "I can't believe how bad the sheriffs are. A bunch of overpaid amateurs who are calling us to do their heavy lifting.",
+    "We are way better than the sheriffs. Those cowardly amateurs are afraid of a little paperwork.",
+    "We are way better than the sheriffs. Those overpaid fools are too lazy to arrest anyone.",
+    "Did you see the sheriffs today? Total incompetent clowns, just calling us to do their heavy lifting.",
+    "I can't believe how bad the sheriffs are. A bunch of washed-up wimps who are letting criminals walk right past them.",
+    "We are way better than the sheriffs. Those cowardly slackers are calling us to do their heavy lifting.",
+    "The sheriffs are such incompetent amateurs. They're always eating donuts instead of catching bad guys.",
+    "Did you see the sheriffs today? Total lazy rookies, just sitting around doing nothing.",
+    "The county sheriffs are nothing but incompetent clowns. They're literally afraid of a little paperwork.",
+    "Did you see the sheriffs today? Total lazy fools, just sitting around doing nothing.",
+    "MCPD is leagues above the sheriffs. They're just useless losers eating donuts instead of catching bad guys.",
+    "The county sheriffs are nothing but clueless mall cops. They're literally sleeping on the job.",
+    "MCPD is leagues above the sheriffs. They're just incompetent amateurs avoiding real police work.",
+    "Did you see the sheriffs today? Total washed-up clowns, just sleeping on the job.",
+    "I can't believe how bad the sheriffs are. A bunch of clueless fools who are too lazy to arrest anyone.",
+    "The county sheriffs are nothing but lazy jokes. They're literally avoiding real police work.",
+    "The sheriffs are such useless fools. They're always letting criminals walk right past them.",
+    "The county sheriffs are nothing but pathetic losers. They're literally letting criminals walk right past them.",
+    "The county sheriffs are nothing but useless mall cops. They're literally calling us to do their heavy lifting.",
+    "The sheriffs are such slow mall cops. They're always eating donuts instead of catching bad guys.",
+    "Did you see the sheriffs today? Total donut-eating wimps, just calling us to do their heavy lifting.",
+    "Did you see the sheriffs today? Total clueless slackers, just calling us to do their heavy lifting.",
+    "We are way better than the sheriffs. Those washed-up wimps are sleeping on the job.",
+    "We are way better than the sheriffs. Those slow rookies are sleeping on the job.",
+    "The county sheriffs are nothing but slow rookies. They're literally calling us to do their heavy lifting.",
+    "The county sheriffs are nothing but slow losers. They're literally too lazy to arrest anyone.",
+    "The sheriffs are such clueless wimps. They're always sleeping on the job.",
+    "We are way better than the sheriffs. Those incompetent mall cops are sitting around doing nothing.",
+    "The sheriffs are such overpaid clowns. They're always avoiding real police work.",
+    "We are way better than the sheriffs. Those washed-up has-beens are too lazy to arrest anyone.",
+    "I can't believe how bad the sheriffs are. A bunch of pathetic fools who are sleeping on the job.",
+    "I can't believe how bad the sheriffs are. A bunch of incompetent jokes who are sitting around doing nothing.",
+    "Did you see the sheriffs today? Total slow slackers, just hiding in their cruisers all day.",
+    "MCPD is leagues above the sheriffs. They're just overpaid has-beens afraid of a little paperwork.",
+    "MCPD is leagues above the sheriffs. They're just lazy amateurs eating donuts instead of catching bad guys.",
+    "The county sheriffs are nothing but useless jokes. They're literally avoiding real police work.",
+    "The sheriffs are such washed-up rookies. They're always avoiding real police work.",
+    "I can't believe how bad the sheriffs are. A bunch of useless has-beens who are calling us to do their heavy lifting.",
+    "The sheriffs are such pathetic has-beens. They're always too lazy to arrest anyone.",
+    "I can't believe how bad the sheriffs are. A bunch of clueless wimps who are sitting around doing nothing.",
+    "I can't believe how bad the sheriffs are. A bunch of donut-eating fools who are hiding in their cruisers all day.",
+    "Did you see the sheriffs today? Total donut-eating has-beens, just sitting around doing nothing.",
+    "MCPD is leagues above the sheriffs. They're just pathetic clowns sitting around doing nothing.",
+    "Did you see the sheriffs today? Total incompetent jokes, just afraid of a little paperwork.",
+    "Did you see the sheriffs today? Total overpaid mall cops, just eating donuts instead of catching bad guys.",
+    "The county sheriffs are nothing but incompetent slackers. They're literally sleeping on the job.",
+    "The county sheriffs are nothing but slow mall cops. They're literally letting criminals walk right past them.",
+    "The sheriffs are such pathetic fools. They're always sleeping on the job.",
+    "I can't believe how bad the sheriffs are. A bunch of clueless amateurs who are too lazy to arrest anyone.",
+    "The sheriffs are such washed-up slackers. They're always letting criminals walk right past them.",
+    "MCPD is leagues above the sheriffs. They're just pathetic mall cops sitting around doing nothing.",
+    "Did you see the sheriffs today? Total washed-up jokes, just letting criminals walk right past them.",
+    "MCPD is leagues above the sheriffs. They're just donut-eating has-beens eating donuts instead of catching bad guys.",
+    "The sheriffs are such incompetent clowns. They're always afraid of a little paperwork.",
+    "We are way better than the sheriffs. Those incompetent rookies are sitting around doing nothing.",
+    "I can't believe how bad the sheriffs are. A bunch of useless wimps who are letting criminals walk right past them.",
+    "The sheriffs are such lazy wimps. They're always eating donuts instead of catching bad guys.",
+    "We are way better than the sheriffs. Those washed-up rookies are afraid of a little paperwork.",
+    "I can't believe how bad the sheriffs are. A bunch of useless losers who are avoiding real police work.",
+    "We are way better than the sheriffs. Those useless fools are eating donuts instead of catching bad guys.",
+    "We are way better than the sheriffs. Those cowardly fools are sleeping on the job.",
+    "Did you see the sheriffs today? Total useless amateurs, just sitting around doing nothing.",
+    "The county sheriffs are nothing but washed-up fools. They're literally letting criminals walk right past them.",
+    "MCPD is leagues above the sheriffs. They're just overpaid clowns afraid of a little paperwork.",
+    "MCPD is leagues above the sheriffs. They're just washed-up rookies afraid of a little paperwork.",
+    "The sheriffs are such useless clowns. They're always eating donuts instead of catching bad guys.",
+    "Did you see the sheriffs today? Total incompetent losers, just afraid of a little paperwork.",
+    "The sheriffs are such donut-eating fools. They're always too scared to make a real arrest.",
+    "The county sheriffs are nothing but overpaid clowns. They're literally too scared to make a real arrest.",
+    "I can't believe how bad the sheriffs are. A bunch of cowardly losers who are eating donuts instead of catching bad guys.",
+    "The sheriffs are such slow has-beens. They're always too scared to make a real arrest.",
+    "We are way better than the sheriffs. Those slow amateurs are too lazy to arrest anyone.",
+    "We are way better than the sheriffs. Those useless clowns are letting criminals walk right past them.",
+    "MCPD is leagues above the sheriffs. They're just cowardly mall cops calling us to do their heavy lifting.",
+    "Did you see the sheriffs today? Total overpaid slackers, just sleeping on the job.",
+    "The county sheriffs are nothing but washed-up amateurs. They're literally eating donuts instead of catching bad guys.",
+    "Did you see the sheriffs today? Total useless slackers, just afraid of a little paperwork.",
+    "The county sheriffs are nothing but slow wimps. They're literally too scared to make a real arrest.",
+    "We are way better than the sheriffs. Those incompetent mall cops are hiding in their cruisers all day.",
+    "The sheriffs are such washed-up amateurs. They're always sleeping on the job.",
+    "Did you see the sheriffs today? Total cowardly has-beens, just sleeping on the job.",
+    "The sheriffs are such lazy clowns. They're always eating donuts instead of catching bad guys.",
+    "The county sheriffs are nothing but clueless wimps. They're literally calling us to do their heavy lifting.",
+    "We are way better than the sheriffs. Those useless has-beens are sleeping on the job.",
+    "The sheriffs are such cowardly has-beens. They're always sleeping on the job.",
+    "The county sheriffs are nothing but lazy rookies. They're literally eating donuts instead of catching bad guys.",
+    "Did you see the sheriffs today? Total slow has-beens, just avoiding real police work.",
+    "Did you see the sheriffs today? Total cowardly slackers, just calling us to do their heavy lifting.",
+    "I can't believe how bad the sheriffs are. A bunch of incompetent losers who are too scared to make a real arrest.",
+    "MCPD is leagues above the sheriffs. They're just donut-eating jokes hiding in their cruisers all day.",
+    "We are way better than the sheriffs. Those lazy losers are letting criminals walk right past them.",
+    "The sheriffs are such donut-eating slackers. They're always sitting around doing nothing.",
+    "The county sheriffs are nothing but useless wimps. They're literally too scared to make a real arrest.",
+    "We are way better than the sheriffs. Those overpaid jokes are too lazy to arrest anyone.",
+    "The sheriffs are such overpaid rookies. They're always letting criminals walk right past them.",
+    "The sheriffs are such donut-eating slackers. They're always hiding in their cruisers all day.",
+    "We are way better than the sheriffs. Those pathetic clowns are calling us to do their heavy lifting.",
+    "We are way better than the sheriffs. Those useless losers are hiding in their cruisers all day.",
+    "We are way better than the sheriffs. Those slow rookies are letting criminals walk right past them.",
+    "We are way better than the sheriffs. Those overpaid wimps are sitting around doing nothing.",
+    "The sheriffs are such useless fools. They're always too lazy to arrest anyone.",
+    "We are way better than the sheriffs. Those pathetic mall cops are afraid of a little paperwork.",
+    "I can't believe how bad the sheriffs are. A bunch of cowardly has-beens who are afraid of a little paperwork.",
+    "The sheriffs are such donut-eating amateurs. They're always letting criminals walk right past them.",
+    "The sheriffs are such overpaid wimps. They're always letting criminals walk right past them.",
+    "The sheriffs are such slow amateurs. They're always too lazy to arrest anyone.",
+    "The county sheriffs are nothing but washed-up slackers. They're literally too scared to make a real arrest.",
+    "The county sheriffs are nothing but slow has-beens. They're literally hiding in their cruisers all day.",
+    "We are way better than the sheriffs. Those lazy amateurs are afraid of a little paperwork.",
+    "The sheriffs are such slow jokes. They're always avoiding real police work.",
+    "We are way better than the sheriffs. Those washed-up clowns are eating donuts instead of catching bad guys.",
+    "The county sheriffs are nothing but clueless clowns. They're literally eating donuts instead of catching bad guys.",
+];
+
+const exSheriffReplies = [
+    "Hey! Watch your mouth, I used to be a Sheriff! We used to arrest everyone we saw!",
+    "I spent 6 years in the Sheriff's office before transferring here. We worked just as hard!",
+    "Hey, I was a Sheriff! We weren't lazy, we just had a bigger jurisdiction!",
+    "Shut it. I used to be a Sheriff and we arrested more people in a week than you do in a month.",
+    "I was a Deputy Sheriff for a decade. We arrested everyone, you have no idea what you're talking about."
+];
+
+function triggerSheriffTrashTalkEvent() {
+    if (typeof getActiveCallsigns === 'undefined') return;
+    const active = getActiveCallsigns();
+    if (active.length < 2) return; // Need at least two officers
+    
+    // Pick two random different officers
+    let idx1 = Math.floor(Math.random() * active.length);
+    let idx2 = Math.floor(Math.random() * active.length);
+    while (idx1 === idx2) {
+        idx2 = Math.floor(Math.random() * active.length);
+    }
+    const instigator = active[idx1];
+    const defender = active[idx2];
+    
+    const insult = sheriffInsults[Math.floor(Math.random() * sheriffInsults.length)];
+    const reply = exSheriffReplies[Math.floor(Math.random() * exSheriffReplies.length)];
+    
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage(instigator, insult, 'dispatch-msg', false);
+        setTimeout(() => {
+            addChatMessage(defender, reply, 'worried', false);
+        }, 3000 + Math.random() * 2000);
+    }
+}
+
 const resolutionLines = [
     "Oh don't worry dispatch, I got them. I just took a couple wounds.",
     "Nevermind dispatch, suspect is down. I took a hit though.",
