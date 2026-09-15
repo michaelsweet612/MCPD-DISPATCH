@@ -187,6 +187,7 @@
             setTimeout(() => loadingText.textContent = "CONNECTION SECURED. DIVERTING...", 2400);
 
             setTimeout(() => {
+                sessionStorage.setItem('mcpd_auth', 'true');
                 window.location.href = targetUrl;
             }, 3200);
         }
