@@ -16,8 +16,17 @@
     <div class="container">
         <h1>TBMG HARDWARE SELECTOR</h1>
         <p>SELECT YOUR DEVICE INTERFACE TO BEGIN AUTHENTICATION</p>
-        <a href="MCPD_DISPATCH_TERMINAL.html" class="btn">DESKTOP (WIDESCREEN)</a>
-        <a href="MCPD_MOBILE_TERMINAL.html" class="btn btn-mobile">MOBILE (SMARTPHONE)</a>
+        <script>
+        function loadTerminal(url) {
+            if (window.location.protocol === 'file:') {
+                window.location.href = url;
+            } else {
+                window.location.href = url + '?bust=' + Date.now();
+            }
+        }
+    </script>
+    <a href="javascript:loadTerminal('MCPD_DISPATCH_TERMINAL.html')" class="btn">DESKTOP (WIDESCREEN)</a>
+    <a href="javascript:loadTerminal('MCPD_MOBILE_TERMINAL.html')" class="btn btn-mobile">MOBILE (SMARTPHONE)</a>
     </div>
 </body>
 </html>
