@@ -8483,6 +8483,136 @@ function triggerLethalAuthEvent() {
     }
 }
 
+
+// === BRIBE AUTHORIZATION SYSTEM ===
+let totalBribesAccepted = 0;
+let bribeAuthActive = false;
+let bribeAuthTimer = null;
+let bribeAuthTimeLeft = 30;
+let bribeAuthOfficer = "";
+let bribeAuthCitizen = "";
+let lastBribeAuthTime = Date.now();
+
+function updateBribesUI() {
+    const el = document.getElementById('bribes-accepted-count');
+    if (el) el.textContent = totalBribesAccepted;
+}
+
+function resolveBribeAuth(approved) {
+    if (!bribeAuthActive) return;
+    bribeAuthActive = false;
+    if (bribeAuthTimer) clearInterval(bribeAuthTimer);
+    
+    const modal = document.getElementById('bribe-auth-modal');
+    if (modal) modal.style.display = 'none';
+    
+    if (approved) {
+        totalBribesAccepted++;
+        updateBribesUI();
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage(bribeAuthOfficer, `Copy that. Suspect let go with a warning. Good doing business.`, 'serious', false);
+        }
+        
+        // Minor trust hit
+        currentStationRating = Math.max(0.0, currentStationRating - 0.2);
+        trustPercentage = (currentStationRating / 5.0) * 100;
+        trustPercentage = Math.max(0, Math.min(100, trustPercentage));
+        const ratingEl = document.getElementById('station-star-rating');
+        const visualStarsEl = document.getElementById('station-stars-visual');
+        const trustEl = document.getElementById('trust-ratio');
+        const distrustEl = document.getElementById('distrust-ratio');
+        if(ratingEl) ratingEl.textContent = '\u2B50 ' + currentStationRating.toFixed(1) + ' / 5.0';
+        if(visualStarsEl) {
+            let fullStars = Math.round(currentStationRating);
+            if(fullStars>5) fullStars=5;
+            if(fullStars<0) fullStars=0;
+            visualStarsEl.textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+        }
+        if(trustEl) trustEl.textContent = Math.round(trustPercentage) + '% TRUST';
+        if(distrustEl) distrustEl.textContent = Math.round(100 - trustPercentage) + '% DISTRUST';
+
+    } else {
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage(bribeAuthOfficer, `Copy that, processing standard arrest. Nice try though.`, 'serious', false);
+        }
+    }
+}
+
+function triggerBribeEvent() {
+    if (bribeAuthActive || lethalAuthActive || arrestAuthActive) return;
+
+    if (typeof getActiveCallsigns === 'undefined') return;
+    const active = getActiveCallsigns();
+    if (active.length === 0) return;
+    bribeAuthOfficer = active[Math.floor(Math.random() * active.length)];
+    
+    bribeAuthCitizen = "a wealthy suspect";
+    if (typeof globalCitizens !== 'undefined' && globalCitizens.length > 0) {
+        bribeAuthCitizen = globalCitizens[Math.floor(Math.random() * globalCitizens.length)].name;
+    }
+
+    const bribeToggle = document.getElementById('bribe-auth-toggle');
+    const bribeAmount = Math.floor(Math.random() * 4000) + 1000;
+    
+    if (bribeToggle && bribeToggle.checked) {
+        // Toggle is ON - Request permission
+        bribeAuthActive = true;
+        bribeAuthTimeLeft = 30;
+        
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage(bribeAuthOfficer, `Dispatch, I have ${bribeAuthCitizen} pulled over. They are offering a $${bribeAmount} cash donation to the precinct if we look the other way. Requesting authorization.`, 'worried', false);
+        }
+        
+        const modal = document.getElementById('bribe-auth-modal');
+        const textEl = document.getElementById('bribe-auth-text');
+        const timeEl = document.getElementById('bribe-auth-timer');
+        
+        if (modal && textEl && timeEl) {
+            textEl.textContent = `${bribeAuthOfficer} is requesting authorization to accept a $${bribeAmount} bribe from ${bribeAuthCitizen}.`;
+            timeEl.textContent = bribeAuthTimeLeft;
+            modal.style.display = 'flex';
+            
+            bribeAuthTimer = setInterval(() => {
+                bribeAuthTimeLeft--;
+                timeEl.textContent = bribeAuthTimeLeft;
+                if (bribeAuthTimeLeft <= 0) {
+                    resolveBribeAuth(false);
+                }
+            }, 1000);
+        }
+    } else {
+        // Toggle is OFF - Officers automatically decide
+        if (Math.random() < 0.6) { // 60% chance they take it automatically
+            totalBribesAccepted++;
+            updateBribesUI();
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage(bribeAuthOfficer, `Dispatch, disregard that last call on ${bribeAuthCitizen}. It was a misunderstanding. They've been let go with a warning. (+$${bribeAmount} undocumented cash)`, 'serious', false);
+            }
+            // Minor trust hit
+            currentStationRating = Math.max(0.0, currentStationRating - 0.2);
+            trustPercentage = (currentStationRating / 5.0) * 100;
+            trustPercentage = Math.max(0, Math.min(100, trustPercentage));
+            const ratingEl = document.getElementById('station-star-rating');
+            const visualStarsEl = document.getElementById('station-stars-visual');
+            const trustEl = document.getElementById('trust-ratio');
+            const distrustEl = document.getElementById('distrust-ratio');
+            if(ratingEl) ratingEl.textContent = '\u2B50 ' + currentStationRating.toFixed(1) + ' / 5.0';
+            if(visualStarsEl) {
+                let fullStars = Math.round(currentStationRating);
+                if(fullStars>5) fullStars=5;
+                if(fullStars<0) fullStars=0;
+                visualStarsEl.textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+            }
+            if(trustEl) trustEl.textContent = Math.round(trustPercentage) + '% TRUST';
+            if(distrustEl) distrustEl.textContent = Math.round(100 - trustPercentage) + '% DISTRUST';
+        } else {
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage(bribeAuthOfficer, `Suspect ${bribeAuthCitizen} just tried to bribe me with $${bribeAmount}. Adding bribery to their charges. Bringing them in.`, 'serious', false);
+            }
+        }
+    }
+}
+
 // === ARREST AUTHORIZATION SYSTEM ===
 let arrestAuthActive = false;
 let arrestAuthTimeLeft = 40;
@@ -8588,9 +8718,12 @@ document.addEventListener('click', (e) => {
 // Periodic check to trigger the event
 setInterval(() => {
     const currentTimeMs = Date.now();
-    if (Math.random() < 0.10 && !arrestAuthActive && !lethalAuthActive && (currentTimeMs - lastArrestAuthTime > 35000)) {
+    if (Math.random() < 0.10 && !arrestAuthActive && !lethalAuthActive && !bribeAuthActive && (currentTimeMs - lastArrestAuthTime > 35000)) {
         lastArrestAuthTime = currentTimeMs;
         triggerArrestAuthEvent();
+    } else if (Math.random() < 0.08 && !arrestAuthActive && !lethalAuthActive && !bribeAuthActive && (currentTimeMs - lastBribeAuthTime > 45000)) {
+        lastBribeAuthTime = currentTimeMs;
+        triggerBribeEvent();
     }
 }, 5000);
 
