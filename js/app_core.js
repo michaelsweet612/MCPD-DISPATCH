@@ -358,9 +358,39 @@ function getRandomGender() {
 }
 
 function getRandomPersonality() {
-    if (Math.random() < 0.02) return 'Fabulous';
-    const others = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry'];
-    return others[Math.floor(Math.random() * others.length)];
+    const customWeightsStr = localStorage.getItem('mcpd_personality_weights');
+    let weights = {
+        'Aggressive': 10,
+        'Rookie': 10,
+        'Veteran': 10,
+        'Paranoid': 10,
+        'Sarcastic': 10,
+        'By-The-Book': 10,
+        'Lazy': 10,
+        'Reckless': 10,
+        'Idealistic': 10,
+        'Furry': 1,
+        'Fabulous': 1
+    };
+
+    if (customWeightsStr) {
+        try {
+            weights = JSON.parse(customWeightsStr);
+        } catch(e) {}
+    }
+
+    let totalWeight = 0;
+    for (let p in weights) totalWeight += parseInt(weights[p]);
+
+    if (totalWeight === 0) return 'Rookie'; // Fallback
+
+    let rand = Math.random() * totalWeight;
+    for (let p in weights) {
+        if (rand < weights[p]) return p;
+        rand -= weights[p];
+    }
+    
+    return 'Rookie';
 }
 
   let currentApplicants = [];

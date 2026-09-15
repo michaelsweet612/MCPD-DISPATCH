@@ -10,8 +10,10 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 🔥 LATEST V04.10 UPDATE FEATURES
+## 🔥 LATEST V04.11 UPDATE FEATURES
 
+* **Custom Theme Editor:** A fully persistent CSS Variable editor that allows you to change the aesthetic color of literally everything on the UI.
+* **Custom Personality Editor:** A new menu inside Advanced Controls that allows you to manually tweak the exact procedural spawn weights of all 11 officer personality types! Want a station full of purely Paranoid and Sarcastic officers? Set the sliders to 100 and set everything else to 0.
 * **Immersive SPA Authentication:** The login portal is now a massive fullscreen overlay built directly over the top of the actual Dispatch Terminal. Booting up the terminal plays a seamless connection and firewall bypass sequence before dropping you into the live UI.
 * **Jurisdiction Rivalry (Sheriff Lore):** Over 136 unique procedural radio interactions where arrogant MCPD officers ruthlessly trash-talk the county sheriffs for being lazy, only to be instantly corrected by ex-sheriff officers defending their honor on the public radio!
 * **Bribe Authorization & Corruption Logs:** A brand new `ALLOW BRIBES REQUESTS` toggle! If enabled, officers will ask for permission before taking bribes from civilians. If disabled, officers will autonomously decide to take bribes behind your back (60% chance). All corrupt activity is permanently logged in the **INTERNAL AFFAIRS CORRUPTION LOG** dashboard. 
