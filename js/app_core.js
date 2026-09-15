@@ -4268,6 +4268,13 @@ const crimeReports = [
 function updateClock() {
     const now = new Date();
     timeEl.textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric" });
+    
+    const dateEl = document.getElementById('current-date');
+    if (dateEl) {
+        // Example format: YYYY-MM-DD or Month Day, Year
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        dateEl.textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+    }
 }
 setInterval(updateClock, 1000);
 updateClock();
