@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=04.10.03">
+    <link rel="stylesheet" href="css/styles.css?v=04.11.00">
 </head>
 
 <body>
@@ -276,6 +276,7 @@ document.addEventListener('keypress', function(e) {
                                 <button id="btn-theme-oled" style="flex: 1; padding: 8px; font-size: 0.8rem; background: #000; color: #fff; border: 1px solid #333;">OLED BLACK</button>
                                 <button id="btn-theme-light" style="flex: 1; padding: 8px; font-size: 0.8rem; background: #fff; color: #000; font-weight: bold; border: none;">CORPORATE WHITE</button>
                                 <button id="btn-theme-rainbow" style="flex: 1; min-width: 100px; padding: 8px; font-size: 0.8rem; background: linear-gradient(90deg, red, yellow, green, cyan, blue, magenta); color: #fff; font-weight: bold; border: none; text-shadow: 1px 1px 2px black;">PRISMATIC</button>
+                                <button id="btn-theme-custom" onclick="document.getElementById('custom-theme-modal').style.display='flex';" style="width: 100%; margin-top: 10px; padding: 10px; font-size: 0.85rem; background: transparent; color: var(--accent-blue); font-weight: bold; border: 1px solid var(--accent-blue); cursor: pointer; text-transform: uppercase;">CUSTOMIZE</button>
                             </div>
                             
                             <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
@@ -617,10 +618,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/check_system.js?v=04.10.03"></script>
-    <script src="js/transmissions.js?v=04.10.03"></script>
-    <script src="js/imageAnalyzer.js?v=04.10.03"></script>
-    <script src="js/app_core.js?v=04.10.03"></script>
+    <script src="js/check_system.js?v=04.11.00"></script>
+    <script src="js/transmissions.js?v=04.11.00"></script>
+    <script src="js/imageAnalyzer.js?v=04.11.00"></script>
+    <script src="js/app_core.js?v=04.11.00"></script>
 
     <!-- BUG LOG MODAL -->
     <div id="bug-log-modal" class="modal-overlay" style="display: none;">
@@ -674,6 +675,90 @@ document.addEventListener('keypress', function(e) {
             </div>
         </div>
     </div>
+
+
+    <!-- CUSTOM THEME MODAL -->
+    <div id="custom-theme-modal" class="modal-overlay" style="display: none; z-index: 99999; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); justify-content: center; align-items: center;">
+        <div class="modal-content" style="max-width: 500px; background: var(--bg-main); border: 2px solid var(--accent-blue); padding: 25px; box-shadow: 0 0 30px rgba(0,0,0,0.8);">
+            <h2 style="color: var(--accent-blue); margin-top: 0; text-align: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">CUSTOM UI THEME</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label style="color: var(--text-main); font-size: 0.8rem; margin-bottom: 5px;">BACKGROUND</label>
+                    <input type="color" id="color-bg-main" value="#06111e" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label style="color: var(--text-main); font-size: 0.8rem; margin-bottom: 5px;">PANEL BACKGROUND</label>
+                    <input type="color" id="color-panel-bg" value="#0d2136" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label style="color: var(--text-main); font-size: 0.8rem; margin-bottom: 5px;">PANEL BORDER</label>
+                    <input type="color" id="color-panel-border" value="#1f3a57" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label style="color: var(--text-main); font-size: 0.8rem; margin-bottom: 5px;">PRIMARY TEXT</label>
+                    <input type="color" id="color-text-main" value="#e0e0e0" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label style="color: var(--text-main); font-size: 0.8rem; margin-bottom: 5px;">ACCENT (BLUE)</label>
+                    <input type="color" id="color-accent-blue" value="#3b82f6" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <label style="color: var(--text-main); font-size: 0.8rem; margin-bottom: 5px;">ACCENT (GREEN)</label>
+                    <input type="color" id="color-accent-green" value="#10b981" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
+                </div>
+
+            </div>
+            
+            <button onclick="applyCustomTheme()" style="width: 100%; padding: 12px; background: var(--accent-blue); color: #000; font-weight: bold; border: none; cursor: pointer; margin-bottom: 10px;">APPLY & SAVE</button>
+            <button onclick="document.getElementById('custom-theme-modal').style.display='none';" style="width: 100%; padding: 10px; background: transparent; color: var(--text-dim); border: 1px solid var(--text-dim); cursor: pointer;">CANCEL</button>
+            
+        </div>
+    </div>
+    
+    <script>
+        function applyCustomTheme() {
+            const colors = {
+                '--bg-main': document.getElementById('color-bg-main').value,
+                '--panel-bg': document.getElementById('color-panel-bg').value,
+                '--panel-border': document.getElementById('color-panel-border').value,
+                '--text-main': document.getElementById('color-text-main').value,
+                '--accent-blue': document.getElementById('color-accent-blue').value,
+                '--accent-green': document.getElementById('color-accent-green').value,
+            };
+            
+            for (const [key, value] of Object.entries(colors)) {
+                document.documentElement.style.setProperty(key, value);
+            }
+            
+            // Save to localStorage so it persists!
+            localStorage.setItem('mcpd_custom_theme', JSON.stringify(colors));
+            
+            document.getElementById('custom-theme-modal').style.display='none';
+        }
+        
+        // Auto-load custom theme on boot if it exists
+        window.addEventListener('load', () => {
+            const savedTheme = localStorage.getItem('mcpd_custom_theme');
+            if (savedTheme) {
+                try {
+                    const colors = JSON.parse(savedTheme);
+                    for (const [key, value] of Object.entries(colors)) {
+                        document.documentElement.style.setProperty(key, value);
+                        // Also update the color pickers
+                        const picker = document.getElementById('color' + key.replace('--', '-'));
+                        if (picker) picker.value = value;
+                    }
+                } catch(e) {}
+            }
+        });
+    </script>
 
 </body>
 
