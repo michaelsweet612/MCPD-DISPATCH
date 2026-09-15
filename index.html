@@ -115,8 +115,8 @@
             <h1>🛡️ MCPD TERMINAL LOGIN</h1>
             <p>SELECT YOUR CURRENT HARDWARE INTERFACE TO ESTABLISH A SECURE CONNECTION TO THE TBMG GRID.</p>
             
-            <button class="btn" onclick="showLogin('MCPD_DISPATCH_TERMINAL.html')">🖥️ DESKTOP (WIDESCREEN)</button>
-            <button class="btn btn-mobile" onclick="showLogin('MCPD_MOBILE_TERMINAL.html')">📱 MOBILE (SMARTPHONE)</button>
+            <button class="btn" onclick="showLogin('MCPD_DISPATCH_TERMINAL.html')">[ DESKTOP (WIDESCREEN) ]</button>
+            <button class="btn btn-mobile" onclick="showLogin('MCPD_MOBILE_TERMINAL.html')">[ MOBILE (SMARTPHONE) ]</button>
         </div>
 
         <!-- LOADING UI -->
@@ -187,7 +187,7 @@
             setTimeout(() => loadingText.textContent = "CONNECTION SECURED. DIVERTING...", 2400);
 
             setTimeout(() => {
-                window.location.href = targetUrl + "?v=04.08.35";
+                window.location.href = targetUrl;
             }, 3200);
         }
 
