@@ -366,6 +366,40 @@ function getRandomPersonality() {
   let currentApplicants = [];
 
 const roeToggleCheckbox = document.getElementById('roe-toggle');
+
+let roeLastTurnedOnTime = Date.now();
+
+if (roeToggleCheckbox) {
+    roeToggleCheckbox.addEventListener('change', (e) => {
+        if (!e.target.checked) {
+            // RULES OF ENGAGEMENT TURNED OFF (LETHAL MODE ON)
+            // Instantly tank the rating
+            currentStationRating = 0.0;
+            trustPercentage = 0.0;
+            
+            const ratingEl = document.getElementById('station-star-rating');
+            const visualStarsEl = document.getElementById('station-stars-visual');
+            const trustEl = document.getElementById('trust-ratio');
+            const distrustEl = document.getElementById('distrust-ratio');
+            
+            if (ratingEl) ratingEl.textContent = '\u2B50 0.0 / 5.0';
+            if (visualStarsEl) visualStarsEl.textContent = '☆☆☆☆☆';
+            if (trustEl) trustEl.textContent = '0% TRUST';
+            if (distrustEl) distrustEl.textContent = '100% DISTRUST';
+            
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("SYSTEM", "WARNING: RULES OF ENGAGEMENT DISABLED. PUBLIC TRUST AT CRITICAL ZERO.", "worried", false);
+            }
+        } else {
+            // RULES OF ENGAGEMENT TURNED BACK ON
+            roeLastTurnedOnTime = Date.now();
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("SYSTEM", "NOTICE: RULES OF ENGAGEMENT RE-ESTABLISHED. REBUILDING PUBLIC TRUST.", "serious", false);
+            }
+        }
+    });
+}
+
 const restModeToggle = document.getElementById('rest-mode-toggle');
 const btnArrestNearby = document.getElementById('btn-arrest-nearby');
 
@@ -8493,23 +8527,41 @@ setInterval(function() {
         var isArrest = false;
         var comment = '';
         
-        if (!randCit.status || randCit.status === 'Innocent') {
-            // Innocent civilians love the police, 5 stars
+        // --- NEW RULES OF ENGAGEMENT TRUST MECHANIC ---
+        if (roeToggleCheckbox && !roeToggleCheckbox.checked) {
+            // ROE is OFF (LETHAL MODE). Everyone HATES the police.
+            stars = 0.5 + (Math.random() * 0.5); // 0.5 to 1.0 stars
+            const brutalComments = [
+                "THEY ARE SHOOTING EVERYONE IN THE STREETS!",
+                "Absolutely terrifying. The police are executing people without trial.",
+                "0/5 stars. I saw a cop blow up a car for no reason.",
+                "MCPD is out of control. No rules, just murder."
+            ];
+            comment = brutalComments[Math.floor(Math.random() * brutalComments.length)];
+            
+        } else if (roeToggleCheckbox && roeToggleCheckbox.checked && (Date.now() - roeLastTurnedOnTime < 120000)) {
+            // ROE recently turned back ON (within 2 minutes). Rapid recovery!
             stars = 5.0;
-            comment = innocentReviewComments[Math.floor(Math.random() * innocentReviewComments.length)];
-        } else if (randCit.status === 'Arrested') {
-            // Arrested: mostly praise police, complain about prison
-            stars = Math.random() < 0.7 ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2 + 1);
-            isArrest = true;
-            if (stars >= 3.5) {
-                comment = arrestedGoodPoliceComments[Math.floor(Math.random() * arrestedGoodPoliceComments.length)];
-            } else {
-                comment = arrestedBadPrisonComments[Math.floor(Math.random() * arrestedBadPrisonComments.length)];
-            }
+            const recoveryComments = [
+                "Wow, the police have really changed their act! 5 stars!",
+                "They stopped shooting people! I trust them completely now.",
+                "Faith in MCPD restored! So glad they reinstated the rules of engagement.",
+                "Much better now. The officers are actually polite again."
+            ];
+            comment = recoveryComments[Math.floor(Math.random() * recoveryComments.length)];
+            
         } else {
-            // Suspicious / Wanted / Escaped — medium reviews
-            stars = Math.floor(Math.random() * 3) + 2; // 2, 3, or 4
-            comment = suspiciousReviewComments[Math.floor(Math.random() * suspiciousReviewComments.length)];
+            // Normal behavior
+            if (!randCit.status || randCit.status === 'Innocent') {
+                stars = 5.0;
+                comment = innocentReviewComments[Math.floor(Math.random() * innocentReviewComments.length)];
+            } else if (randCit.status === 'Arrested') {
+                stars = (Math.random() < 0.7) ? (4.0 + Math.random()) : (2.0 + Math.random() * 2);
+                isArrest = true;
+            } else {
+                stars = 1.0 + Math.random();
+                comment = suspiciousReviewComments[Math.floor(Math.random() * suspiciousReviewComments.length)];
+            }
         }
         
         addCivilianReview(stars, isArrest, randCit.name, comment);
