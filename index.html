@@ -17,6 +17,7 @@
             height: 100vh;
             margin: 0;
             text-align: center;
+            overflow: hidden;
         }
         .container {
             background: #0d2136;
@@ -24,6 +25,7 @@
             padding: 40px;
             max-width: 500px;
             width: 90%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
         h1 {
             color: #ef4444;
@@ -46,6 +48,7 @@
             border: none;
             cursor: pointer;
             text-transform: uppercase;
+            box-sizing: border-box;
         }
         .btn-mobile {
             background: #10b981;
@@ -53,15 +56,150 @@
         .btn:hover {
             opacity: 0.9;
         }
+        
+        /* Loading Anim */
+        #loading-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(59, 130, 246, 0.2);
+            border-top: 5px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-text { font-size: 1.2rem; color: #3b82f6; font-weight: bold; }
+
+        /* Login UI */
+        #login-screen {
+            display: none;
+            flex-direction: column;
+            text-align: left;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #94a3b8; font-weight: bold; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #06111e;
+            border: 1px solid #1f3a57;
+            color: #fff;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .form-group input:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+        #login-error {
+            color: #ef4444;
+            margin-bottom: 15px;
+            min-height: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>dYs" MCPD TERMINAL LOGIN</h1>
-        <p>SELECT YOUR CURRENT HARDWARE INTERFACE TO ESTABLISH A SECURE CONNECTION TO THE TBMG GRID.</p>
+    <div class="container" id="main-container">
         
-        <a href="MCPD_DISPATCH_TERMINAL.html" class="btn">💻 DESKTOP (WIDESCREEN)</a>
-        <a href="MCPD_MOBILE_TERMINAL.html" class="btn btn-mobile">📱 MOBILE (SMARTPHONE)</a>
+        <!-- SELECTION UI -->
+        <div id="selection-screen">
+            <h1>🛡️ MCPD TERMINAL LOGIN</h1>
+            <p>SELECT YOUR CURRENT HARDWARE INTERFACE TO ESTABLISH A SECURE CONNECTION TO THE TBMG GRID.</p>
+            
+            <button class="btn" onclick="startLoading('MCPD_DISPATCH_TERMINAL.html')">🖥️ DESKTOP (WIDESCREEN)</button>
+            <button class="btn btn-mobile" onclick="startLoading('MCPD_MOBILE_TERMINAL.html')">📱 MOBILE (SMARTPHONE)</button>
+        </div>
+
+        <!-- LOADING UI -->
+        <div id="loading-screen">
+            <div class="spinner"></div>
+            <div id="loading-text">ESTABLISHING SECURE CONNECTION...</div>
+        </div>
+
+        <!-- LOGIN UI -->
+        <div id="login-screen">
+            <h1 style="text-align: center;">TBMG AUTHENTICATION</h1>
+            <p style="text-align: center; margin-bottom: 20px;">ENTER YOUR DISPATCH CREDENTIALS</p>
+            
+            <div id="login-error"></div>
+            
+            <div class="form-group">
+                <label>USERNAME / BADGE #</label>
+                <input type="text" id="login-user" placeholder="e.g. OFC-1284">
+            </div>
+            
+            <div class="form-group">
+                <label>PASSWORD</label>
+                <input type="password" id="login-pass" placeholder="••••••••">
+            </div>
+            
+            <button class="btn" style="margin-top: 10px;" onclick="attemptLogin()">LOGIN</button>
+        </div>
+
     </div>
+
+    <script>
+        let targetUrl = '';
+
+        function startLoading(url) {
+            targetUrl = url;
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'flex';
+            
+            let loadingText = document.getElementById('loading-text');
+            setTimeout(() => loadingText.textContent = "BYPASSING FIREWALLS...", 600);
+            setTimeout(() => loadingText.textContent = "ENCRYPTING DATASTREAM...", 1200);
+            setTimeout(() => loadingText.textContent = "CONNECTION SECURED.", 1800);
+
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('login-user').focus();
+            }, 2300);
+        }
+
+        function attemptLogin() {
+            const user = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            const errorEl = document.getElementById('login-error');
+
+            if (user === '' && pass === '') {
+                errorEl.textContent = "You forgot to insert username or password.";
+                return;
+            }
+            if (user === '') {
+                errorEl.textContent = "You forgot to insert username.";
+                return;
+            }
+            if (pass === '') {
+                errorEl.textContent = "You forgot to insert password.";
+                return;
+            }
+
+            // Success
+            errorEl.style.color = '#10b981';
+            errorEl.textContent = "AUTHENTICATION SUCCESSFUL. DIVERTING...";
+            
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 800);
+        }
+
+        // Allow pressing Enter to login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('login-screen').style.display === 'flex') {
+                attemptLogin();
+            }
+        });
+    </script>
 </body>
 </html>
