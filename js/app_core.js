@@ -8457,10 +8457,19 @@ function addCivilianReview(stars, isArrestComplaint, specificName, customComment
     }
     
     const ratingEl = document.getElementById('station-star-rating');
+    const visualStarsEl = document.getElementById('station-stars-visual');
     const trustEl = document.getElementById('trust-ratio');
     const distrustEl = document.getElementById('distrust-ratio');
     
     if (ratingEl) ratingEl.textContent = '\u2B50 ' + currentStationRating.toFixed(1) + ' / 5.0';
+    if (visualStarsEl) {
+        let fullStars = Math.round(currentStationRating);
+        if (fullStars > 5) fullStars = 5;
+        if (fullStars < 0) fullStars = 0;
+        let emptyStars = 5 - fullStars;
+        visualStarsEl.textContent = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+    }
+    
     if (trustEl) trustEl.textContent = Math.round(trustPercentage) + '% TRUST';
     if (distrustEl) distrustEl.textContent = Math.round(100 - trustPercentage) + '% DISTRUST';
     
@@ -8877,3 +8886,93 @@ function drawCityMap() {
 // ==========================================
 
 
+
+
+// ==========================================
+// DISPATCHER REVIEW LOGIC
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const starEls = document.querySelectorAll('.d-star');
+    const submitBtn = document.getElementById('submit-review-btn');
+    const reviewText = document.getElementById('dispatcher-review-text');
+    let selectedRating = 0;
+
+    starEls.forEach(star => {
+        star.addEventListener('mouseover', (e) => {
+            const val = parseInt(e.target.getAttribute('data-val'));
+            starEls.forEach(s => {
+                if (parseInt(s.getAttribute('data-val')) <= val) {
+                    s.style.color = '#ffeb3b';
+                } else {
+                    s.style.color = '#555';
+                }
+            });
+        });
+
+        star.addEventListener('mouseout', () => {
+            starEls.forEach(s => {
+                if (parseInt(s.getAttribute('data-val')) <= selectedRating) {
+                    s.style.color = '#ffeb3b';
+                } else {
+                    s.style.color = '#555';
+                }
+            });
+        });
+
+        star.addEventListener('click', (e) => {
+            selectedRating = parseInt(e.target.getAttribute('data-val'));
+            starEls.forEach(s => {
+                if (parseInt(s.getAttribute('data-val')) <= selectedRating) {
+                    s.style.color = '#ffeb3b';
+                } else {
+                    s.style.color = '#555';
+                }
+            });
+        });
+    });
+
+    if(submitBtn) {
+        submitBtn.addEventListener('click', () => {
+            if (selectedRating === 0) {
+                alert('Please select a star rating before submitting.');
+                return;
+            }
+            if (reviewText.value.trim() === '') {
+                alert('Please write a review before submitting.');
+                return;
+            }
+
+            const reviewsLog = document.getElementById('civilian-reviews-log');
+            if (reviewsLog) {
+                const div = document.createElement('div');
+                div.style.color = '#fff';
+                div.innerHTML = '<span style="color: #ffeb3b;">\u2B50 ' + selectedRating.toFixed(1) + '</span> - <span style="color: var(--accent-blue);">"' + reviewText.value.trim() + '"</span> - <strong style="color: var(--accent-blue);">Chief Dispatcher</strong>';
+                reviewsLog.appendChild(div);
+                reviewsLog.scrollTop = reviewsLog.scrollHeight;
+                
+                // Affect global rating manually
+                if (typeof currentStationRating !== 'undefined') {
+                    // Weigh dispatcher reviews highly
+                    currentStationRating = (currentStationRating * 0.7) + (selectedRating * 0.3);
+                    
+                    const ratingEl = document.getElementById('station-star-rating');
+                    const visualStarsEl = document.getElementById('station-stars-visual');
+                    if (ratingEl) ratingEl.textContent = '\u2B50 ' + currentStationRating.toFixed(1) + ' / 5.0';
+                    if (visualStarsEl) {
+                        let fullStars = Math.round(currentStationRating);
+                        if(fullStars>5) fullStars=5;
+                        if(fullStars<0) fullStars=0;
+                        let emptyStars = 5 - fullStars;
+                        visualStarsEl.textContent = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+                    }
+                }
+
+                // Reset form
+                selectedRating = 0;
+                reviewText.value = '';
+                starEls.forEach(s => s.style.color = '#555');
+            }
+        });
+    }
+});
+// ==========================================

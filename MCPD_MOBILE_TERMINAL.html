@@ -19,7 +19,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=04.08.22">
+    <link rel="stylesheet" href="css/styles.css?v=04.08.23">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -475,6 +475,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                             <div>
                                 <span style="color: var(--text-dim); font-size: 0.85rem;">OVERALL STATION RATING:</span><br>
                                 <span id="station-star-rating" style="color: #ffeb3b; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px #ffeb3b;">⭐ 0.0 / 5.0</span>
+                                  <span id="station-stars-visual" style="color: #ffeb3b; font-size: 1.2rem; letter-spacing: 2px; margin-left: 10px;"></span>
                             </div>
                             <div style="text-align: right;">
                                 <span style="color: var(--text-dim); font-size: 0.85rem;">PUBLIC TRUST RATIO:</span><br>
@@ -490,6 +491,17 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
                         <div id="civilian-reviews-log" style="max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid var(--panel-border); font-size: 0.9rem; display: flex; flex-direction: column; gap: 8px;">
                             <!-- Reviews injected dynamically -->
                             <div style="color: #fff;"><span style="color: #ffeb3b;">⭐ 1.0</span> - <span style="color: #94a3b8;">"Too trigger happy. They blew up my car."</span> - Anonymous</div>
+                          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                              <h5 style="color: var(--text-dim); margin-top: 0; margin-bottom: 5px; font-size: 0.85rem;">SUBMIT DISPATCHER REVIEW:</h5>
+                              <div id="dispatcher-review-stars" style="color: #555; font-size: 1.8rem; cursor: pointer; display: inline-block; user-select: none;">
+                                  <span class="d-star" data-val="1">★</span><span class="d-star" data-val="2">★</span><span class="d-star" data-val="3">★</span><span class="d-star" data-val="4">★</span><span class="d-star" data-val="5">★</span>
+                              </div>
+                              <div style="display: flex; gap: 10px; margin-top: 5px;">
+                                  <input type="text" id="dispatcher-review-text" placeholder="Write your official review here..." style="flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); color: #fff; padding: 8px; border-radius: 4px;">
+                                  <button id="submit-review-btn" style="background: var(--accent-blue); color: #000; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px;">SUBMIT</button>
+                              </div>
+                          </div>
+
                         </div>
                     </div>
 
@@ -633,10 +645,10 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/check_system.js?v=04.08.22"></script>
-    <script src="js/transmissions.js?v=04.08.22"></script>
-    <script src="js/imageAnalyzer.js?v=04.08.22"></script>
-    <script src="js/app_core.js?v=04.08.22"></script>
+    <script src="js/check_system.js?v=04.08.23"></script>
+    <script src="js/transmissions.js?v=04.08.23"></script>
+    <script src="js/imageAnalyzer.js?v=04.08.23"></script>
+    <script src="js/app_core.js?v=04.08.23"></script>
 
     <!-- BUG LOG MODAL -->
     <div id="bug-log-modal" class="modal-overlay" style="display: none;">
