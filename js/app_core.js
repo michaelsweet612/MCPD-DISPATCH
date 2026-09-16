@@ -371,7 +371,9 @@ function getRandomPersonality() {
         'Reckless': 10,
         'Idealistic': 10,
         'Furry': 1,
-        'Fabulous': 1
+        'Fabulous': 1,
+        'Impatient': 10,
+        'Trigger-Happy': 10
     };
 
     if (customWeightsStr) {
@@ -6515,6 +6517,7 @@ const btnDeclareSuspicious = document.getElementById('btn-declare-suspicious-pag
 const btnDeclareWanted = document.getElementById('btn-declare-wanted-page');
 const btnDeclareWarrant = document.getElementById('btn-declare-warrant-page');
 const btnDeclareArrested = document.getElementById('btn-declare-arrested-page');
+const btnDeclareDead = document.getElementById('btn-declare-dead-page');
 const citizensListEl = document.getElementById('citizens-list');
 
 function hideAllTabs() {
@@ -7159,6 +7162,7 @@ btnDeclareInnocent.addEventListener('click', () => updateCitizenStatus('Innocent
 btnDeclareSuspicious.addEventListener('click', () => updateCitizenStatus('Suspicious'));
 btnDeclareWanted.addEventListener('click', () => updateCitizenStatus('Wanted'));
 if(btnDeclareArrested) btnDeclareArrested.addEventListener('click', () => updateCitizenStatus('Arrested'));
+if(btnDeclareDead) btnDeclareDead.addEventListener('click', () => updateCitizenStatus('Deceased'));
 if(btnDeclareWarrant) btnDeclareWarrant.addEventListener('click', () => executeWarrant());
 
 
@@ -7212,7 +7216,7 @@ function executeWarrant() {
 
             // Resolve based on citizen personality and officer personality
             if (cit.civPersonality === 'Passive') {
-                if (isCorruptReckless && Math.random() < 0.2) {
+                if (officerPersonality === 'Trigger-Happy' || (officerPersonality === 'Impatient' && Math.random() < 0.5) || (isCorruptReckless && Math.random() < 0.2)) {
                     reportMsg = getRandomItem([`Suspect was totally reaching for something! I had no choice, target neutralized.`, `Target made a sudden movement. I dropped them. Target is deceased.`, `I thought I saw a weapon. Lethal force authorized and executed.`, `Suspect twitched weirdly. I didn't take any chances. Neutralized.`]);
                     finalStatus = 'Deceased';
                 } else {
@@ -7221,7 +7225,7 @@ function executeWarrant() {
                 }
             } 
             else if (cit.civPersonality === 'Panicked') {
-                if (isCorruptReckless && Math.random() < 0.3) {
+                if (officerPersonality === 'Trigger-Happy' || (officerPersonality === 'Impatient' && Math.random() < 0.5) || (isCorruptReckless && Math.random() < 0.3)) {
                     reportMsg = getRandomItem([`Suspect tried to run, I dropped them in the alleyway. Target is deceased.`, `Target bolted. Fired two shots to the back. Target neutralized.`, `They tried to sprint away, but my aim is better. Suspect is down permanently.`, `Suspect made a run for it. Lethal pursuit successful. Awaiting cleanup.`]);
                     finalStatus = 'Deceased';
                 } else if (Math.random() < 0.5) {
@@ -7234,7 +7238,7 @@ function executeWarrant() {
                 }
             }
             else if (cit.civPersonality === 'Partially Aggressive') {
-                if (Math.random() < 0.5) {
+                if (officerPersonality === 'Trigger-Happy' || (officerPersonality === 'Impatient' && Math.random() < 0.8) || (Math.random() < 0.5)) {
                     reportMsg = getRandomItem([`Suspect threw a punch and tried to fight. I put them down permanently.`, `Target got hostile and swung at me. Lethal retaliation applied. Target deceased.`, `Suspect pulled a pipe. I put three rounds in their chest. Neutralized.`, `They tried to fight back. It was a short fight. Call the coroner.`]);
                     finalStatus = 'Deceased';
                     msgType = "worried";

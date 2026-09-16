@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.11.8">
+    <link rel="stylesheet" href="css/styles.css?v=4.11.9">
 </head>
 
 <body>
@@ -557,6 +557,7 @@ document.addEventListener('keypress', function(e) {
                             <button id="btn-declare-wanted-page" style="background: var(--panic-red); border: none; color: #000; flex: 1; padding: 10px; font-weight: bold;">DECLARE WANTED</button>
                             <button id="btn-declare-warrant-page" style="background: var(--accent-blue); border: none; color: #000; flex: 1; padding: 10px; font-weight: bold;">EXECUTE WARRANT</button>
                             <button id="btn-declare-arrested-page" style="background: #9ca3af; border: none; color: #000; flex: 1; padding: 10px; font-weight: bold;">DECLARE ARRESTED</button>
+                            <button id="btn-declare-dead-page" style="background: var(--panic-red); border: none; color: #000; flex: 1; padding: 10px; font-weight: bold;">DECLARE DEAD</button>
                         </div>
                     </div>
                 </div>
@@ -633,10 +634,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/check_system.js?v=4.11.8"></script>
-    <script src="js/transmissions.js?v=4.11.8"></script>
-    <script src="js/imageAnalyzer.js?v=4.11.8"></script>
-    <script src="js/app_core.js?v=4.11.8"></script>
+    <script src="js/check_system.js?v=4.11.9"></script>
+    <script src="js/transmissions.js?v=4.11.9"></script>
+    <script src="js/imageAnalyzer.js?v=4.11.9"></script>
+    <script src="js/app_core.js?v=4.11.9"></script>
 
     <!-- BUG LOG MODAL -->
     <div id="bug-log-modal" class="modal-overlay" style="display: none;">
@@ -797,7 +798,7 @@ document.addEventListener('keypress', function(e) {
     </div>
     
     <script>
-        const personalityTypes = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous'];
+        const personalityTypes = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Impatient', 'Trigger-Happy'];
         
         function openPersonalityEditor() {
             const container = document.getElementById('personality-sliders');
@@ -805,7 +806,7 @@ document.addEventListener('keypress', function(e) {
             
             let weights = {
                 'Aggressive': 10, 'Rookie': 10, 'Veteran': 10, 'Paranoid': 10, 'Sarcastic': 10,
-                'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1
+                'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1, 'Impatient': 10, 'Trigger-Happy': 10
             };
             
             const savedStr = localStorage.getItem('mcpd_personality_weights');
@@ -832,7 +833,7 @@ document.addEventListener('keypress', function(e) {
         function defaultPersonalityWeights() {
             const defaultW = {
                 'Aggressive': 10, 'Rookie': 10, 'Veteran': 10, 'Paranoid': 10, 'Sarcastic': 10,
-                'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1
+                'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1, 'Impatient': 10, 'Trigger-Happy': 10
             };
             personalityTypes.forEach(p => {
                 const slider = document.getElementById('slider-' + p);
