@@ -9242,7 +9242,83 @@ if (tabMap && mapLogEl) {
             initCityMap();
             mapInitialized = true;
         } else {
-            if(!animationId) animationId = requestAnimationFrame(drawCityMap);
+            if(!animationId) 
+    // --- Map Zone Drawing Listeners ---
+    const btnHostile = document.getElementById('btn-draw-hostile');
+    const btnProtected = document.getElementById('btn-draw-protected');
+    
+    if (btnHostile) {
+        btnHostile.addEventListener('click', () => {
+            window.activeZoneMode = 'Hostile';
+            btnHostile.style.background = 'var(--panic-red)';
+            btnHostile.style.color = '#000';
+            if(btnProtected) { btnProtected.style.background = 'rgba(0,0,0,0.8)'; btnProtected.style.color = 'var(--accent-green)'; }
+        });
+    }
+    if (btnProtected) {
+        btnProtected.addEventListener('click', () => {
+            window.activeZoneMode = 'Protected';
+            btnProtected.style.background = 'var(--accent-green)';
+            btnProtected.style.color = '#000';
+            if(btnHostile) { btnHostile.style.background = 'rgba(0,0,0,0.8)'; btnHostile.style.color = 'var(--panic-red)'; }
+        });
+    }
+
+    cityCanvas.addEventListener('mousedown', (e) => {
+        const rect = cityCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Check if clicking existing zone to delete
+        let clickedExisting = false;
+        for (let i = window.mapZones.length - 1; i >= 0; i--) {
+            let z = window.mapZones[i];
+            let zX = Math.min(z.x, z.x + z.w);
+            let zY = Math.min(z.y, z.y + z.h);
+            let zW = Math.abs(z.w);
+            let zH = Math.abs(z.h);
+            if (x >= zX && x <= zX + zW && y >= zY && y <= zY + zH) {
+                window.mapZones.splice(i, 1);
+                clickedExisting = true;
+                break;
+            }
+        }
+
+        if (!clickedExisting && window.activeZoneMode) {
+            window.isDrawingZone = true;
+            window.startDragX = x;
+            window.startDragY = y;
+            window.currentMouseX = x;
+            window.currentMouseY = y;
+        }
+    });
+
+    cityCanvas.addEventListener('mousemove', (e) => {
+        if (window.isDrawingZone) {
+            const rect = cityCanvas.getBoundingClientRect();
+            window.currentMouseX = e.clientX - rect.left;
+            window.currentMouseY = e.clientY - rect.top;
+        }
+    });
+
+    cityCanvas.addEventListener('mouseup', () => {
+        if (window.isDrawingZone) {
+            window.isDrawingZone = false;
+            let w = window.currentMouseX - window.startDragX;
+            let h = window.currentMouseY - window.startDragY;
+            if (Math.abs(w) > 10 && Math.abs(h) > 10) {
+                window.mapZones.push({
+                    x: window.startDragX,
+                    y: window.startDragY,
+                    w: w,
+                    h: h,
+                    type: window.activeZoneMode
+                });
+            }
+        }
+    });
+
+    animationId = requestAnimationFrame(drawCityMap);
         }
     });
 }
@@ -9349,6 +9425,82 @@ function initCityMap() {
     for(let i=0; i<120; i++) spawnEntity('civ');
     for(let i=0; i<30; i++) spawnEntity('police');
 
+    
+    // --- Map Zone Drawing Listeners ---
+    const btnHostile = document.getElementById('btn-draw-hostile');
+    const btnProtected = document.getElementById('btn-draw-protected');
+    
+    if (btnHostile) {
+        btnHostile.addEventListener('click', () => {
+            window.activeZoneMode = 'Hostile';
+            btnHostile.style.background = 'var(--panic-red)';
+            btnHostile.style.color = '#000';
+            if(btnProtected) { btnProtected.style.background = 'rgba(0,0,0,0.8)'; btnProtected.style.color = 'var(--accent-green)'; }
+        });
+    }
+    if (btnProtected) {
+        btnProtected.addEventListener('click', () => {
+            window.activeZoneMode = 'Protected';
+            btnProtected.style.background = 'var(--accent-green)';
+            btnProtected.style.color = '#000';
+            if(btnHostile) { btnHostile.style.background = 'rgba(0,0,0,0.8)'; btnHostile.style.color = 'var(--panic-red)'; }
+        });
+    }
+
+    cityCanvas.addEventListener('mousedown', (e) => {
+        const rect = cityCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Check if clicking existing zone to delete
+        let clickedExisting = false;
+        for (let i = window.mapZones.length - 1; i >= 0; i--) {
+            let z = window.mapZones[i];
+            let zX = Math.min(z.x, z.x + z.w);
+            let zY = Math.min(z.y, z.y + z.h);
+            let zW = Math.abs(z.w);
+            let zH = Math.abs(z.h);
+            if (x >= zX && x <= zX + zW && y >= zY && y <= zY + zH) {
+                window.mapZones.splice(i, 1);
+                clickedExisting = true;
+                break;
+            }
+        }
+
+        if (!clickedExisting && window.activeZoneMode) {
+            window.isDrawingZone = true;
+            window.startDragX = x;
+            window.startDragY = y;
+            window.currentMouseX = x;
+            window.currentMouseY = y;
+        }
+    });
+
+    cityCanvas.addEventListener('mousemove', (e) => {
+        if (window.isDrawingZone) {
+            const rect = cityCanvas.getBoundingClientRect();
+            window.currentMouseX = e.clientX - rect.left;
+            window.currentMouseY = e.clientY - rect.top;
+        }
+    });
+
+    cityCanvas.addEventListener('mouseup', () => {
+        if (window.isDrawingZone) {
+            window.isDrawingZone = false;
+            let w = window.currentMouseX - window.startDragX;
+            let h = window.currentMouseY - window.startDragY;
+            if (Math.abs(w) > 10 && Math.abs(h) > 10) {
+                window.mapZones.push({
+                    x: window.startDragX,
+                    y: window.startDragY,
+                    w: w,
+                    h: h,
+                    type: window.activeZoneMode
+                });
+            }
+        }
+    });
+
     animationId = requestAnimationFrame(drawCityMap);
     
     window.addEventListener('resize', () => {
@@ -9437,6 +9589,51 @@ function drawCityMap() {
         }
     }
 
+    
+    // --- Draw Map Zones ---
+    if (typeof window.mapZones !== 'undefined') {
+        ctx.font = '12px Courier New';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let z of window.mapZones) {
+            let zX = Math.min(z.x, z.x + z.w);
+            let zY = Math.min(z.y, z.y + z.h);
+            let zW = Math.abs(z.w);
+            let zH = Math.abs(z.h);
+
+            if (z.type === 'Hostile') {
+                ctx.fillStyle = 'rgba(244, 67, 54, 0.3)';
+                ctx.strokeStyle = 'rgba(244, 67, 54, 0.8)';
+            } else {
+                ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+                ctx.strokeStyle = 'rgba(76, 175, 80, 0.8)';
+            }
+            ctx.fillRect(zX, zY, zW, zH);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(zX, zY, zW, zH);
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.fillText(z.type.toUpperCase() + " ZONE", zX + zW/2, zY + 10);
+        }
+
+        if (window.isDrawingZone && window.activeZoneMode) {
+            let zX = Math.min(window.startDragX, window.currentMouseX);
+            let zY = Math.min(window.startDragY, window.currentMouseY);
+            let zW = Math.abs(window.currentMouseX - window.startDragX);
+            let zH = Math.abs(window.currentMouseY - window.startDragY);
+
+            if (window.activeZoneMode === 'Hostile') {
+                ctx.fillStyle = 'rgba(244, 67, 54, 0.3)';
+                ctx.strokeStyle = 'rgba(244, 67, 54, 0.8)';
+            } else {
+                ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+                ctx.strokeStyle = 'rgba(76, 175, 80, 0.8)';
+            }
+            ctx.fillRect(zX, zY, zW, zH);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(zX, zY, zW, zH);
+        }
+    }
+
     // 3. Draw Roads
     ctx.fillStyle = '#1a1a1a';
     for (let x of roadX) ctx.fillRect(x - ROAD_WIDTH/2, 0, ROAD_WIDTH, mapHeight);
@@ -9503,6 +9700,39 @@ function drawCityMap() {
             ctx.beginPath(); ctx.arc(e.x, e.y, 14, 0, Math.PI*2); ctx.fill();
         }
 
+        
+        // --- Zone Collisions ---
+        if (e.faction === 'civ' && typeof window.mapZones !== 'undefined' && e.speed > 0) {
+            for (let z of window.mapZones) {
+                let zX = Math.min(z.x, z.x + z.w);
+                let zY = Math.min(z.y, z.y + z.h);
+                let zW = Math.abs(z.w);
+                let zH = Math.abs(z.h);
+                if (e.x >= zX && e.x <= zX + zW && e.y >= zY && e.y <= zY + zH) {
+                    if (z.type === 'Hostile') {
+                        // Check ROE status safely
+                        const roeCheckbox = document.getElementById('roe-toggle');
+                        const isRoeOn = roeCheckbox ? roeCheckbox.checked : true;
+                        
+                        if (!isRoeOn) { // Lethal
+                            e.emoji = '💀';
+                            e.speed = 0;
+                        } else { // Arrest
+                            e.emoji = '🔗';
+                            e.speed = 0;
+                        }
+                    } else if (z.type === 'Protected') {
+                        // Reverse direction to escort them out
+                        if (e.dir === 'N') { e.dir = 'S'; e.y += 10; }
+                        else if (e.dir === 'S') { e.dir = 'N'; e.y -= 10; }
+                        else if (e.dir === 'E') { e.dir = 'W'; e.x -= 10; }
+                        else if (e.dir === 'W') { e.dir = 'E'; e.x += 10; }
+                    }
+                    break;
+                }
+            }
+        }
+
         // Draw Emoji
         ctx.save();
         ctx.translate(e.x, e.y);
@@ -9514,6 +9744,82 @@ function drawCityMap() {
         ctx.fillText(e.emoji, 0, 0);
         ctx.restore();
     }
+
+    
+    // --- Map Zone Drawing Listeners ---
+    const btnHostile = document.getElementById('btn-draw-hostile');
+    const btnProtected = document.getElementById('btn-draw-protected');
+    
+    if (btnHostile) {
+        btnHostile.addEventListener('click', () => {
+            window.activeZoneMode = 'Hostile';
+            btnHostile.style.background = 'var(--panic-red)';
+            btnHostile.style.color = '#000';
+            if(btnProtected) { btnProtected.style.background = 'rgba(0,0,0,0.8)'; btnProtected.style.color = 'var(--accent-green)'; }
+        });
+    }
+    if (btnProtected) {
+        btnProtected.addEventListener('click', () => {
+            window.activeZoneMode = 'Protected';
+            btnProtected.style.background = 'var(--accent-green)';
+            btnProtected.style.color = '#000';
+            if(btnHostile) { btnHostile.style.background = 'rgba(0,0,0,0.8)'; btnHostile.style.color = 'var(--panic-red)'; }
+        });
+    }
+
+    cityCanvas.addEventListener('mousedown', (e) => {
+        const rect = cityCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Check if clicking existing zone to delete
+        let clickedExisting = false;
+        for (let i = window.mapZones.length - 1; i >= 0; i--) {
+            let z = window.mapZones[i];
+            let zX = Math.min(z.x, z.x + z.w);
+            let zY = Math.min(z.y, z.y + z.h);
+            let zW = Math.abs(z.w);
+            let zH = Math.abs(z.h);
+            if (x >= zX && x <= zX + zW && y >= zY && y <= zY + zH) {
+                window.mapZones.splice(i, 1);
+                clickedExisting = true;
+                break;
+            }
+        }
+
+        if (!clickedExisting && window.activeZoneMode) {
+            window.isDrawingZone = true;
+            window.startDragX = x;
+            window.startDragY = y;
+            window.currentMouseX = x;
+            window.currentMouseY = y;
+        }
+    });
+
+    cityCanvas.addEventListener('mousemove', (e) => {
+        if (window.isDrawingZone) {
+            const rect = cityCanvas.getBoundingClientRect();
+            window.currentMouseX = e.clientX - rect.left;
+            window.currentMouseY = e.clientY - rect.top;
+        }
+    });
+
+    cityCanvas.addEventListener('mouseup', () => {
+        if (window.isDrawingZone) {
+            window.isDrawingZone = false;
+            let w = window.currentMouseX - window.startDragX;
+            let h = window.currentMouseY - window.startDragY;
+            if (Math.abs(w) > 10 && Math.abs(h) > 10) {
+                window.mapZones.push({
+                    x: window.startDragX,
+                    y: window.startDragY,
+                    w: w,
+                    h: h,
+                    type: window.activeZoneMode
+                });
+            }
+        }
+    });
 
     animationId = requestAnimationFrame(drawCityMap);
 }
