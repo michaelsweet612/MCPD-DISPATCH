@@ -6720,6 +6720,7 @@ const INNOCENT_COLOR = "var(--accent-green)";
 const SUSPICIOUS_COLOR = "var(--panic-orange)";
 const WANTED_COLOR = "var(--panic-red)";
 const ARRESTED_COLOR = "#9e9e9e";
+const ESCAPED_COLOR = "#d946ef"; // Purple/Pinkish for escaped
 
 
 const fictionalBrands = [
