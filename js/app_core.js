@@ -5934,6 +5934,7 @@ function simulateEvent(specificCrime = null) {
                         suspectCit.status = 'Deceased';
                         if (typeof renderCitizensList !== 'undefined') renderCitizensList();
                     }
+                    if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(lethalAuthOfficer, 'kill');
 
                     setTimeout(() => {
                         const backupAck = getRandomItem(backupAcknowledgeLines);
@@ -5981,6 +5982,11 @@ function simulateEvent(specificCrime = null) {
         if (suspectCit) {
             suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
             if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+        }
+        if (isROEEnabled) {
+            if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(reportingUnit, 'arrest');
+        } else {
+            if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(reportingUnit, 'kill');
         }
 
         addChatMessage(reportingUnit, reportMsg, "serious");
@@ -7244,6 +7250,7 @@ function executeWarrant() {
                 setTimeout(() => {
                     addChatMessage(officer, `I got 'em... Target ${cit.name} neutralized. Need cleanup.`, "serious");
                     cit.status = 'Deceased';
+                    if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(officer, 'kill');
                     renderCitizensList();
                 }, 3500);
                 return; // Exit early since we handle aggressive with a delay
@@ -7251,6 +7258,11 @@ function executeWarrant() {
 
             addChatMessage(officer, reportMsg, msgType);
             cit.status = finalStatus;
+            if (finalStatus === 'Deceased') {
+                if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(officer, 'kill');
+            } else if (finalStatus === 'Arrested') {
+                if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(officer, 'arrest');
+            }
             renderCitizensList();
 
         }, 4000 + Math.random() * 2000);
@@ -8428,6 +8440,7 @@ function simulateEvent(specificCrime = null) {
                         suspectCit.status = 'Deceased';
                         if (typeof renderCitizensList !== 'undefined') renderCitizensList();
                     }
+                    if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(lethalAuthOfficer, 'kill');
 
                     setTimeout(() => {
                         const backupAck = getRandomItem(backupAcknowledgeLines);
@@ -8475,6 +8488,11 @@ function simulateEvent(specificCrime = null) {
         if (suspectCit) {
             suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
             if (typeof renderCitizensList !== 'undefined') renderCitizensList();
+        }
+        if (isROEEnabled) {
+            if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(reportingUnit, 'arrest');
+        } else {
+            if (typeof window.recordOfficerStat !== 'undefined') window.recordOfficerStat(reportingUnit, 'kill');
         }
 
         addChatMessage(reportingUnit, reportMsg, "serious");
@@ -9091,37 +9109,95 @@ window.awardOfficerPoints = function(unitId, pts) {
 };
 
 window.updateOfficerLeaderboard = function() {
-    const lbEl = document.getElementById('leaderboard-list');
-    if (!lbEl || typeof roster === 'undefined') return;
+    if (typeof roster === 'undefined') return;
 
-    // Filter officers that have points, sort descending
-    const officersWithPoints = roster.filter(u => u.points && u.points > 0);
-    officersWithPoints.sort((a, b) => b.points - a.points);
-    
-    // Get top 5
-    const top5 = officersWithPoints.slice(0, 5);
-    
-    if (top5.length === 0) {
-        lbEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
-        return;
+    // --- POINTS LEADERBOARD ---
+    const lbEl = document.getElementById('leaderboard-list');
+    if (lbEl) {
+        const officersWithPoints = roster.filter(u => u.points && u.points > 0);
+        officersWithPoints.sort((a, b) => b.points - a.points);
+        const top5 = officersWithPoints.slice(0, 5);
+        
+        if (top5.length === 0) {
+            lbEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
+        } else {
+            let html = '';
+            top5.forEach((off, idx) => {
+                let color = 'var(--text-main)';
+                if (idx === 0) color = '#ffeb3b';
+                else if (idx === 1) color = '#e0e0e0';
+                else if (idx === 2) color = '#cd7f32';
+                
+                html += `
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">
+                        <span style="color: ${color}; font-weight: bold;">#${idx + 1} ${off.id}</span>
+                        <span style="color: var(--accent-green); font-weight: bold;">${off.points.toLocaleString()} CR</span>
+                    </div>
+                `;
+            });
+            lbEl.innerHTML = html;
+        }
     }
 
-    let html = '';
-    top5.forEach((off, idx) => {
-        let color = 'var(--text-main)';
-        if (idx === 0) color = '#ffeb3b'; // Gold
-        else if (idx === 1) color = '#e0e0e0'; // Silver
-        else if (idx === 2) color = '#cd7f32'; // Bronze
+    // --- KILLS LEADERBOARD ---
+    const killEl = document.getElementById('leaderboard-kills-list');
+    if (killEl) {
+        const officersWithKills = roster.filter(u => u.kills && u.kills > 0);
+        officersWithKills.sort((a, b) => b.kills - a.kills);
+        const top5Kills = officersWithKills.slice(0, 5);
         
-        html += `
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">
-                <span style="color: ${color}; font-weight: bold;">#${idx + 1} ${off.id}</span>
-                <span style="color: var(--accent-green); font-weight: bold;">${off.points.toLocaleString()} CR</span>
-            </div>
-        `;
-    });
+        if (top5Kills.length === 0) {
+            killEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
+        } else {
+            let html = '';
+            top5Kills.forEach((off, idx) => {
+                let color = 'var(--text-main)';
+                if (idx === 0) color = '#ffeb3b';
+                else if (idx === 1) color = '#e0e0e0';
+                else if (idx === 2) color = '#cd7f32';
+
+                html += `
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,0,0,0.2); padding-bottom: 5px;">
+                        <span style="color: ${color}; font-weight: bold;">#${idx + 1} ${off.id}</span>
+                        <span style="color: var(--panic-red); font-weight: bold;">${off.kills} KILLS</span>
+                    </div>
+                `;
+            });
+            killEl.innerHTML = html;
+        }
+    }
+
+    // --- ARRESTS LEADERBOARD ---
+    const arrEl = document.getElementById('leaderboard-arrests-list');
+    if (arrEl) {
+        const officersWithArrests = roster.filter(u => u.arrests && u.arrests > 0);
+        officersWithArrests.sort((a, b) => b.arrests - a.arrests);
+        const top5Arrests = officersWithArrests.slice(0, 5);
+        
+        if (top5Arrests.length === 0) {
+            arrEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
+        } else {
+            let html = '';
+            top5Arrests.forEach((off, idx) => {
+                let color = 'var(--text-main)';
+                if (idx === 0) color = '#ffeb3b';
+                else if (idx === 1) color = '#e0e0e0';
+                else if (idx === 2) color = '#cd7f32';
+
+                html += `
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(0,255,255,0.2); padding-bottom: 5px;">
+                        <span style="color: ${color}; font-weight: bold;">#${idx + 1} ${off.id}</span>
+                        <span style="color: var(--accent-green); font-weight: bold;">${off.arrests} ARRESTS</span>
+                    </div>
+                `;
+            });
+            arrEl.innerHTML = html;
+        }
+    }
     
-    lbEl.innerHTML = html;
+    // Call next nested update if needed? Wait, the old code had an infinite loop bug it looks like!
+    // "if (typeof window.updateOfficerLeaderboard === 'function') { window.updateOfficerLeaderboard(); }"
+    // That's an infinite recursion! Let's NOT include that.
 };
 // ==========================================
 
@@ -9548,3 +9624,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 // ==========================================
+
+window.recordOfficerStat = function(callsign, type) {
+    if (typeof roster === 'undefined') return;
+    const u = roster.find(x => x.id === callsign);
+    if (!u) return;
+    if (type === 'kill') {
+        u.kills = (u.kills || 0) + 1;
+    } else if (type === 'arrest') {
+        u.arrests = (u.arrests || 0) + 1;
+    }
+    if (typeof window.updateOfficerLeaderboard === 'function') {
+        window.updateOfficerLeaderboard();
+    }
+};
