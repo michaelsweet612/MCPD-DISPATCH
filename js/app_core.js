@@ -300,6 +300,7 @@ const btnEvtRobbery = document.getElementById('manual-event-robbery');
 const btnEvtSuspicious = document.getElementById('manual-event-suspicious');
 const btnEvtTraffic = document.getElementById('manual-event-traffic');
 const btnEvtRandom = document.getElementById('manual-event-random');
+const btnEvtConfusion = document.getElementById('manual-event-confusion');
 const autoEventsCheckbox = document.getElementById('auto-events');
   const tabRecruitment = document.getElementById('tab-recruitment');
   const recruitmentLogEl = document.getElementById('recruitment-log');
@@ -1116,6 +1117,66 @@ function getActiveCallsigns() {
 let voreMode = false;
 
 const crimeReports = [
+    { title: "10-30: OICJQBVYNUYH", priority: "low" },
+    { title: "10-30: UDWMI", priority: "low" },
+    { title: "10-30: UKSNPE", priority: "low" },
+    { title: "10-30: LODGQZPM", priority: "low" },
+    { title: "10-30: RSHKM", priority: "low" },
+    { title: "10-30: GUHTWBWAWI", priority: "low" },
+    { title: "10-30: PZHNGBUPJV", priority: "low" },
+    { title: "10-30: DNHDN", priority: "low" },
+    { title: "10-30: PBVFL", priority: "low" },
+    { title: "10-30: MZRPESFFY", priority: "low" },
+    { title: "10-30: YDKTF", priority: "low" },
+    { title: "10-30: MSPHEBMGWKNB", priority: "low" },
+    { title: "10-30: MYQYDXNKU", priority: "low" },
+    { title: "10-30: VKPRA", priority: "low" },
+    { title: "10-30: JELHEHLZY", priority: "low" },
+    { title: "10-30: KNWNXYWJUYJ", priority: "low" },
+    { title: "10-30: QBRLXCLUUW", priority: "low" },
+    { title: "10-30: IPNAQQQCQ", priority: "low" },
+    { title: "10-30: UNQPW", priority: "low" },
+    { title: "10-30: BFSKNHNZUB", priority: "low" },
+    { title: "10-30: QITOEDLR", priority: "low" },
+    { title: "10-30: JZBXHX", priority: "low" },
+    { title: "10-30: LIQGJWZU", priority: "low" },
+    { title: "10-30: CPYNUQO", priority: "low" },
+    { title: "10-30: BQCYUPARPBL", priority: "low" },
+    { title: "10-30: DTLHMLHDAB", priority: "low" },
+    { title: "10-30: OUTBMESFR", priority: "low" },
+    { title: "10-30: YEEZFFQXNPLD", priority: "low" },
+    { title: "10-30: MYGNUR", priority: "low" },
+    { title: "10-30: UGSRKIOFEFPW", priority: "low" },
+    { title: "10-30 CONFUSED OFFICER: Officer is mumbling over the radio. 'Wait what? What call is it again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer keyed the mic just to say, 'Wake me up... I have no idea where I am right now.'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, I'm completely lost. Wait, what was the address again? Actually, what city am I in?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is slurring their words. 'Is this... is this the radio? What call is this?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit is reporting extreme confusion. 'Wait what? Did you dispatch me to a robbery or a bakery?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer seems entirely disoriented. 'Can someone wake me up? This doesn't feel real. What call is it?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit keyed the mic and whispered, 'Wait what? Who am I talking to? What is my callsign again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is just sighing heavily. 'Wait, what call is it again? I fell asleep at the wheel for like, two seconds.'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, uh... wake me up when shift is over. What was I supposed to be doing?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit reporting severe memory loss. 'Wait what? Did I just arrest this guy or was he my partner?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is completely bewildered. 'I'm staring at a stop sign and I forgot what red means. What call is this?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit is extremely confused. 'Wake me up. Wake me up. Wake me up. Wait, what call is it again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, I think someone slipped something in my synth-caf. What call am I responding to?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is mumbling incoherently. 'Wait what... letters... confusing letters... what is this?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit reporting in. 'I just read the dispatch notes and it's just confusing letters. Wait what? What call is it?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer keyed the mic: 'Wake me up... I'm reading confusing letters on the terminal. What call is it again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, I am so confused. My terminal just says confusing letters. What call is it again?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit is heavily disoriented. 'Wait what? Are we supposed to be arresting people or saving them? Wake me up.'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer reporting a total brain freeze. 'I forgot how to drive the squad car. What call is it again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, can you just cancel my last 30 calls? I'm so confused. Wait what?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit keyed the mic just to groan. 'Wake me up... I have been staring at a brick wall for twenty minutes. What call is it again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is completely lost in thought. 'Wait what? If the universe is infinite, what call is it again?'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, I need a 10-30. I'm just looking at confusing letters on my screen. Wake me up.", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit is audibly slapping their own face. 'Wake me up! Wait what? What call is it again? I'm so confused.'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is crying softly. 'I just don't know what these confusing letters mean! What call is it again?!'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, I'm abandoning my vehicle. I'm too confused. Wait what? What call is it again?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit reporting they have forgotten the alphabet. 'It's all just confusing letters to me now. Wake me up.'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Officer is begging for help. 'Wait what? My brain is full of confusing letters! What call is it again?!'", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Dispatch, I think I'm having a stroke. Wait what? Wake me up. What call is it again?", priority: "low", points: 1000 },
+    { title: "10-30 CONFUSED OFFICER: Unit is just making dial-up modem noises. 'Wait what? Error 404... What call is it again? Wake me up.'", priority: "low", points: 1000 },
     { title: "10-31 BURGLARY: A sentient swarm of micro-drones was caught in the act of stealing a jar of weaponized pickles. Officers report the suspect is desperately trying to eat the evidence.", priority: "low", points: 1000 },
     { title: "10-49 SHOPLIFTING: A citizen who clearly hasn't slept in 72 hours has brazenly walked out the front door with the letter 'E' off of every neon sign on Main Street. The suspect claims they needed it to fuel their time machine.", priority: "low", points: 1000 },
     { title: "10-WUT GRAND THEFT: A suspect claiming to be a sovereign citizen of the candy aisle is attempting to fence every single tube of mint toothpaste in Sector 4. Officers are highly confused as to why anyone would want this.", priority: "low", points: 1000 },
@@ -5725,6 +5786,30 @@ function simulateEvent(specificCrime = null) {
     
     // AI Officer dynamically engages the event and awards points
     setTimeout(() => {
+        if (crime.title.includes('10-30:')) {
+            const chatDiv = document.createElement('div');
+            chatDiv.className = 'chat-msg';
+            const confusedMsg = [
+                "Wait, what? What call is it again?",
+                "Dispatch, repeat that? What is a 10-30?",
+                "Wait, what? Wake me up, I must be hearing things.",
+                "Dispatch, you cut out... what is the call?",
+                "Wait, what? Are you just reading random letters?",
+                "What call is it again? Did you fall asleep on the keyboard?"
+            ];
+            chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--panic-orange) !important;">${getRandomItem(confusedMsg)}</span>`;
+            unifiedLogEl.appendChild(chatDiv);
+            scrollToBottom(unifiedLogEl);
+            
+            setTimeout(() => {
+               addChatMessage('DISPATCH', 'Nevermind, unit. Disregard.', 'dispatch-msg');
+               unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+               unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+               if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
+            }, 2500);
+            return;
+        }
+
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+15 POINTS]</span>`;
@@ -6378,6 +6463,12 @@ btnEvtRobbery.addEventListener('click', () => simulateEvent(crimeReports.find(c 
 btnEvtSuspicious.addEventListener('click', () => simulateEvent(crimeReports.find(c => c.title.includes("Suspicious"))));
 btnEvtTraffic.addEventListener('click', () => simulateEvent({ title: "10-50: Traffic Stop", priority: "medium" }));
 btnEvtRandom.addEventListener('click', () => simulateEvent());
+if (btnEvtConfusion) btnEvtConfusion.addEventListener('click', () => {
+    const confusedCalls = crimeReports.filter(c => c.title.includes("10-30"));
+    if (confusedCalls.length > 0) {
+        simulateEvent(confusedCalls[Math.floor(Math.random() * confusedCalls.length)]);
+    }
+});
 btnArrestNearby.addEventListener('click', () => simulateEvent({ title: "10-15: Arrest Nearby Suspect", priority: "low", group: "Local vagrants" }));
 clearPanicBtn.addEventListener('click', () => clearPanic());
 
@@ -8182,6 +8273,30 @@ function simulateEvent(specificCrime = null) {
     
     // AI Officer dynamically engages the event and awards points
     setTimeout(() => {
+        if (crime.title.includes('10-30:')) {
+            const chatDiv = document.createElement('div');
+            chatDiv.className = 'chat-msg';
+            const confusedMsg = [
+                "Wait, what? What call is it again?",
+                "Dispatch, repeat that? What is a 10-30?",
+                "Wait, what? Wake me up, I must be hearing things.",
+                "Dispatch, you cut out... what is the call?",
+                "Wait, what? Are you just reading random letters?",
+                "What call is it again? Did you fall asleep on the keyboard?"
+            ];
+            chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--panic-orange) !important;">${getRandomItem(confusedMsg)}</span>`;
+            unifiedLogEl.appendChild(chatDiv);
+            scrollToBottom(unifiedLogEl);
+            
+            setTimeout(() => {
+               addChatMessage('DISPATCH', 'Nevermind, unit. Disregard.', 'dispatch-msg');
+               unitAssignments[respondingUnits[0]] = '10-8 (Available)';
+               unitAssignments[respondingUnits[1]] = '10-8 (Available)';
+               if(typeof renderUnitStatus !== 'undefined' && (document.getElementById('tab-unit-status') && document.getElementById('tab-unit-status').classList.contains('active'))) renderUnitStatus();
+            }, 2500);
+            return;
+        }
+
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+${crime.points || 15} STATION POINTS]</span>`;
