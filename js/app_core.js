@@ -5958,7 +5958,14 @@ function simulateEvent(specificCrime = null) {
             `I arrested ${suspectStr}. Code 4.`,
             `${suspectStr} secured. We're 10-8.`,
             `Apprehended ${suspectStr} without incident.`,
-            `Got them. ${suspectStr} is in cuffs.`
+            `Got them. ${suspectStr} is in cuffs.`,
+            `${suspectStr} is reading their rights now. Secured.`,
+            `Suspect ${suspectStr} gave up easy. Taking them to booking.`,
+            `Handcuffed and secured. ${suspectStr} is in the back of my cruiser.`,
+            `Situation resolved. ${suspectStr} is under arrest.`,
+            `Code 4. ${suspectStr} is going away for a long time.`,
+            `We have ${suspectStr} in custody. Wrapping up here.`,
+            `Arrest successful on ${suspectStr}. No injuries.`
         ];
 
         const killingChats = [
@@ -7200,33 +7207,33 @@ function executeWarrant() {
             // Resolve based on citizen personality and officer personality
             if (cit.civPersonality === 'Passive') {
                 if (isCorruptReckless && Math.random() < 0.2) {
-                    reportMsg = `Suspect was totally reaching for something! I had no choice, target neutralized.`;
+                    reportMsg = getRandomItem([`Suspect was totally reaching for something! I had no choice, target neutralized.`, `Target made a sudden movement. I dropped them. Target is deceased.`, `I thought I saw a weapon. Lethal force authorized and executed.`, `Suspect twitched weirdly. I didn't take any chances. Neutralized.`]);
                     finalStatus = 'Deceased';
                 } else {
-                    reportMsg = `Target surrendered without a fight. Got them in cuffs. Code 4.`;
+                    reportMsg = getRandomItem([`Target surrendered without a fight. Got them in cuffs. Code 4.`, `Suspect complied immediately. In custody, en route to booking.`, `No resistance from the target. Secured and reading them their rights.`, `Easy grab. Suspect is zip-tied and in the back of my cruiser.`]);
                     finalStatus = 'Arrested';
                 }
             } 
             else if (cit.civPersonality === 'Panicked') {
                 if (isCorruptReckless && Math.random() < 0.3) {
-                    reportMsg = `Suspect tried to run, I dropped them in the alleyway. Target is deceased.`;
+                    reportMsg = getRandomItem([`Suspect tried to run, I dropped them in the alleyway. Target is deceased.`, `Target bolted. Fired two shots to the back. Target neutralized.`, `They tried to sprint away, but my aim is better. Suspect is down permanently.`, `Suspect made a run for it. Lethal pursuit successful. Awaiting cleanup.`]);
                     finalStatus = 'Deceased';
                 } else if (Math.random() < 0.5) {
-                    reportMsg = `Suspect booked it! I lost them in the crowds... damn it. They're gone.`;
+                    reportMsg = getRandomItem([`Suspect booked it! I lost them in the crowds... damn it. They're gone.`, `Target is rabbiting! I lost visual in the smog. Suspect escaped.`, `They slipped through a maintenance hatch. I lost the trail. Discontinuing pursuit.`, `Suspect is too fast. Lost them in Sector 4. Breaking off.`]);
                     finalStatus = 'Escaped';
                     msgType = "worried";
                 } else {
-                    reportMsg = `Target tried to run, but I chased them down. Secured in cuffs.`;
+                    reportMsg = getRandomItem([`Target tried to run, but I chased them down. Secured in cuffs.`, `Suspect initiated a foot pursuit but tripped over some trash. Got them in cuffs.`, `They tried to rabbit, but I tackled them into a vending machine. Suspect secured.`, `Suspect exhausted themselves running. They gave up. Code 4, returning to station.`]);
                     finalStatus = 'Arrested';
                 }
             }
             else if (cit.civPersonality === 'Partially Aggressive') {
                 if (Math.random() < 0.5) {
-                    reportMsg = `Suspect threw a punch and tried to fight. I put them down permanently.`;
+                    reportMsg = getRandomItem([`Suspect threw a punch and tried to fight. I put them down permanently.`, `Target got hostile and swung at me. Lethal retaliation applied. Target deceased.`, `Suspect pulled a pipe. I put three rounds in their chest. Neutralized.`, `They tried to fight back. It was a short fight. Call the coroner.`]);
                     finalStatus = 'Deceased';
                     msgType = "worried";
                 } else {
-                    reportMsg = `Suspect got a little rough, but I overpowered them. Target secured.`;
+                    reportMsg = getRandomItem([`Suspect got a little rough, but I overpowered them. Target secured.`, `Target put up a fight, but a quick shock from the baton settled them down. In custody.`, `Suspect resisted arrest, but I pinned them. Applying cuffs now.`, `They didn't want to go quietly. Bruised my knuckles, but they are secured.`]);
                     finalStatus = 'Arrested';
                 }
             }
@@ -8445,7 +8452,14 @@ function simulateEvent(specificCrime = null) {
             `I arrested ${suspectStr}. Code 4.`,
             `${suspectStr} secured. We're 10-8.`,
             `Apprehended ${suspectStr} without incident.`,
-            `Got them. ${suspectStr} is in cuffs.`
+            `Got them. ${suspectStr} is in cuffs.`,
+            `${suspectStr} is reading their rights now. Secured.`,
+            `Suspect ${suspectStr} gave up easy. Taking them to booking.`,
+            `Handcuffed and secured. ${suspectStr} is in the back of my cruiser.`,
+            `Situation resolved. ${suspectStr} is under arrest.`,
+            `Code 4. ${suspectStr} is going away for a long time.`,
+            `We have ${suspectStr} in custody. Wrapping up here.`,
+            `Arrest successful on ${suspectStr}. No injuries.`
         ];
 
         const killingChats = [
@@ -8874,9 +8888,9 @@ setInterval(() => {
 
 
 // === PUBLIC OPINION DATABASE ===
-let currentStationRating = 0.0;
-let totalReviews = 0;
-let trustPercentage = 20; // 80% distrust by default
+let currentStationRating = 2.5;
+let totalReviews = 1;
+let trustPercentage = 50; // 50% trust / 50% distrust by default
 
 const innocentReviewComments = [
     "I trust MCPD with my life! 5 stars!",
@@ -8888,7 +8902,22 @@ const innocentReviewComments = [
     "The officers always wave at my kids. Wonderful people.",
     "MCPD responded to my call in under 5 minutes. Outstanding!",
     "Best police force in the megacity. No question.",
-    "I sleep soundly knowing MCPD is out there protecting us."
+    "I sleep soundly knowing MCPD is out there protecting us.",
+    "They kept the synth-gangs away from my shop! 5 stars!",
+    "Incredible response time on my noise complaint. Thank you!",
+    "I feel 100% safer when I see those black cruisers roll by.",
+    "The dispatchers are always so polite when I call in tips.",
+    "They cleaned out that ripperdoc clinic on 5th street. Finally!",
+    "A patrol officer helped me fix my hover-car engine today.",
+    "I accidentally tripped an alarm, and they didn't even shoot me!",
+    "The local precinct is doing God's work in these dark times.",
+    "Top notch cyber-security forces. Nothing gets past them.",
+    "Five stars for not taking bribes from the local syndicates!",
+    "I saw an officer pet a stray cat. They are human after all.",
+    "Absolutely stellar. They found my stolen data drive in hours.",
+    "No nonsense. They came, they saw, they cuffed the bad guys.",
+    "The sheer presence of MCPD keeps crime down here.",
+    "I love paying taxes if it goes to these brave officers."
 ];
 
 const suspiciousReviewComments = [
@@ -8901,7 +8930,17 @@ const suspiciousReviewComments = [
     "The officers seem competent but they make me nervous.",
     "Mixed feelings. They saved my neighbor but also broke my fence.",
     "Average service. Could be worse, could be better.",
-    "They gave me a warning instead of a citation. Okay I guess."
+    "They gave me a warning instead of a citation. Okay I guess.",
+    "I tried to ask for directions and the officer told me to disperse.",
+    "Why do they wear full tactical gear to give parking tickets?",
+    "I feel like they are logging my neural network data.",
+    "Sure they stop crime, but they also yell a lot.",
+    "My biometric scan was 'randomly selected' three times this week.",
+    "They seem a bit too quick to pull out their stun batons.",
+    "I'm giving 3 stars because they left their siren on for an hour.",
+    "The drones hover way too close to my apartment window.",
+    "A bit paranoid if you ask me. Everyone is a suspect to them.",
+    "They do their job, but they have zero people skills."
 ];
 
 const arrestedGoodPoliceComments = [
