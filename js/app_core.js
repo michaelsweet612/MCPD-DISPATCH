@@ -9362,25 +9362,34 @@ function initCityMap() {
     
     
     // --- Map Zone Drawing Listeners ---
-    const btnHostile = document.getElementById('btn-draw-hostile');
-    const btnProtected = document.getElementById('btn-draw-protected');
-    
-    if (btnHostile) {
-        btnHostile.addEventListener('click', () => {
-            window.activeZoneMode = 'Hostile';
-            btnHostile.style.background = 'var(--panic-red)';
-            btnHostile.style.color = '#000';
-            if(btnProtected) { btnProtected.style.background = 'rgba(0,0,0,0.8)'; btnProtected.style.color = 'var(--accent-green)'; }
-        });
-    }
-    if (btnProtected) {
-        btnProtected.addEventListener('click', () => {
-            window.activeZoneMode = 'Protected';
-            btnProtected.style.background = 'var(--accent-green)';
-            btnProtected.style.color = '#000';
-            if(btnHostile) { btnHostile.style.background = 'rgba(0,0,0,0.8)'; btnHostile.style.color = 'var(--panic-red)'; }
-        });
-    }
+    const mapBtns = [
+        {id: 'btn-draw-hostile', mode: 'Hostile', color: 'var(--panic-red)'},
+        {id: 'btn-draw-military', mode: 'Military Base', color: '#ffeb3b'},
+        {id: 'btn-draw-restricted', mode: 'Restricted Zone', color: 'var(--panic-orange)'},
+        {id: 'btn-draw-police', mode: 'Police Only', color: 'var(--accent-blue)'},
+        {id: 'btn-draw-safeciv', mode: 'Safe Civilian', color: '#ffffff'},
+        {id: 'btn-draw-park', mode: 'City Park', color: 'var(--accent-green)'}
+    ];
+
+    mapBtns.forEach(btnObj => {
+        const btn = document.getElementById(btnObj.id);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                window.activeZoneMode = btnObj.mode;
+                // Reset all
+                mapBtns.forEach(b => {
+                    let btnEl = document.getElementById(b.id);
+                    if (btnEl) {
+                        btnEl.style.background = 'rgba(0,0,0,0.8)';
+                        btnEl.style.color = b.color;
+                    }
+                });
+                // Set active
+                btn.style.background = btnObj.color;
+                btn.style.color = '#000';
+            });
+        }
+    });
 
     if (cityCanvas) {
         cityCanvas.addEventListener('mousedown', (e) => {
@@ -9592,33 +9601,52 @@ function drawCityMap() {
 
         
         // --- Zone Collisions ---
-        if (e.faction === 'civ' && typeof window.mapZones !== 'undefined' && e.speed > 0) {
+        if (typeof window.mapZones !== 'undefined' && e.speed > 0) {
             for (let z of window.mapZones) {
                 let zX = Math.min(z.x, z.x + z.w);
                 let zY = Math.min(z.y, z.y + z.h);
                 let zW = Math.abs(z.w);
                 let zH = Math.abs(z.h);
                 if (e.x >= zX && e.x <= zX + zW && e.y >= zY && e.y <= zY + zH) {
-                    if (z.type === 'Hostile') {
-                        // Check ROE status safely
+                    // Military Base (Kill Civilians Instantly regardless of ROE)
+                    if (z.type === 'Military Base' && e.faction === 'civ') {
+                        e.emoji = '💀';
+                        e.speed = 0;
+                        break;
+                    }
+                    // Hostile Zone (Arrest/Kill based on ROE for Civilians)
+                    if (z.type === 'Hostile' && e.faction === 'civ') {
                         const roeCheckbox = document.getElementById('roe-toggle');
-                        const isRoeOn = roeCheckbox ? roeCheckbox.checked : true;
-                        
-                        if (!isRoeOn) { // Lethal
-                            e.emoji = '💀';
-                            e.speed = 0;
-                        } else { // Arrest
-                            e.emoji = '🔗';
-                            e.speed = 0;
-                        }
-                    } else if (z.type === 'Protected') {
-                        // Reverse direction to escort them out
+                        if (roeCheckbox && !roeCheckbox.checked) { e.emoji = '💀'; e.speed = 0; } 
+                        else { e.emoji = '🔗'; e.speed = 0; }
+                        break;
+                    }
+                    // Restricted Zone (Civilians flagged as Wanted/Alerted)
+                    if (z.type === 'Restricted Zone' && e.faction === 'civ') {
+                        e.emoji = '⚠️';
+                        // Keep moving, but they are flagged
+                    }
+                    // Police Only Zone (Bounce Civilians out)
+                    if (z.type === 'Police Only' && e.faction === 'civ') {
                         if (e.dir === 'N') { e.dir = 'S'; e.y += 10; }
                         else if (e.dir === 'S') { e.dir = 'N'; e.y -= 10; }
                         else if (e.dir === 'E') { e.dir = 'W'; e.x -= 10; }
                         else if (e.dir === 'W') { e.dir = 'E'; e.x += 10; }
+                        break;
                     }
-                    break;
+                    // Safe Civilian Zone (Bounce Police out)
+                    if (z.type === 'Safe Civilian' && e.faction === 'police') {
+                        if (e.dir === 'N') { e.dir = 'S'; e.y += 10; }
+                        else if (e.dir === 'S') { e.dir = 'N'; e.y -= 10; }
+                        else if (e.dir === 'E') { e.dir = 'W'; e.x -= 10; }
+                        else if (e.dir === 'W') { e.dir = 'E'; e.x += 10; }
+                        break;
+                    }
+                    // City Park (Slow down Civilians)
+                    if (z.type === 'City Park' && e.faction === 'civ') {
+                        e.speed = e.speed * 0.5;
+                        // Don't break, they can still move through
+                    }
                 }
             }
         }
@@ -9650,9 +9678,24 @@ function drawCityMap() {
             if (z.type === 'Hostile') {
                 ctx.fillStyle = 'rgba(244, 67, 54, 0.3)';
                 ctx.strokeStyle = 'rgba(244, 67, 54, 0.8)';
-            } else {
+            } else if (z.type === 'Military Base') {
+                ctx.fillStyle = 'rgba(255, 235, 59, 0.2)';
+                ctx.strokeStyle = '#ffeb3b';
+            } else if (z.type === 'Restricted Zone') {
+                ctx.fillStyle = 'rgba(255, 152, 0, 0.3)';
+                ctx.strokeStyle = 'var(--panic-orange)';
+            } else if (z.type === 'Police Only') {
+                ctx.fillStyle = 'rgba(0, 150, 255, 0.2)';
+                ctx.strokeStyle = 'var(--accent-blue)';
+            } else if (z.type === 'Safe Civilian') {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.strokeStyle = '#ffffff';
+            } else if (z.type === 'City Park') {
                 ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
-                ctx.strokeStyle = 'rgba(76, 175, 80, 0.8)';
+                ctx.strokeStyle = 'var(--accent-green)';
+            } else {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.strokeStyle = '#ffffff';
             }
             ctx.fillRect(zX, zY, zW, zH);
             ctx.lineWidth = 2;
@@ -9670,9 +9713,24 @@ function drawCityMap() {
             if (window.activeZoneMode === 'Hostile') {
                 ctx.fillStyle = 'rgba(244, 67, 54, 0.3)';
                 ctx.strokeStyle = 'rgba(244, 67, 54, 0.8)';
-            } else {
+            } else if (window.activeZoneMode === 'Military Base') {
+                ctx.fillStyle = 'rgba(255, 235, 59, 0.2)';
+                ctx.strokeStyle = '#ffeb3b';
+            } else if (window.activeZoneMode === 'Restricted Zone') {
+                ctx.fillStyle = 'rgba(255, 152, 0, 0.3)';
+                ctx.strokeStyle = 'var(--panic-orange)';
+            } else if (window.activeZoneMode === 'Police Only') {
+                ctx.fillStyle = 'rgba(0, 150, 255, 0.2)';
+                ctx.strokeStyle = 'var(--accent-blue)';
+            } else if (window.activeZoneMode === 'Safe Civilian') {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.strokeStyle = '#ffffff';
+            } else if (window.activeZoneMode === 'City Park') {
                 ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
-                ctx.strokeStyle = 'rgba(76, 175, 80, 0.8)';
+                ctx.strokeStyle = 'var(--accent-green)';
+            } else {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.strokeStyle = '#ffffff';
             }
             ctx.fillRect(zX, zY, zW, zH);
             ctx.lineWidth = 2;
