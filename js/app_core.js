@@ -5915,7 +5915,11 @@ function simulateEvent(specificCrime = null) {
     setTimeout(async () => {
         const reportingUnit = respondingUnits[0];
         const backupUnit = respondingUnits[1];
-        const isROEEnabled = roeToggleCheckbox.checked;
+        let isROEEnabled = roeToggleCheckbox.checked;
+        const repOfficerObj = typeof roster !== 'undefined' ? roster.find(u => u.id === reportingUnit) : null;
+        if (repOfficerObj && repOfficerObj.personality === 'Trigger-Happy') {
+            isROEEnabled = false; // Trigger-Happy ignores ROE and always shoots
+        }
 
         if (Math.random() < 0.3) {
             const swear = getRandomItem(swearWords);
@@ -7216,8 +7220,11 @@ function executeWarrant() {
             let finalStatus = cit.status;
 
             // Resolve based on citizen personality and officer personality
+            let isROEEnabled = roeToggleCheckbox.checked;
+            if (officerPersonality === 'Trigger-Happy') isROEEnabled = false;
+
             if (cit.civPersonality === 'Passive') {
-                if (officerPersonality === 'Trigger-Happy' || (officerPersonality === 'Impatient' && Math.random() < 0.5) || (isCorruptReckless && Math.random() < 0.2)) {
+                if (!isROEEnabled) {
                     reportMsg = getRandomItem([`Suspect was totally reaching for something! I had no choice, target neutralized.`, `Target made a sudden movement. I dropped them. Target is deceased.`, `I thought I saw a weapon. Lethal force authorized and executed.`, `Suspect twitched weirdly. I didn't take any chances. Neutralized.`]);
                     finalStatus = 'Deceased';
                 } else {
@@ -7226,7 +7233,7 @@ function executeWarrant() {
                 }
             } 
             else if (cit.civPersonality === 'Panicked') {
-                if (officerPersonality === 'Trigger-Happy' || (officerPersonality === 'Impatient' && Math.random() < 0.5) || (isCorruptReckless && Math.random() < 0.3)) {
+                if (!isROEEnabled) {
                     reportMsg = getRandomItem([`Suspect tried to run, I dropped them in the alleyway. Target is deceased.`, `Target bolted. Fired two shots to the back. Target neutralized.`, `They tried to sprint away, but my aim is better. Suspect is down permanently.`, `Suspect made a run for it. Lethal pursuit successful. Awaiting cleanup.`]);
                     finalStatus = 'Deceased';
                 } else if (Math.random() < 0.5) {
@@ -7239,7 +7246,7 @@ function executeWarrant() {
                 }
             }
             else if (cit.civPersonality === 'Partially Aggressive') {
-                if (officerPersonality === 'Trigger-Happy' || (officerPersonality === 'Impatient' && Math.random() < 0.8) || (Math.random() < 0.5)) {
+                if (!isROEEnabled) {
                     reportMsg = getRandomItem([`Suspect threw a punch and tried to fight. I put them down permanently.`, `Target got hostile and swung at me. Lethal retaliation applied. Target deceased.`, `Suspect pulled a pipe. I put three rounds in their chest. Neutralized.`, `They tried to fight back. It was a short fight. Call the coroner.`]);
                     finalStatus = 'Deceased';
                     msgType = "worried";
@@ -8424,7 +8431,11 @@ function simulateEvent(specificCrime = null) {
     setTimeout(async () => {
         const reportingUnit = respondingUnits[0];
         const backupUnit = respondingUnits[1];
-        const isROEEnabled = roeToggleCheckbox.checked;
+        let isROEEnabled = roeToggleCheckbox.checked;
+        const repOfficerObj = typeof roster !== 'undefined' ? roster.find(u => u.id === reportingUnit) : null;
+        if (repOfficerObj && repOfficerObj.personality === 'Trigger-Happy') {
+            isROEEnabled = false; // Trigger-Happy ignores ROE and always shoots
+        }
 
         if (Math.random() < 0.3) {
             const swear = getRandomItem(swearWords);
