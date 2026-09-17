@@ -5773,7 +5773,22 @@ function simulateEvent(specificCrime = null) {
 
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
-    const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
+    let weightedUnits = [];
+    const _active = getActiveCallsigns();
+    _active.forEach(c => {
+        weightedUnits.push(c);
+        const o = roster.find(u => u.id === c);
+        if (o && o.personality === 'Trigger-Happy') {
+            weightedUnits.push(c, c, c, c); // 5x higher chance to be selected
+        }
+    });
+    if (weightedUnits.length === 0) weightedUnits = _active;
+    
+    const respondingUnits = [getRandomItem(weightedUnits), getRandomItem(weightedUnits)];
+    if (respondingUnits[0] === respondingUnits[1] && _active.length > 1) {
+        const others = weightedUnits.filter(c => c !== respondingUnits[0]);
+        if (others.length > 0) respondingUnits[1] = getRandomItem(others);
+    }
 
     const numUnits = respondingUnits.length;
     const sector = Math.floor(1000 + Math.random() * 9000);
@@ -8289,7 +8304,22 @@ function simulateEvent(specificCrime = null) {
 
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
-    const respondingUnits = [getRandomItem(getActiveCallsigns()), getRandomItem(getActiveCallsigns())];
+    let weightedUnits = [];
+    const _active = getActiveCallsigns();
+    _active.forEach(c => {
+        weightedUnits.push(c);
+        const o = roster.find(u => u.id === c);
+        if (o && o.personality === 'Trigger-Happy') {
+            weightedUnits.push(c, c, c, c); // 5x higher chance to be selected
+        }
+    });
+    if (weightedUnits.length === 0) weightedUnits = _active;
+    
+    const respondingUnits = [getRandomItem(weightedUnits), getRandomItem(weightedUnits)];
+    if (respondingUnits[0] === respondingUnits[1] && _active.length > 1) {
+        const others = weightedUnits.filter(c => c !== respondingUnits[0]);
+        if (others.length > 0) respondingUnits[1] = getRandomItem(others);
+    }
 
     const numUnits = respondingUnits.length;
     const sector = Math.floor(1000 + Math.random() * 9000);
