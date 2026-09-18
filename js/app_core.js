@@ -3297,3 +3297,45 @@ window.recordOfficerStat = function(callsign, type) {
         window.updateOfficerLeaderboard();
     }
 };
+
+// ==========================================
+// PUBLIC INFORMATION REGISTRY
+// ==========================================
+let pubInfo = {
+    homeowners: 1842000,
+    vehicles: 4200000,
+    businesses: 840000,
+    experimental: 19841,
+    firearms: 184219841999
+};
+
+function updatePublicInfoUI() {
+    const elHome = document.getElementById('pub-homeowners');
+    const elVeh = document.getElementById('pub-vehicles');
+    const elBus = document.getElementById('pub-businesses');
+    const elExp = document.getElementById('pub-experimental');
+    const elFire = document.getElementById('pub-firearms');
+    
+    if (elHome) elHome.textContent = pubInfo.homeowners.toLocaleString();
+    if (elVeh) elVeh.textContent = pubInfo.vehicles.toLocaleString();
+    if (elBus) elBus.textContent = pubInfo.businesses.toLocaleString();
+    if (elExp) elExp.textContent = pubInfo.experimental.toLocaleString();
+    if (elFire) elFire.textContent = pubInfo.firearms.toLocaleString();
+}
+
+// Fluctuations
+setInterval(() => {
+    // Fluctuate randomly between -5 and +5
+    pubInfo.homeowners += Math.floor(Math.random() * 11) - 5;
+    pubInfo.vehicles += Math.floor(Math.random() * 11) - 5;
+    pubInfo.businesses += Math.floor(Math.random() * 11) - 5;
+    pubInfo.experimental += Math.floor(Math.random() * 5) - 2; // Slower fluctuation
+    
+    // Firearms fluctuates wildly
+    pubInfo.firearms += Math.floor(Math.random() * 9999) - 2000;
+    
+    updatePublicInfoUI();
+}, 2500);
+
+// Initial update
+setTimeout(updatePublicInfoUI, 1000);
