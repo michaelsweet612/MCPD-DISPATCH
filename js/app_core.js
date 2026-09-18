@@ -9072,6 +9072,22 @@ function addCivilianReview(stars, isArrestComplaint, specificName, customComment
     if (trustEl) trustEl.textContent = Math.round(trustPercentage) + '% TRUST';
     if (distrustEl) distrustEl.textContent = Math.round(100 - trustPercentage) + '% DISTRUST';
     
+    // --- CIVIL WAR MECHANIC ---
+    if (typeof window.civilWarActive === 'undefined') window.civilWarActive = false;
+    
+    if (!window.civilWarActive && trustPercentage < 40) {
+        window.civilWarActive = true;
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage('SYSTEM', 'CRITICAL ALERT: TRUST DROPPED BELOW 40%. CIVIL WAR DECLARED. MARTIAL LAW ENACTED.', 'panic', false);
+            addChatMessage('SYSTEM', 'Military forces are now deploying from the Military Base to pacify the city.', 'serious', false);
+        }
+    } else if (window.civilWarActive && trustPercentage >= 80) {
+        window.civilWarActive = false;
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage('SYSTEM', 'ALERT: TRUST EXCEEDED 80%. CIVIL WAR CONCLUDED. MILITARY STANDING DOWN.', 'serious', false);
+        }
+    }
+    
     const div = document.createElement('div');
     div.style.color = '#fff';
     div.innerHTML = '<span style="color: #ffeb3b;">\u2B50 ' + stars.toFixed(1) + '</span> - <span style="color: #94a3b8;">"' + comment + '"</span> - ' + specificName;
@@ -9720,6 +9736,26 @@ function drawCityMap() {
         // Dispatch Cop to scene
         entities.push({faction: 'police', isVehicle: true, x: window.worldWidth-10, y: ry, dir: 'W', speed: 5, baseSpeed: 5, emoji: '🚓', targetX: rx, targetY: ry});
     }
+    
+    // CIVIL WAR: Military Spawning
+    if (window.civilWarActive && Math.random() < 0.1) {
+        if (window.landmarks) {
+            let base = window.landmarks.find(l => l.type === 'Military Base');
+            if (base) {
+                entities.push({
+                    faction: 'police', // Military act like cops for targeting
+                    isVehicle: false,
+                    x: base.x + base.w/2,
+                    y: base.y + base.h/2,
+                    dir: ['N','S','E','W'][Math.floor(Math.random()*4)],
+                    speed: 2.5,
+                    baseSpeed: 2.5,
+                    emoji: '🪖',
+                    id: 'MIL-' + Math.floor(Math.random()*90000)
+                });
+            }
+        }
+    }
 
     // 7. Update & Draw Entities
     for (let e of entities) {
@@ -9761,6 +9797,20 @@ function drawCityMap() {
                         }
                     }
                 }
+            }
+        }
+        
+        // CIVIL WAR: Fleeing Mechanic
+        if (e.faction === 'civ' && e.emoji !== '💀' && e.emoji !== '🔗') {
+            let copsNear = 0;
+            for (let other of entities) {
+                if (other.faction === 'police' && Math.hypot(e.x - other.x, e.y - other.y) < 250) {
+                    copsNear++;
+                }
+            }
+            if (copsNear >= 10) {
+                e.emoji = '🏃';
+                e.speed = e.baseSpeed * 2.5;
             }
         }
 
