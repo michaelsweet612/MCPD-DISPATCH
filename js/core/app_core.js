@@ -7254,24 +7254,26 @@ setTimeout(updatePublicInfoUI, 1000);
 
 
 // ==========================================
-// PUBLIC MCPD STOCK MARKET LOGIC
+// STOCK MARKET LOGIC (MCPD, CIV, GOV)
 // ==========================================
-let currentStockPrice = 150.00;
-let stockHistory = new Array(40).fill(150.00); // Prefill history for graph
 
-function drawStockChart(isBull) {
-    const canvas = document.getElementById('stock-chart');
+let markets = {
+    mcpd: { price: 150.00, history: new Array(40).fill(150.00), color: '#4caf50', badColor: '#f44336' },
+    civ: { price: 50.00, history: new Array(40).fill(50.00), color: '#2196f3', badColor: '#f44336' },
+    gov: { price: 300.00, history: new Array(40).fill(300.00), color: '#ff9800', badColor: '#f44336' }
+};
+
+function drawStockChart(id, isBull) {
+    const canvas = document.getElementById(`${id}-stock-chart`);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    const hist = markets[id].history;
     
-    // Clear
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Determine min and max for scaling
-    let minPrice = Math.min(...stockHistory);
-    let maxPrice = Math.max(...stockHistory);
+    let minPrice = Math.min(...hist);
+    let maxPrice = Math.max(...hist);
     
-    // Add padding to scale
     const padding = (maxPrice - minPrice) * 0.2;
     minPrice -= padding;
     maxPrice += padding;
@@ -7279,114 +7281,109 @@ function drawStockChart(isBull) {
     
     const range = maxPrice - minPrice;
     
-    // Draw line
     ctx.beginPath();
     ctx.lineWidth = 3;
-    ctx.strokeStyle = isBull ? '#4caf50' : '#f44336';
+    ctx.strokeStyle = isBull ? markets[id].color : markets[id].badColor;
     
-    const stepX = canvas.width / (stockHistory.length - 1);
+    const stepX = canvas.width / (hist.length - 1);
     
-    for (let i = 0; i < stockHistory.length; i++) {
+    for (let i = 0; i < hist.length; i++) {
         const x = i * stepX;
-        // Invert Y because canvas 0,0 is top left
-        const y = canvas.height - (((stockHistory[i] - minPrice) / range) * canvas.height);
+        const y = canvas.height - (((hist[i] - minPrice) / range) * canvas.height);
         
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
     }
     ctx.stroke();
     
-    // Draw fill gradient
     ctx.lineTo(canvas.width, canvas.height);
     ctx.lineTo(0, canvas.height);
     ctx.closePath();
     
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     if (isBull) {
-        gradient.addColorStop(0, 'rgba(76, 175, 80, 0.4)');
-        gradient.addColorStop(1, 'rgba(76, 175, 80, 0.0)');
+        gradient.addColorStop(0, `${markets[id].color}66`); // 40% opacity hex approx
+        gradient.addColorStop(1, `${markets[id].color}00`);
     } else {
-        gradient.addColorStop(0, 'rgba(244, 67, 54, 0.4)');
-        gradient.addColorStop(1, 'rgba(244, 67, 54, 0.0)');
+        gradient.addColorStop(0, `${markets[id].badColor}66`);
+        gradient.addColorStop(1, `${markets[id].badColor}00`);
     }
     ctx.fillStyle = gradient;
     ctx.fill();
     
-    // Draw huge animated arrow
     ctx.font = '80px Arial';
-    ctx.fillStyle = isBull ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)';
+    ctx.fillStyle = isBull ? `${markets[id].color}33` : `${markets[id].badColor}33`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(isBull ? '↗' : '↘', canvas.width / 2, canvas.height / 2);
 }
 
-function updateStockMarket() {
-    // Determine the trend based on trust. 50% trust is neutral.
-    // trustPercentage goes from 0 to 100.
+function updateStockMarkets() {
     let trustFactor = (typeof trustPercentage !== 'undefined' ? trustPercentage : 50);
     
-    // Convert to a multiplier: <50 is negative, >50 is positive
-    let trend = (trustFactor - 50) / 100; // range from -0.5 to +0.5
+    // 1. MCPD Market (Tied directly to Trust)
+    let mcpdTrend = (trustFactor - 50) / 100; 
+    let mcpdChange = (mcpdTrend * 8.0) + ((Math.random() * 4) - 2);
+    if (trustFactor < 20) mcpdChange -= (Math.random() * 5);
     
-    // Add some random market volatility
-    let volatility = (Math.random() * 4) - 2; // Random swing between -2.0 and +2.0
+    // 2. CIV Market (Tied loosely to Trust, but more volatile)
+    let civTrend = (trustFactor - 40) / 100;
+    let civChange = (civTrend * 5.0) + ((Math.random() * 6) - 3);
     
-    let change = (trend * 8.0) + volatility; // Max base movement + volatility
-    
-    // Distrust crash mechanism: If distrust is massive (trust < 20)
-    if (trustFactor < 20) {
-        // Massive sell-off
-        change -= (Math.random() * 5);
-    }
-    
-    currentStockPrice += change;
-    if (currentStockPrice < 0.01) currentStockPrice = 0.01; // Floor
-    
-    stockHistory.push(currentStockPrice);
-    if (stockHistory.length > 40) stockHistory.shift();
-    
-    let priceEl = document.getElementById('stock-price');
-    let trendEl = document.getElementById('stock-trend');
-    let statusEl = document.getElementById('stock-status');
-    
-    if (priceEl && trendEl && statusEl) {
-        priceEl.textContent = `NTND $${currentStockPrice.toFixed(2)}`;
+    // 3. GOV Market (Inverse to Trust. Panic = More Weapons/Defense Contracts)
+    let govTrend = (50 - trustFactor) / 100;
+    let govChange = (govTrend * 10.0) + ((Math.random() * 5) - 2.5);
+
+    let updates = [
+        { id: 'mcpd', change: mcpdChange },
+        { id: 'civ', change: civChange },
+        { id: 'gov', change: govChange }
+    ];
+
+    updates.forEach(u => {
+        let market = markets[u.id];
+        market.price += u.change;
+        if (market.price < 0.01) market.price = 0.01;
         
-        let percentageChange = (change / currentStockPrice) * 100;
+        market.history.push(market.price);
+        if (market.history.length > 40) market.history.shift();
         
-        if (change >= 0) {
-            trendEl.textContent = `▲ +${percentageChange.toFixed(2)}%`;
-            trendEl.style.color = "var(--accent-green)";
-            priceEl.style.color = "var(--accent-green)";
-        } else {
-            trendEl.textContent = `▼ ${percentageChange.toFixed(2)}%`;
-            trendEl.style.color = "var(--panic-red)";
-            priceEl.style.color = "var(--panic-red)";
+        let priceEl = document.getElementById(`${u.id}-stock-price`);
+        let trendEl = document.getElementById(`${u.id}-stock-trend`);
+        let statusEl = document.getElementById(`${u.id}-stock-status`);
+        
+        if (priceEl && trendEl && statusEl) {
+            priceEl.textContent = `NTND $${market.price.toFixed(2)}`;
+            let pctChange = (u.change / market.price) * 100;
+            
+            if (u.change >= 0) {
+                trendEl.textContent = `▲ +${pctChange.toFixed(2)}%`;
+                trendEl.style.color = market.color;
+                priceEl.style.color = market.color;
+            } else {
+                trendEl.textContent = `▼ ${pctChange.toFixed(2)}%`;
+                trendEl.style.color = market.badColor;
+                priceEl.style.color = market.badColor;
+            }
+            
+            if (Math.abs(pctChange) > 5) {
+                statusEl.textContent = u.change > 0 ? "SURGING (BUY)" : "CRASHING (SELL)";
+                statusEl.style.color = u.change > 0 ? market.color : market.badColor;
+            } else if (u.change < -2) {
+                statusEl.textContent = "BEARISH";
+                statusEl.style.color = "var(--panic-orange)";
+            } else if (u.change > 2) {
+                statusEl.textContent = "BULLISH";
+                statusEl.style.color = market.color;
+            } else {
+                statusEl.textContent = "STABLE";
+                statusEl.style.color = "var(--text-dim)";
+            }
         }
         
-        if (trustFactor < 20) {
-            statusEl.textContent = "CRASHING (PANIC SELL)";
-            statusEl.style.color = "var(--panic-red)";
-        } else if (trustFactor > 80) {
-            statusEl.style.color = "var(--accent-blue)";
-            statusEl.textContent = "BULL MARKET (SECURE)";
-        } else if (change < -3) {
-            statusEl.style.color = "var(--panic-orange)";
-            statusEl.textContent = "VOLATILE (BEARISH)";
-        } else {
-            statusEl.style.color = "var(--text-dim)";
-            statusEl.textContent = "STABLE";
-        }
-        
-        // Update Canvas Visuals
-        const canvas = document.getElementById('stock-chart');
-        if (canvas) {
-            canvas.style.background = (change >= 0) ? 'rgba(0, 255, 0, 0.05)' : 'rgba(255, 0, 0, 0.05)';
-        }
-        drawStockChart(change >= 0);
-    }
+        drawStockChart(u.id, u.change >= 0);
+    });
 }
 
-// Tick every 3.5 seconds
-setInterval(updateStockMarket, 3500);
-setTimeout(updateStockMarket, 1000);
+setInterval(updateStockMarkets, 3500);
+setTimeout(updateStockMarkets, 1000);
