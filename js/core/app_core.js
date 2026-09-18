@@ -2832,7 +2832,12 @@ function simulateEvent(specificCrime = null) {
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+15 POINTS]</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
-        if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { awardOfficerPoints(respondingUnits[0], 15); } else { addPoints(15); }
+        if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
+            awardOfficerPoints(respondingUnits[0], 15); 
+            if (typeof window.recordOfficerStat === 'function') window.recordOfficerStat(respondingUnits[0], 'answered');
+        } else { 
+            addPoints(15); 
+        }
         
         // Jealous Officer mechanic
         setTimeout(() => {
@@ -5363,7 +5368,12 @@ function simulateEvent(specificCrime = null) {
         chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+${crime.points || 15} STATION POINTS]</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
-        if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { awardOfficerPoints(respondingUnits[0], crime.points || 15); } else { addPoints(crime.points || 15); }
+        if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
+            awardOfficerPoints(respondingUnits[0], crime.points || 15); 
+            if (typeof window.recordOfficerStat === 'function') window.recordOfficerStat(respondingUnits[0], 'answered');
+        } else { 
+            addPoints(crime.points || 15); 
+        }
         
         // Jealous Officer mechanic
         setTimeout(() => {
@@ -6254,6 +6264,34 @@ window.updateOfficerLeaderboard = function() {
                 `;
             });
             arrEl.innerHTML = html;
+        }
+    }
+
+    // --- CALLS ANSWERED LEADERBOARD ---
+    const ansEl = document.getElementById('leaderboard-answered-list');
+    if (ansEl) {
+        const officersWithAnswers = roster.filter(u => u.answeredCalls && u.answeredCalls > 0);
+        officersWithAnswers.sort((a, b) => b.answeredCalls - a.answeredCalls);
+        const top5Answers = officersWithAnswers.slice(0, 5);
+        
+        if (top5Answers.length === 0) {
+            ansEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
+        } else {
+            let html = '';
+            top5Answers.forEach((off, idx) => {
+                let color = 'var(--text-main)';
+                if (idx === 0) color = '#ffeb3b';
+                else if (idx === 1) color = '#e0e0e0';
+                else if (idx === 2) color = '#cd7f32';
+
+                html += `
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(179,136,255,0.2); padding-bottom: 5px;">
+                        <span style="color: ${color}; font-weight: bold;">#${idx + 1} ${off.id}</span>
+                        <span style="color: #b388ff; font-weight: bold;">${off.answeredCalls} CALLS</span>
+                    </div>
+                `;
+            });
+            ansEl.innerHTML = html;
         }
     }
     
