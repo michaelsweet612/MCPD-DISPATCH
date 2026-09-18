@@ -1,0 +1,193 @@
+// 7. Update & Draw Entities
+    for (let e of entities) {
+        
+        // Base AI Navigation (Turn at intersections)
+        if (e.dir === 'N' || e.dir === 'S') {
+            for(let y of roadY) {
+                if(Math.abs(e.y - y) < 5) {
+                    if(Math.random() > 0.7) { 
+                        e.dir = Math.random() > 0.5 ? 'E' : 'W'; 
+                        e.y = y + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
+                        break; 
+                    }
+                }
+            }
+        } else {
+            for(let x of roadX) {
+                if(Math.abs(e.x - x) < 5) {
+                    if(Math.random() > 0.7) { 
+                        e.dir = Math.random() > 0.5 ? 'N' : 'S'; 
+                        e.x = x + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
+                        break; 
+                    }
+                }
+            }
+        }
+
+        // Avoidance & Collision System
+        let stopAhead = false;
+        
+        if (e.isVehicle && e.speed > 0) {
+            // Check Traffic Lights
+            if (e.dir === 'N' || e.dir === 'S') {
+                for (let tl of window.trafficLights) {
+                    if (Math.abs(e.x - tl.x) < 30 && tl.state === 'H') { // Light is red for vertical
+                        if (e.dir === 'S' && tl.y > e.y && tl.y - e.y < 50) stopAhead = true;
+                        if (e.dir === 'N' && e.y > tl.y && e.y - tl.y < 50) stopAhead = true;
+                    }
+                }
+            } else {
+                for (let tl of window.trafficLights) {
+                    if (Math.abs(e.y - tl.y) < 30 && tl.state === 'V') { // Light is red for horizontal
+                        if (e.dir === 'E' && tl.x > e.x && tl.x - e.x < 50) stopAhead = true;
+                        if (e.dir === 'W' && e.x > tl.x && e.x - tl.x < 50) stopAhead = true;
+                    }
+                }
+            }
+
+            // Check Cars & Pedestrians Ahead
+            for (let other of entities) {
+                if (other === e) continue;
+                let dist = Math.hypot(e.x - other.x, e.y - other.y);
+                if (dist < 60) {
+                    if (e.dir === 'S' && other.y > e.y && Math.abs(e.x - other.x) < 30) stopAhead = true;
+                    if (e.dir === 'N' && e.y > other.y && Math.abs(e.x - other.x) < 30) stopAhead = true;
+                    if (e.dir === 'E' && other.x > e.x && Math.abs(e.y - other.y) < 30) stopAhead = true;
+                    if (e.dir === 'W' && e.x > other.x && Math.abs(e.y - other.y) < 30) stopAhead = true;
+                }
+            }
+            
+            // Check crashes
+            for (let c of window.crashes) {
+                if (Math.hypot(e.x - c.x, e.y - c.y) < 50 && e.faction !== 'tow' && e.faction !== 'police') {
+                    stopAhead = true;
+                }
+            }
+        }
+        
+        // Tow Truck Logic
+        if (e.faction === 'tow' && e.targetX !== undefined) {
+            let distToTarget = Math.hypot(e.x - e.targetX, e.y - e.targetY);
+            if (distToTarget < 40 && !e.hasCar) {
+                e.emoji = '🛻🚗';
+                e.hasCar = true;
+                e.dir = e.dir === 'E' ? 'W' : (e.dir === 'W' ? 'E' : (e.dir === 'N' ? 'S' : 'N')); // Turn around
+                // Remove the crash
+                window.crashes = window.crashes.filter(c => Math.hypot(c.x - e.targetX, c.y - e.targetY) > 50);
+                // Remove blockade
+                window.mapZones = window.mapZones.filter(z => !z.isBlockade);
+                e.targetX = undefined; // Go home
+            }
+        }
+
+        // Apply Speed
+        if (stopAhead) {
+            e.speed = 0;
+        } else {
+            e.speed = e.baseSpeed;
+        }
+
+        if(e.dir === 'N') e.y -= e.speed;
+        if(e.dir === 'S') e.y += e.speed;
+        if(e.dir === 'E') e.x += e.speed;
+        if(e.dir === 'W') e.x -= e.speed;
+
+        // Wrap around world
+        if(e.x < 0) e.x = window.worldWidth;
+        if(e.x > window.worldWidth) e.x = 0;
+        if(e.y < 0) e.y = window.worldHeight;
+        if(e.y > window.worldHeight) e.y = 0;
+
+        // --- Massive Zone Collisions ---
+        if (typeof window.mapZones !== 'undefined' && e.speed > 0) {
+            for (let z of window.mapZones) {
+                let zX = Math.min(z.x, z.x + z.w);
+                let zY = Math.min(z.y, z.y + z.h);
+                let zW = Math.abs(z.w);
+                let zH = Math.abs(z.h);
+                if (e.x >= zX && e.x <= zX + zW && e.y >= zY && e.y <= zY + zH) {
+                    
+                    if (z.type === 'Media Blackout') { /* Hidden */ }
+                    else if (z.type === 'Quarantine' && e.faction === 'civ') {
+                        e.emoji = '🤢'; e.speed = 0.2;
+                    }
+                    else if (z.type === 'Riot Control') {
+                        if (e.faction === 'police') e.speed = e.baseSpeed * 2.0;
+                        if (e.faction === 'civ') { e.emoji = '🔗'; e.speed = 0; }
+                    }
+                    else if (z.type === 'Sniper Overwatch' && e.faction === 'civ') {
+                        if (['⚠️', '🔪', '🔫', '🏃'].includes(e.emoji)) { e.emoji = '💀'; e.speed = 0; }
+                    }
+                    else if (z.type === 'Traffic Checkpoint' && e.isVehicle) {
+                        e.speed = 0;
+                    }
+                    else if (z.type === 'Evacuation' && e.faction === 'civ') {
+                        e.speed = e.baseSpeed * 3.0; 
+                    }
+                    else if (z.type === 'EMP Blast' && e.isVehicle) {
+                        e.emoji = '💥'; e.speed = 0;
+                    }
+                    else if (z.type === 'Corporate VIP') {
+                        if (e.faction === 'civ') {
+                            if (e.dir === 'N') { e.dir = 'S'; e.y += 10; } else if (e.dir === 'S') { e.dir = 'N'; e.y -= 10; } else if (e.dir === 'E') { e.dir = 'W'; e.x -= 10; } else if (e.dir === 'W') { e.dir = 'E'; e.x += 10; }
+                        }
+                    }
+                    else if (z.type === 'Minefield') {
+                        if (Math.random() < 0.005) { e.emoji = '💥'; e.speed = 0; }
+                    }
+                    else if (z.type === 'Syndicate Turf' && e.faction === 'civ') {
+                        e.emoji = '👤'; e.speed = e.baseSpeed * 1.5;
+                    }
+                    else if (z.type === 'Military Base' && e.faction === 'civ') {
+                        e.emoji = '💀'; e.speed = 0; break;
+                    }
+                    else if (z.type === 'Hostile' && e.faction === 'civ') {
+                        const roeCheckbox = document.getElementById('roe-toggle');
+                        if (roeCheckbox && !roeCheckbox.checked) { e.emoji = '💀'; e.speed = 0; } else { e.emoji = '🔗'; e.speed = 0; } break;
+                    }
+                    else if (z.type === 'Restricted Zone' && e.faction === 'civ') {
+                        e.emoji = '⚠️';
+                    }
+                    else if (z.type === 'Police Only' && e.faction === 'civ') {
+                        if (e.dir === 'N') { e.dir = 'S'; e.y += 10; } else if (e.dir === 'S') { e.dir = 'N'; e.y -= 10; } else if (e.dir === 'E') { e.dir = 'W'; e.x -= 10; } else if (e.dir === 'W') { e.dir = 'E'; e.x += 10; } break;
+                    }
+                    else if (z.type === 'Safe Civilian' && e.faction === 'police') {
+                        if (e.dir === 'N') { e.dir = 'S'; e.y += 10; } else if (e.dir === 'S') { e.dir = 'N'; e.y -= 10; } else if (e.dir === 'E') { e.dir = 'W'; e.x -= 10; } else if (e.dir === 'W') { e.dir = 'E'; e.x += 10; } break;
+                    }
+                    else if (z.type === 'City Park' && e.faction === 'civ') {
+                        e.speed = e.speed * 0.5;
+                    }
+                }
+            }
+        }
+
+        // Viewport culling (Don't draw if outside screen for optimization)
+        const vLeft = window.cameraX - (cityCanvas.width/2)/window.cameraZoom - 100;
+        const vRight = window.cameraX + (cityCanvas.width/2)/window.cameraZoom + 100;
+        const vTop = window.cameraY - (cityCanvas.height/2)/window.cameraZoom - 100;
+        const vBottom = window.cameraY + (cityCanvas.height/2)/window.cameraZoom + 100;
+        
+        if (e.x < vLeft || e.x > vRight || e.y < vTop || e.y > vBottom) {
+            continue; // Optimized out!
+        }
+
+        ctx.save();
+        ctx.translate(e.x, e.y);
+        if(e.dir === 'S') ctx.rotate(Math.PI);
+        if(e.dir === 'E') ctx.rotate(Math.PI/2);
+        if(e.dir === 'W') ctx.rotate(-Math.PI/2);
+        
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(e.emoji, 0, 0);
+        ctx.restore();
+        
+        if (window.radarEntityIds && e.id) {
+            ctx.font = '12px Courier New';
+            ctx.fillStyle = e.faction === 'police' ? 'var(--accent-blue)' : (e.faction === 'medic' ? '#ff5252' : '#ffffff');
+            ctx.fillText(e.id, e.x, e.y - 15);
+        }
+    }
+    
+    

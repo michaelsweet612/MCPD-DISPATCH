@@ -9614,7 +9614,7 @@ function drawCityMap() {
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
         const time = Date.now() / 1000;
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 3; i++) {
             let cx = (Math.sin(time * 0.1 + i) * 0.4 + 0.5) * window.worldWidth;
             let cy = (Math.cos(time * 0.15 + i*2) * 0.4 + 0.5) * window.worldHeight;
             let rad = 300 + Math.sin(time + i) * 100;
@@ -9860,22 +9860,29 @@ function drawCityMap() {
             continue; // Optimized out!
         }
 
-        ctx.save();
-        ctx.translate(e.x, e.y);
-        if(e.dir === 'S') ctx.rotate(Math.PI);
-        if(e.dir === 'E') ctx.rotate(Math.PI/2);
-        if(e.dir === 'W') ctx.rotate(-Math.PI/2);
-        
-        ctx.font = '24px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(e.emoji, 0, 0);
-        ctx.restore();
-        
-        if (window.radarEntityIds && e.id) {
-            ctx.font = '12px Courier New';
-            ctx.fillStyle = e.faction === 'police' ? 'var(--accent-blue)' : (e.faction === 'medic' ? '#ff5252' : '#ffffff');
-            ctx.fillText(e.id, e.x, e.y - 15);
+        if (window.cameraZoom < 0.6) {
+            // High-performance rendering for zoomed-out view
+            ctx.fillStyle = e.faction === 'police' ? '#0078d7' : (e.faction === 'medic' ? '#e81123' : '#aaaaaa');
+            ctx.fillRect(e.x - 4, e.y - 4, 8, 8);
+        } else {
+            // Detailed rendering
+            ctx.save();
+            ctx.translate(e.x, e.y);
+            if(e.dir === 'S') ctx.rotate(Math.PI);
+            if(e.dir === 'E') ctx.rotate(Math.PI/2);
+            if(e.dir === 'W') ctx.rotate(-Math.PI/2);
+            
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(e.emoji, 0, 0);
+            ctx.restore();
+            
+            if (window.radarEntityIds && e.id) {
+                ctx.font = '12px Courier New';
+                ctx.fillStyle = e.faction === 'police' ? 'var(--accent-blue)' : (e.faction === 'medic' ? '#ff5252' : '#ffffff');
+                ctx.fillText(e.id, e.x, e.y - 15);
+            }
         }
     }
     
