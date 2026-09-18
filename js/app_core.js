@@ -9294,14 +9294,25 @@ if (tabMap && mapLogEl) {
         mapLogEl.style.display = 'block';
         if (typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
         
-        if (!mapInitialized) {
-            initCityMap();
-            mapInitialized = true;
-        } else {
-            if(!animationId) animationId = requestAnimationFrame(drawCityMap);
+        if (mapInitialized && !animationId) {
+            animationId = requestAnimationFrame(drawCityMap);
         }
     });
 }
+
+setTimeout(() => {
+    const pwrBtn = document.getElementById('btn-power-radar');
+    if (pwrBtn) {
+        pwrBtn.addEventListener('click', () => {
+            const overlay = document.getElementById('map-startup-overlay');
+            if (overlay) overlay.style.display = 'none';
+            if (!mapInitialized) {
+                initCityMap();
+                mapInitialized = true;
+            }
+        });
+    }
+}, 500);
 
 if (typeof window.oldHideAllTabsMap === 'undefined') {
     window.oldHideAllTabsMap = window.hideAllTabs || function(){};
@@ -9682,14 +9693,22 @@ function drawCityMap() {
         // Base AI Navigation (Turn at intersections)
         if (e.dir === 'N' || e.dir === 'S') {
             for(let y of roadY) {
-                if(Math.abs(e.y - y) < 2) {
-                    if(Math.random() > 0.7) { e.dir = Math.random() > 0.5 ? 'E' : 'W'; e.y = y; break; }
+                if(Math.abs(e.y - y) < 5) {
+                    if(Math.random() > 0.7) { 
+                        e.dir = Math.random() > 0.5 ? 'E' : 'W'; 
+                        e.y = y + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
+                        break; 
+                    }
                 }
             }
         } else {
             for(let x of roadX) {
-                if(Math.abs(e.x - x) < 2) {
-                    if(Math.random() > 0.7) { e.dir = Math.random() > 0.5 ? 'N' : 'S'; e.x = x; break; }
+                if(Math.abs(e.x - x) < 5) {
+                    if(Math.random() > 0.7) { 
+                        e.dir = Math.random() > 0.5 ? 'N' : 'S'; 
+                        e.x = x + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
+                        break; 
+                    }
                 }
             }
         }
