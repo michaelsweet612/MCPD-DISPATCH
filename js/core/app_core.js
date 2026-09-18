@@ -1,35 +1,4 @@
 
-// ==========================================
-// GLOBAL ERROR CATCHER & GITHUB ISSUE ROUTER
-// ==========================================
-window.onerror = function(message, source, lineno, colno, error) {
-    // Attempt to extract clean filename
-    let cleanSource = source;
-    if (source && typeof source === 'string' && source.includes('/')) {
-        cleanSource = source.substring(source.lastIndexOf('/') + 1);
-    }
-    
-    const errorMsg = `[SYSTEM FAULT] ${message} (File: ${cleanSource}, Line: ${lineno})`;
-    
-    // 1. Update the UI Bug Log counter
-    let bugBtn = document.getElementById('btn-bug-log');
-    if (bugBtn) {
-        let currentBugs = parseInt(bugBtn.innerText.replace(/[^0-9]/g, '')) || 0;
-        bugBtn.innerText = `BUG LOG (${currentBugs + 1})`;
-        bugBtn.style.color = "red";
-    }
-
-    // 2. Broadcast to the main chat feed
-    if (typeof addChatMessage !== 'undefined') {
-        addChatMessage('FATAL_ERR', errorMsg, 'panic', false);
-        
-        setTimeout(() => {
-            addChatMessage('DIAGNOSTICS', `System degradation detected. <a href="https://github.com/michaelsweet612/MCPD-DISPATCH/issues" target="_blank" style="color: #ff5252; text-decoration: underline; font-weight: bold;">[CLICK HERE TO FILE REPORT ON GITHUB ISSUES]</a>`, 'serious', false);
-        }, 1500);
-    }
-    
-    return false; // Let default browser console log happen too
-};
 
 const lateArrivalLines = [
     `Well he got there before me that doesn't mean I don't get to get paid, but I'll move in anyways and kill the bastard.`,
@@ -328,8 +297,6 @@ const tabDocuments = document.getElementById('tab-documents');
 const tabDatabase = document.getElementById('tab-database');
 const tabWanted = document.getElementById('tab-wanted');
 const tabCitizens = document.getElementById('tab-citizens');
-const tabRecruitment = document.getElementById('tab-recruitment');
-
 const documentListEl = document.getElementById('document-list');
 const eventCountEl = document.getElementById('event-count');
 const manualPanicBtn = document.getElementById('manual-panic-btn');

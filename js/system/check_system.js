@@ -27,8 +27,8 @@ function renderSystemErrors() {
     
     const count = window._mcpd_errors.length;
     let header = count > 1 
-        ? `<h1>CRITICAL ALERT: ${count} errors have been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so these errors can be fixed.</p>`
-        : `<h1>CRITICAL ALERT: One error has been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so this error can be fixed.</p>`;
+        ? `<h1>CRITICAL ALERT: ${count} errors have been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so these errors can be fixed.</p><a href="https://github.com/michaelsweet612/MCPD-DISPATCH/issues" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #d32f2f; font-weight: bold; font-size: 1.2rem; text-decoration: none; border-radius: 4px;">REPORT TO GITHUB ISSUES</a>`
+        : `<h1>CRITICAL ALERT: One error has been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so this error can be fixed.</p><a href="https://github.com/michaelsweet612/MCPD-DISPATCH/issues" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #d32f2f; font-weight: bold; font-size: 1.2rem; text-decoration: none; border-radius: 4px;">REPORT TO GITHUB ISSUES</a>`;
         
     let details = "<ul style='margin-top: 30px; font-size: 1.1rem;'>" + window._mcpd_errors.map(e => `<li style="margin-bottom:10px;">${e}</li>`).join('') + "</ul>";
     
