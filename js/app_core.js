@@ -9284,8 +9284,8 @@ const ROAD_WIDTH = 40;
 const SIDEWALK_OFFSET = (ROAD_WIDTH / 2) + 10;
 
 // World & Camera State
-window.worldWidth = 3000;
-window.worldHeight = 3000;
+window.worldWidth = 15000;
+window.worldHeight = 15000;
 window.cameraX = window.worldWidth / 2;
 window.cameraY = window.worldHeight / 2;
 window.cameraZoom = 1.0;
@@ -9506,8 +9506,8 @@ function initCityMap() {
     
     // Spawn massive amount of entities for huge map
     entities = [];
-    for(let i=0; i<300; i++) spawnEntity('civ');
-    for(let i=0; i<60; i++) spawnEntity('police');
+    for(let i=0; i<50000; i++) spawnEntity('civ');
+    for(let i=0; i<9999; i++) spawnEntity('police');
     entities.forEach((e, idx) => { if(!e.id) e.id = (e.faction==='police' ? 'PD-' : 'CIV-') + (1000+idx); });
 
     animationId = requestAnimationFrame(drawCityMap);
@@ -9618,6 +9618,16 @@ function getZoneColor(type) {
 
 function drawCityMap() {
     if (!ctx) return;
+    
+    // BUILD SPATIAL GRID FOR 60,000 ENTITIES (O(N) Optimization)
+    window.spatialGrid = {};
+    for (let e of entities) {
+        let gx = Math.floor(e.x / 100);
+        let gy = Math.floor(e.y / 100);
+        let key = gx + ',' + gy;
+        if (!window.spatialGrid[key]) window.spatialGrid[key] = [];
+        window.spatialGrid[key].push(e);
+    }
     
     // Clear Screen
     ctx.fillStyle = '#0a0f12';
@@ -9803,8 +9813,17 @@ function drawCityMap() {
         // CIVIL WAR: Fleeing Mechanic
         if (e.faction === 'civ' && e.emoji !== '💀' && e.emoji !== '🔗') {
             let copsNear = 0;
-            for (let other of entities) {
-                if (other.faction === 'police' && Math.hypot(e.x - other.x, e.y - other.y) < 250) {
+            let gx = Math.floor(e.x / 100);
+            let gy = Math.floor(e.y / 100);
+            let nearby = [];
+            for (let dx=-1; dx<=1; dx++) {
+                for (let dy=-1; dy<=1; dy++) {
+                    let cell = window.spatialGrid[(gx+dx) + ',' + (gy+dy)];
+                    if (cell) nearby.push(...cell);
+                }
+            }
+            for (let other of nearby) {
+                if (other.faction === 'police' && Math.abs(e.x - other.x) + Math.abs(e.y - other.y) < 250) {
                     copsNear++;
                 }
             }
@@ -9835,10 +9854,20 @@ function drawCityMap() {
                 }
             }
 
-            // Check Cars & Pedestrians Ahead
-            for (let other of entities) {
+            // Check Cars & Pedestrians Ahead (Using Spatial Grid)
+            let gx = Math.floor(e.x / 100);
+            let gy = Math.floor(e.y / 100);
+            let nearby = [];
+            for (let dx=-1; dx<=1; dx++) {
+                for (let dy=-1; dy<=1; dy++) {
+                    let cell = window.spatialGrid[(gx+dx) + ',' + (gy+dy)];
+                    if (cell) nearby.push(...cell);
+                }
+            }
+            
+            for (let other of nearby) {
                 if (other === e) continue;
-                let dist = Math.hypot(e.x - other.x, e.y - other.y);
+                let dist = Math.abs(e.x - other.x) + Math.abs(e.y - other.y); // Manhattan distance for speed
                 if (dist < 60) {
                     if (e.dir === 'S' && other.y > e.y && Math.abs(e.x - other.x) < 30) stopAhead = true;
                     if (e.dir === 'N' && e.y > other.y && Math.abs(e.x - other.x) < 30) stopAhead = true;
