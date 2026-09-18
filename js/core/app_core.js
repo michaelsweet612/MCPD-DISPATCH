@@ -7257,6 +7257,68 @@ setTimeout(updatePublicInfoUI, 1000);
 // PUBLIC MCPD STOCK MARKET LOGIC
 // ==========================================
 let currentStockPrice = 150.00;
+let stockHistory = new Array(40).fill(150.00); // Prefill history for graph
+
+function drawStockChart(isBull) {
+    const canvas = document.getElementById('stock-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    // Clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Determine min and max for scaling
+    let minPrice = Math.min(...stockHistory);
+    let maxPrice = Math.max(...stockHistory);
+    
+    // Add padding to scale
+    const padding = (maxPrice - minPrice) * 0.2;
+    minPrice -= padding;
+    maxPrice += padding;
+    if (minPrice === maxPrice) { minPrice -= 10; maxPrice += 10; }
+    
+    const range = maxPrice - minPrice;
+    
+    // Draw line
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = isBull ? '#4caf50' : '#f44336';
+    
+    const stepX = canvas.width / (stockHistory.length - 1);
+    
+    for (let i = 0; i < stockHistory.length; i++) {
+        const x = i * stepX;
+        // Invert Y because canvas 0,0 is top left
+        const y = canvas.height - (((stockHistory[i] - minPrice) / range) * canvas.height);
+        
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    
+    // Draw fill gradient
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(0, canvas.height);
+    ctx.closePath();
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    if (isBull) {
+        gradient.addColorStop(0, 'rgba(76, 175, 80, 0.4)');
+        gradient.addColorStop(1, 'rgba(76, 175, 80, 0.0)');
+    } else {
+        gradient.addColorStop(0, 'rgba(244, 67, 54, 0.4)');
+        gradient.addColorStop(1, 'rgba(244, 67, 54, 0.0)');
+    }
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // Draw huge animated arrow
+    ctx.font = '80px Arial';
+    ctx.fillStyle = isBull ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(isBull ? '↗' : '↘', canvas.width / 2, canvas.height / 2);
+}
 
 function updateStockMarket() {
     // Determine the trend based on trust. 50% trust is neutral.
@@ -7279,6 +7341,9 @@ function updateStockMarket() {
     
     currentStockPrice += change;
     if (currentStockPrice < 0.01) currentStockPrice = 0.01; // Floor
+    
+    stockHistory.push(currentStockPrice);
+    if (stockHistory.length > 40) stockHistory.shift();
     
     let priceEl = document.getElementById('stock-price');
     let trendEl = document.getElementById('stock-trend');
@@ -7312,6 +7377,13 @@ function updateStockMarket() {
             statusEl.style.color = "var(--text-dim)";
             statusEl.textContent = "STABLE";
         }
+        
+        // Update Canvas Visuals
+        const canvas = document.getElementById('stock-chart');
+        if (canvas) {
+            canvas.style.background = (change >= 0) ? 'rgba(0, 255, 0, 0.05)' : 'rgba(255, 0, 0, 0.05)';
+        }
+        drawStockChart(change >= 0);
     }
 }
 
