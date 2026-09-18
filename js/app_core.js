@@ -9526,6 +9526,14 @@ function generateCityLayout() {
             });
         }
     }
+    
+    window.landmarks = [];
+    if (cityBlocks.length > 3) {
+        let block1 = cityBlocks[Math.floor(Math.random() * (cityBlocks.length/2))];
+        let block2 = cityBlocks[Math.floor(cityBlocks.length/2 + Math.random() * (cityBlocks.length/2))];
+        window.landmarks.push({ ...block1, type: 'Police Station', emoji: '🚓' });
+        window.landmarks.push({ ...block2, type: 'Military Base', emoji: '🪖' });
+    }
 }
 
 function spawnEntity(faction, isSpecialSpawn = false) {
@@ -9637,6 +9645,19 @@ function drawCityMap() {
         ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
         ctx.strokeRect(b.x, b.y, b.w, b.h);
     }
+    
+    // Draw Landmarks
+    if (window.landmarks) {
+        for (let lm of window.landmarks) {
+            ctx.fillStyle = lm.type === 'Police Station' ? 'rgba(0,100,255,0.2)' : 'rgba(100,100,0,0.2)';
+            ctx.fillRect(lm.x, lm.y, lm.w, lm.h);
+            ctx.fillStyle = '#fff';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(lm.emoji + " " + lm.type, lm.x + lm.w/2, lm.y + lm.h/2);
+        }
+    }
 
     // 4. Draw Roads
     ctx.fillStyle = '#1a1a1a';
@@ -9666,12 +9687,25 @@ function drawCityMap() {
         tl.timer--;
         if (tl.timer <= 0) {
             tl.state = tl.state === 'H' ? 'V' : 'H';
-            tl.timer = 200 + Math.random() * 100;
+            tl.timer = 150 + Math.random() * 100;
         }
-        ctx.fillStyle = tl.state === 'H' ? 'green' : 'red';
-        ctx.fillRect(tl.x - 15, tl.y - 15, 6, 6);
-        ctx.fillStyle = tl.state === 'V' ? 'green' : 'red';
-        ctx.fillRect(tl.x - 15, tl.y + 9, 6, 6);
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Horizontal Traffic Light
+        ctx.globalAlpha = tl.state === 'H' ? 1.0 : 0.3;
+        ctx.fillText('🚥', tl.x - 15, tl.y - 15);
+        
+        // Vertical Traffic Light
+        ctx.globalAlpha = tl.state === 'V' ? 1.0 : 0.3;
+        ctx.save();
+        ctx.translate(tl.x + 15, tl.y - 15);
+        ctx.rotate(Math.PI/2);
+        ctx.fillText('🚥', 0, 0);
+        ctx.restore();
+        
+        ctx.globalAlpha = 1.0;
     }
     
     // 6. Spawn Random Crashes
@@ -9690,24 +9724,41 @@ function drawCityMap() {
     // 7. Update & Draw Entities
     for (let e of entities) {
         
+        // OPTIMIZATION: Freeze physics if far off-screen
+        const vLeft = window.cameraX - (cityCanvas.width/2)/window.cameraZoom - 100;
+        const vRight = window.cameraX + (cityCanvas.width/2)/window.cameraZoom + 100;
+        const vTop = window.cameraY - (cityCanvas.height/2)/window.cameraZoom - 100;
+        const vBottom = window.cameraY + (cityCanvas.height/2)/window.cameraZoom + 100;
+        if (e.x < vLeft || e.x > vRight || e.y < vTop || e.y > vBottom) {
+            continue; // Skip physics AND drawing!
+        }
+
+        // Initialize turn cooldown if undefined
+        if (typeof e.turnCooldown === 'undefined') e.turnCooldown = 0;
+        if (e.turnCooldown > 0) e.turnCooldown--;
+
         // Base AI Navigation (Turn at intersections)
-        if (e.dir === 'N' || e.dir === 'S') {
-            for(let y of roadY) {
-                if(Math.abs(e.y - y) < 5) {
-                    if(Math.random() > 0.7) { 
-                        e.dir = Math.random() > 0.5 ? 'E' : 'W'; 
-                        e.y = y + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
-                        break; 
+        if (e.turnCooldown === 0) {
+            if (e.dir === 'N' || e.dir === 'S') {
+                for(let y of roadY) {
+                    if(Math.abs(e.y - y) < 5) {
+                        if(Math.random() > 0.7) { 
+                            e.dir = Math.random() > 0.5 ? 'E' : 'W'; 
+                            e.y = y + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
+                            e.turnCooldown = 50;
+                            break; 
+                        }
                     }
                 }
-            }
-        } else {
-            for(let x of roadX) {
-                if(Math.abs(e.x - x) < 5) {
-                    if(Math.random() > 0.7) { 
-                        e.dir = Math.random() > 0.5 ? 'N' : 'S'; 
-                        e.x = x + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
-                        break; 
+            } else {
+                for(let x of roadX) {
+                    if(Math.abs(e.x - x) < 5) {
+                        if(Math.random() > 0.7) { 
+                            e.dir = Math.random() > 0.5 ? 'N' : 'S'; 
+                            e.x = x + (e.isVehicle ? 0 : (Math.random() > 0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET)); 
+                            e.turnCooldown = 50;
+                            break; 
+                        }
                     }
                 }
             }
@@ -9850,15 +9901,7 @@ function drawCityMap() {
             }
         }
 
-        // Viewport culling (Don't draw if outside screen for optimization)
-        const vLeft = window.cameraX - (cityCanvas.width/2)/window.cameraZoom - 100;
-        const vRight = window.cameraX + (cityCanvas.width/2)/window.cameraZoom + 100;
-        const vTop = window.cameraY - (cityCanvas.height/2)/window.cameraZoom - 100;
-        const vBottom = window.cameraY + (cityCanvas.height/2)/window.cameraZoom + 100;
-        
-        if (e.x < vLeft || e.x > vRight || e.y < vTop || e.y > vBottom) {
-            continue; // Optimized out!
-        }
+
 
         if (window.cameraZoom < 0.6) {
             // High-performance rendering for zoomed-out view
