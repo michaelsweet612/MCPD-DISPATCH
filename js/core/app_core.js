@@ -5,7 +5,7 @@
 window.onerror = function(message, source, lineno, colno, error) {
     // Attempt to extract clean filename
     let cleanSource = source;
-    if (source && source.includes('/')) {
+    if (source && typeof source === 'string' && source.includes('/')) {
         cleanSource = source.substring(source.lastIndexOf('/') + 1);
     }
     
@@ -325,6 +325,11 @@ if (tabUnitStatus && unitStatusLogEl) {
 }
 const tabUnified = document.getElementById('tab-unified');
 const tabDocuments = document.getElementById('tab-documents');
+const tabDatabase = document.getElementById('tab-database');
+const tabWanted = document.getElementById('tab-wanted');
+const tabCitizens = document.getElementById('tab-citizens');
+const tabRecruitment = document.getElementById('tab-recruitment');
+
 const documentListEl = document.getElementById('document-list');
 const eventCountEl = document.getElementById('event-count');
 const manualPanicBtn = document.getElementById('manual-panic-btn');
