@@ -7387,3 +7387,64 @@ function updateStockMarkets() {
 
 setInterval(updateStockMarkets, 3500);
 setTimeout(updateStockMarkets, 1000);
+
+
+// ==========================================
+// STOCK TAB WIRING
+// ==========================================
+(function() {
+    const tabStock = document.getElementById('tab-stock');
+    const stockLogEl = document.getElementById('stock-log');
+    
+    // Desktop Tab Wiring
+    if (tabStock && stockLogEl) {
+        tabStock.addEventListener('click', () => {
+            if (typeof window.hideAllTabs !== 'undefined') window.hideAllTabs();
+            tabStock.classList.add('active');
+            tabStock.style.color = 'var(--text-main)';
+            stockLogEl.style.display = 'block';
+            if (typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
+        });
+        
+        // Hook into hideAllTabs
+        if (typeof window.oldHideAllTabsStock === 'undefined') {
+            window.oldHideAllTabsStock = window.hideAllTabs || function(){};
+            window.hideAllTabs = function() {
+                window.oldHideAllTabsStock();
+                if (tabStock) { tabStock.classList.remove('active'); tabStock.style.color = 'var(--text-dim)'; }
+                if (stockLogEl) stockLogEl.style.display = 'none';
+            };
+        }
+    }
+
+    // Mobile Bottom Nav Wiring
+    // Mobile handles navigation completely differently. We need to hook into switchTab!
+    if (typeof window.switchTab === 'function') {
+        const oldSwitchTab = window.switchTab;
+        window.switchTab = function(targetId, btnElement) {
+            oldSwitchTab(targetId, btnElement);
+            if (targetId === 'stock-log') {
+                document.querySelectorAll('.panel-content').forEach(p => p.style.display = 'none');
+                const t = document.getElementById(targetId);
+                if (t) t.style.display = 'block';
+            }
+        };
+    } else {
+        // Just in case it's inline logic on mobile buttons
+        const mobileBtns = document.querySelectorAll('.bottom-nav-btn');
+        mobileBtns.forEach(btn => {
+            if (btn.getAttribute('data-target') === 'stock-log') {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.panel-content').forEach(p => p.style.display = 'none');
+                    document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    if(stockLogEl) stockLogEl.style.display = 'block';
+                });
+            } else {
+                btn.addEventListener('click', () => {
+                    if(stockLogEl) stockLogEl.style.display = 'none';
+                });
+            }
+        });
+    }
+})();
