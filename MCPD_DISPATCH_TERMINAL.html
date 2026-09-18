@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.12">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.13">
 </head>
 
 <body>
@@ -533,8 +533,9 @@ document.addEventListener('keypress', function(e) {
 
                     <div id="corruption-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); padding: 15px; margin-bottom: 20px; border-radius: 6px;">
                         <h4 style="color: var(--panic-orange); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed var(--panel-border); padding-bottom: 5px;">💸 INTERNAL AFFAIRS (CORRUPTION LOG)</h4>
-                        <div style="font-size: 1.2rem; color: #fff;">
-                            TOTAL BRIBES ACCEPTED: <span id="bribes-accepted-count" style="font-weight: bold; color: var(--panic-red);">0</span>
+                        <div style="font-size: 1.2rem; color: #fff; display: flex; justify-content: space-between;">
+                            <span>TOTAL BRIBES ACCEPTED: <span id="bribes-accepted-count" style="font-weight: bold; color: var(--panic-red);">0</span></span>
+                            <span>TOTAL MONEY SEIZED: <span id="bribes-money-count" style="font-weight: bold; color: var(--accent-green);">NTND $0</span></span>
                         </div>
                     </div>
 </div>
@@ -718,10 +719,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.12"></script>
-    <script src="js/chats/transmissions.js?v=4.19.12"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.12"></script>
-    <script src="js/core/app_core.js?v=4.19.12"></script>
+    <script src="js/system/check_system.js?v=4.19.13"></script>
+    <script src="js/chats/transmissions.js?v=4.19.13"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.13"></script>
+    <script src="js/core/app_core.js?v=4.19.13"></script>
 
     
 

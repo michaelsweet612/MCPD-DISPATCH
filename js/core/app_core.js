@@ -5719,6 +5719,8 @@ function triggerLethalAuthEvent() {
 
 // === BRIBE AUTHORIZATION SYSTEM ===
 let totalBribesAccepted = 0;
+let totalBribeMoney = 0;
+let currentPendingBribeAmount = 0;
 let bribeAuthActive = false;
 let bribeAuthTimer = null;
 let bribeAuthTimeLeft = 30;
@@ -5728,7 +5730,9 @@ let lastBribeAuthTime = Date.now();
 
 function updateBribesUI() {
     const el = document.getElementById('bribes-accepted-count');
+    const moneyEl = document.getElementById('bribes-money-count');
     if (el) el.textContent = totalBribesAccepted;
+    if (moneyEl) moneyEl.textContent = 'NTND $' + totalBribeMoney.toLocaleString();
 }
 
 function resolveBribeAuth(approved) {
@@ -5741,6 +5745,7 @@ function resolveBribeAuth(approved) {
     
     if (approved) {
         totalBribesAccepted++;
+        totalBribeMoney += currentPendingBribeAmount;
         updateBribesUI();
         if (typeof addChatMessage !== 'undefined') {
             addChatMessage(bribeAuthOfficer, `Copy that. Suspect let go with a warning. Good doing business.`, 'serious', false);
@@ -5817,6 +5822,7 @@ function triggerBribeEvent() {
         // Toggle is OFF - Officers automatically decide
         if (Math.random() < 0.6) { // 60% chance they take it automatically
             totalBribesAccepted++;
+            totalBribeMoney += currentPendingBribeAmount;
             updateBribesUI();
             if (typeof addChatMessage !== 'undefined') {
                 addChatMessage(bribeAuthOfficer, `Dispatch, disregard that last call on ${bribeAuthCitizen}. It was a misunderstanding. They've been let go with a warning. (+$${bribeAmount} undocumented cash)`, 'serious', false);
