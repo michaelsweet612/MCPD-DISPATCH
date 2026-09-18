@@ -7207,3 +7207,70 @@ setInterval(() => {
 
 // Initial update
 setTimeout(updatePublicInfoUI, 1000);
+
+
+// ==========================================
+// PUBLIC MCPD STOCK MARKET LOGIC
+// ==========================================
+let currentStockPrice = 150.00;
+
+function updateStockMarket() {
+    // Determine the trend based on trust. 50% trust is neutral.
+    // trustPercentage goes from 0 to 100.
+    let trustFactor = (typeof trustPercentage !== 'undefined' ? trustPercentage : 50);
+    
+    // Convert to a multiplier: <50 is negative, >50 is positive
+    let trend = (trustFactor - 50) / 100; // range from -0.5 to +0.5
+    
+    // Add some random market volatility
+    let volatility = (Math.random() * 4) - 2; // Random swing between -2.0 and +2.0
+    
+    let change = (trend * 8.0) + volatility; // Max base movement + volatility
+    
+    // Distrust crash mechanism: If distrust is massive (trust < 20)
+    if (trustFactor < 20) {
+        // Massive sell-off
+        change -= (Math.random() * 5);
+    }
+    
+    currentStockPrice += change;
+    if (currentStockPrice < 0.01) currentStockPrice = 0.01; // Floor
+    
+    let priceEl = document.getElementById('stock-price');
+    let trendEl = document.getElementById('stock-trend');
+    let statusEl = document.getElementById('stock-status');
+    
+    if (priceEl && trendEl && statusEl) {
+        priceEl.textContent = `NTND $${currentStockPrice.toFixed(2)}`;
+        
+        let percentageChange = (change / currentStockPrice) * 100;
+        
+        if (change >= 0) {
+            trendEl.textContent = `▲ +${percentageChange.toFixed(2)}%`;
+            trendEl.style.color = "var(--accent-green)";
+            priceEl.style.color = "var(--accent-green)";
+        } else {
+            trendEl.textContent = `▼ ${percentageChange.toFixed(2)}%`;
+            trendEl.style.color = "var(--panic-red)";
+            priceEl.style.color = "var(--panic-red)";
+        }
+        
+        if (trustFactor < 20) {
+            statusEl.textContent = "CRASHING (PANIC SELL)";
+            statusEl.style.color = "var(--panic-red)";
+        } else if (trustFactor > 80) {
+            statusEl.style.color = "var(--accent-blue)";
+            statusEl.textContent = "BULL MARKET (SECURE)";
+        } else if (change < -3) {
+            statusEl.style.color = "var(--panic-orange)";
+            statusEl.textContent = "VOLATILE (BEARISH)";
+        } else {
+            statusEl.style.color = "var(--text-dim)";
+            statusEl.textContent = "STABLE";
+        }
+    }
+}
+
+// Tick every 3.5 seconds
+setInterval(updateStockMarket, 3500);
+setTimeout(updateStockMarket, 1000);

@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.10">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.11">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -525,6 +525,22 @@ document.addEventListener('keypress', function(e) {
                 <div class="panel-content scrollable" id="database-log" style="display: none;">
                     
                     
+                    <!-- PUBLIC MCPD STOCK MARKET -->
+                    <div id="stock-market-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--accent-green); padding: 15px; margin-bottom: 20px; border-radius: 6px;">
+                        <h4 style="color: var(--accent-green); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed var(--accent-green); padding-bottom: 5px;">📈 PUBLIC MCPD STOCK MARKET</h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: var(--text-dim); font-size: 0.85rem;">OMNICORP VALUATION:</span><br>
+                                <span id="stock-price" style="font-size: 1.8rem; font-weight: bold; color: var(--accent-green);">NTND $150.00</span>
+                                <span id="stock-trend" style="color: var(--accent-green); font-size: 1.2rem; margin-left: 10px;">▲ +0.00%</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="color: var(--text-dim); font-size: 0.85rem;">MARKET STATUS:</span><br>
+                                <span id="stock-status" style="font-size: 1.1rem; font-weight: bold; color: var(--text-dim);">STABLE</span>
+                            </div>
+                        </div>
+                    </div>
+
 <h3 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
                         MCPD CITIZEN DATABASE QUERY</h3>
                     <div style="color: var(--text-dim); font-style: italic; margin-bottom: 15px; line-height: 1.4;">
@@ -829,10 +845,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.10"></script>
-    <script src="js/chats/transmissions.js?v=4.19.10"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.10"></script>
-    <script src="js/core/app_core.js?v=4.19.10"></script>
+    <script src="js/system/check_system.js?v=4.19.11"></script>
+    <script src="js/chats/transmissions.js?v=4.19.11"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.11"></script>
+    <script src="js/core/app_core.js?v=4.19.11"></script>
 
     
 
