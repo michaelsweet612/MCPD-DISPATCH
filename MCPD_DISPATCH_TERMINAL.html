@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.15">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.14">
 </head>
 
 <body>
@@ -452,6 +452,104 @@ document.addEventListener('keypress', function(e) {
                         </div>
                     </div>
 
+<h3 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+                        PINNED RADIO TRANSMISSIONS</h3>
+                    <div id="document-list">
+                        <!-- Mock documents -->
+                    </div>
+                </div>
+
+                <!-- PERSONNEL VIEW (Hidden by default) -->
+                
+                <!-- DATABASE VIEW (Hidden by default) -->
+                <div class="panel-content scrollable" id="database-log" style="display: none;">
+                    
+                    
+                    <!-- PUBLIC MCPD STOCK MARKET -->
+                    <div id="stock-market-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--accent-green); padding: 15px; margin-bottom: 20px; border-radius: 6px;">
+                        <h4 style="color: var(--accent-green); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed var(--accent-green); padding-bottom: 5px;">📈 PUBLIC MCPD STOCK MARKET</h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: var(--text-dim); font-size: 0.85rem;">OMNICORP VALUATION:</span><br>
+                                <span id="stock-price" style="font-size: 1.8rem; font-weight: bold; color: var(--accent-green);">NTND $150.00</span>
+                                <span id="stock-trend" style="color: var(--accent-green); font-size: 1.2rem; margin-left: 10px;">▲ +0.00%</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="color: var(--text-dim); font-size: 0.85rem;">MARKET STATUS:</span><br>
+                                <span id="stock-status" style="font-size: 1.1rem; font-weight: bold; color: var(--text-dim);">STABLE</span>
+                            </div>
+                        </div>
+                    
+                        <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
+                            <canvas id="stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(0, 255, 0, 0.05); border-radius: 4px;"></canvas>
+                        </div>
+                    </div>
+
+<h3 style="color: #fff; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+                        MCPD CITIZEN DATABASE QUERY</h3>
+                    <div style="color: var(--text-dim); font-style: italic; margin-bottom: 15px; line-height: 1.4;">
+                        > Query terminal online. Enter citizen ID or facial scan parameters to begin...<br>
+                        > Note: All citizens are presumed guilty until proven otherwise per MCPD directive 4-A.
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="db-search-input" class="input-styled" placeholder="Enter Name or Citizen ID...">
+                        <button id="db-search-btn" style="padding: 10px 20px; font-size: 1rem;">SEARCH</button>
+                        <button id="db-ai-profile-btn" style="padding: 10px 20px; font-size: 1rem; background: var(--accent-green); color: #000; border: none; font-weight: bold; display: none;">AI PROFILE ANALYSIS</button>
+                    </div>
+
+                    <div id="db-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; display: none;">
+                        <!-- DB Results Injected Here -->
+                    </div>
+
+                    <h3 style="color: #ff9800; margin-bottom: 15px; margin-top: 30px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+                        VEHICLE DATABASE (V-DB)</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="db-vehicle-input" class="input-styled" placeholder="Enter License Plate (e.g. 7XYZ999)...">
+                        <button id="db-vehicle-btn" style="padding: 10px 20px; font-size: 1rem; background: #ff9800; color: #000; border: none; font-weight: bold;">RUN PLATE</button>
+                    </div>
+                    <div id="db-vehicle-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; display: none;">
+                    </div>
+
+                    <h3 style="color: var(--accent-green); margin-bottom: 15px; margin-top: 30px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
+                        CITY LICENSE & INSPECTION DATABASE</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="license-input" class="input-styled" placeholder="Enter Business, Address, or Name..." style="flex-grow: 1;">
+                        <button id="btn-search-license" style="padding: 10px 20px; font-size: 1rem; background: var(--accent-green); color: #000; border: none; font-weight: bold;">RUN QUERY</button>
+                    </div>
+                    <div id="license-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                        [SYSTEM READY] Enter a query to verify city licenses, health inspections, and municipal code violations.
+                    </div>
+
+
+                
+                    <!-- PUBLIC OPINION DASHBOARD -->
+                    <div id="public-opinion-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); padding: 15px; margin-bottom: 20px; border-radius: 6px;">
+                        <h4 style="color: var(--accent-blue); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed var(--panel-border); padding-bottom: 5px;">📊 PUBLIC OPINION & TRUST RATINGS</h4>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div>
+                                <span style="color: var(--text-dim); font-size: 0.85rem;">OVERALL STATION RATING:</span><br>
+                                <span id="station-star-rating" style="color: #ffeb3b; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px #ffeb3b;">⭐ 0.0 / 5.0</span>
+                                  <span id="station-stars-visual" style="color: #ffeb3b; font-size: 1.2rem; letter-spacing: 2px; margin-left: 10px;"></span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="color: var(--text-dim); font-size: 0.85rem;">PUBLIC TRUST RATIO:</span><br>
+                                <span style="font-size: 1.2rem; font-weight: bold;">
+                                    <span id="trust-ratio" style="color: var(--accent-green);">20% TRUST</span>
+                                    <span style="color: #fff; margin: 0 5px;">/</span>
+                                    <span id="distrust-ratio" style="color: var(--panic-red);">80% DISTRUST</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <h5 style="color: var(--text-dim); margin-top: 0; margin-bottom: 10px; font-size: 0.85rem;">LIVE CIVILIAN REVIEWS:</h5>
+                        <div id="civilian-reviews-log" style="max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid var(--panel-border); font-size: 0.9rem; display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Reviews injected dynamically -->
+                            <div style="color: #fff;"><span style="color: #ffeb3b;">⭐ 1.0</span> - <span style="color: #94a3b8;">"Too trigger happy. They blew up my car."</span> - Anonymous</div>
+                          </div>
+                    </div>
+
                     
                     <div id="dispatcher-review-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); padding: 15px; margin-bottom: 20px; border-radius: 6px;">
                         <h4 style="color: var(--accent-blue); margin-top: 0; margin-bottom: 5px; font-size: 1.1rem; border-bottom: 1px dashed var(--panel-border); padding-bottom: 5px;">✍️ SUBMIT DISPATCHER REVIEW</h4>
@@ -692,10 +790,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.15"></script>
-    <script src="js/chats/transmissions.js?v=4.19.15"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.15"></script>
-    <script src="js/core/app_core.js?v=4.19.15"></script>
+    <script src="js/system/check_system.js?v=4.19.14"></script>
+    <script src="js/chats/transmissions.js?v=4.19.14"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.14"></script>
+    <script src="js/core/app_core.js?v=4.19.14"></script>
 
     
 

@@ -4905,7 +4905,7 @@ if(loreJoinClose) {
 
 
 // --- DISPATCH CAD FEATURES ---
-let unitAssignments = {}; // callsign -> status
+var unitAssignments = {}; // callsign -> status
 
 let unitsDisplayed = 15;
 
@@ -5079,7 +5079,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Lethal Force Auth System
-let lethalAuthActive = false;
+var lethalAuthActive = false;
 let lastLethalAuthTime = 0;
 let lethalAuthTimer = null;
 let lethalAuthTimeLeft = 40;
@@ -5721,7 +5721,7 @@ function triggerLethalAuthEvent() {
 let totalBribesAccepted = 0;
 let totalBribeMoney = 0;
 let currentPendingBribeAmount = 0;
-let bribeAuthActive = false;
+var bribeAuthActive = false;
 let bribeAuthTimer = null;
 let bribeAuthTimeLeft = 30;
 let bribeAuthOfficer = "";
@@ -5853,7 +5853,7 @@ function triggerBribeEvent() {
 }
 
 // === ARREST AUTHORIZATION SYSTEM ===
-let arrestAuthActive = false;
+var arrestAuthActive = false;
 let arrestAuthTimeLeft = 40;
 let arrestAuthTimer = null;
 let arrestAuthOfficer = "";
