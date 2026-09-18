@@ -9264,11 +9264,26 @@ let mapWidth = 0;
 let mapHeight = 0;
 let animationId = null;
 
-const ROAD_WIDTH = 30;
-const SIDEWALK_OFFSET = (ROAD_WIDTH / 2) + 8;
+const ROAD_WIDTH = 40;
+const SIDEWALK_OFFSET = (ROAD_WIDTH / 2) + 10;
+
+// World & Camera State
+window.worldWidth = 3000;
+window.worldHeight = 3000;
+window.cameraX = window.worldWidth / 2;
+window.cameraY = window.worldHeight / 2;
+window.cameraZoom = 1.0;
+window.isPanning = false;
+window.panStartX = 0;
+window.panStartY = 0;
+window.camStartX = 0;
+window.camStartY = 0;
 
 let roadX = [];
 let roadY = [];
+window.trafficLights = [];
+window.crashes = [];
+
 let cityBlocks = [];
 
 if (tabMap && mapLogEl) {
@@ -9296,137 +9311,51 @@ if (typeof window.oldHideAllTabsMap === 'undefined') {
         if(mapLogEl) mapLogEl.style.display = 'none';
         if(animationId) { cancelAnimationFrame(animationId); animationId = null; }
     };
-    if(typeof hideAllTabs !== 'undefined') {
-        hideAllTabs = window.hideAllTabs;
-    }
 }
 
-function generateCityLayout() {
-    roadX = [];
-    roadY = [];
-    cityBlocks = [];
-    
-    // Generate Irregular Vertical Roads
-    let cx = Math.random() * 50 + 20;
-    while (cx < mapWidth - 20) {
-        roadX.push(cx);
-        cx += 100 + Math.random() * 200; // Variable block width 100-300px
-    }
-    
-    // Generate Irregular Horizontal Roads
-    let cy = Math.random() * 50 + 20;
-    while (cy < mapHeight - 20) {
-        roadY.push(cy);
-        cy += 100 + Math.random() * 200; // Variable block height 100-300px
-    }
-    
-    // Generate Block Properties (Districts)
-    for (let i = 0; i <= roadX.length; i++) {
-        for (let j = 0; j <= roadY.length; j++) {
-            let left = i === 0 ? 0 : roadX[i-1] + ROAD_WIDTH/2;
-            let right = i === roadX.length ? mapWidth : roadX[i] - ROAD_WIDTH/2;
-            let top = j === 0 ? 0 : roadY[j-1] + ROAD_WIDTH/2;
-            let bottom = j === roadY.length ? mapHeight : roadY[j] - ROAD_WIDTH/2;
-            
-            let w = right - left;
-            let h = bottom - top;
-            
-            let type = 'commercial';
-            let roll = Math.random();
-            if (roll < 0.1) type = 'water';
-            else if (roll < 0.25) type = 'park';
-            else if (roll < 0.5) type = 'residential';
-            else if (roll < 0.65) type = 'industrial';
-            
-            // Randomly generated sub-buildings inside the block
-            let buildings = [];
-            if (type !== 'water' && type !== 'park') {
-                let numB = Math.floor(Math.random() * 5) + 1;
-                for(let b=0; b<numB; b++) {
-                    buildings.push({
-                        bx: left + 5 + Math.random() * (w - 30),
-                        by: top + 5 + Math.random() * (h - 30),
-                        bw: 15 + Math.random() * 40,
-                        bh: 15 + Math.random() * 40,
-                        color: type === 'commercial' ? '#1c252d' : (type === 'industrial' ? '#2a2626' : '#222')
-                    });
-                }
-            }
-            
-            let trees = [];
-            if (type === 'park' || type === 'residential') {
-                let numT = type === 'park' ? Math.floor(Math.random() * 20) + 10 : Math.floor(Math.random() * 5);
-                for(let t=0; t<numT; t++) {
-                    trees.push({
-                        tx: left + 10 + Math.random() * (w - 20),
-                        ty: top + 10 + Math.random() * (h - 20),
-                        r: 3 + Math.random() * 6
-                    });
-                }
-            }
-
-            cityBlocks.push({
-                left: left, right: right, top: top, bottom: bottom, w: w, h: h,
-                type: type, buildings: buildings, trees: trees
-            });
-        }
-    }
+function screenToWorld(sx, sy) {
+    if (!cityCanvas) return {x: 0, y: 0};
+    const cx = cityCanvas.width / 2;
+    const cy = cityCanvas.height / 2;
+    const wx = ((sx - cx) / window.cameraZoom) + window.cameraX;
+    const wy = ((sy - cy) / window.cameraZoom) + window.cameraY;
+    return { x: wx, y: wy };
 }
-
-
-window.mapZones = [];
-window.isDrawingZone = false;
-window.startDragX = 0;
-window.startDragY = 0;
-window.currentMouseX = 0;
-window.currentMouseY = 0;
-window.activeZoneMode = null;
-window.radarGridlines = false;
-window.radarHeatmap = false;
-window.radarEntityIds = false;
-window.radarPatrolRoutes = false;
-
 
 function initCityMap() {
     cityCanvas = document.getElementById('city-map-canvas');
     if (!cityCanvas) return;
     ctx = cityCanvas.getContext('2d');
     
-    const container = document.getElementById('live-map-container');
-    mapWidth = container.clientWidth;
-    mapHeight = container.clientHeight || 600;
-    cityCanvas.width = mapWidth;
-    cityCanvas.height = mapHeight;
-    
-    generateCityLayout();
-    
-    entities = [];
-    for(let i=0; i<120; i++) spawnEntity('civ');
-    for(let i=0; i<30; i++) spawnEntity('police');
-    // Assign generic IDs
-    entities.forEach((e, idx) => { if(!e.id) e.id = (e.faction==='police' ? 'PD-' : 'CIV-') + (1000+idx); });
+    // Resize to fit container
+    const resizeMap = () => {
+        cityCanvas.width = cityCanvas.parentElement.clientWidth;
+        cityCanvas.height = cityCanvas.parentElement.clientHeight;
+    };
+    window.addEventListener('resize', resizeMap);
+    resizeMap();
 
-    animationId = requestAnimationFrame(drawCityMap);
+    // Map UI Setup
+    window.activeZoneMode = null;
+    window.radarGridlines = false;
+    window.radarHeatmap = false;
+    window.radarEntityIds = false;
+    window.radarPatrolRoutes = false;
     
-    
-    // --- Massive Map Drawing Listeners ---
     const allToolBtns = document.querySelectorAll('.map-tool-btn');
     allToolBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             window.activeZoneMode = btn.getAttribute('data-mode');
             const btnColor = btn.style.borderColor;
-            // Reset all
             allToolBtns.forEach(b => {
                 b.style.background = 'rgba(0,0,0,0.5)';
                 b.style.color = b.style.borderColor;
             });
-            // Set active
             btn.style.background = btnColor;
             btn.style.color = '#000';
         });
     });
 
-    // Radar Toggles
     const toggleBtns = [
         {id: 'toggle-gridlines', var: 'radarGridlines'},
         {id: 'toggle-heatmap', var: 'radarHeatmap'},
@@ -9453,127 +9382,182 @@ function initCityMap() {
 
     // Spawners
     const swatBtn = document.getElementById('spawn-swat-btn');
-    if (swatBtn) {
-        swatBtn.addEventListener('click', () => {
-            if (typeof entities !== 'undefined') {
-                entities.push({
-                    faction: 'police', isVehicle: true, x: mapWidth/2, y: mapHeight/2, dir: 'N', speed: 3.5, emoji: '🚐', id: 'SWAT-01'
-                });
-            }
-        });
-    }
+    if (swatBtn) swatBtn.addEventListener('click', () => spawnEntity('police', true));
     const medicBtn = document.getElementById('spawn-medic-btn');
-    if (medicBtn) {
-        medicBtn.addEventListener('click', () => {
-            if (typeof entities !== 'undefined') {
-                entities.push({
-                    faction: 'medic', isVehicle: true, x: mapWidth/2, y: mapHeight/2, dir: 'S', speed: 2.5, emoji: '🚑', id: 'EMS-01'
-                });
-            }
-        });
-    }
+    if (medicBtn) medicBtn.addEventListener('click', () => spawnEntity('medic', true));
 
-    if (cityCanvas) {
-        cityCanvas.addEventListener('mousedown', (e) => {
-            const rect = cityCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+    // Mouse Controls (Pan, Zoom, Zone Drawing)
+    window.mapZones = [];
+    let isDrawingZone = false;
+    let currentMouseX = 0;
+    let currentMouseY = 0;
+    
+    cityCanvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const zoomDelta = e.deltaY < 0 ? 1.1 : 0.9;
+        window.cameraZoom *= zoomDelta;
+        window.cameraZoom = Math.max(0.2, Math.min(window.cameraZoom, 5.0)); // Limits
+    });
 
-            // Check if clicking existing zone to delete
-            let clickedExisting = false;
+    cityCanvas.addEventListener('mousedown', (e) => {
+        const rect = cityCanvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Middle click or Shift+Left click to pan
+        if (e.button === 1 || (e.button === 0 && e.shiftKey)) {
+            window.isPanning = true;
+            window.panStartX = mouseX;
+            window.panStartY = mouseY;
+            window.camStartX = window.cameraX;
+            window.camStartY = window.cameraY;
+            cityCanvas.style.cursor = 'grabbing';
+            return;
+        }
+
+        if (e.button !== 0) return;
+
+        const worldPos = screenToWorld(mouseX, mouseY);
+        
+        // Delete Zone
+        if (!window.activeZoneMode) {
             for (let i = window.mapZones.length - 1; i >= 0; i--) {
                 let z = window.mapZones[i];
                 let zX = Math.min(z.x, z.x + z.w);
                 let zY = Math.min(z.y, z.y + z.h);
                 let zW = Math.abs(z.w);
                 let zH = Math.abs(z.h);
-                if (x >= zX && x <= zX + zW && y >= zY && y <= zY + zH) {
+                if (worldPos.x >= zX && worldPos.x <= zX + zW && worldPos.y >= zY && worldPos.y <= zY + zH) {
                     window.mapZones.splice(i, 1);
-                    clickedExisting = true;
-                    break;
+                    return;
                 }
             }
+        }
 
-            if (!clickedExisting && window.activeZoneMode) {
-                window.isDrawingZone = true;
-                window.startDragX = x;
-                window.startDragY = y;
-                window.currentMouseX = x;
-                window.currentMouseY = y;
-            }
-        });
-
-        cityCanvas.addEventListener('mousemove', (e) => {
-            if (window.isDrawingZone) {
-                const rect = cityCanvas.getBoundingClientRect();
-                window.currentMouseX = e.clientX - rect.left;
-                window.currentMouseY = e.clientY - rect.top;
-            }
-        });
-
-        cityCanvas.addEventListener('mouseup', () => {
-            if (window.isDrawingZone) {
-                window.isDrawingZone = false;
-                let w = window.currentMouseX - window.startDragX;
-                let h = window.currentMouseY - window.startDragY;
-                if (Math.abs(w) > 10 && Math.abs(h) > 10) {
-                    window.mapZones.push({
-                        x: window.startDragX,
-                        y: window.startDragY,
-                        w: w,
-                        h: h,
-                        type: window.activeZoneMode
-                    });
-                }
-            }
-        });
-    }
-
-    window.addEventListener('resize', () => {
-        if(container.clientWidth > 0 && container.clientWidth !== mapWidth) {
-            mapWidth = container.clientWidth;
-            mapHeight = container.clientHeight || 600;
-            cityCanvas.width = mapWidth;
-            cityCanvas.height = mapHeight;
-            generateCityLayout(); // Re-layout on major resize
+        // Start Drawing
+        if (window.activeZoneMode) {
+            isDrawingZone = true;
+            window.mapZones.push({
+                x: worldPos.x,
+                y: worldPos.y,
+                w: 0,
+                h: 0,
+                type: window.activeZoneMode
+            });
         }
     });
+
+    cityCanvas.addEventListener('mousemove', (e) => {
+        const rect = cityCanvas.getBoundingClientRect();
+        currentMouseX = e.clientX - rect.left;
+        currentMouseY = e.clientY - rect.top;
+
+        if (window.isPanning) {
+            const dx = (currentMouseX - window.panStartX) / window.cameraZoom;
+            const dy = (currentMouseY - window.panStartY) / window.cameraZoom;
+            window.cameraX = window.camStartX - dx;
+            window.cameraY = window.camStartY - dy;
+        }
+
+        if (isDrawingZone) {
+            let activeZone = window.mapZones[window.mapZones.length - 1];
+            const worldPos = screenToWorld(currentMouseX, currentMouseY);
+            activeZone.w = worldPos.x - activeZone.x;
+            activeZone.h = worldPos.y - activeZone.y;
+        }
+    });
+
+    cityCanvas.addEventListener('mouseup', () => {
+        if (window.isPanning) {
+            window.isPanning = false;
+            cityCanvas.style.cursor = 'default';
+        }
+        if (isDrawingZone) isDrawingZone = false;
+    });
+
+    generateCityLayout();
+    
+    // Spawn massive amount of entities for huge map
+    entities = [];
+    for(let i=0; i<300; i++) spawnEntity('civ');
+    for(let i=0; i<60; i++) spawnEntity('police');
+    entities.forEach((e, idx) => { if(!e.id) e.id = (e.faction==='police' ? 'PD-' : 'CIV-') + (1000+idx); });
+
+    animationId = requestAnimationFrame(drawCityMap);
 }
 
-function spawnEntity(faction) {
-    if(roadX.length === 0 || roadY.length === 0) return;
-    const isVehicle = Math.random() < 0.7; // 70% vehicles
+function generateCityLayout() {
+    roadX = [];
+    roadY = [];
+    window.trafficLights = [];
+    cityBlocks = [];
     
-    // Pick a random road
-    let onVertical = Math.random() < 0.5;
-    let rX = roadX[Math.floor(Math.random() * roadX.length)];
-    let rY = roadY[Math.floor(Math.random() * roadY.length)];
+    // Huge grid
+    for(let x=100; x<window.worldWidth-100; x+=300) roadX.push(x + (Math.random()*40 - 20));
+    for(let y=100; y<window.worldHeight-100; y+=300) roadY.push(y + (Math.random()*40 - 20));
     
-    let x, y, dir;
-    if (onVertical) {
-        x = rX;
-        y = Math.random() * mapHeight;
-        dir = Math.random() < 0.5 ? 'N' : 'S';
-        if (!isVehicle) x += (Math.random()<0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
-    } else {
-        y = rY;
-        x = Math.random() * mapWidth;
-        dir = Math.random() < 0.5 ? 'E' : 'W';
-        if (!isVehicle) y += (Math.random()<0.5 ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
+    // Traffic Lights
+    for (let rx of roadX) {
+        for (let ry of roadY) {
+            window.trafficLights.push({ x: rx, y: ry, state: (Math.random() < 0.5 ? 'H' : 'V'), timer: Math.random() * 200 });
+        }
     }
+
+    // City blocks (visuals)
+    for(let i=0; i<roadX.length-1; i++) {
+        for(let j=0; j<roadY.length-1; j++) {
+            cityBlocks.push({
+                x: roadX[i] + ROAD_WIDTH/2,
+                y: roadY[j] + ROAD_WIDTH/2,
+                w: (roadX[i+1] - roadX[i]) - ROAD_WIDTH,
+                h: (roadY[j+1] - roadY[j]) - ROAD_WIDTH,
+                color: `rgba(${Math.random()*20}, ${Math.random()*30+10}, ${Math.random()*40+20}, 0.6)`
+            });
+        }
+    }
+}
+
+function spawnEntity(faction, isSpecialSpawn = false) {
+    const rx = roadX[Math.floor(Math.random() * roadX.length)];
+    const ry = roadY[Math.floor(Math.random() * roadY.length)];
+    const isVehicle = isSpecialSpawn || Math.random() > 0.4;
     
-    let emoji = faction === 'police' ? (isVehicle ? '🚓' : '👮') : (isVehicle ? (Math.random()<0.2?'🚚':'🚗') : (Math.random()<0.5?'🚶':'🏃'));
+    let offset = isVehicle ? 0 : SIDEWALK_OFFSET;
+    if(Math.random() > 0.5) offset *= -1;
+
+    const dirs = ['N', 'S', 'E', 'W'];
+    const dir = dirs[Math.floor(Math.random() * dirs.length)];
+    
+    let x = dir === 'N' || dir === 'S' ? rx + offset : Math.random() * window.worldWidth;
+    let y = dir === 'E' || dir === 'W' ? ry + offset : Math.random() * window.worldHeight;
+    
+    let speed = 0;
+    let emoji = '';
+    
+    if(faction === 'police') {
+        speed = isVehicle ? (isSpecialSpawn ? 4.5 : 2.5) : 1.0;
+        emoji = isVehicle ? (isSpecialSpawn ? '🚐' : '🚓') : '👮';
+    } else if(faction === 'civ') {
+        speed = isVehicle ? 1.5 + Math.random() : 0.6 + Math.random()*0.4;
+        const emojis = isVehicle ? ['🚗','🚕','🚙','🚚'] : ['🧍','🚶','🏃','🕴️'];
+        emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    } else if(faction === 'medic') {
+        speed = 3.5;
+        emoji = '🚑';
+    }
 
     entities.push({
         faction: faction,
         isVehicle: isVehicle,
-        x: x, y: y,
+        x: x,
+        y: y,
         dir: dir,
-        speed: isVehicle ? (faction === 'police' ? 1.8 : 1.2) : 0.4,
-        emoji: emoji
+        speed: speed,
+        baseSpeed: speed,
+        emoji: emoji,
+        id: (faction==='police' ? 'PD-' : 'CIV-') + Math.floor(Math.random()*90000)
     });
 }
-
 
 function getZoneColor(type) {
     switch(type) {
@@ -9598,97 +9582,35 @@ function getZoneColor(type) {
 }
 
 function drawCityMap() {
-    if (!mapLogEl || mapLogEl.style.display === 'none') {
-        animationId = null;
-        return;
-    }
-
-    // 1. Draw Background
-    ctx.fillStyle = '#0f1418';
-    ctx.fillRect(0, 0, mapWidth, mapHeight);
-
-    // 2. Draw Blocks (Districts)
-    for (let b of cityBlocks) {
-        if (b.type === 'water') {
-            ctx.fillStyle = '#0a192f'; // Dark water
-        } else if (b.type === 'park') {
-            ctx.fillStyle = '#112211'; // Dark grass
-        } else if (b.type === 'commercial') {
-            ctx.fillStyle = '#12161a';
-        } else {
-            ctx.fillStyle = '#16181a';
-        }
-        ctx.fillRect(b.left, b.top, b.w, b.h);
-        
-        // Draw buildings
-        for (let bld of b.buildings) {
-            ctx.fillStyle = bld.color;
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 5;
-            ctx.fillRect(bld.bx, bld.by, bld.bw, bld.bh);
-            ctx.shadowBlur = 0; // reset
-        }
-        
-        // Draw trees
-        ctx.fillStyle = 'rgba(0, 255, 128, 0.2)';
-        for (let t of b.trees) {
-            ctx.beginPath();
-            ctx.arc(t.tx, t.ty, t.r, 0, Math.PI*2);
-            ctx.fill();
-        }
-    }
-
-    // 3. Draw Roads
-    ctx.fillStyle = '#1a1a1a';
-    for (let x of roadX) ctx.fillRect(x - ROAD_WIDTH/2, 0, ROAD_WIDTH, mapHeight);
-    for (let y of roadY) ctx.fillRect(0, y - ROAD_WIDTH/2, mapWidth, ROAD_WIDTH);
+    if (!ctx) return;
     
-    // Draw Center lines
-    ctx.strokeStyle = 'rgba(255, 204, 0, 0.3)';
-    ctx.setLineDash([8, 12]);
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let x of roadX) { ctx.moveTo(x, 0); ctx.lineTo(x, mapHeight); }
-    for (let y of roadY) { ctx.moveTo(0, y); ctx.lineTo(mapWidth, y); }
-    ctx.stroke();
-    ctx.setLineDash([]);
-
+    // Clear Screen
+    ctx.fillStyle = '#0a0f12';
+    ctx.fillRect(0, 0, cityCanvas.width, cityCanvas.height);
     
-    // --- Radar Overlays ---
-    if (window.radarGridlines) {
-        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (let i = 0; i < mapWidth; i += 50) { ctx.moveTo(i, 0); ctx.lineTo(i, mapHeight); }
-        for (let i = 0; i < mapHeight; i += 50) { ctx.moveTo(0, i); ctx.lineTo(mapWidth, i); }
-        ctx.stroke();
-    }
-    if (window.radarPatrolRoutes) {
-        ctx.strokeStyle = 'rgba(0,150,255,0.1)';
-        ctx.lineWidth = 20;
-        ctx.beginPath();
-        for (let x of roadX) { ctx.moveTo(x, 0); ctx.lineTo(x, mapHeight); }
-        for (let y of roadY) { ctx.moveTo(0, y); ctx.lineTo(mapWidth, y); }
-        ctx.stroke();
-    }
+    // Transform Camera
+    ctx.save();
+    ctx.translate(cityCanvas.width / 2, cityCanvas.height / 2);
+    ctx.scale(window.cameraZoom, window.cameraZoom);
+    ctx.translate(-window.cameraX, -window.cameraY);
 
-    
-    // --- Heatmap Radar Overlay ---
+    // 1. Draw World Background
+    ctx.fillStyle = '#050a0a';
+    ctx.fillRect(0, 0, window.worldWidth, window.worldHeight);
+
+    // 2. Heatmap
     if (window.radarHeatmap) {
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
         const time = Date.now() / 1000;
-        // Generate pseudo-random crime hotspots
-        for (let i = 0; i < 5; i++) {
-            let cx = (Math.sin(time * 0.1 + i) * 0.4 + 0.5) * mapWidth;
-            let cy = (Math.cos(time * 0.15 + i*2) * 0.4 + 0.5) * mapHeight;
-            let rad = 100 + Math.sin(time + i) * 30;
-            
+        for (let i = 0; i < 8; i++) {
+            let cx = (Math.sin(time * 0.1 + i) * 0.4 + 0.5) * window.worldWidth;
+            let cy = (Math.cos(time * 0.15 + i*2) * 0.4 + 0.5) * window.worldHeight;
+            let rad = 300 + Math.sin(time + i) * 100;
             let grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-            grad.addColorStop(0, 'rgba(255, 0, 0, 0.4)');
+            grad.addColorStop(0, 'rgba(255, 0, 0, 0.5)');
             grad.addColorStop(0.5, 'rgba(255, 0, 0, 0.1)');
             grad.addColorStop(1, 'rgba(255, 0, 0, 0)');
-            
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(cx, cy, rad, 0, Math.PI*2);
@@ -9697,58 +9619,155 @@ function drawCityMap() {
         ctx.restore();
     }
 
-    // 4. Update & Draw Entities
-    ctx.font = '14px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    // 3. Draw Blocks
+    for(let b of cityBlocks) {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+    }
 
+    // 4. Draw Roads
+    ctx.fillStyle = '#1a1a1a';
+    for(let x of roadX) ctx.fillRect(x - ROAD_WIDTH/2, 0, ROAD_WIDTH, window.worldHeight);
+    for(let y of roadY) ctx.fillRect(0, y - ROAD_WIDTH/2, window.worldWidth, ROAD_WIDTH);
+    
+    // Radar Toggles
+    if (window.radarGridlines) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < window.worldWidth; i += 100) { ctx.moveTo(i, 0); ctx.lineTo(i, window.worldHeight); }
+        for (let i = 0; i < window.worldHeight; i += 100) { ctx.moveTo(0, i); ctx.lineTo(window.worldWidth, i); }
+        ctx.stroke();
+    }
+    if (window.radarPatrolRoutes) {
+        ctx.strokeStyle = 'rgba(0,150,255,0.2)';
+        ctx.lineWidth = 15;
+        ctx.beginPath();
+        for (let x of roadX) { ctx.moveTo(x, 0); ctx.lineTo(x, window.worldHeight); }
+        for (let y of roadY) { ctx.moveTo(0, y); ctx.lineTo(window.worldWidth, y); }
+        ctx.stroke();
+    }
+
+    // 5. Update & Draw Traffic Lights
+    for (let tl of window.trafficLights) {
+        tl.timer--;
+        if (tl.timer <= 0) {
+            tl.state = tl.state === 'H' ? 'V' : 'H';
+            tl.timer = 200 + Math.random() * 100;
+        }
+        ctx.fillStyle = tl.state === 'H' ? 'green' : 'red';
+        ctx.fillRect(tl.x - 15, tl.y - 15, 6, 6);
+        ctx.fillStyle = tl.state === 'V' ? 'green' : 'red';
+        ctx.fillRect(tl.x - 15, tl.y + 9, 6, 6);
+    }
+    
+    // 6. Spawn Random Crashes
+    if (Math.random() < 0.005 && window.crashes.length < 5) {
+        let rx = roadX[Math.floor(Math.random() * roadX.length)];
+        let ry = roadY[Math.floor(Math.random() * roadY.length)];
+        window.crashes.push({x: rx, y: ry, handled: false});
+        // Create Police Blockade
+        window.mapZones.push({x: rx - 80, y: ry - 80, w: 160, h: 160, type: 'Police Only', isBlockade: true});
+        // Dispatch Tow Truck
+        entities.push({faction: 'tow', isVehicle: true, x: rx, y: window.worldHeight-10, dir: 'N', speed: 4, baseSpeed: 4, emoji: '🛻', targetX: rx, targetY: ry});
+        // Dispatch Cop to scene
+        entities.push({faction: 'police', isVehicle: true, x: window.worldWidth-10, y: ry, dir: 'W', speed: 5, baseSpeed: 5, emoji: '🚓', targetX: rx, targetY: ry});
+    }
+
+    // 7. Update & Draw Entities
     for (let e of entities) {
-        // Move
-        if (e.dir === 'N') e.y -= e.speed;
-        if (e.dir === 'S') e.y += e.speed;
-        if (e.dir === 'E') e.x += e.speed;
-        if (e.dir === 'W') e.x -= e.speed;
-
-        // Check Intersections
+        
+        // Base AI Navigation (Turn at intersections)
         if (e.dir === 'N' || e.dir === 'S') {
-            for (let ry of roadY) {
-                let targetY = e.isVehicle ? ry : ry + (e.y > ry ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
-                if (Math.abs(e.y - targetY) <= e.speed) {
-                    if (Math.random() < 0.25) { // 25% chance to turn
-                        e.y = targetY; // snap
-                        e.dir = Math.random() < 0.5 ? 'E' : 'W';
-                        // Snap X to horizontal road rules
-                        e.x = e.isVehicle ? e.x : (e.x + (Math.random()<0.5?1:-1));
-                    }
-                    break;
+            for(let y of roadY) {
+                if(Math.abs(e.y - y) < 2) {
+                    if(Math.random() > 0.7) { e.dir = Math.random() > 0.5 ? 'E' : 'W'; e.y = y; break; }
                 }
             }
         } else {
-            for (let rx of roadX) {
-                let targetX = e.isVehicle ? rx : rx + (e.x > rx ? SIDEWALK_OFFSET : -SIDEWALK_OFFSET);
-                if (Math.abs(e.x - targetX) <= e.speed) {
-                    if (Math.random() < 0.25) {
-                        e.x = targetX;
-                        e.dir = Math.random() < 0.5 ? 'N' : 'S';
-                    }
-                    break;
+            for(let x of roadX) {
+                if(Math.abs(e.x - x) < 2) {
+                    if(Math.random() > 0.7) { e.dir = Math.random() > 0.5 ? 'N' : 'S'; e.x = x; break; }
                 }
             }
         }
 
-        // Screen Wrap
-        if (e.x < -20) e.x = mapWidth + 20;
-        if (e.x > mapWidth + 20) e.x = -20;
-        if (e.y < -20) e.y = mapHeight + 20;
-        if (e.y > mapHeight + 20) e.y = -20;
+        // Avoidance & Collision System
+        let stopAhead = false;
+        
+        if (e.isVehicle && e.speed > 0) {
+            // Check Traffic Lights
+            if (e.dir === 'N' || e.dir === 'S') {
+                for (let tl of window.trafficLights) {
+                    if (Math.abs(e.x - tl.x) < 30 && tl.state === 'H') { // Light is red for vertical
+                        if (e.dir === 'S' && tl.y > e.y && tl.y - e.y < 50) stopAhead = true;
+                        if (e.dir === 'N' && e.y > tl.y && e.y - tl.y < 50) stopAhead = true;
+                    }
+                }
+            } else {
+                for (let tl of window.trafficLights) {
+                    if (Math.abs(e.y - tl.y) < 30 && tl.state === 'V') { // Light is red for horizontal
+                        if (e.dir === 'E' && tl.x > e.x && tl.x - e.x < 50) stopAhead = true;
+                        if (e.dir === 'W' && e.x > tl.x && e.x - tl.x < 50) stopAhead = true;
+                    }
+                }
+            }
 
-        // Glow for police
-        if (e.faction === 'police') {
-            ctx.fillStyle = 'rgba(0, 150, 255, 0.5)';
-            ctx.beginPath(); ctx.arc(e.x, e.y, 14, 0, Math.PI*2); ctx.fill();
+            // Check Cars & Pedestrians Ahead
+            for (let other of entities) {
+                if (other === e) continue;
+                let dist = Math.hypot(e.x - other.x, e.y - other.y);
+                if (dist < 60) {
+                    if (e.dir === 'S' && other.y > e.y && Math.abs(e.x - other.x) < 30) stopAhead = true;
+                    if (e.dir === 'N' && e.y > other.y && Math.abs(e.x - other.x) < 30) stopAhead = true;
+                    if (e.dir === 'E' && other.x > e.x && Math.abs(e.y - other.y) < 30) stopAhead = true;
+                    if (e.dir === 'W' && e.x > other.x && Math.abs(e.y - other.y) < 30) stopAhead = true;
+                }
+            }
+            
+            // Check crashes
+            for (let c of window.crashes) {
+                if (Math.hypot(e.x - c.x, e.y - c.y) < 50 && e.faction !== 'tow' && e.faction !== 'police') {
+                    stopAhead = true;
+                }
+            }
+        }
+        
+        // Tow Truck Logic
+        if (e.faction === 'tow' && e.targetX !== undefined) {
+            let distToTarget = Math.hypot(e.x - e.targetX, e.y - e.targetY);
+            if (distToTarget < 40 && !e.hasCar) {
+                e.emoji = '🛻🚗';
+                e.hasCar = true;
+                e.dir = e.dir === 'E' ? 'W' : (e.dir === 'W' ? 'E' : (e.dir === 'N' ? 'S' : 'N')); // Turn around
+                // Remove the crash
+                window.crashes = window.crashes.filter(c => Math.hypot(c.x - e.targetX, c.y - e.targetY) > 50);
+                // Remove blockade
+                window.mapZones = window.mapZones.filter(z => !z.isBlockade);
+                e.targetX = undefined; // Go home
+            }
         }
 
-        
+        // Apply Speed
+        if (stopAhead) {
+            e.speed = 0;
+        } else {
+            e.speed = e.baseSpeed;
+        }
+
+        if(e.dir === 'N') e.y -= e.speed;
+        if(e.dir === 'S') e.y += e.speed;
+        if(e.dir === 'E') e.x += e.speed;
+        if(e.dir === 'W') e.x -= e.speed;
+
+        // Wrap around world
+        if(e.x < 0) e.x = window.worldWidth;
+        if(e.x > window.worldWidth) e.x = 0;
+        if(e.y < 0) e.y = window.worldHeight;
+        if(e.y > window.worldHeight) e.y = 0;
+
         // --- Massive Zone Collisions ---
         if (typeof window.mapZones !== 'undefined' && e.speed > 0) {
             for (let z of window.mapZones) {
@@ -9758,14 +9777,12 @@ function drawCityMap() {
                 let zH = Math.abs(z.h);
                 if (e.x >= zX && e.x <= zX + zW && e.y >= zY && e.y <= zY + zH) {
                     
-                    if (z.type === 'Media Blackout') {
-                        // Drawing logic handles this later
-                    }
+                    if (z.type === 'Media Blackout') { /* Hidden */ }
                     else if (z.type === 'Quarantine' && e.faction === 'civ') {
                         e.emoji = '🤢'; e.speed = 0.2;
                     }
                     else if (z.type === 'Riot Control') {
-                        if (e.faction === 'police') e.speed = 2.5;
+                        if (e.faction === 'police') e.speed = e.baseSpeed * 2.0;
                         if (e.faction === 'civ') { e.emoji = '🔗'; e.speed = 0; }
                     }
                     else if (z.type === 'Sniper Overwatch' && e.faction === 'civ') {
@@ -9775,7 +9792,7 @@ function drawCityMap() {
                         e.speed = 0;
                     }
                     else if (z.type === 'Evacuation' && e.faction === 'civ') {
-                        e.speed = 3.0; // Run super fast
+                        e.speed = e.baseSpeed * 3.0; 
                     }
                     else if (z.type === 'EMP Blast' && e.isVehicle) {
                         e.emoji = '💥'; e.speed = 0;
@@ -9789,7 +9806,7 @@ function drawCityMap() {
                         if (Math.random() < 0.005) { e.emoji = '💥'; e.speed = 0; }
                     }
                     else if (z.type === 'Syndicate Turf' && e.faction === 'civ') {
-                        e.emoji = '👤'; e.speed = 1.5;
+                        e.emoji = '👤'; e.speed = e.baseSpeed * 1.5;
                     }
                     else if (z.type === 'Military Base' && e.faction === 'civ') {
                         e.emoji = '💀'; e.speed = 0; break;
@@ -9814,60 +9831,95 @@ function drawCityMap() {
             }
         }
 
-        // Draw Emoji
+        // Viewport culling (Don't draw if outside screen for optimization)
+        const vLeft = window.cameraX - (cityCanvas.width/2)/window.cameraZoom - 100;
+        const vRight = window.cameraX + (cityCanvas.width/2)/window.cameraZoom + 100;
+        const vTop = window.cameraY - (cityCanvas.height/2)/window.cameraZoom - 100;
+        const vBottom = window.cameraY + (cityCanvas.height/2)/window.cameraZoom + 100;
+        
+        if (e.x < vLeft || e.x > vRight || e.y < vTop || e.y > vBottom) {
+            continue; // Optimized out!
+        }
+
         ctx.save();
         ctx.translate(e.x, e.y);
-        if (e.isVehicle) {
-            if (e.dir === 'N') ctx.rotate(-Math.PI/2);
-            if (e.dir === 'S') ctx.rotate(Math.PI/2);
-            if (e.dir === 'W') ctx.rotate(Math.PI);
-        }
+        if(e.dir === 'S') ctx.rotate(Math.PI);
+        if(e.dir === 'E') ctx.rotate(Math.PI/2);
+        if(e.dir === 'W') ctx.rotate(-Math.PI/2);
+        
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         ctx.fillText(e.emoji, 0, 0);
-
         ctx.restore();
+        
+        if (window.radarEntityIds && e.id) {
+            ctx.font = '12px Courier New';
+            ctx.fillStyle = e.faction === 'police' ? 'var(--accent-blue)' : (e.faction === 'medic' ? '#ff5252' : '#ffffff');
+            ctx.fillText(e.id, e.x, e.y - 15);
+        }
+    }
+    
+    // Draw Crashes
+    for (let c of window.crashes) {
+        ctx.font = '30px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('💥', c.x, c.y);
     }
 
     // --- Draw Map Zones ---
     if (typeof window.mapZones !== 'undefined') {
-        ctx.font = '12px Courier New';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
         for (let z of window.mapZones) {
             let zX = Math.min(z.x, z.x + z.w);
             let zY = Math.min(z.y, z.y + z.h);
             let zW = Math.abs(z.w);
             let zH = Math.abs(z.h);
-
-            const colors = getZoneColor(z.type);
-            ctx.fillStyle = colors.fill;
-            ctx.strokeStyle = colors.stroke;
-            ctx.fillRect(zX, zY, zW, zH);
-            ctx.lineWidth = 2;
-            ctx.strokeRect(zX, zY, zW, zH);
-            ctx.fillStyle = ctx.strokeStyle;
-            ctx.fillText(z.type.toUpperCase() + " ZONE", zX + zW/2, zY + 10);
-        }
-
-        if (window.isDrawingZone && window.activeZoneMode) {
-            let zX = Math.min(window.startDragX, window.currentMouseX);
-            let zY = Math.min(window.startDragY, window.currentMouseY);
-            let zW = Math.abs(window.currentMouseX - window.startDragX);
-            let zH = Math.abs(window.currentMouseY - window.startDragY);
-
-            const drawColors = getZoneColor(window.activeZoneMode);
-            ctx.fillStyle = drawColors.fill;
-            ctx.strokeStyle = drawColors.stroke;
-            ctx.fillRect(zX, zY, zW, zH);
-            ctx.lineWidth = 2;
-            ctx.strokeRect(zX, zY, zW, zH);
+            
+            if (z.type === 'Media Blackout') {
+                ctx.fillStyle = '#0a0f12';
+                ctx.fillRect(zX, zY, zW, zH);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+                for(let i=0; i<100; i++) ctx.fillRect(zX + Math.random()*zW, zY + Math.random()*zH, Math.random()*10, Math.random()*5);
+                ctx.fillStyle = 'rgba(255,0,0,0.8)';
+                ctx.font = 'bold 30px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillText("SIGNAL LOST", zX + zW/2, zY + zH/2);
+            } else {
+                const colors = getZoneColor(z.type);
+                ctx.fillStyle = colors.fill;
+                ctx.strokeStyle = colors.stroke;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.rect(zX, zY, zW, zH);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Draw Label
+                ctx.fillStyle = colors.stroke;
+                ctx.font = 'bold 16px Courier New';
+                ctx.textAlign = 'left';
+                ctx.fillText(z.type, zX + 5, zY + 20);
+            }
         }
     }
 
+    if (isDrawingZone) {
+        let z = window.mapZones[window.mapZones.length - 1];
+        const drawColors = getZoneColor(window.activeZoneMode);
+        ctx.fillStyle = drawColors.fill;
+        ctx.strokeStyle = drawColors.stroke;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.rect(z.x, z.y, z.w, z.h);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    ctx.restore(); // End Camera Transform
+
     animationId = requestAnimationFrame(drawCityMap);
 }
-// ==========================================
-
-
 
 
 // ==========================================
