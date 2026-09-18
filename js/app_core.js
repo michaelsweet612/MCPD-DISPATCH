@@ -9388,7 +9388,7 @@ function initCityMap() {
 
     // Mouse Controls (Pan, Zoom, Zone Drawing)
     window.mapZones = [];
-    let isDrawingZone = false;
+    window.window.isDrawingZone = false;
     let currentMouseX = 0;
     let currentMouseY = 0;
     
@@ -9436,7 +9436,7 @@ function initCityMap() {
 
         // Start Drawing
         if (window.activeZoneMode) {
-            isDrawingZone = true;
+            window.isDrawingZone = true;
             window.mapZones.push({
                 x: worldPos.x,
                 y: worldPos.y,
@@ -9459,7 +9459,7 @@ function initCityMap() {
             window.cameraY = window.camStartY - dy;
         }
 
-        if (isDrawingZone) {
+        if (window.isDrawingZone) {
             let activeZone = window.mapZones[window.mapZones.length - 1];
             const worldPos = screenToWorld(currentMouseX, currentMouseY);
             activeZone.w = worldPos.x - activeZone.x;
@@ -9472,7 +9472,7 @@ function initCityMap() {
             window.isPanning = false;
             cityCanvas.style.cursor = 'default';
         }
-        if (isDrawingZone) isDrawingZone = false;
+        if (window.isDrawingZone) window.isDrawingZone = false;
     });
 
     generateCityLayout();
@@ -9904,7 +9904,7 @@ function drawCityMap() {
         }
     }
 
-    if (isDrawingZone) {
+    if (window.isDrawingZone) {
         let z = window.mapZones[window.mapZones.length - 1];
         const drawColors = getZoneColor(window.activeZoneMode);
         ctx.fillStyle = drawColors.fill;
