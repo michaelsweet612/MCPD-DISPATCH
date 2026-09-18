@@ -7258,9 +7258,9 @@ setTimeout(updatePublicInfoUI, 1000);
 // ==========================================
 
 let markets = {
-    mcpd: { price: 150.00, history: new Array(40).fill(150.00), color: '#4caf50', badColor: '#f44336' },
-    civ: { price: 50.00, history: new Array(40).fill(50.00), color: '#2196f3', badColor: '#f44336' },
-    gov: { price: 300.00, history: new Array(40).fill(300.00), color: '#ff9800', badColor: '#f44336' }
+    mcpd: { price: 2000000000.00, history: new Array(40).fill(2000000000.00), color: '#4caf50', badColor: '#f44336' },
+    civ: { price: 1000000.00, history: new Array(40).fill(1000000.00), color: '#2196f3', badColor: '#f44336' },
+    gov: { price: 1000000000000.00, history: new Array(40).fill(1000000000000.00), color: '#ff9800', badColor: '#f44336' }
 };
 
 function drawStockChart(id, isBull) {
@@ -7322,17 +7322,18 @@ function updateStockMarkets() {
     let trustFactor = (typeof trustPercentage !== 'undefined' ? trustPercentage : 50);
     
     // 1. MCPD Market (Tied directly to Trust)
-    let mcpdTrend = (trustFactor - 50) / 100; 
-    let mcpdChange = (mcpdTrend * 8.0) + ((Math.random() * 4) - 2);
-    if (trustFactor < 20) mcpdChange -= (Math.random() * 5);
+    let mcpdTrend = (trustFactor - 50) / 100; // -0.5 to +0.5
+    let mcpdChangePct = (mcpdTrend * 0.03) + ((Math.random() * 0.02) - 0.01); 
+    if (trustFactor < 20) mcpdChangePct -= (Math.random() * 0.03);
+    let mcpdChange = markets.mcpd.price * mcpdChangePct;
     
-    // 2. CIV Market (Tied loosely to Trust, but more volatile)
-    let civTrend = (trustFactor - 40) / 100;
-    let civChange = (civTrend * 5.0) + ((Math.random() * 6) - 3);
+    // 2. CIV Market (Completely random 50/50, no direct trust link)
+    let civChangePct = ((Math.random() * 0.08) - 0.04); // -4% to +4% random
+    let civChange = markets.civ.price * civChangePct;
     
-    // 3. GOV Market (Inverse to Trust. Panic = More Weapons/Defense Contracts)
-    let govTrend = (50 - trustFactor) / 100;
-    let govChange = (govTrend * 10.0) + ((Math.random() * 5) - 2.5);
+    // 3. GOV Market (TBMG - Always goes up no matter what)
+    let govChangePct = (Math.random() * 0.05) + 0.001; // 0.1% to +5% UP
+    let govChange = markets.gov.price * govChangePct;
 
     let updates = [
         { id: 'mcpd', change: mcpdChange },
@@ -7353,7 +7354,7 @@ function updateStockMarkets() {
         let statusEl = document.getElementById(`${u.id}-stock-status`);
         
         if (priceEl && trendEl && statusEl) {
-            priceEl.textContent = `NTND $${market.price.toFixed(2)}`;
+            priceEl.textContent = `NTND $${market.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             let pctChange = (u.change / market.price) * 100;
             
             if (u.change >= 0) {
@@ -7369,10 +7370,10 @@ function updateStockMarkets() {
             if (Math.abs(pctChange) > 5) {
                 statusEl.textContent = u.change > 0 ? "SURGING (BUY)" : "CRASHING (SELL)";
                 statusEl.style.color = u.change > 0 ? market.color : market.badColor;
-            } else if (u.change < -2) {
+            } else if (pctChange < -1.5) {
                 statusEl.textContent = "BEARISH";
                 statusEl.style.color = "var(--panic-orange)";
-            } else if (u.change > 2) {
+            } else if (pctChange > 1.5) {
                 statusEl.textContent = "BULLISH";
                 statusEl.style.color = market.color;
             } else {
