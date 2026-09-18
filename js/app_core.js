@@ -10157,6 +10157,8 @@ window.recordOfficerStat = function(callsign, type) {
         u.kills = (u.kills || 0) + 1;
     } else if (type === 'arrest') {
         u.arrests = (u.arrests || 0) + 1;
+    } else if (type === 'answered') {
+        u.answeredCalls = (u.answeredCalls || 0) + 1;
     }
     if (typeof window.updateOfficerLeaderboard === 'function') {
         window.updateOfficerLeaderboard();
