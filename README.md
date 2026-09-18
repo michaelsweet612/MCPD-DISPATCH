@@ -1,4 +1,4 @@
-# 🛡️ MCPD DISPATCH TERMINAL (v04.10.04)
+# 🚨 MCPD DISPATCH TERMINAL (v4.19.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -10,16 +10,16 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 🔥 LATEST V04.11 UPDATE FEATURES
+## 🛠️ LATEST MEGACITY & MARTIAL LAW UPDATES (v4.19.0)
 
-* **Custom Theme Editor:** A fully persistent CSS Variable editor that allows you to change the aesthetic color of literally everything on the UI.
-* **Custom Personality Editor:** A new menu inside Advanced Controls that allows you to manually tweak the exact procedural spawn weights of all 11 officer personality types! Want a station full of purely Paranoid and Sarcastic officers? Set the sliders to 100 and set everything else to 0.
-* **Immersive SPA Authentication:** The login portal is now a massive fullscreen overlay built directly over the top of the actual Dispatch Terminal. Booting up the terminal plays a seamless connection and firewall bypass sequence before dropping you into the live UI.
-* **Jurisdiction Rivalry (Sheriff Lore):** Over 136 unique procedural radio interactions where arrogant MCPD officers ruthlessly trash-talk the county sheriffs for being lazy, only to be instantly corrected by ex-sheriff officers defending their honor on the public radio!
-* **Bribe Authorization & Corruption Logs:** A brand new `ALLOW BRIBES REQUESTS` toggle! If enabled, officers will ask for permission before taking bribes from civilians. If disabled, officers will autonomously decide to take bribes behind your back (60% chance). All corrupt activity is permanently logged in the **INTERNAL AFFAIRS CORRUPTION LOG** dashboard. 
-* **Rules of Engagement & Public Trust:** Disabling the `Rules of Engagement` toggle now instantly tanks your Public Trust rating to 0, flooding the live review feed with furious 1-star complaints. Re-enabling ROE triggers a slow, 2-minute public relations recovery phase of 5-star praise!
-* **Standardized 1K Economy:** The massive point inflation crisis has been resolved. All standard procedurally generated crimes and callouts now strictly award **1,000 Station Points**.
-* **Lethal Force Default Changes:** The `ALLOW LETHAL FORCE REQUESTS` popups have been toggled OFF by default to allow for uninterrupted dispatch operations.
+* **The Megacity Expansion:** The physical boundaries of the city map have been increased 5-fold to a massive 15,000x15,000 grid! The Live Map now actively generates and simulates exactly **59,999 individual entities** roaming the island simultaneously. Powered by a new Spatial Partitioning Grid algorithm to render thousands of cars and pedestrians at a flawless 60 FPS.
+* **Civil War & Martial Law Event:** If you abuse your citizens and the City Trust Level drops below 40%, the system will automatically declare Martial Law and trigger a Civil War. Heavily armed Military Units (`🪖`) will continuously pour out of the Military Base to pacify the streets until you restore Trust above 80%.
+* **Civilian Panic Swarm Logic:** Civilians dynamically react to police presence. If any civilian finds themselves surrounded by a massive cluster of 10 or more Officers or Military units, they will immediately break down in panic and begin sprinting away (`🏃`) at 2.5x speed.
+* **The "Corrupt" Officer Personality:** A new archetype joins the force. 'Corrupt' officers completely ignore Rules of Engagement, share a 5x elevated dispatch priority, and have a 100% bribe acceptance rate. If you explicitly deny their bribe request, they will disobey your command in the chat log and take the money anyway.
+* **Bizarre Dispatch Overhaul:** The system now generates 236 brand-new, bizarre, and hilarious dispatch events. Look out for "Tickle Tickle McGee" attacking toilets with a pipe wrench, suspects aggressively snapping crayons inside the Bio-Dome trees, or unauthorized Crown Victorias glitch-parking themselves entirely inside solid concrete walls. 
+* **Public Information Registry:** A glowing new dashboard inside the Database Tab that tracks live, fluctuating stats for the Megacity population, including Homeowners, Businesses, Alien/Bio-Splicing Experimental Licenses, and an absurdly large counter for Personal Firearms Owned that scales into the hundreds of billions.
+* **Dispatch Metrics Leaderboards:** Four massive live leaderboards dynamically track the Top 5 performing officers in the entire 5,000-man precinct. Track top performers by **Points Earned**, **Total Arrests**, **Suspects Killed**, and a brand new purple dashboard for **Total Calls Answered**.
+* **Permanent Live Map Landmarks:** The megacity dynamically generates massive permanent `🚓 Police Station` and `🪖 Military Base` zones onto random blocks. Roads have been upgraded with literal Traffic Light emojis (`🚥`) at every intersection!
 
 ---
 
