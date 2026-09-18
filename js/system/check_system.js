@@ -26,9 +26,16 @@ function renderSystemErrors() {
     }
     
     const count = window._mcpd_errors.length;
+    // Generate pre-filled GitHub Issue URL
+    const issueTitle = encodeURIComponent(`[CRASH REPORT] ${count} System Faults Detected`);
+    const issueBody = encodeURIComponent(`### 🚨 Automated Crash Report\nThe Check System caught the following critical errors:\n\n` + window._mcpd_errors.map(e => `- \`${e}\``).join('\n') + `\n\n### Context\n*(What were you doing when the game crashed?)*\n`);
+    const githubLink = `https://github.com/michaelsweet612/MCPD-DISPATCH/issues/new?title=${issueTitle}&body=${issueBody}`;
+
+    const reportBtnHtml = `<a href="${githubLink}" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #d32f2f; font-weight: bold; font-size: 1.2rem; text-decoration: none; border-radius: 4px; border: 2px solid #b71c1c; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">REPORT TO GITHUB ISSUES</a>`;
+
     let header = count > 1 
-        ? `<h1>CRITICAL ALERT: ${count} errors have been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so these errors can be fixed.</p><a href="https://github.com/michaelsweet612/MCPD-DISPATCH/issues" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #d32f2f; font-weight: bold; font-size: 1.2rem; text-decoration: none; border-radius: 4px;">REPORT TO GITHUB ISSUES</a>`
-        : `<h1>CRITICAL ALERT: One error has been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so this error can be fixed.</p><a href="https://github.com/michaelsweet612/MCPD-DISPATCH/issues" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #d32f2f; font-weight: bold; font-size: 1.2rem; text-decoration: none; border-radius: 4px;">REPORT TO GITHUB ISSUES</a>`;
+        ? `<h1>CRITICAL ALERT: ${count} errors have been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so these errors can be fixed.</p>${reportBtnHtml}`
+        : `<h1>CRITICAL ALERT: One error has been found!</h1><p style="font-size: 1.5rem; color: #ffeb3b;">Please report this to <b>michaelsweet612</b> right away so this error can be fixed.</p>${reportBtnHtml}`;
         
     let details = "<ul style='margin-top: 30px; font-size: 1.1rem;'>" + window._mcpd_errors.map(e => `<li style="margin-bottom:10px;">${e}</li>`).join('') + "</ul>";
     
