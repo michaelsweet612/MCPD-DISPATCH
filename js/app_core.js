@@ -308,7 +308,7 @@ const autoEventsCheckbox = document.getElementById('auto-events');
   const refreshApplicantsBtn = document.getElementById('refresh-applicants-btn');
     const rosterTotalCountEl = document.getElementById('roster-total-count');
 
-  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous'];
+  const PERSONALITIES = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Corrupt'];
 
 function getRandomJobTitle() {
     if (Math.random() < 0.15) return "Unemployed";
@@ -373,7 +373,8 @@ function getRandomPersonality() {
         'Furry': 1,
         'Fabulous': 1,
         'Impatient': 10,
-        'Trigger-Happy': 10
+        'Trigger-Happy': 10,
+        'Corrupt': 10
     };
 
     if (customWeightsStr) {
@@ -1410,7 +1411,7 @@ function simulateEvent(specificCrime = null) {
     _active.forEach(c => {
         weightedUnits.push(c);
         const o = roster.find(u => u.id === c);
-        if (o && o.personality === 'Trigger-Happy') {
+        if (o && (o.personality === 'Trigger-Happy' || o.personality === 'Corrupt')) {
             weightedUnits.push(c, c, c, c); // 5x higher chance to be selected
         }
     });
@@ -1564,8 +1565,8 @@ function simulateEvent(specificCrime = null) {
         const backupUnit = respondingUnits[1];
         let isROEEnabled = roeToggleCheckbox.checked;
         const repOfficerObj = typeof roster !== 'undefined' ? roster.find(u => u.id === reportingUnit) : null;
-        if (repOfficerObj && repOfficerObj.personality === 'Trigger-Happy') {
-            isROEEnabled = false; // Trigger-Happy ignores ROE and always shoots
+        if (repOfficerObj && (repOfficerObj.personality === 'Trigger-Happy' || repOfficerObj.personality === 'Corrupt')) {
+            isROEEnabled = false; // Trigger-Happy & Corrupt ignore ROE and always shoot
         }
 
         if (Math.random() < 0.3) {
@@ -1906,7 +1907,9 @@ function triggerBribeEvent() {
         }
     } else {
         // Toggle is OFF - Officers automatically decide
-        if (Math.random() < 0.6) { // 60% chance they take it automatically
+        const officerObj = typeof roster !== 'undefined' ? roster.find(u => u.id === bribeAuthOfficer) : null;
+        const isCorrupt = officerObj && officerObj.personality === 'Corrupt';
+        if (isCorrupt || Math.random() < 0.6) { // 100% chance for Corrupt, 60% otherwise
             totalBribesAccepted++;
             updateBribesUI();
             if (typeof addChatMessage !== 'undefined') {
