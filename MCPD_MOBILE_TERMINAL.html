@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.18">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.19">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -574,6 +574,57 @@ document.addEventListener('keypress', function(e) {
                                 <canvas id="gov-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 152, 0, 0.05); border-radius: 4px;"></canvas>
                             </div>
                         </div>
+
+                        <!-- SYNTH STOCK -->
+                        <div id="synth-stock-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid #e040fb; padding: 15px; border-radius: 6px;">
+                            <h4 style="color: #e040fb; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed #e040fb; padding-bottom: 5px;">📈 NEON SYNTHETICS MARKET</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span id="synth-stock-price" style="font-size: 1.8rem; font-weight: bold; color: #e040fb;">NTND $500,000.00</span>
+                                    <span id="synth-stock-trend" style="color: #e040fb; font-size: 1.2rem; margin-left: 10px;">▲ +0.00%</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span id="synth-stock-status" style="font-size: 1.1rem; font-weight: bold; color: var(--text-dim);">STABLE</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
+                                <canvas id="synth-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(224, 64, 251, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- ARMS STOCK -->
+                        <div id="arms-stock-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid #ff5252; padding: 15px; border-radius: 6px;">
+                            <h4 style="color: #ff5252; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed #ff5252; padding-bottom: 5px;">📈 KINETIC ARMS CO. MARKET</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span id="arms-stock-price" style="font-size: 1.8rem; font-weight: bold; color: #ff5252;">NTND $50,000,000.00</span>
+                                    <span id="arms-stock-trend" style="color: #ff5252; font-size: 1.2rem; margin-left: 10px;">▲ +0.00%</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span id="arms-stock-status" style="font-size: 1.1rem; font-weight: bold; color: var(--text-dim);">STABLE</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
+                                <canvas id="arms-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 82, 82, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- DATA STOCK -->
+                        <div id="data-stock-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid #00e5ff; padding: 15px; border-radius: 6px;">
+                            <h4 style="color: #00e5ff; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed #00e5ff; padding-bottom: 5px;">📈 ASTRAL DATA CORP MARKET</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span id="data-stock-price" style="font-size: 1.8rem; font-weight: bold; color: #00e5ff;">NTND $10,000,000.00</span>
+                                    <span id="data-stock-trend" style="color: #00e5ff; font-size: 1.2rem; margin-left: 10px;">▲ +0.00%</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span id="data-stock-status" style="font-size: 1.1rem; font-weight: bold; color: var(--text-dim);">STABLE</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
+                                <canvas id="data-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(0, 229, 255, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -888,10 +939,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.18"></script>
-    <script src="js/chats/transmissions.js?v=4.19.18"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.18"></script>
-    <script src="js/core/app_core.js?v=4.19.18"></script>
+    <script src="js/system/check_system.js?v=4.19.19"></script>
+    <script src="js/chats/transmissions.js?v=4.19.19"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.19"></script>
+    <script src="js/core/app_core.js?v=4.19.19"></script>
 
     
 

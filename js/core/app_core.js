@@ -7260,7 +7260,10 @@ setTimeout(updatePublicInfoUI, 1000);
 let markets = {
     mcpd: { price: 2000000000.00, history: new Array(40).fill(2000000000.00), color: '#4caf50', badColor: '#f44336' },
     civ: { price: 1000000.00, history: new Array(40).fill(1000000.00), color: '#2196f3', badColor: '#f44336' },
-    gov: { price: 1000000000000.00, history: new Array(40).fill(1000000000000.00), color: '#ff9800', badColor: '#f44336' }
+    gov: { price: 1000000000000.00, history: new Array(40).fill(1000000000000.00), color: '#ff9800', badColor: '#f44336' },
+    synth: { price: 500000.00, history: new Array(40).fill(500000.00), color: '#e040fb', badColor: '#f44336' },
+    arms: { price: 50000000.00, history: new Array(40).fill(50000000.00), color: '#ff5252', badColor: '#f44336' },
+    data: { price: 10000000.00, history: new Array(40).fill(10000000.00), color: '#00e5ff', badColor: '#f44336' }
 };
 
 function drawStockChart(id, isBull) {
@@ -7334,11 +7337,26 @@ function updateStockMarkets() {
     // 3. GOV Market (TBMG - Always goes up no matter what)
     let govChangePct = (Math.random() * 0.05) + 0.001; // 0.1% to +5% UP
     let govChange = markets.gov.price * govChangePct;
+    
+    // 4. SYNTH Market (Completely random 50/50)
+    let synthChangePct = ((Math.random() * 0.1) - 0.05); // -5% to +5%
+    let synthChange = markets.synth.price * synthChangePct;
+
+    // 5. ARMS Market (Completely random 50/50)
+    let armsChangePct = ((Math.random() * 0.1) - 0.05); // -5% to +5%
+    let armsChange = markets.arms.price * armsChangePct;
+
+    // 6. DATA Market (Completely random 50/50)
+    let dataChangePct = ((Math.random() * 0.1) - 0.05); // -5% to +5%
+    let dataChange = markets.data.price * dataChangePct;
 
     let updates = [
         { id: 'mcpd', change: mcpdChange },
         { id: 'civ', change: civChange },
-        { id: 'gov', change: govChange }
+        { id: 'gov', change: govChange },
+        { id: 'synth', change: synthChange },
+        { id: 'arms', change: armsChange },
+        { id: 'data', change: dataChange }
     ];
 
     updates.forEach(u => {
@@ -7362,7 +7380,7 @@ function updateStockMarkets() {
                 trendEl.style.color = market.color;
                 priceEl.style.color = market.color;
             } else {
-                trendEl.textContent = `▼ ${pctChange.toFixed(2)}%`;
+                trendEl.textContent = `▼ ${Math.abs(pctChange).toFixed(2)}%`;
                 trendEl.style.color = market.badColor;
                 priceEl.style.color = market.badColor;
             }
