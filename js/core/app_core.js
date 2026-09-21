@@ -7498,14 +7498,26 @@ function updateStockMarkets() {
             priceEl.textContent = `NTND $${market.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             let pctChange = (u.change / market.price) * 100;
             
+            // Color Logic based on performance
+            let perfColor = market.color; // default
+            if (pctChange >= 2.0) {
+                perfColor = '#006400'; // Dark Green (Super successful / Best seller)
+            } else if (pctChange >= 0) {
+                perfColor = '#4caf50'; // Green (Going up)
+            } else if (pctChange >= -1.5) {
+                perfColor = '#ffeb3b'; // Yellow (Slightly down)
+            } else {
+                perfColor = market.badColor; // Red (Crashing)
+            }
+
             if (u.change >= 0) {
                 trendEl.textContent = `▲ +${pctChange.toFixed(2)}%`;
-                trendEl.style.color = market.color;
-                priceEl.style.color = market.color;
+                trendEl.style.color = perfColor;
+                priceEl.style.color = perfColor;
             } else {
                 trendEl.textContent = `▼ ${Math.abs(pctChange).toFixed(2)}%`;
-                trendEl.style.color = market.badColor;
-                priceEl.style.color = market.badColor;
+                trendEl.style.color = perfColor;
+                priceEl.style.color = perfColor;
             }
             
             if (Math.abs(pctChange) > 5) {
