@@ -4138,17 +4138,17 @@ function openCitizenDossier(idx) {
         vehicleHtml = '<span style="color:var(--text-dim);">No registered vehicle.</span>';
     }
 
-    let dossierAvatar = generateAvatarSVG(cit.name || cit.id);
+    let dossierAvatar = generateAvatarSVG(cit.name || cit.id, 200);
     citizenPageBody.innerHTML = `
-        <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start;">
-            <div>
+        <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 15px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; gap: 20px;">
+            <div style="flex-grow: 1;">
                 <strong>${cit.name}</strong> <span style='font-size:0.8rem; color:var(--text-dim);'>(${cit.gender || 'Unknown'})</span><br>
                 <span style="font-size: 0.85rem; color: var(--accent-blue);">Civilian Number: #CIV-${cit.civNumber}</span> | <span style="font-size: 0.85rem; color: var(--text-dim);">${cit.id}</span>
                 <div style="margin-top: 10px;">
                     <span style="font-size:0.85rem; color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:4px; font-weight:bold; letter-spacing: 1px;">${cit.status.toUpperCase()}</span>
                 </div>
             </div>
-            <div style="flex-shrink: 0; padding: 5px; border: 2px solid var(--panel-border); background: #000; border-radius: 6px; box-shadow: 0 0 15px rgba(0,0,0,0.8);">
+            <div style="flex-shrink: 0; padding: 5px; border: 2px solid ${color}; background: #000; border-radius: 6px; box-shadow: 0 0 15px rgba(0,0,0,0.8);">
                 ${dossierAvatar}
             </div>
         </div>
@@ -7746,7 +7746,8 @@ setTimeout(updateStockMarkets, 1000);
 })();
 
 
-function generateAvatarSVG(seed) {
+function generateAvatarSVG(seed, size) {
+    size = size || 100;
     let hash = 0;
     for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
     const rand = () => { hash = Math.sin(hash) * 10000; return hash - Math.floor(hash); };
@@ -7770,7 +7771,7 @@ function generateAvatarSVG(seed) {
     let beard = beards[Math.floor(Math.abs(rand()) * beards.length)];
     let glass = glasses[Math.floor(Math.abs(rand()) * glasses.length)];
 
-    let svg = `<svg viewBox="0 0 100 100" width="100" height="100" style="border-radius: 4px; background: ${bg};">`;
+    let svg = `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="border-radius: 4px; background: ${bg};">`;
     
     // Shoulders
     svg += `<path d="M20,100 Q50,70 80,100" fill="#333" />`;
