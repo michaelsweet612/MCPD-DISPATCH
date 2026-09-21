@@ -7594,3 +7594,103 @@ setTimeout(updateStockMarkets, 1000);
         });
     }
 })();
+
+
+// ==========================================
+// NEW DATABASE LOGIC (Warrants, Firearms, Gangs)
+// ==========================================
+(function initDatabaseTools() {
+    const warrantBtn = document.getElementById('btn-search-warrant');
+    const warrantInput = document.getElementById('warrant-input');
+    const warrantResults = document.getElementById('warrant-results');
+    
+    if (warrantBtn) {
+        warrantBtn.addEventListener('click', () => {
+            const query = warrantInput.value.trim().toUpperCase() || 'UNKNOWN SUBJECT';
+            warrantResults.innerHTML = `<span style="color: var(--panic-orange);">[SYSTEM] Querying global fugitive database for: ${query}...</span>`;
+            warrantBtn.disabled = true;
+            
+            setTimeout(() => {
+                warrantBtn.disabled = false;
+                const r = Math.random();
+                if (r < 0.4) {
+                    warrantResults.innerHTML = `<span style="color: var(--accent-green);">[CLEAN] No active warrants found for ${query}. Subject is clear.</span>`;
+                } else if (r < 0.7) {
+                    warrantResults.innerHTML = `<span style="color: #ffeb3b;">[WARNING] Misdemeanor warrant found for ${query}.<br>Charge: Unpaid municipal citations & resisting public order.</span>`;
+                } else {
+                    warrantResults.innerHTML = `<span style="color: var(--panic-red); font-weight: bold; font-size: 1.1rem;">[ALERT] HIGH-PRIORITY WARRANT FOUND: ${query}</span><br>
+                    <span style="color: #fff;">Charge: Class A Felony - Assault on MCPD Personnel, Cyberware smuggling.<br>
+                    Directive: Subject is considered ARMED and CYBER-ENHANCED. Apprehend immediately.</span>`;
+                }
+            }, 1500);
+        });
+    }
+
+    const firearmBtn = document.getElementById('btn-search-firearm');
+    const firearmInput = document.getElementById('firearm-input');
+    const firearmResults = document.getElementById('firearm-results');
+    
+    if (firearmBtn) {
+        firearmBtn.addEventListener('click', () => {
+            const serial = firearmInput.value.trim().toUpperCase() || 'UNKNOWN-SRL';
+            firearmResults.innerHTML = `<span style="color: var(--panic-red);">[SYSTEM] Running ballistics trace on serial: ${serial}...</span>`;
+            firearmBtn.disabled = true;
+            
+            setTimeout(() => {
+                firearmBtn.disabled = false;
+                const firstNames = ["Jax", "Kael", "Reno", "Voss", "Lena", "Trix", "Slater", "Mal"];
+                const lastNames = ["Vance", "Kross", "Denton", "Mercer", "Sterling", "Graves"];
+                const guns = ["Militech Crusher Pistol", "Kinetic Arms Submachine Gun", "TBMG Enforcer Shotgun", "Neon-Corp Plasma Pistol"];
+                
+                const owner = `${firstNames[Math.floor(Math.random()*firstNames.length)]} ${lastNames[Math.floor(Math.random()*lastNames.length)]}`;
+                const gun = guns[Math.floor(Math.random()*guns.length)];
+                
+                const r = Math.random();
+                if (r < 0.5) {
+                    firearmResults.innerHTML = `
+                    <span style="color: var(--accent-blue);">[REGISTERED FIREARM]</span><br>
+                    <span style="color: #fff;">Serial: ${serial}<br>Model: ${gun}<br>Registered Owner: ${owner}<br>Status: <span style="color: var(--accent-green);">CLEAN - No associated crimes.</span></span>`;
+                } else if (r < 0.8) {
+                    firearmResults.innerHTML = `
+                    <span style="color: var(--panic-orange);">[UNREGISTERED FIREARM]</span><br>
+                    <span style="color: #fff;">Serial: ${serial} has been SCRAPED or ILLEGALLY MODIFIED.<br>Model: Unknown heavily modified ${gun.split(' ')[2]}<br>Status: <span style="color: var(--panic-orange);">ILLEGAL CONTRABAND. Confiscate immediately.</span></span>`;
+                } else {
+                    firearmResults.innerHTML = `
+                    <span style="color: var(--panic-red); font-weight: bold;">[CRITICAL HIT]</span><br>
+                    <span style="color: #fff;">Serial: ${serial}<br>Model: ${gun}<br>Status: <span style="color: var(--panic-red);">STOLEN PROPERTY.</span><br>
+                    Ballistics match 3 unsolved homicides in the Neon District. Secure weapon as Class-1 Evidence immediately!</span>`;
+                }
+            }, 1800);
+        });
+    }
+
+    const gangBtn = document.getElementById('btn-search-gang');
+    const gangSelect = document.getElementById('gang-select');
+    const gangResults = document.getElementById('gang-results');
+    
+    if (gangBtn) {
+        gangBtn.addEventListener('click', () => {
+            const faction = gangSelect.value;
+            gangResults.innerHTML = `<span style="color: var(--accent-green);">[SYSTEM] Decrypting faction intel...</span>`;
+            gangBtn.disabled = true;
+            
+            setTimeout(() => {
+                gangBtn.disabled = false;
+                if (faction === 'tbmg') {
+                    gangResults.innerHTML = `<span style="color: var(--accent-blue); font-weight: bold;">TBMG (THE BLACK MARKET GROUP)</span><br>
+                    <span style="color: #fff;">Threat Level: OMEGA<br>Notes: A massive underground corporate syndicate handling 80% of illegal munitions in the city. Heavily armed. They operate through front businesses and rarely engage police directly unless provoked. Proceed with extreme caution.</span>`;
+                } else if (faction === 'neon') {
+                    gangResults.innerHTML = `<span style="color: #e040fb; font-weight: bold;">NEON SYNDICATE</span><br>
+                    <span style="color: #fff;">Threat Level: HIGH<br>Notes: Tech-obsessed bio-hackers known for illegal cyberware distribution and stealing proprietary corporate data. Frequently found tweaking in abandoned arcades. Often armed with EMP devices and energy weapons.</span>`;
+                } else if (faction === 'rust') {
+                    gangResults.innerHTML = `<span style="color: var(--panic-orange); font-weight: bold;">RUST DEVILS</span><br>
+                    <span style="color: #fff;">Threat Level: MEDIUM<br>Notes: Nomadic vehicle hijackers and scrappers. They control the outer junk yards. They use heavy brute-force tactics, crude pipe weapons, and modified muscle cars. Extremely territorial.</span>`;
+                } else if (faction === 'void') {
+                    gangResults.innerHTML = `<span style="color: #5500ff; font-weight: bold;">VOID WALKERS</span><br>
+                    <span style="color: #fff;">Threat Level: CRITICAL<br>Notes: An elusive cult of netrunners who believe they can transcend human consciousness by merging with the mainframe. They are responsible for a dozen fatal cyber-attacks on MCPD infrastructure. Rarely seen in person. Do not connect any seized devices to the MCPD network.</span>`;
+                }
+            }, 1200);
+        });
+    }
+
+})();
