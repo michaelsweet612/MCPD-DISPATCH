@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.22">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.23">
 </head>
 
 <body>
@@ -506,7 +506,7 @@ document.addEventListener('keypress', function(e) {
                 <div class="panel-content scrollable" id="database-log" style="display: none;">
                     <!-- DATABASE SUB-NAVIGATION -->
                     <div class="db-subnav" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
-                        <button class="db-tab-btn active" onclick="switchDbTab('db-citizen', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: var(--accent-blue); color: #000; border: none;">CITIZEN & VEHICLE DB</button>
+                        <button class="db-tab-btn active" onclick="switchDbTab(\'db-citizen\', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: var(--accent-blue); color: #000; border: 1px solid var(--accent-blue);">CITIZEN & VEHICLE DB</button>
                         <button class="db-tab-btn" onclick="switchDbTab('db-intel', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--accent-blue); border: 1px solid var(--accent-blue);">STATION INTEL</button>
                         <button class="db-tab-btn" onclick="switchDbTab('db-warrants', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--panic-orange); border: 1px solid var(--panic-orange);">ACTIVE WARRANTS</button>
                         <button class="db-tab-btn" onclick="switchDbTab('db-firearms', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--panic-red); border: 1px solid var(--panic-red);">FIREARM REGISTRY</button>
@@ -888,10 +888,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.22"></script>
-    <script src="js/chats/transmissions.js?v=4.19.22"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.22"></script>
-    <script src="js/core/app_core.js?v=4.19.22"></script>
+    <script src="js/system/check_system.js?v=4.19.23"></script>
+    <script src="js/chats/transmissions.js?v=4.19.23"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.23"></script>
+    <script src="js/core/app_core.js?v=4.19.23"></script>
 
     
 
