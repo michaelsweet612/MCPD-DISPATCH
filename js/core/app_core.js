@@ -4613,19 +4613,35 @@ function updateWantedUI() {
         targetDiv.onmouseover = () => targetDiv.style.background = "rgba(255, 255, 255, 0.08)";
         targetDiv.onmouseout = () => targetDiv.style.background = "rgba(255, 255, 255, 0.02)";
 
+        let listAvatar = generateAvatarSVG(target.name);
         targetDiv.innerHTML = `
-            <strong>HVT: "${target.name}"</strong><br>
-                Crime: ${target.reason}<br>
-                    Bounty: ${target.bounty} Credits. DEAD OR ALIVE.
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; border: 1px solid var(--panel-border); background: #000; border-radius: 4px; overflow: hidden;">
+                    ${listAvatar}
+                </div>
+                <div>
+                    <strong>HVT: "${target.name}"</strong><br>
+                    <span style="font-size: 0.85rem;">Crime: ${target.reason}</span><br>
+                    <span style="font-size: 0.85rem; color: var(--accent-green);">Bounty: ${target.bounty} CR.</span>
+                </div>
+            </div>
         `;
 
         targetDiv.addEventListener('click', () => {
+            let modalAvatar = generateAvatarSVG(target.name);
             openReportModal(`
                 <h3 style="color:${color}; border-bottom: 1px solid ${color}; padding-bottom: 10px;">HVT PROFILE: ${target.name}</h3>
-                <strong>Registered Address:</strong> ${target.address || 'Unknown'}<br>
-                <strong>License Status:</strong> REVOKED<br>
-                <strong>Cyberware Modifications:</strong> ${target.implants || 'None detected'}<br><br>
-                <em>Actionable Intel:</em> Suspect is considered armed and dangerous. Lethal force authorized without prior warning.
+                <div style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 15px;">
+                    <div style="flex-shrink: 0; padding: 5px; border: 2px solid ${color}; background: #000; border-radius: 6px; width: 100px; height: 100px;">
+                        ${modalAvatar}
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <strong>Registered Address:</strong> ${target.address || 'Unknown'}<br>
+                        <strong>License Status:</strong> <span style="color:var(--panic-red);">REVOKED</span><br>
+                        <strong>Cyberware Modifications:</strong> ${target.implants || 'None detected'}<br><br>
+                        <em style="color:var(--panic-orange);">Actionable Intel:</em> Suspect is considered armed and dangerous. Lethal force authorized without prior warning.
+                    </div>
+                </div>
             `);
         });
         wantedListEl.appendChild(targetDiv);
