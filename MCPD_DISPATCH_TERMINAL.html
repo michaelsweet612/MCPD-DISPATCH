@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.25">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.26">
 </head>
 
 <body>
@@ -548,6 +548,48 @@ document.addEventListener('keypress', function(e) {
                         [SYSTEM READY] Enter a query to verify city licenses, health inspections, and municipal code violations.
                     </div>
 
+<!-- db-warrants -->
+                    <div id="db-warrants" class="db-view-panel" style="display: block; margin-top: 30px;">
+                        <h3 style="color: var(--panic-orange); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">📋 ACTIVE WARRANTS DATABASE</h3>
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="warrant-input" class="input-styled" placeholder="Search warrant by name or ID..." style="flex-grow: 1;">
+                            <button id="btn-search-warrant" style="padding: 10px 20px; font-size: 1rem; background: var(--panic-orange); color: #000; border: none; font-weight: bold;">CHECK WARRANT</button>
+                        </div>
+                        <div id="warrant-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            [SYSTEM READY] Enter query to search global fugitive database.
+                        </div>
+                    </div>
+                    
+                    <!-- db-firearms -->
+                    <div id="db-firearms" class="db-view-panel" style="display: block; margin-top: 30px;">
+                        <h3 style="color: var(--panic-red); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">🔫 FIREARM REGISTRY</h3>
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="firearm-input" class="input-styled" placeholder="Enter weapon serial number..." style="flex-grow: 1;">
+                            <button id="btn-search-firearm" style="padding: 10px 20px; font-size: 1rem; background: var(--panic-red); color: #000; border: none; font-weight: bold;">RUN TRACE</button>
+                        </div>
+                        <div id="firearm-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            [SYSTEM READY] Ballistics and serial number registry linked.
+                        </div>
+                    </div>
+                    
+                    <!-- db-gangs -->
+                    <div id="db-gangs" class="db-view-panel" style="display: block; margin-top: 30px;">
+                        <h3 style="color: var(--accent-green); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">👤 SYNDICATE INTEL</h3>
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <select id="gang-select" class="input-styled" style="flex-grow: 1; padding: 10px; font-size: 1rem;">
+                                <option value="tbmg">TBMG (The Black Market Group)</option>
+                                <option value="neon">Neon Syndicate</option>
+                                <option value="rust">Rust Devils</option>
+                                <option value="void">Void Walkers</option>
+                            </select>
+                            <button id="btn-search-gang" style="padding: 10px 20px; font-size: 1rem; background: var(--accent-green); color: #000; border: none; font-weight: bold;">PULL INTEL</button>
+                        </div>
+                        <div id="gang-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            [SYSTEM READY] Select a known faction to pull recent intel reports.
+                        </div>
+                    </div>
+
+
 
                 
                     </div> <!-- Close db-citizen -->
@@ -641,46 +683,7 @@ document.addEventListener('keypress', function(e) {
                     </div>
                     </div> <!-- Close db-intel -->
                     
-                    <!-- db-warrants -->
-                    <div id="db-warrants" class="db-view-panel" style="display: block; margin-top: 30px;">
-                        <h3 style="color: var(--panic-orange); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">📋 ACTIVE WARRANTS DATABASE</h3>
-                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                            <input type="text" id="warrant-input" class="input-styled" placeholder="Search warrant by name or ID..." style="flex-grow: 1;">
-                            <button id="btn-search-warrant" style="padding: 10px 20px; font-size: 1rem; background: var(--panic-orange); color: #000; border: none; font-weight: bold;">CHECK WARRANT</button>
-                        </div>
-                        <div id="warrant-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
-                            [SYSTEM READY] Enter query to search global fugitive database.
-                        </div>
-                    </div>
                     
-                    <!-- db-firearms -->
-                    <div id="db-firearms" class="db-view-panel" style="display: block; margin-top: 30px;">
-                        <h3 style="color: var(--panic-red); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">🔫 FIREARM REGISTRY</h3>
-                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                            <input type="text" id="firearm-input" class="input-styled" placeholder="Enter weapon serial number..." style="flex-grow: 1;">
-                            <button id="btn-search-firearm" style="padding: 10px 20px; font-size: 1rem; background: var(--panic-red); color: #000; border: none; font-weight: bold;">RUN TRACE</button>
-                        </div>
-                        <div id="firearm-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
-                            [SYSTEM READY] Ballistics and serial number registry linked.
-                        </div>
-                    </div>
-                    
-                    <!-- db-gangs -->
-                    <div id="db-gangs" class="db-view-panel" style="display: block; margin-top: 30px;">
-                        <h3 style="color: var(--accent-green); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">👤 SYNDICATE INTEL</h3>
-                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                            <select id="gang-select" class="input-styled" style="flex-grow: 1; padding: 10px; font-size: 1rem;">
-                                <option value="tbmg">TBMG (The Black Market Group)</option>
-                                <option value="neon">Neon Syndicate</option>
-                                <option value="rust">Rust Devils</option>
-                                <option value="void">Void Walkers</option>
-                            </select>
-                            <button id="btn-search-gang" style="padding: 10px 20px; font-size: 1rem; background: var(--accent-green); color: #000; border: none; font-weight: bold;">PULL INTEL</button>
-                        </div>
-                        <div id="gang-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
-                            [SYSTEM READY] Select a known faction to pull recent intel reports.
-                        </div>
-                    </div>
 
 </div>
 
@@ -863,10 +866,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.25"></script>
-    <script src="js/chats/transmissions.js?v=4.19.25"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.25"></script>
-    <script src="js/core/app_core.js?v=4.19.25"></script>
+    <script src="js/system/check_system.js?v=4.19.26"></script>
+    <script src="js/chats/transmissions.js?v=4.19.26"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.26"></script>
+    <script src="js/core/app_core.js?v=4.19.26"></script>
 
     
 
