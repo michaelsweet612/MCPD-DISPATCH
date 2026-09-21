@@ -4721,23 +4721,31 @@ dbSearchBtn.addEventListener('click', () => {
             let licensesSummary = (foundCit.licenses || []).map(l => `<span style="color:${l.color}; font-size:0.85rem;">• ${l.name} [${l.status}]</span>`).join("<br>") || "None";
             let vehSummary = foundCit.vehicle ? `${foundCit.vehicle.brand} ${foundCit.vehicle.model} (Plate: ${foundCit.vehicle.plate})<br>Insurance: ${foundCit.vehicle.insuranceProvider} — ${foundCit.vehicle.insuranceBadge}` : "No registered vehicle";
 
+            let svgAvatar = generateAvatarSVG(foundCit.name || query);
             dbResults.innerHTML = `
                 <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;">
                     <strong style="color: var(--accent-blue);">CITIZEN RECORD FOUND:</strong>
                     <span style="color:${color}; font-weight:bold; font-size:0.85rem; border:1px solid ${color}; padding:2px 6px; border-radius:3px;">${foundCit.status.toUpperCase()}</span>
                 </div>
-                <div style="margin-bottom: 5px;"><strong>Legal Name:</strong> <span style="color:#fff; font-size:1.1rem;">${foundCit.name}</span></div>
-                <div style="margin-bottom: 5px;"><strong>Civilian Number:</strong> <span style="color:var(--accent-blue); font-weight:bold;">#CIV-${foundCit.civNumber}</span> | <strong>National ID:</strong> ${foundCit.id}</div>
-                <div style="margin-bottom: 5px;"><strong>DOB & Age:</strong> ${foundCit.dob}</div>
-                <div style="margin-bottom: 5px;"><strong>Address:</strong> ${foundCit.address}</div>
+                <div style="display: flex; gap: 15px; margin-bottom: 10px; align-items: flex-start;">
+                    <div style="flex-shrink: 0; padding: 3px; border: 1px solid var(--panel-border); background: #000; border-radius: 6px;">
+                        ${svgAvatar}
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <div style="margin-bottom: 5px;"><strong>Legal Name:</strong> <span style="color:#fff; font-size:1.1rem;">${foundCit.name}</span></div>
+                        <div style="margin-bottom: 5px;"><strong>Civilian Number:</strong> <span style="color:var(--accent-blue); font-weight:bold;">#CIV-${foundCit.civNumber}</span> | <strong>National ID:</strong> ${foundCit.id}</div>
+                        <div style="margin-bottom: 5px;"><strong>DOB & Age:</strong> ${foundCit.dob}</div>
+                        <div style="margin-bottom: 5px;"><strong>Address:</strong> ${foundCit.address}</div>
+                    </div>
+                </div>
                 
                 <div style="margin-top: 10px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--panel-border); border-radius:4px;">
-                    <strong style="color:var(--accent-green); font-size:0.85rem;">🚗 REGISTERED VEHICLE & INSURANCE:</strong><br>
+                    <strong style="color:var(--accent-green); font-size:0.85rem;">🚓 REGISTERED VEHICLE & INSURANCE:</strong><br>
                     <div style="font-size:0.85rem; margin-top:3px;">${vehSummary}</div>
                 </div>
 
                 <div style="margin-top: 10px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--panel-border); border-radius:4px;">
-                    <strong style="color:#ff9800; font-size:0.85rem;">📜 LICENSES & SPECIAL PERMITS:</strong><br>
+                    <strong style="color:#ff9800; font-size:0.85rem;">📋 LICENSES & SPECIAL PERMITS:</strong><br>
                     <div style="font-size:0.85rem; margin-top:3px;">${licensesSummary}</div>
                 </div>
 
@@ -4760,16 +4768,24 @@ dbSearchBtn.addEventListener('click', () => {
         const fallbackInsExp = Math.random() < 0.5;
         const fallbackInsBadge = fallbackInsExp ? `<span style="color:var(--panic-red); font-weight:bold;">EXPIRED (Auto-Lapsed)</span>` : `<span style="color:var(--accent-green); font-weight:bold;">VALID</span>`;
 
+        let svgAvatar = generateAvatarSVG(query);
         dbResults.innerHTML = `
             <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">
                 <strong style="color: var(--accent-blue);">CITIZEN RECORD RETRIEVED (TRANSIENT):</strong>
             </div>
-            <div style="margin-bottom: 5px;"><strong>Query Identifier:</strong> ${query}</div>
-            <div style="margin-bottom: 5px;"><strong>Assigned Civilian No:</strong> <span style="color:var(--accent-blue);">#CIV-${fallbackCivNum}</span></div>
-            <div style="margin-bottom: 5px;"><strong>System Standing:</strong> ${status}</div>
-            <div style="margin-bottom: 5px;"><strong>Registered Vehicle:</strong> ${fallbackBrand} ${fallbackModel}</div>
-            <div style="margin-bottom: 5px;"><strong>Insurance Status:</strong> ${fallbackInsBadge}</div>
-            <div style="margin-bottom: 15px;"><strong>Known Infractions:</strong> <span style="color:#ccc;">${infractions}</span></div>
+            <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start;">
+                <div style="flex-shrink: 0; padding: 3px; border: 1px solid var(--panel-border); background: #000; border-radius: 6px;">
+                    ${svgAvatar}
+                </div>
+                <div style="flex-grow: 1;">
+                    <div style="margin-bottom: 5px;"><strong>Query Identifier:</strong> ${query}</div>
+                    <div style="margin-bottom: 5px;"><strong>Assigned Civilian No:</strong> <span style="color:var(--accent-blue);">#CIV-${fallbackCivNum}</span></div>
+                    <div style="margin-bottom: 5px;"><strong>System Standing:</strong> ${status}</div>
+                    <div style="margin-bottom: 5px;"><strong>Registered Vehicle:</strong> ${fallbackBrand} ${fallbackModel}</div>
+                    <div style="margin-bottom: 5px;"><strong>Insurance Status:</strong> ${fallbackInsBadge}</div>
+                    <div style="margin-bottom: 5px;"><strong>Known Infractions:</strong> <span style="color:#ccc;">${infractions}</span></div>
+                </div>
+            </div>
 
             <button class="doc-btn" style="width: 100%; border-color: ${isGuilty ? 'var(--panic-red)' : 'var(--accent-green)'}; color: ${isGuilty ? 'var(--panic-red)' : 'var(--accent-green)'};" onclick="alert('Dispatching units to citizen residence.')">DISPATCH PATROL TO RESIDENCE</button>
             <div id="ai-profile-output" style="margin-top: 15px;"></div>
@@ -7706,3 +7722,108 @@ setTimeout(updateStockMarkets, 1000);
     }
 
 })();
+
+
+function generateAvatarSVG(seed) {
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+    const rand = () => { hash = Math.sin(hash) * 10000; return hash - Math.floor(hash); };
+
+    const bgColors = ['#1e1e2e', '#2e1e1e', '#1e2e1e', '#2e2e1e', '#1a1b26'];
+    const skinTones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#c68642', '#3d2c23', '#2a1d17'];
+    
+    const cyberEyes = ['#00ffff', '#ff00ff', '#ff0000', 'none', 'none', 'none']; 
+    const masks = ['none', 'none', 'none', 'gas', 'bandana', 'cyber-jaw'];
+    const hairs = ['bald', 'short', 'mohawk', 'long', 'spiky'];
+    const hairColors = ['#111', '#444', '#777', '#eee', '#ff0055', '#00ffcc', '#ffff00'];
+    const beards = ['none', 'none', 'full', 'goatee', 'stubble'];
+    const glasses = ['none', 'none', 'sunglasses', 'cyber-visor'];
+
+    let bg = bgColors[Math.floor(Math.abs(rand()) * bgColors.length)];
+    let skin = skinTones[Math.floor(Math.abs(rand()) * skinTones.length)];
+    let hair = hairs[Math.floor(Math.abs(rand()) * hairs.length)];
+    let hairColor = hairColors[Math.floor(Math.abs(rand()) * hairColors.length)];
+    let eye = cyberEyes[Math.floor(Math.abs(rand()) * cyberEyes.length)];
+    let mask = masks[Math.floor(Math.abs(rand()) * masks.length)];
+    let beard = beards[Math.floor(Math.abs(rand()) * beards.length)];
+    let glass = glasses[Math.floor(Math.abs(rand()) * glasses.length)];
+
+    let svg = `<svg viewBox="0 0 100 100" width="100" height="100" style="border-radius: 4px; background: ${bg};">`;
+    
+    // Shoulders
+    svg += `<path d="M20,100 Q50,70 80,100" fill="#333" />`;
+    // Neck
+    svg += `<rect x="40" y="60" width="20" height="20" fill="${skin}" />`;
+    // Head
+    svg += `<rect x="30" y="25" width="40" height="45" rx="15" fill="${skin}" />`;
+
+    // Hair
+    if (hair === 'short') {
+        svg += `<path d="M28,40 Q50,15 72,40 Q72,20 28,20 Z" fill="${hairColor}" />`;
+    } else if (hair === 'mohawk') {
+        svg += `<rect x="45" y="10" width="10" height="25" fill="${hairColor}" />`;
+    } else if (hair === 'long') {
+        svg += `<path d="M28,40 Q50,15 72,40 L75,70 L25,70 Z" fill="${hairColor}" />`;
+    } else if (hair === 'spiky') {
+        svg += `<polygon points="25,35 30,15 40,30 50,10 60,30 70,15 75,35" fill="${hairColor}" />`;
+    }
+
+    // Eyes
+    if (eye !== 'none') {
+        if (Math.abs(rand()) > 0.5) {
+            svg += `<rect x="25" y="40" width="50" height="12" rx="3" fill="${eye}" opacity="0.8" />`;
+        } else {
+            svg += `<circle cx="40" cy="45" r="4" fill="${eye}" />`;
+            svg += `<circle cx="60" cy="45" r="4" fill="${eye}" />`;
+        }
+    } else {
+        svg += `<circle cx="40" cy="45" r="3" fill="#111" />`;
+        svg += `<circle cx="60" cy="45" r="3" fill="#111" />`;
+    }
+    
+    // Glasses
+    if (glass === 'sunglasses') {
+        svg += `<rect x="30" y="42" width="15" height="8" fill="#111" />`;
+        svg += `<rect x="55" y="42" width="15" height="8" fill="#111" />`;
+        svg += `<line x1="45" y1="45" x2="55" y2="45" stroke="#111" stroke-width="2" />`;
+    } else if (glass === 'cyber-visor') {
+        svg += `<polygon points="25,40 75,40 70,50 30,50" fill="rgba(0, 255, 255, 0.5)" stroke="#0ff" stroke-width="1" />`;
+    }
+
+    // Beard
+    if (mask === 'none' && beard !== 'none') {
+        if (beard === 'full') {
+            svg += `<path d="M30,55 Q50,85 70,55 Q50,70 30,55 Z" fill="${hairColor}" />`;
+        } else if (beard === 'goatee') {
+            svg += `<path d="M45,65 L55,65 L50,75 Z" fill="${hairColor}" />`;
+        } else if (beard === 'stubble') {
+            svg += `<path d="M30,55 Q50,80 70,55" fill="none" stroke="${hairColor}" stroke-width="2" stroke-dasharray="1 2" opacity="0.6"/>`;
+        }
+    }
+
+    // Mask/Jaw
+    if (mask === 'gas') {
+        svg += `<rect x="35" y="55" width="30" height="20" rx="5" fill="#222" />`;
+        svg += `<circle cx="40" cy="65" r="6" fill="#444" />`;
+        svg += `<circle cx="60" cy="65" r="6" fill="#444" />`;
+    } else if (mask === 'bandana') {
+        svg += `<polygon points="28,55 72,55 50,75" fill="#ff0044" />`;
+    } else if (mask === 'cyber-jaw') {
+        svg += `<rect x="32" y="55" width="36" height="15" fill="silver" />`;
+        svg += `<line x1="35" y1="60" x2="65" y2="60" stroke="#111" stroke-width="2" />`;
+        svg += `<line x1="35" y1="65" x2="65" y2="65" stroke="#111" stroke-width="2" />`;
+    } else if (mask === 'none') {
+        svg += `<line x1="45" y1="60" x2="55" y2="60" stroke="#724637" stroke-width="2" />`;
+    }
+
+    // Old wrinkles
+    if (Math.abs(rand()) > 0.8) {
+        svg += `<line x1="35" y1="35" x2="65" y2="35" stroke="#000" stroke-width="1" opacity="0.2" />`;
+        svg += `<line x1="35" y1="52" x2="45" y2="52" stroke="#000" stroke-width="1" opacity="0.2" />`;
+        svg += `<line x1="55" y1="52" x2="65" y2="52" stroke="#000" stroke-width="1" opacity="0.2" />`;
+    }
+
+    svg += `</svg>`;
+    return svg;
+}
+
