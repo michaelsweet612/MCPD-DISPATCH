@@ -7529,11 +7529,11 @@ function updateStockMarkets() {
             if (u.change >= 0) {
                 trendEl.textContent = `▲ +${pctChange.toFixed(2)}%`;
                 trendEl.style.color = perfColor;
-                priceEl.style.color = perfColor;
+                priceEl.style.color = market.color;
             } else {
                 trendEl.textContent = `▼ ${Math.abs(pctChange).toFixed(2)}%`;
                 trendEl.style.color = perfColor;
-                priceEl.style.color = perfColor;
+                priceEl.style.color = market.color;
             }
             
             if (Math.abs(pctChange) > 5) {
