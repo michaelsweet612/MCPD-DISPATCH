@@ -4138,13 +4138,19 @@ function openCitizenDossier(idx) {
         vehicleHtml = '<span style="color:var(--text-dim);">No registered vehicle.</span>';
     }
 
+    let dossierAvatar = generateAvatarSVG(cit.name || cit.id);
     citizenPageBody.innerHTML = `
-        <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-end;">
+        <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
                 <strong>${cit.name}</strong> <span style='font-size:0.8rem; color:var(--text-dim);'>(${cit.gender || 'Unknown'})</span><br>
                 <span style="font-size: 0.85rem; color: var(--accent-blue);">Civilian Number: #CIV-${cit.civNumber}</span> | <span style="font-size: 0.85rem; color: var(--text-dim);">${cit.id}</span>
+                <div style="margin-top: 10px;">
+                    <span style="font-size:0.85rem; color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:4px; font-weight:bold; letter-spacing: 1px;">${cit.status.toUpperCase()}</span>
+                </div>
             </div>
-            <span style="font-size:0.85rem; color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:4px; font-weight:bold;">${cit.status.toUpperCase()}</span>
+            <div style="flex-shrink: 0; padding: 5px; border: 2px solid var(--panel-border); background: #000; border-radius: 6px; box-shadow: 0 0 15px rgba(0,0,0,0.8);">
+                ${dossierAvatar}
+            </div>
         </div>
         <div><strong>DOB & Age:</strong> ${cit.dob}</div>
           <div><strong>Gender Identity:</strong> <span style="color:var(--text-dim);">${cit.gender || 'Unknown'}</span></div>
