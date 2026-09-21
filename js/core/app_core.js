@@ -7751,99 +7751,529 @@ function generateAvatarSVG(seed, size) {
     let hash = 0;
     for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
     const rand = () => { hash = Math.sin(hash) * 10000; return hash - Math.floor(hash); };
+    const pick = (arr) => arr[Math.floor(Math.abs(rand()) * arr.length)];
 
-    const bgColors = ['#1e1e2e', '#2e1e1e', '#1e2e1e', '#2e2e1e', '#1a1b26'];
-    const skinTones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#c68642', '#3d2c23', '#2a1d17'];
-    
-    const cyberEyes = ['#00ffff', '#ff00ff', '#ff0000', 'none', 'none', 'none']; 
-    const masks = ['none', 'none', 'none', 'gas', 'bandana', 'cyber-jaw'];
-    const hairs = ['bald', 'short', 'mohawk', 'long', 'spiky'];
-    const hairColors = ['#111', '#444', '#777', '#eee', '#ff0055', '#00ffcc', '#ffff00'];
-    const beards = ['none', 'none', 'full', 'goatee', 'stubble'];
-    const glasses = ['none', 'none', 'sunglasses', 'cyber-visor'];
+    // SPECIES (human, alien, android, mutant)
+    const species = pick(['human','human','human','human','human','human','human','human',
+        'alien-grey','alien-blue','alien-green','alien-reptile','android','mutant']);
 
-    let bg = bgColors[Math.floor(Math.abs(rand()) * bgColors.length)];
-    let skin = skinTones[Math.floor(Math.abs(rand()) * skinTones.length)];
-    let hair = hairs[Math.floor(Math.abs(rand()) * hairs.length)];
-    let hairColor = hairColors[Math.floor(Math.abs(rand()) * hairColors.length)];
-    let eye = cyberEyes[Math.floor(Math.abs(rand()) * cyberEyes.length)];
-    let mask = masks[Math.floor(Math.abs(rand()) * masks.length)];
-    let beard = beards[Math.floor(Math.abs(rand()) * beards.length)];
-    let glass = glasses[Math.floor(Math.abs(rand()) * glasses.length)];
+    // BACKGROUNDS (12)
+    const bg = pick(['#1a1b26','#1e1e2e','#2e1e1e','#1e2e1e','#2e2e1e','#0d1117',
+        '#1a0a2e','#0a1a2e','#2e0a0a','#0a2e1a','#1e1a2e','#2e1a0a']);
 
-    let svg = `<svg viewBox="0 0 100 100" width="${size}" height="${size}" style="border-radius: 4px; background: ${bg};">`;
-    
-    // Shoulders
-    svg += `<path d="M20,100 Q50,70 80,100" fill="#333" />`;
-    // Neck
-    svg += `<rect x="40" y="60" width="20" height="20" fill="${skin}" />`;
-    // Head
-    svg += `<rect x="30" y="25" width="40" height="45" rx="15" fill="${skin}" />`;
+    // SKIN TONES (18 human + alien)
+    let skin;
+    if (species === 'alien-grey') skin = pick(['#b0b0b0','#c0c0c0','#909090','#a8a8a8']);
+    else if (species === 'alien-blue') skin = pick(['#6699cc','#4488bb','#3377aa','#5588cc']);
+    else if (species === 'alien-green') skin = pick(['#66aa66','#558855','#77bb77','#448844']);
+    else if (species === 'alien-reptile') skin = pick(['#6b8e23','#556b2f','#8b7d3c','#5a6e2f']);
+    else if (species === 'android') skin = pick(['#d0d0d0','#e0e0e0','#b8c0c8','silver','#c8ccd0']);
+    else if (species === 'mutant') skin = pick(['#cc88cc','#aa66aa','#9944aa','#bb77bb']);
+    else skin = pick(['#ffdbac','#f1c27d','#e0ac69','#c68642','#8d5524','#5c3a1e','#3d2c23',
+        '#2a1d17','#fce4d6','#deb887','#d2a679','#a0724a','#704214','#4a2e10',
+        '#f5d6ba','#e8c4a0','#c9956b','#7a4b2a']);
+    let skinDark = skin.replace(/[0-9a-f]{2}/gi, (m) => {
+        let v = Math.max(0, parseInt(m, 16) - 25); return v.toString(16).padStart(2, '0');
+    });
 
-    // Hair
-    if (hair === 'short') {
-        svg += `<path d="M28,40 Q50,15 72,40 Q72,20 28,20 Z" fill="${hairColor}" />`;
-    } else if (hair === 'mohawk') {
-        svg += `<rect x="45" y="10" width="10" height="25" fill="${hairColor}" />`;
-    } else if (hair === 'long') {
-        svg += `<path d="M28,40 Q50,15 72,40 L75,70 L25,70 Z" fill="${hairColor}" />`;
-    } else if (hair === 'spiky') {
-        svg += `<polygon points="25,35 30,15 40,30 50,10 60,30 70,15 75,35" fill="${hairColor}" />`;
-    }
+    // HAIR (14 styles)
+    const hairs = ['bald','buzz','short','side-part','slicked','mohawk','fauxhawk',
+        'long-straight','long-wavy','ponytail','bun','braids','spiky','afro'];
+    let hair = pick(hairs);
 
-    // Eyes
-    if (eye !== 'none') {
-        if (Math.abs(rand()) > 0.5) {
-            svg += `<rect x="25" y="40" width="50" height="12" rx="3" fill="${eye}" opacity="0.8" />`;
-        } else {
-            svg += `<circle cx="40" cy="45" r="4" fill="${eye}" />`;
-            svg += `<circle cx="60" cy="45" r="4" fill="${eye}" />`;
-        }
+    // HAIR COLORS (16)
+    const hairColors = ['#111','#1a1a1a','#2d1b00','#3d2b1c','#6b3a2a','#555','#888','#bbb',
+        '#eee','#ff0055','#ff4400','#00ffcc','#ffff00','#8833ff','#ff69b4','#0088ff'];
+    let hairColor = pick(hairColors);
+
+    // EYES (12 types)
+    const eyeTypes = ['normal','normal','normal','normal','normal','narrow','wide','cyber-glow',
+        'heterochromia','alien-large','alien-slit','visor-scan'];
+    let eyeType = pick(eyeTypes);
+
+    // EYE COLORS (14)
+    const eyeColors = ['#3b2f1a','#1a5e1a','#1a3b8a','#5a3a1a','#111',
+        '#00ffff','#ff00ff','#ff0000','#ffaa00','#00ff66','#fff','#8844ff','#ff4488','#44ff88'];
+    let eyeColor = pick(eyeColors);
+
+    // EYEBROW STYLES (8)
+    const browStyles = ['normal','thick','thin','arched','angry','raised','unibrow','none'];
+    let brow = pick(browStyles);
+
+    // NOSE (8)
+    const noseTypes = ['straight','wide','pointed','button','hooked','flat','long','tiny'];
+    let nose = pick(noseTypes);
+
+    // MOUTH (10)
+    const mouthTypes = ['neutral','smile','frown','smirk','open','thin','thick-lips','snarl','grin','pursed'];
+    let mouth = pick(mouthTypes);
+
+    // FACIAL HAIR (12)
+    const facialHair = ['none','none','none','none','stubble','goatee','full-beard','mustache',
+        'soul-patch','mutton-chops','handlebar','long-beard'];
+    let beard = pick(facialHair);
+
+    // GLASSES/EYEWEAR (10)
+    const eyewear = ['none','none','none','none','glasses-round','glasses-square','sunglasses',
+        'cyber-visor','monocle','tactical-goggles'];
+    let glass = pick(eyewear);
+
+    // MASKS (10)
+    const maskTypes = ['none','none','none','none','none','none','gas-mask','bandana',
+        'cyber-jaw','medical-mask'];
+    let mask = pick(maskTypes);
+
+    // HEADWEAR (14)
+    const headwear = ['none','none','none','none','none','none','none',
+        'beanie','cap','hood','helmet','headband','beret','turban'];
+    let hat = pick(headwear);
+
+    // SCARS & MARKS (10)
+    const scarTypes = ['none','none','none','none','none','scar-eye','scar-cheek',
+        'face-tattoo','cybernetic-plate','burn-mark'];
+    let scar = pick(scarTypes);
+
+    // PIERCINGS (8)
+    const piercingTypes = ['none','none','none','none','none','ear-stud','nose-ring','lip-ring'];
+    let piercing = pick(piercingTypes);
+
+    // EARS (6)
+    const earTypes = ['normal','normal','normal','pointed','large','gauge'];
+    let ears = pick(earTypes);
+
+    // CLOTHING (12)
+    const clothingTypes = ['t-shirt','hoodie','jacket','suit','tank-top','armor',
+        'lab-coat','uniform','trench','turtleneck','vest','bare'];
+    let clothing = pick(clothingTypes);
+    const clothingColors = ['#333','#444','#222','#1a1a2e','#2d2d2d','#3a3a3a',
+        '#4a2a1a','#1a3a4a','#2e1a3e','#3e3e2e','#1a2a1a','#4a1a1a'];
+    let clothColor = pick(clothingColors);
+
+    // NECK ACCESSORIES (6)
+    const neckAcc = ['none','none','none','chain','dog-tags','collar'];
+    let neck = pick(neckAcc);
+
+    // =============== BUILD SVG ===============
+    let svg = `<svg viewBox="0 0 100 120" width="${size}" height="${Math.round(size * 1.2)}" style="border-radius: 4px; background: ${bg};">`;
+
+    // Shadow/ambient
+    svg += `<rect x="0" y="0" width="100" height="120" fill="${bg}" />`;
+
+    // ---- BODY / SHOULDERS / CLOTHING ----
+    if (clothing === 'bare') {
+        svg += `<path d="M15,120 Q50,85 85,120" fill="${skinDark}" />`;
+    } else if (clothing === 'armor') {
+        svg += `<path d="M15,120 Q50,82 85,120" fill="#555" />`;
+        svg += `<path d="M30,95 L50,88 L70,95" fill="none" stroke="#888" stroke-width="1.5"/>`;
+        svg += `<rect x="42" y="95" width="16" height="8" rx="2" fill="#666" stroke="#888" stroke-width="0.5"/>`;
+    } else if (clothing === 'suit') {
+        svg += `<path d="M15,120 Q50,82 85,120" fill="#222" />`;
+        svg += `<line x1="50" y1="88" x2="50" y2="120" stroke="#444" stroke-width="1"/>`;
+        svg += `<polygon points="45,88 50,92 55,88" fill="#aaa"/>`;
+    } else if (clothing === 'hoodie') {
+        svg += `<path d="M15,120 Q50,78 85,120" fill="${clothColor}" />`;
+        svg += `<path d="M35,83 Q50,78 65,83 L62,90 Q50,86 38,90 Z" fill="${clothColor}" stroke="#000" stroke-width="0.3"/>`;
+    } else if (clothing === 'lab-coat') {
+        svg += `<path d="M15,120 Q50,82 85,120" fill="#e8e8e8" />`;
+        svg += `<line x1="50" y1="88" x2="50" y2="120" stroke="#ccc" stroke-width="0.5"/>`;
+    } else if (clothing === 'trench') {
+        svg += `<path d="M12,120 Q50,78 88,120" fill="#3d2b1c" />`;
+        svg += `<path d="M38,88 L50,92 L62,88" fill="none" stroke="#2a1a0c" stroke-width="1"/>`;
     } else {
-        svg += `<circle cx="40" cy="45" r="3" fill="#111" />`;
-        svg += `<circle cx="60" cy="45" r="3" fill="#111" />`;
-    }
-    
-    // Glasses
-    if (glass === 'sunglasses') {
-        svg += `<rect x="30" y="42" width="15" height="8" fill="#111" />`;
-        svg += `<rect x="55" y="42" width="15" height="8" fill="#111" />`;
-        svg += `<line x1="45" y1="45" x2="55" y2="45" stroke="#111" stroke-width="2" />`;
-    } else if (glass === 'cyber-visor') {
-        svg += `<polygon points="25,40 75,40 70,50 30,50" fill="rgba(0, 255, 255, 0.5)" stroke="#0ff" stroke-width="1" />`;
-    }
-
-    // Beard
-    if (mask === 'none' && beard !== 'none') {
-        if (beard === 'full') {
-            svg += `<path d="M30,55 Q50,85 70,55 Q50,70 30,55 Z" fill="${hairColor}" />`;
-        } else if (beard === 'goatee') {
-            svg += `<path d="M45,65 L55,65 L50,75 Z" fill="${hairColor}" />`;
-        } else if (beard === 'stubble') {
-            svg += `<path d="M30,55 Q50,80 70,55" fill="none" stroke="${hairColor}" stroke-width="2" stroke-dasharray="1 2" opacity="0.6"/>`;
+        svg += `<path d="M15,120 Q50,82 85,120" fill="${clothColor}" />`;
+        if (clothing === 'jacket') {
+            svg += `<line x1="50" y1="88" x2="50" y2="120" stroke="#000" stroke-width="1"/>`;
+        }
+        if (clothing === 'turtleneck') {
+            svg += `<rect x="38" y="78" width="24" height="10" rx="4" fill="${clothColor}" stroke="#000" stroke-width="0.3"/>`;
         }
     }
 
-    // Mask/Jaw
-    if (mask === 'gas') {
-        svg += `<rect x="35" y="55" width="30" height="20" rx="5" fill="#222" />`;
-        svg += `<circle cx="40" cy="65" r="6" fill="#444" />`;
-        svg += `<circle cx="60" cy="65" r="6" fill="#444" />`;
-    } else if (mask === 'bandana') {
-        svg += `<polygon points="28,55 72,55 50,75" fill="#ff0044" />`;
-    } else if (mask === 'cyber-jaw') {
-        svg += `<rect x="32" y="55" width="36" height="15" fill="silver" />`;
-        svg += `<line x1="35" y1="60" x2="65" y2="60" stroke="#111" stroke-width="2" />`;
-        svg += `<line x1="35" y1="65" x2="65" y2="65" stroke="#111" stroke-width="2" />`;
-    } else if (mask === 'none') {
-        svg += `<line x1="45" y1="60" x2="55" y2="60" stroke="#724637" stroke-width="2" />`;
+    // Neck accessories
+    if (neck === 'chain') {
+        svg += `<path d="M40,82 Q50,86 60,82" fill="none" stroke="gold" stroke-width="1.5"/>`;
+    } else if (neck === 'dog-tags') {
+        svg += `<path d="M45,82 L48,90 L52,90 L55,82" fill="none" stroke="silver" stroke-width="1"/>`;
+        svg += `<rect x="47" y="89" width="6" height="4" rx="1" fill="silver"/>`;
+    } else if (neck === 'collar') {
+        svg += `<rect x="37" y="78" width="26" height="5" rx="2" fill="#222" stroke="#555" stroke-width="0.5"/>`;
     }
 
-    // Old wrinkles
-    if (Math.abs(rand()) > 0.8) {
-        svg += `<line x1="35" y1="35" x2="65" y2="35" stroke="#000" stroke-width="1" opacity="0.2" />`;
-        svg += `<line x1="35" y1="52" x2="45" y2="52" stroke="#000" stroke-width="1" opacity="0.2" />`;
-        svg += `<line x1="55" y1="52" x2="65" y2="52" stroke="#000" stroke-width="1" opacity="0.2" />`;
+    // ---- NECK ----
+    svg += `<rect x="42" y="68" width="16" height="16" rx="3" fill="${skin}" />`;
+    // Neck shadow
+    svg += `<rect x="42" y="68" width="16" height="4" rx="1" fill="${skinDark}" opacity="0.3"/>`;
+
+    // ---- HEAD ----
+    if (species === 'alien-grey') {
+        // Big oval head
+        svg += `<ellipse cx="50" cy="42" rx="22" ry="30" fill="${skin}" />`;
+        svg += `<ellipse cx="50" cy="42" rx="21" ry="29" fill="${skin}" stroke="${skinDark}" stroke-width="0.5"/>`;
+    } else if (species === 'alien-reptile') {
+        svg += `<path d="M28,55 Q28,12 50,12 Q72,12 72,55 Q72,72 50,72 Q28,72 28,55 Z" fill="${skin}"/>`;
+        // Scales
+        for (let sy = 18; sy < 65; sy += 8) {
+            for (let sx = 32; sx < 68; sx += 10) {
+                svg += `<circle cx="${sx + Math.abs(rand())*6}" cy="${sy}" r="3" fill="${skinDark}" opacity="0.15"/>`;
+            }
+        }
+    } else if (species === 'android') {
+        svg += `<rect x="28" y="18" width="44" height="52" rx="14" fill="${skin}" />`;
+        // Panel lines
+        svg += `<line x1="50" y1="18" x2="50" y2="22" stroke="#999" stroke-width="0.5"/>`;
+        svg += `<path d="M32,35 L28,35" stroke="#888" stroke-width="0.5"/>`;
+        svg += `<path d="M68,35 L72,35" stroke="#888" stroke-width="0.5"/>`;
+    } else {
+        // Human / mutant head with jaw
+        svg += `<path d="M28,45 Q28,15 50,15 Q72,15 72,45 Q72,72 50,72 Q28,72 28,45 Z" fill="${skin}"/>`;
+        // Jaw definition
+        svg += `<path d="M32,55 Q50,75 68,55" fill="none" stroke="${skinDark}" stroke-width="0.5" opacity="0.3"/>`;
+    }
+
+    // Forehead shadow
+    svg += `<path d="M30,30 Q50,25 70,30" fill="none" stroke="${skinDark}" stroke-width="0.3" opacity="0.2"/>`;
+
+    // ---- EARS ----
+    if (ears === 'pointed') {
+        svg += `<polygon points="26,38 20,22 30,38" fill="${skin}"/>`;
+        svg += `<polygon points="74,38 80,22 70,38" fill="${skin}"/>`;
+    } else if (ears === 'large') {
+        svg += `<ellipse cx="26" cy="42" rx="6" ry="10" fill="${skin}"/>`;
+        svg += `<ellipse cx="74" cy="42" rx="6" ry="10" fill="${skin}"/>`;
+    } else if (ears === 'gauge') {
+        svg += `<ellipse cx="26" cy="42" rx="5" ry="8" fill="${skin}"/>`;
+        svg += `<circle cx="26" cy="45" r="3" fill="#111"/>`;
+        svg += `<ellipse cx="74" cy="42" rx="5" ry="8" fill="${skin}"/>`;
+        svg += `<circle cx="74" cy="45" r="3" fill="#111"/>`;
+    } else if (species !== 'alien-grey') {
+        svg += `<ellipse cx="27" cy="42" rx="4" ry="7" fill="${skin}"/>`;
+        svg += `<ellipse cx="73" cy="42" rx="4" ry="7" fill="${skin}"/>`;
+    }
+
+    // ---- HAIR (under headwear) ----
+    if (hat === 'none' || hat === 'headband') {
+        if (hair === 'buzz') {
+            svg += `<path d="M28,40 Q50,10 72,40 Q72,15 28,15 Z" fill="${hairColor}" opacity="0.7"/>`;
+        } else if (hair === 'short') {
+            svg += `<path d="M26,42 Q50,8 74,42 Q74,14 26,14 Z" fill="${hairColor}"/>`;
+        } else if (hair === 'side-part') {
+            svg += `<path d="M26,42 Q50,8 74,42 Q74,14 26,14 Z" fill="${hairColor}"/>`;
+            svg += `<line x1="38" y1="14" x2="36" y2="30" stroke="${bg}" stroke-width="1.5"/>`;
+        } else if (hair === 'slicked') {
+            svg += `<path d="M26,40 Q50,6 74,40 Q74,12 26,12 Z" fill="${hairColor}"/>`;
+        } else if (hair === 'mohawk') {
+            svg += `<rect x="43" y="4" width="14" height="30" rx="4" fill="${hairColor}"/>`;
+        } else if (hair === 'fauxhawk') {
+            svg += `<path d="M38,30 Q50,2 62,30" fill="${hairColor}"/>`;
+        } else if (hair === 'long-straight') {
+            svg += `<path d="M24,40 Q50,6 76,40 L78,75 L22,75 Z" fill="${hairColor}"/>`;
+        } else if (hair === 'long-wavy') {
+            svg += `<path d="M24,40 Q50,6 76,40 Q78,55 76,75 Q60,80 50,75 Q40,80 24,75 Q22,55 24,40 Z" fill="${hairColor}"/>`;
+        } else if (hair === 'ponytail') {
+            svg += `<path d="M26,42 Q50,8 74,42 Q74,14 26,14 Z" fill="${hairColor}"/>`;
+            svg += `<path d="M62,30 Q78,35 75,60 Q72,70 70,72" fill="${hairColor}" stroke="${hairColor}" stroke-width="3"/>`;
+        } else if (hair === 'bun') {
+            svg += `<path d="M26,42 Q50,8 74,42 Q74,14 26,14 Z" fill="${hairColor}"/>`;
+            svg += `<circle cx="50" cy="10" r="8" fill="${hairColor}"/>`;
+        } else if (hair === 'braids') {
+            svg += `<path d="M26,40 Q50,8 74,40 Q74,14 26,14 Z" fill="${hairColor}"/>`;
+            svg += `<rect x="24" y="38" width="5" height="35" rx="2" fill="${hairColor}"/>`;
+            svg += `<rect x="71" y="38" width="5" height="35" rx="2" fill="${hairColor}"/>`;
+        } else if (hair === 'spiky') {
+            svg += `<polygon points="22,38 28,8 36,28 44,2 52,22 60,4 68,28 74,10 78,38" fill="${hairColor}"/>`;
+        } else if (hair === 'afro') {
+            svg += `<circle cx="50" cy="28" r="28" fill="${hairColor}"/>`;
+        }
+    }
+
+    // ---- HEADWEAR (over hair) ----
+    if (hat === 'beanie') {
+        svg += `<path d="M26,38 Q50,4 74,38 Q74,28 26,28 Z" fill="#cc3333"/>`;
+        svg += `<rect x="26" y="32" width="48" height="6" rx="2" fill="#aa2222"/>`;
+    } else if (hat === 'cap') {
+        svg += `<path d="M26,34 Q50,10 74,34 Q74,24 26,24 Z" fill="#2244aa"/>`;
+        svg += `<rect x="20" y="32" width="40" height="4" rx="1" fill="#1a3388"/>`;
+    } else if (hat === 'hood') {
+        svg += `<path d="M20,50 Q50,0 80,50 Q80,14 20,14 Z" fill="${clothColor}" opacity="0.9"/>`;
+    } else if (hat === 'helmet') {
+        svg += `<path d="M24,48 Q50,2 76,48 Q76,10 24,10 Z" fill="#555"/>`;
+        svg += `<rect x="24" y="38" width="52" height="4" rx="1" fill="#666"/>`;
+    } else if (hat === 'headband') {
+        svg += `<rect x="26" y="28" width="48" height="5" rx="2" fill="#cc2222"/>`;
+    } else if (hat === 'beret') {
+        svg += `<ellipse cx="45" cy="18" rx="22" ry="10" fill="#2a2a2a"/>`;
+    } else if (hat === 'turban') {
+        svg += `<path d="M26,42 Q50,0 74,42 Q74,8 26,8 Z" fill="#e8d8c0"/>`;
+        svg += `<path d="M38,15 Q50,8 62,15" fill="none" stroke="#c8b8a0" stroke-width="2"/>`;
+        svg += `<path d="M35,22 Q50,14 65,22" fill="none" stroke="#c8b8a0" stroke-width="2"/>`;
+    }
+
+    // ---- EYEBROWS ----
+    if (brow !== 'none') {
+        let browY = 34;
+        if (brow === 'thick') {
+            svg += `<rect x="34" y="${browY}" width="10" height="3" rx="1" fill="${hairColor}" opacity="0.8"/>`;
+            svg += `<rect x="56" y="${browY}" width="10" height="3" rx="1" fill="${hairColor}" opacity="0.8"/>`;
+        } else if (brow === 'thin') {
+            svg += `<line x1="35" y1="${browY+1}" x2="44" y2="${browY}" stroke="${hairColor}" stroke-width="1" opacity="0.7"/>`;
+            svg += `<line x1="56" y1="${browY}" x2="65" y2="${browY+1}" stroke="${hairColor}" stroke-width="1" opacity="0.7"/>`;
+        } else if (brow === 'arched') {
+            svg += `<path d="M34,${browY+2} Q39,${browY-2} 44,${browY+1}" fill="none" stroke="${hairColor}" stroke-width="2" opacity="0.7"/>`;
+            svg += `<path d="M56,${browY+1} Q61,${browY-2} 66,${browY+2}" fill="none" stroke="${hairColor}" stroke-width="2" opacity="0.7"/>`;
+        } else if (brow === 'angry') {
+            svg += `<line x1="34" y1="${browY+2}" x2="44" y2="${browY-1}" stroke="${hairColor}" stroke-width="2.5" opacity="0.8"/>`;
+            svg += `<line x1="56" y1="${browY-1}" x2="66" y2="${browY+2}" stroke="${hairColor}" stroke-width="2.5" opacity="0.8"/>`;
+        } else if (brow === 'raised') {
+            svg += `<path d="M34,${browY-1} Q39,${browY-4} 44,${browY-1}" fill="none" stroke="${hairColor}" stroke-width="2" opacity="0.7"/>`;
+            svg += `<path d="M56,${browY-1} Q61,${browY-4} 66,${browY-1}" fill="none" stroke="${hairColor}" stroke-width="2" opacity="0.7"/>`;
+        } else if (brow === 'unibrow') {
+            svg += `<path d="M34,${browY+1} Q50,${browY-3} 66,${browY+1}" fill="none" stroke="${hairColor}" stroke-width="2.5" opacity="0.8"/>`;
+        } else {
+            svg += `<line x1="35" y1="${browY}" x2="44" y2="${browY}" stroke="${hairColor}" stroke-width="2" opacity="0.6"/>`;
+            svg += `<line x1="56" y1="${browY}" x2="65" y2="${browY}" stroke="${hairColor}" stroke-width="2" opacity="0.6"/>`;
+        }
+    }
+
+    // ---- EYES ----
+    if (species === 'alien-grey') {
+        svg += `<ellipse cx="38" cy="40" rx="8" ry="5" fill="#111"/>`;
+        svg += `<ellipse cx="62" cy="40" rx="8" ry="5" fill="#111"/>`;
+        svg += `<ellipse cx="38" cy="40" rx="3" ry="4" fill="${eyeColor}"/>`;
+        svg += `<ellipse cx="62" cy="40" rx="3" ry="4" fill="${eyeColor}"/>`;
+    } else if (eyeType === 'alien-large') {
+        svg += `<ellipse cx="38" cy="42" rx="9" ry="7" fill="#111"/>`;
+        svg += `<ellipse cx="62" cy="42" rx="9" ry="7" fill="#111"/>`;
+        svg += `<circle cx="38" cy="42" r="4" fill="${eyeColor}"/>`;
+        svg += `<circle cx="62" cy="42" r="4" fill="${eyeColor}"/>`;
+    } else if (eyeType === 'alien-slit') {
+        svg += `<ellipse cx="39" cy="42" rx="6" ry="4" fill="#ddd"/>`;
+        svg += `<ellipse cx="61" cy="42" rx="6" ry="4" fill="#ddd"/>`;
+        svg += `<ellipse cx="39" cy="42" rx="1.5" ry="4" fill="${eyeColor}"/>`;
+        svg += `<ellipse cx="61" cy="42" rx="1.5" ry="4" fill="${eyeColor}"/>`;
+    } else if (eyeType === 'cyber-glow') {
+        svg += `<ellipse cx="39" cy="42" rx="6" ry="4" fill="#111"/>`;
+        svg += `<ellipse cx="61" cy="42" rx="6" ry="4" fill="#111"/>`;
+        svg += `<circle cx="39" cy="42" r="3" fill="${eyeColor}"/>`;
+        svg += `<circle cx="61" cy="42" r="3" fill="${eyeColor}"/>`;
+        svg += `<circle cx="39" cy="42" r="5" fill="none" stroke="${eyeColor}" stroke-width="0.5" opacity="0.5"/>`;
+        svg += `<circle cx="61" cy="42" r="5" fill="none" stroke="${eyeColor}" stroke-width="0.5" opacity="0.5"/>`;
+    } else if (eyeType === 'heterochromia') {
+        let eyeColor2 = pick(['#00ffff','#ff00ff','#00ff66','#ffaa00','#1a5e1a','#1a3b8a']);
+        svg += `<ellipse cx="39" cy="42" rx="6" ry="4" fill="#e8e0d8"/>`;
+        svg += `<ellipse cx="61" cy="42" rx="6" ry="4" fill="#e8e0d8"/>`;
+        svg += `<circle cx="39" cy="42" r="3" fill="${eyeColor}"/>`;
+        svg += `<circle cx="61" cy="42" r="3" fill="${eyeColor2}"/>`;
+        svg += `<circle cx="39" cy="42" r="1.5" fill="#111"/>`;
+        svg += `<circle cx="61" cy="42" r="1.5" fill="#111"/>`;
+    } else if (eyeType === 'narrow') {
+        svg += `<ellipse cx="39" cy="42" rx="6" ry="2.5" fill="#e8e0d8"/>`;
+        svg += `<ellipse cx="61" cy="42" rx="6" ry="2.5" fill="#e8e0d8"/>`;
+        svg += `<circle cx="39" cy="42" r="2" fill="${eyeColor}"/>`;
+        svg += `<circle cx="61" cy="42" r="2" fill="${eyeColor}"/>`;
+        svg += `<circle cx="39" cy="42" r="1" fill="#111"/>`;
+        svg += `<circle cx="61" cy="42" r="1" fill="#111"/>`;
+    } else if (eyeType === 'wide') {
+        svg += `<ellipse cx="38" cy="42" rx="8" ry="5" fill="#e8e0d8"/>`;
+        svg += `<ellipse cx="62" cy="42" rx="8" ry="5" fill="#e8e0d8"/>`;
+        svg += `<circle cx="38" cy="42" r="3.5" fill="${eyeColor}"/>`;
+        svg += `<circle cx="62" cy="42" r="3.5" fill="${eyeColor}"/>`;
+        svg += `<circle cx="38" cy="42" r="1.8" fill="#111"/>`;
+        svg += `<circle cx="62" cy="42" r="1.8" fill="#111"/>`;
+        svg += `<circle cx="39" cy="41" r="1" fill="#fff" opacity="0.6"/>`;
+        svg += `<circle cx="63" cy="41" r="1" fill="#fff" opacity="0.6"/>`;
+    } else if (eyeType === 'visor-scan') {
+        svg += `<rect x="30" y="38" width="40" height="8" rx="3" fill="rgba(0,255,255,0.4)" stroke="#0ff" stroke-width="0.8"/>`;
+        svg += `<line x1="32" y1="42" x2="68" y2="42" stroke="#0ff" stroke-width="0.3" stroke-dasharray="2 1"/>`;
+    } else {
+        // Normal realistic eyes
+        svg += `<ellipse cx="39" cy="42" rx="6" ry="4" fill="#e8e0d8"/>`;
+        svg += `<ellipse cx="61" cy="42" rx="6" ry="4" fill="#e8e0d8"/>`;
+        svg += `<circle cx="39" cy="42" r="3" fill="${eyeColor}"/>`;
+        svg += `<circle cx="61" cy="42" r="3" fill="${eyeColor}"/>`;
+        svg += `<circle cx="39" cy="42" r="1.5" fill="#111"/>`;
+        svg += `<circle cx="61" cy="42" r="1.5" fill="#111"/>`;
+        // Light reflection
+        svg += `<circle cx="40" cy="41" r="0.8" fill="#fff" opacity="0.6"/>`;
+        svg += `<circle cx="62" cy="41" r="0.8" fill="#fff" opacity="0.6"/>`;
+    }
+
+    // Eyelids/lashes
+    if (species !== 'alien-grey' && eyeType !== 'visor-scan') {
+        svg += `<path d="M33,40 Q39,37 45,40" fill="none" stroke="${skinDark}" stroke-width="0.8" opacity="0.5"/>`;
+        svg += `<path d="M55,40 Q61,37 67,40" fill="none" stroke="${skinDark}" stroke-width="0.8" opacity="0.5"/>`;
+    }
+
+    // ---- EYEWEAR ----
+    if (glass === 'glasses-round') {
+        svg += `<circle cx="39" cy="42" r="8" fill="none" stroke="#555" stroke-width="1.5"/>`;
+        svg += `<circle cx="61" cy="42" r="8" fill="none" stroke="#555" stroke-width="1.5"/>`;
+        svg += `<line x1="47" y1="42" x2="53" y2="42" stroke="#555" stroke-width="1.5"/>`;
+    } else if (glass === 'glasses-square') {
+        svg += `<rect x="31" y="37" width="16" height="10" rx="2" fill="none" stroke="#444" stroke-width="1.5"/>`;
+        svg += `<rect x="53" y="37" width="16" height="10" rx="2" fill="none" stroke="#444" stroke-width="1.5"/>`;
+        svg += `<line x1="47" y1="42" x2="53" y2="42" stroke="#444" stroke-width="1.5"/>`;
+    } else if (glass === 'sunglasses') {
+        svg += `<rect x="30" y="38" width="17" height="9" rx="3" fill="#111" opacity="0.9"/>`;
+        svg += `<rect x="53" y="38" width="17" height="9" rx="3" fill="#111" opacity="0.9"/>`;
+        svg += `<line x1="47" y1="42" x2="53" y2="42" stroke="#333" stroke-width="2"/>`;
+    } else if (glass === 'cyber-visor' && eyeType !== 'visor-scan') {
+        svg += `<polygon points="26,38 74,38 70,48 30,48" fill="rgba(0,255,255,0.4)" stroke="#0ff" stroke-width="0.8"/>`;
+    } else if (glass === 'monocle') {
+        svg += `<circle cx="61" cy="42" r="8" fill="none" stroke="gold" stroke-width="1.5"/>`;
+        svg += `<line x1="69" y1="42" x2="75" y2="60" stroke="gold" stroke-width="0.8"/>`;
+    } else if (glass === 'tactical-goggles') {
+        svg += `<rect x="28" y="36" width="44" height="12" rx="5" fill="rgba(50,50,50,0.7)" stroke="#888" stroke-width="1"/>`;
+        svg += `<circle cx="39" cy="42" r="5" fill="rgba(255,200,0,0.3)" stroke="#aa8800" stroke-width="0.5"/>`;
+        svg += `<circle cx="61" cy="42" r="5" fill="rgba(255,200,0,0.3)" stroke="#aa8800" stroke-width="0.5"/>`;
+    }
+
+    // ---- NOSE ----
+    if (species === 'alien-grey') {
+        svg += `<line x1="49" y1="48" x2="51" y2="48" stroke="${skinDark}" stroke-width="1"/>`;
+    } else if (nose === 'straight') {
+        svg += `<path d="M49,46 L49,54 Q50,56 51,54 L51,46" fill="none" stroke="${skinDark}" stroke-width="1" opacity="0.5"/>`;
+    } else if (nose === 'wide') {
+        svg += `<path d="M46,54 Q50,58 54,54" fill="none" stroke="${skinDark}" stroke-width="1.2" opacity="0.5"/>`;
+        svg += `<circle cx="47" cy="54" r="1.5" fill="${skinDark}" opacity="0.15"/>`;
+        svg += `<circle cx="53" cy="54" r="1.5" fill="${skinDark}" opacity="0.15"/>`;
+    } else if (nose === 'pointed') {
+        svg += `<path d="M50,44 L47,55 L53,55 Z" fill="none" stroke="${skinDark}" stroke-width="0.8" opacity="0.4"/>`;
+    } else if (nose === 'button') {
+        svg += `<circle cx="50" cy="52" r="3" fill="${skinDark}" opacity="0.15"/>`;
+    } else if (nose === 'hooked') {
+        svg += `<path d="M50,44 Q53,50 50,55 Q48,56 47,55" fill="none" stroke="${skinDark}" stroke-width="1" opacity="0.4"/>`;
+    } else if (nose === 'flat') {
+        svg += `<path d="M46,52 L54,52" fill="none" stroke="${skinDark}" stroke-width="1.5" opacity="0.3"/>`;
+    } else if (nose === 'long') {
+        svg += `<path d="M50,42 L48,56 L52,56 Z" fill="none" stroke="${skinDark}" stroke-width="0.7" opacity="0.35"/>`;
+    } else {
+        svg += `<circle cx="50" cy="53" r="2" fill="${skinDark}" opacity="0.12"/>`;
+    }
+
+    // ---- MOUTH ----
+    if (mask !== 'none') {
+        // mouth hidden
+    } else if (species === 'alien-grey') {
+        svg += `<line x1="46" y1="60" x2="54" y2="60" stroke="${skinDark}" stroke-width="1"/>`;
+    } else if (mouth === 'smile') {
+        svg += `<path d="M42,60 Q50,67 58,60" fill="none" stroke="#8b4a3a" stroke-width="1.5"/>`;
+    } else if (mouth === 'frown') {
+        svg += `<path d="M42,63 Q50,58 58,63" fill="none" stroke="#8b4a3a" stroke-width="1.5"/>`;
+    } else if (mouth === 'smirk') {
+        svg += `<path d="M42,61 Q50,63 58,59" fill="none" stroke="#8b4a3a" stroke-width="1.5"/>`;
+    } else if (mouth === 'open') {
+        svg += `<ellipse cx="50" cy="61" rx="6" ry="4" fill="#3a1a1a"/>`;
+        svg += `<path d="M44,61 Q50,57 56,61" fill="none" stroke="#8b4a3a" stroke-width="1"/>`;
+    } else if (mouth === 'thin') {
+        svg += `<line x1="44" y1="61" x2="56" y2="61" stroke="#8b4a3a" stroke-width="1"/>`;
+    } else if (mouth === 'thick-lips') {
+        svg += `<path d="M42,60 Q50,57 58,60" fill="#a05a4a" opacity="0.6"/>`;
+        svg += `<path d="M42,60 Q50,65 58,60" fill="#954a3a" opacity="0.6"/>`;
+    } else if (mouth === 'snarl') {
+        svg += `<path d="M42,62 Q46,58 50,62 Q54,58 58,62" fill="none" stroke="#8b4a3a" stroke-width="1.5"/>`;
+    } else if (mouth === 'grin') {
+        svg += `<path d="M40,59 Q50,68 60,59" fill="#3a1a1a" stroke="#8b4a3a" stroke-width="1"/>`;
+        svg += `<line x1="42" y1="61" x2="58" y2="61" stroke="#fff" stroke-width="1.5" opacity="0.6"/>`;
+    } else if (mouth === 'pursed') {
+        svg += `<ellipse cx="50" cy="61" rx="3" ry="2.5" fill="#a05a4a" opacity="0.6"/>`;
+    } else {
+        svg += `<line x1="44" y1="61" x2="56" y2="61" stroke="#8b4a3a" stroke-width="1.2"/>`;
+    }
+
+    // ---- FACIAL HAIR ----
+    if (mask === 'none' && beard !== 'none' && species !== 'alien-grey') {
+        if (beard === 'stubble') {
+            svg += `<path d="M35,58 Q50,72 65,58" fill="none" stroke="${hairColor}" stroke-width="1.5" stroke-dasharray="1 1.5" opacity="0.4"/>`;
+        } else if (beard === 'goatee') {
+            svg += `<path d="M44,62 Q50,74 56,62" fill="${hairColor}" opacity="0.7"/>`;
+        } else if (beard === 'full-beard') {
+            svg += `<path d="M30,52 Q30,78 50,80 Q70,78 70,52" fill="${hairColor}" opacity="0.75"/>`;
+        } else if (beard === 'mustache') {
+            svg += `<path d="M42,57 Q46,62 50,58 Q54,62 58,57" fill="${hairColor}" opacity="0.7"/>`;
+        } else if (beard === 'soul-patch') {
+            svg += `<ellipse cx="50" cy="66" rx="2.5" ry="3" fill="${hairColor}" opacity="0.7"/>`;
+        } else if (beard === 'mutton-chops') {
+            svg += `<path d="M28,42 Q26,62 35,68" fill="${hairColor}" opacity="0.6"/>`;
+            svg += `<path d="M72,42 Q74,62 65,68" fill="${hairColor}" opacity="0.6"/>`;
+        } else if (beard === 'handlebar') {
+            svg += `<path d="M42,58 Q38,62 32,60" fill="none" stroke="${hairColor}" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>`;
+            svg += `<path d="M58,58 Q62,62 68,60" fill="none" stroke="${hairColor}" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>`;
+        } else if (beard === 'long-beard') {
+            svg += `<path d="M32,52 Q30,85 50,90 Q70,85 68,52" fill="${hairColor}" opacity="0.7"/>`;
+        }
+    }
+
+    // ---- MASK ----
+    if (mask === 'gas-mask') {
+        svg += `<rect x="32" y="50" width="36" height="22" rx="6" fill="#2a2a2a"/>`;
+        svg += `<circle cx="40" cy="58" r="6" fill="#444" stroke="#555" stroke-width="1"/>`;
+        svg += `<circle cx="60" cy="58" r="6" fill="#444" stroke="#555" stroke-width="1"/>`;
+        svg += `<rect x="44" y="64" width="12" height="6" rx="2" fill="#333"/>`;
+    } else if (mask === 'bandana') {
+        svg += `<polygon points="28,54 72,54 50,72" fill="#cc2233"/>`;
+        svg += `<line x1="28" y1="54" x2="72" y2="54" stroke="#aa1122" stroke-width="1.5"/>`;
+    } else if (mask === 'cyber-jaw') {
+        svg += `<rect x="30" y="55" width="40" height="16" rx="4" fill="#888" stroke="#aaa" stroke-width="0.5"/>`;
+        svg += `<line x1="34" y1="60" x2="66" y2="60" stroke="#555" stroke-width="1.5"/>`;
+        svg += `<line x1="34" y1="65" x2="66" y2="65" stroke="#555" stroke-width="1.5"/>`;
+        svg += `<circle cx="35" cy="58" r="2" fill="#0ff" opacity="0.5"/>`;
+    } else if (mask === 'medical-mask') {
+        svg += `<rect x="32" y="52" width="36" height="18" rx="5" fill="#d0e8f0" stroke="#a0c0d0" stroke-width="0.5"/>`;
+        svg += `<line x1="32" y1="55" x2="28" y2="50" stroke="#a0c0d0" stroke-width="1"/>`;
+        svg += `<line x1="68" y1="55" x2="72" y2="50" stroke="#a0c0d0" stroke-width="1"/>`;
+    }
+
+    // ---- SCARS & MARKS ----
+    if (scar === 'scar-eye') {
+        svg += `<line x1="35" y1="34" x2="43" y2="50" stroke="#b08080" stroke-width="1.5" opacity="0.6"/>`;
+    } else if (scar === 'scar-cheek') {
+        svg += `<line x1="62" y1="48" x2="70" y2="56" stroke="#b08080" stroke-width="1.2" opacity="0.5"/>`;
+        svg += `<line x1="64" y1="50" x2="72" y2="54" stroke="#b08080" stroke-width="0.8" opacity="0.4"/>`;
+    } else if (scar === 'face-tattoo') {
+        let tattooColor = pick(['#0088ff','#ff0055','#00ff88','#ffaa00','#8833ff']);
+        svg += `<path d="M28,44 Q32,50 28,56" fill="none" stroke="${tattooColor}" stroke-width="1.5" opacity="0.6"/>`;
+        svg += `<path d="M30,42 L26,46 L30,50" fill="none" stroke="${tattooColor}" stroke-width="1" opacity="0.5"/>`;
+    } else if (scar === 'cybernetic-plate') {
+        svg += `<rect x="56" y="30" width="14" height="18" rx="3" fill="#777" stroke="#999" stroke-width="0.5" opacity="0.7"/>`;
+        svg += `<circle cx="63" cy="36" r="2" fill="#ff0000" opacity="0.5"/>`;
+        svg += `<line x1="58" y1="42" x2="68" y2="42" stroke="#999" stroke-width="0.5"/>`;
+    } else if (scar === 'burn-mark') {
+        svg += `<ellipse cx="65" cy="52" rx="6" ry="8" fill="#8a5a4a" opacity="0.3"/>`;
+        svg += `<ellipse cx="66" cy="54" rx="4" ry="5" fill="#7a4a3a" opacity="0.2"/>`;
+    }
+
+    // ---- PIERCINGS ----
+    if (piercing === 'ear-stud') {
+        svg += `<circle cx="26" cy="44" r="1.5" fill="gold"/>`;
+    } else if (piercing === 'nose-ring') {
+        svg += `<circle cx="48" cy="55" r="2" fill="none" stroke="silver" stroke-width="1"/>`;
+    } else if (piercing === 'lip-ring') {
+        svg += `<circle cx="46" cy="63" r="1.5" fill="none" stroke="silver" stroke-width="1"/>`;
+    }
+
+    // ---- WRINKLES / AGE ----
+    if (Math.abs(rand()) > 0.75) {
+        svg += `<path d="M34,35 Q39,33 44,35" fill="none" stroke="#000" stroke-width="0.5" opacity="0.15"/>`;
+        svg += `<path d="M56,35 Q61,33 66,35" fill="none" stroke="#000" stroke-width="0.5" opacity="0.15"/>`;
+        svg += `<line x1="32" y1="50" x2="36" y2="48" stroke="#000" stroke-width="0.4" opacity="0.12"/>`;
+        svg += `<line x1="64" y1="48" x2="68" y2="50" stroke="#000" stroke-width="0.4" opacity="0.12"/>`;
+    }
+
+    // ---- ALIEN EXTRAS ----
+    if (species === 'alien-grey') {
+        // Antenna
+        svg += `<line x1="42" y1="12" x2="38" y2="2" stroke="${skin}" stroke-width="1.5"/>`;
+        svg += `<circle cx="38" cy="2" r="2" fill="#aaa"/>`;
+        svg += `<line x1="58" y1="12" x2="62" y2="2" stroke="${skin}" stroke-width="1.5"/>`;
+        svg += `<circle cx="62" cy="2" r="2" fill="#aaa"/>`;
+    } else if (species === 'alien-reptile') {
+        // Horn ridges
+        svg += `<polygon points="38,14 42,4 46,14" fill="${skinDark}" opacity="0.5"/>`;
+        svg += `<polygon points="54,14 58,4 62,14" fill="${skinDark}" opacity="0.5"/>`;
+    } else if (species === 'android') {
+        // LED indicator
+        svg += `<circle cx="68" cy="28" r="2" fill="#00ff00" opacity="0.7"/>`;
+        svg += `<circle cx="68" cy="28" r="3" fill="none" stroke="#00ff00" stroke-width="0.3" opacity="0.4"/>`;
     }
 
     svg += `</svg>`;
