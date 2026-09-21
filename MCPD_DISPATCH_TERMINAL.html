@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.19.24">
+    <link rel="stylesheet" href="css/styles.css?v=4.19.25">
 </head>
 
 <body>
@@ -504,32 +504,7 @@ document.addEventListener('keypress', function(e) {
 
                 <!-- DATABASE VIEW (Hidden by default) -->
                 <div class="panel-content scrollable" id="database-log" style="display: none;">
-                    <!-- DATABASE SUB-NAVIGATION -->
-                    <div class="db-subnav" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">
-                        <button class="db-tab-btn active" onclick="switchDbTab(\'db-citizen\', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: var(--accent-blue); color: #000; border: 1px solid var(--accent-blue);">CITIZEN & VEHICLE DB</button>
-                        <button class="db-tab-btn" onclick="switchDbTab('db-intel', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--accent-blue); border: 1px solid var(--accent-blue);">STATION INTEL</button>
-                        <button class="db-tab-btn" onclick="switchDbTab('db-warrants', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--panic-orange); border: 1px solid var(--panic-orange);">ACTIVE WARRANTS</button>
-                        <button class="db-tab-btn" onclick="switchDbTab('db-firearms', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--panic-red); border: 1px solid var(--panic-red);">FIREARM REGISTRY</button>
-                        <button class="db-tab-btn" onclick="switchDbTab('db-gangs', this)" style="padding: 8px 12px; font-weight: bold; cursor: pointer; background: transparent; color: var(--accent-green); border: 1px solid var(--accent-green);">SYNDICATE INTEL</button>
-                    </div>
-
-                    <script>
-                        function switchDbTab(targetId, btnEl) {
-                            document.querySelectorAll('.db-view-panel').forEach(p => p.style.display = 'none');
-                            document.querySelectorAll('.db-tab-btn').forEach(b => {
-                                b.style.background = 'transparent';
-                                b.style.color = b.style.borderColor;
-                            });
-                            
-                            const targetPanel = document.getElementById(targetId);
-                            if (targetPanel) targetPanel.style.display = 'block';
-                            
-                            if (btnEl) {
-                                btnEl.style.background = btnEl.style.borderColor || 'var(--accent-blue)';
-                                btnEl.style.color = '#000';
-                            }
-                        }
-                    </script>
+                    
 
                     <div id="db-citizen" class="db-view-panel" style="display: block;">
 
@@ -577,7 +552,7 @@ document.addEventListener('keypress', function(e) {
                 
                     </div> <!-- Close db-citizen -->
 
-                    <div id="db-intel" class="db-view-panel" style="display: none;">
+                    <div id="db-intel" class="db-view-panel" style="display: block; margin-top: 30px;">
                     <!-- PUBLIC OPINION DASHBOARD -->
                     <div id="public-opinion-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); padding: 15px; margin-bottom: 20px; border-radius: 6px;">
                         <h4 style="color: var(--accent-blue); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed var(--panel-border); padding-bottom: 5px;">📊 PUBLIC OPINION & TRUST RATINGS</h4>
@@ -667,7 +642,7 @@ document.addEventListener('keypress', function(e) {
                     </div> <!-- Close db-intel -->
                     
                     <!-- db-warrants -->
-                    <div id="db-warrants" class="db-view-panel" style="display: none;">
+                    <div id="db-warrants" class="db-view-panel" style="display: block; margin-top: 30px;">
                         <h3 style="color: var(--panic-orange); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">📋 ACTIVE WARRANTS DATABASE</h3>
                         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                             <input type="text" id="warrant-input" class="input-styled" placeholder="Search warrant by name or ID..." style="flex-grow: 1;">
@@ -679,7 +654,7 @@ document.addEventListener('keypress', function(e) {
                     </div>
                     
                     <!-- db-firearms -->
-                    <div id="db-firearms" class="db-view-panel" style="display: none;">
+                    <div id="db-firearms" class="db-view-panel" style="display: block; margin-top: 30px;">
                         <h3 style="color: var(--panic-red); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">🔫 FIREARM REGISTRY</h3>
                         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                             <input type="text" id="firearm-input" class="input-styled" placeholder="Enter weapon serial number..." style="flex-grow: 1;">
@@ -691,7 +666,7 @@ document.addEventListener('keypress', function(e) {
                     </div>
                     
                     <!-- db-gangs -->
-                    <div id="db-gangs" class="db-view-panel" style="display: none;">
+                    <div id="db-gangs" class="db-view-panel" style="display: block; margin-top: 30px;">
                         <h3 style="color: var(--accent-green); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">👤 SYNDICATE INTEL</h3>
                         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                             <select id="gang-select" class="input-styled" style="flex-grow: 1; padding: 10px; font-size: 1rem;">
@@ -888,10 +863,10 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.19.24"></script>
-    <script src="js/chats/transmissions.js?v=4.19.24"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.19.24"></script>
-    <script src="js/core/app_core.js?v=4.19.24"></script>
+    <script src="js/system/check_system.js?v=4.19.25"></script>
+    <script src="js/chats/transmissions.js?v=4.19.25"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.19.25"></script>
+    <script src="js/core/app_core.js?v=4.19.25"></script>
 
     
 
