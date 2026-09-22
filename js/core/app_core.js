@@ -7536,7 +7536,7 @@ function drawStockChart(id, pctChange) {
     ctx.fill();
 }
 
-function initExtraMarkets() {
+(function initExtraMarkets() {
     const container = document.getElementById('markets-container');
     if (!container) return;
     
