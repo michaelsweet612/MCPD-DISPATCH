@@ -7314,7 +7314,7 @@ let markets = {
     data: { price: 10000000.00, history: new Array(40).fill(10000000.00), color: '#00e5ff', badColor: '#f44336' }
 };
 
-function drawStockChart(id, isBull) {
+function drawStockChart(id, pctChange) {
     const canvas = document.getElementById(`${id}-stock-chart`);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -7332,100 +7332,75 @@ function drawStockChart(id, isBull) {
     
     const range = maxPrice - minPrice;
     
+    // Determine exact color based on pctChange
+    let perfColor = markets[id].color; // default
+    if (pctChange >= 2.0) {
+        perfColor = '#006400';
+    } else if (pctChange >= 0) {
+        perfColor = '#4caf50';
+    } else if (pctChange >= -1.5) {
+        perfColor = '#ffeb3b';
+    } else {
+        perfColor = markets[id].badColor;
+    }
+
+    // Draw realistic grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 4; i++) {
+        let gridY = canvas.height * (i/4);
+        ctx.beginPath();
+        ctx.moveTo(0, gridY);
+        ctx.lineTo(canvas.width, gridY);
+        ctx.stroke();
+    }
+    
+    // Draw line
     ctx.beginPath();
     ctx.lineWidth = 3;
-    ctx.strokeStyle = isBull ? markets[id].color : markets[id].badColor;
+    ctx.strokeStyle = perfColor;
     
     const stepX = canvas.width / (hist.length - 1);
     
     for (let i = 0; i < hist.length; i++) {
         const x = i * stepX;
         const y = canvas.height - (((hist[i] - minPrice) / range) * canvas.height);
-        
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
     }
     ctx.stroke();
     
+    // Draw Arrowhead at the very end
+    if (hist.length > 1) {
+        const lastX = canvas.width;
+        const lastY = canvas.height - (((hist[hist.length - 1] - minPrice) / range) * canvas.height);
+        const prevX = (hist.length - 2) * stepX;
+        const prevY = canvas.height - (((hist[hist.length - 2] - minPrice) / range) * canvas.height);
+        
+        let angle = Math.atan2(lastY - prevY, lastX - prevX);
+        
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(lastX - 12 * Math.cos(angle - Math.PI / 7), lastY - 12 * Math.sin(angle - Math.PI / 7));
+        ctx.lineTo(lastX - 12 * Math.cos(angle + Math.PI / 7), lastY - 12 * Math.sin(angle + Math.PI / 7));
+        ctx.closePath();
+        ctx.fillStyle = perfColor;
+        ctx.fill();
+    }
+    
+    // Gradient fill under line
     ctx.lineTo(canvas.width, canvas.height);
     ctx.lineTo(0, canvas.height);
     ctx.closePath();
     
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    if (isBull) {
-        gradient.addColorStop(0, `${markets[id].color}66`); // 40% opacity hex approx
-        gradient.addColorStop(1, `${markets[id].color}00`);
-    } else {
-        gradient.addColorStop(0, `${markets[id].badColor}66`);
-        gradient.addColorStop(1, `${markets[id].badColor}00`);
-    }
+    gradient.addColorStop(0, `${perfColor}66`); // 40% opacity
+    gradient.addColorStop(1, `${perfColor}00`); // 0% opacity
     ctx.fillStyle = gradient;
     ctx.fill();
-    
-    ctx.font = '80px Arial';
-    ctx.fillStyle = isBull ? `${markets[id].color}33` : `${markets[id].badColor}33`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(isBull ? '↗' : '↘', canvas.width / 2, canvas.height / 2);
 }
 
-const generatedMarkets = [
-    { id: 'gen0', name: 'ECLIPSE DYNAMICS MARKET', price: 28294066.83, color: '#00ffff' },
-    { id: 'gen1', name: 'CYBER INDUSTRIES MARKET', price: 6588524.05, color: '#ff5500' },
-    { id: 'gen2', name: 'HELIX CORP MARKET', price: 37202952.43, color: '#5500ff' },
-    { id: 'gen3', name: 'ZENITH CORP MARKET', price: 6450980.19, color: '#ff0055' },
-    { id: 'gen4', name: 'OMNI GROUP MARKET', price: 44380393.05, color: '#ff00ff' },
-    { id: 'gen5', name: 'GIGA ENTERPRISES MARKET', price: 19139372.91, color: '#00ff00' },
-    { id: 'gen6', name: 'NEXUS NETWORKS MARKET', price: 17897698.69, color: '#5500ff' },
-    { id: 'gen7', name: 'NOVA GENETICS MARKET', price: 6522499.32, color: '#ff5500' },
-    { id: 'gen8', name: 'VECTOR ARMS MARKET', price: 46775602.4, color: '#00ffff' },
-    { id: 'gen9', name: 'NEURO MUNITIONS MARKET', price: 23434930.23, color: '#ff5500' },
-    { id: 'gen10', name: 'TITAN LOGISTICS MARKET', price: 2706178.93, color: '#00ff00' },
-    { id: 'gen11', name: 'VOID DYNAMICS MARKET', price: 13504081.92, color: '#5500ff' },
-    { id: 'gen12', name: 'TERRA HOLDINGS MARKET', price: 14312493.41, color: '#5500ff' },
-    { id: 'gen13', name: 'CYBER GROUP MARKET', price: 25206041.87, color: '#00ff00' },
-    { id: 'gen14', name: 'ATLAS INDUSTRIES MARKET', price: 40074271.88, color: '#5500ff' },
-    { id: 'gen15', name: 'ZENITH DYNAMICS MARKET', price: 22628708.05, color: '#00ff00' },
-    { id: 'gen16', name: 'VECTOR LOGISTICS MARKET', price: 7944227.66, color: '#5500ff' },
-    { id: 'gen17', name: 'VANGUARD NETWORKS MARKET', price: 2001245.52, color: '#ff5500' },
-    { id: 'gen18', name: 'QUANTUM SECURITY MARKET', price: 33772242.94, color: '#ff5500' },
-    { id: 'gen19', name: 'CHRONO NETWORKS MARKET', price: 19141800.39, color: '#5500ff' },
-    { id: 'gen20', name: 'CHRONO GENETICS MARKET', price: 38977728.48, color: '#00ffff' },
-    { id: 'gen21', name: 'NOVA LOGISTICS MARKET', price: 9457491.95, color: '#00ff55' },
-    { id: 'gen22', name: 'NOVA HOLDINGS MARKET', price: 9594841.26, color: '#ff0055' },
-    { id: 'gen23', name: 'ATLAS ENTERPRISES MARKET', price: 16146256.47, color: '#ffff00' },
-    { id: 'gen24', name: 'ECHO CORP MARKET', price: 44016801.37, color: '#00ffff' },
-    { id: 'gen25', name: 'HORIZON SECURITY MARKET', price: 5285654.51, color: '#00ff55' },
-    { id: 'gen26', name: 'NEURO INDUSTRIES MARKET', price: 24777525.09, color: '#00ff55' },
-    { id: 'gen27', name: 'TERRA DATA MARKET', price: 8495769.67, color: '#ffff00' },
-    { id: 'gen28', name: 'STELLAR GENETICS MARKET', price: 47321403.93, color: '#ff0055' },
-    { id: 'gen29', name: 'TITAN ARMS MARKET', price: 19032553.4, color: '#ff00ff' },
-    { id: 'gen30', name: 'NEXUS SYSTEMS MARKET', price: 31362503.06, color: '#5500ff' },
-    { id: 'gen31', name: 'QUANTUM DATA MARKET', price: 36657123.29, color: '#ff5500' },
-    { id: 'gen32', name: 'VANGUARD MUNITIONS MARKET', price: 8765423.64, color: '#00ffff' },
-    { id: 'gen33', name: 'ECLIPSE DATA MARKET', price: 30880773.25, color: '#5500ff' },
-    { id: 'gen34', name: 'STELLAR HOLDINGS MARKET', price: 40029042.84, color: '#00ff00' },
-    { id: 'gen35', name: 'NEBULA ENTERPRISES MARKET', price: 19545441.12, color: '#ff00ff' },
-    { id: 'gen36', name: 'NEXUS INDUSTRIES MARKET', price: 13196586.17, color: '#ff0055' },
-    { id: 'gen37', name: 'VOID SYSTEMS MARKET', price: 17800977.87, color: '#ffff00' },
-    { id: 'gen38', name: 'GIGA HOLDINGS MARKET', price: 48401801.79, color: '#ffff00' },
-    { id: 'gen39', name: 'CHRONO SYNTHETICS MARKET', price: 45844865.9, color: '#ff00ff' },
-    { id: 'gen40', name: 'VOID TECHNOLOGIES MARKET', price: 24102299.38, color: '#ff0055' },
-    { id: 'gen41', name: 'VOID INDUSTRIES MARKET', price: 14132768.64, color: '#5500ff' },
-    { id: 'gen42', name: 'ECLIPSE MUNITIONS MARKET', price: 44863283.11, color: '#ff00ff' },
-    { id: 'gen43', name: 'NEURO DYNAMICS MARKET', price: 48269342.78, color: '#ff00ff' },
-    { id: 'gen44', name: 'STELLAR INDUSTRIES MARKET', price: 13378825.23, color: '#ff5500' },
-    { id: 'gen45', name: 'TERRA SYSTEMS MARKET', price: 27849919.07, color: '#00ff00' },
-    { id: 'gen46', name: 'AERO GENETICS MARKET', price: 44131524.92, color: '#ff0055' },
-    { id: 'gen47', name: 'ECHO MUNITIONS MARKET', price: 24013446.66, color: '#ffff00' },
-    { id: 'gen48', name: 'HELIX DATA MARKET', price: 44423783.68, color: '#ff5500' },
-    { id: 'gen49', name: 'ZENITH LOGISTICS MARKET', price: 48350846.02, color: '#ff5500' },
-];
-
-// Dynamically insert 50 extra markets into DOM and market object
-let visibleMarkets = 10;
-
-(function initExtraMarkets() {
+function initExtraMarkets() {
     const container = document.getElementById('markets-container');
     if (!container) return;
     
@@ -7586,7 +7561,7 @@ function updateStockMarkets() {
         // Only draw chart if visible to save CPU!
         let dash = document.getElementById(`${u.id}-stock-dashboard`);
         if (dash && dash.style.display !== 'none') {
-            drawStockChart(u.id, u.change >= 0);
+            drawStockChart(u.id, pctChange);
         }
     });
 }
