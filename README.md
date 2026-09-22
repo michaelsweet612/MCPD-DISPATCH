@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v4.19.0)
+# 🚨 MCPD DISPATCH TERMINAL (v4.20.2)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -10,7 +10,7 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 🛠️ LATEST MEGACITY & MARTIAL LAW UPDATES (v4.19.0)
+## 🛠️ LATEST MEGACITY & MARTIAL LAW UPDATES (v4.20.2)
 
 * **The Megacity Expansion:** The physical boundaries of the city map have been increased 5-fold to a massive 15,000x15,000 grid! The Live Map now actively generates and simulates exactly **59,999 individual entities** roaming the island simultaneously. Powered by a new Spatial Partitioning Grid algorithm to render thousands of cars and pedestrians at a flawless 60 FPS.
 * **Civil War & Martial Law Event:** If you abuse your citizens and the City Trust Level drops below 40%, the system will automatically declare Martial Law and trigger a Civil War. Heavily armed Military Units (`🪖`) will continuously pour out of the Military Base to pacify the streets until you restore Trust above 80%.
