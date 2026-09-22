@@ -1538,6 +1538,8 @@ function triggerSergeantInsultBanter(sender) {
 }
 
 function triggerCorruptIASequence(sender) {
+    if(typeof window.recordOfficerStat === 'function') window.recordOfficerStat(sender, 'kill');
+    if(typeof updateStats === 'function') updateStats(0, 1, 0, 0);
     const step1 = [
         "Hell yeah, I just killed somebody. Target is down.",
         "Just executed a Class 4 civilian. What a rush.",
@@ -4193,7 +4195,14 @@ btnDeclareInnocent.addEventListener('click', () => updateCitizenStatus('Innocent
 btnDeclareSuspicious.addEventListener('click', () => updateCitizenStatus('Suspicious'));
 btnDeclareWanted.addEventListener('click', () => updateCitizenStatus('Wanted'));
 if(btnDeclareArrested) btnDeclareArrested.addEventListener('click', () => updateCitizenStatus('Arrested'));
-if(btnDeclareDead) btnDeclareDead.addEventListener('click', () => updateCitizenStatus('Deceased'));
+if(btnDeclareDead) btnDeclareDead.addEventListener('click', () => {
+    let officer = prompt("Enter the callsign of the officer who secured the kill (leave blank for general):");
+    updateCitizenStatus('Deceased');
+    if (officer && typeof window.recordOfficerStat === 'function') {
+        window.recordOfficerStat(officer.toUpperCase(), 'kill');
+        addChatMessage('SYSTEM', `1 KILL LOGGED FOR OFFICER ${officer.toUpperCase()}.`, 'serious');
+    }
+});
 if(btnDeclareWarrant) btnDeclareWarrant.addEventListener('click', () => executeWarrant());
 
 
