@@ -4349,6 +4349,7 @@ autoSimulateInt = setInterval(() => {
 
 // --- Wanted Targets Logic ---
 const wantedCrimes = [
+    "War Crimes",
     "Jaywalking, Resisting Arrest, Anti-Civil Behavior",
     "Operating unlicensed cyber-clinic, Smuggling",
     "Grand Theft Auto, Unsanctioned Weapon Modification",
@@ -4588,7 +4589,7 @@ function updateWantedUI() {
 
     freemanDiv.innerHTML = `
             < strong > [PRIME MULTIVERSE TARGET] GORDON FREEMAN</strong > <br>
-                Crime: Resonance Cascade, Assault on Overwatch, Anti-Civil Activity Level 1.<br>
+                Crime: Resonance Cascade, War Crimes, Assault on Overwatch, Anti-Civil Activity Level 1.<br>
                     Bounty: 9,236,000 Credits. EXTREME PREJUDICE MANDATORY.
                     `;
     freemanDiv.addEventListener('click', () => {
