@@ -60,3 +60,34 @@ The `UNIT STATUS` board dynamically tracks the status of all **5,000 precinct of
 
 ## ⚖️ Credits
 Created and maintained by the MCPD Engineering Division.
+
+
+---
+
+## 🔬 DEEP DIVE SYSTEMS ARCHITECTURE & MINUTIAE
+
+For the engineers who demand to know exactly how this dystopian nightmare functions under the hood, here are the most excruciatingly microscopic details of the simulation's backend. Nobody will read this, but the corporate overlords mandated it be documented to pass ISO-9001 compliance.
+
+### 🧠 The Biometric Engine v2.0 (Procedural SVG Avatar Generation)
+* The new 536-trait Biometric Engine does not use pre-rendered PNGs. It constructs every citizen mathematically using inline `<svg>` elements injected directly into the DOM.
+* **Skin Tones:** The skin tone array (`#FFE0BD`, `#FFCD94`, `#EAC086`, `#FFAD60`, `#FFE39F`, `#D3A87C`, `#C68642`, `#8D5524`, `#3E2723`, `#263238`, `#1B5E20`) is mapped to a radial gradient (`<radialGradient>`) that places the light source strictly at `cx="30%" cy="30%"`, ensuring that the shadow realistically falls across the lower right jawline. 
+* **Procedural Hair/Stubble Loops:** Hair isn't a polygon. The engine runs a `for` loop that generates between `100` and `400` individual `<path>` strokes or `<circle>` elements. If the citizen rolls the `Stubble` trait, the engine painstakingly calculates `150` random coordinate points constrained precisely within `x: 35-65` and `y: 65-80` to simulate a 5 o'clock shadow. 
+* **Alien Scales:** If a citizen is classified as an Extraterrestrial, the skin color forces a green/blue palette and the system generates `150` overlapping `<ellipse>` tags across the forehead to simulate reptilian scales.
+* **Neck Anchoring Alignment:** To prevent the horrific "floating head" glitch of v4.19, the neck SVG `<path>` is hardcoded with a `d="M40,75 Q50,90 60,75 L55,100 L45,100 Z"` curve, perfectly anchoring the clavicle to the torso bounding box.
+
+### 📈 Stock Market Canvas Rendering
+* The corporate stock charts are rendered on a standard HTML5 `<canvas>`.
+* The `drawStockChart()` function utilizes a 40-tick history array that updates exactly every 3.5 seconds (`setInterval(updateStockMarkets, 3500)`).
+* **Grid Lines:** The chart renders exactly 3 horizontal background grid lines using `rgba(255, 255, 255, 0.05)`. They are mathematically spaced at `canvas.height * (1/4)`, `(2/4)`, and `(3/4)`.
+* **The Arrowhead:** The tip of the stock chart line isn't just a blunt vector. It uses trigonometric functions (`Math.atan2()`, `Math.cos()`, `Math.sin()`) to calculate the exact slope angle between the 39th and 40th tick. It then draws an isosceles triangle extending exactly `12` pixels backward at a precise angle of `Math.PI / 7` radians to form the arrowhead.
+* **Color Interpolation:** The stock chart gradient dynamically adjusts its color based on percentage change (`pctChange`). `> 2%` triggers `#006400`, `< -1.5%` triggers `#f44336`. The gradient fill sets the top opacity stop to `66` (approx. 40% hex opacity) and the bottom to `00` (transparent).
+
+### 💀 Lethal Force Attribution Mechanics
+* The `updateCitizenStatus('Deceased')` function doesn't just change text. It prompts the dispatcher via a synchronous `window.prompt()` for the exact alphanumeric `Callsign` of the officer who secured the kill.
+* This is cross-referenced against the 5,000-man `roster` array in memory. If a match is found using `.find(x => x.id === callsign.toUpperCase())`, the `u.kills` property is incremented and the Top 5 Kills Leaderboard HTML is entirely rebuilt via `window.updateOfficerLeaderboard()`.
+* **Corrupt IA Auto-Increment:** When the 5% chance `triggerCorruptIASequence()` event fires (where an officer boasts "Hell yeah, I just killed somebody"), the system secretly hooks into `window.recordOfficerStat(sender, 'kill')` at the exact millisecond the chat is printed, awarding them points on the board.
+
+### 🖥️ Dispatch Terminal Chat Polling
+* The `unifiedLogEl.children.length` is strictly capped at `100` nodes. The moment it hits 101, `unifiedLogEl.removeChild(unifiedLogEl.firstChild)` fires to prevent severe DOM memory leaks during high-traffic 10-999 Mayhem events.
+* When the user types `/bolo [message]`, the system applies an inline CSS `boxShadow: inset 0 0 50px rgba(244,67,54,0.5)` to the entire chat container for exactly 2,000 milliseconds to simulate a red tactical alert flash.
+
