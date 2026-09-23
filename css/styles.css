@@ -771,7 +771,7 @@ body.theme-pride {
     --accent-green: #F5A9B8;
     --panic-red: #E40303;
     --panic-orange: #FF8C00;
-    background-image: url("../assets/pride_flag.png");
+    background-image: url("../assets/pride_flag.png") !important;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

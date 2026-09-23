@@ -5490,6 +5490,10 @@ document.getElementById('btn-theme-rainbow').addEventListener('click', () => {
     document.body.className = 'theme-rainbow';
 });
 
+document.getElementById('btn-theme-pride').addEventListener('click', () => {
+    document.body.className = 'theme-pride';
+});
+
 document.getElementById('btn-fullscreen').addEventListener('click', () => {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(err => {
@@ -8458,4 +8462,4 @@ function generateAvatarSVG(seed, size) {
     }
 })();
 
-if (document.getElementById('btn-theme-pride')) document.getElementById('btn-theme-pride').addEventListener('click', () => { document.body.className = 'theme-pride'; });
+
