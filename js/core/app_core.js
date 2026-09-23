@@ -4312,7 +4312,7 @@ function openCitizenDossier(idx) {
         vehicleHtml = '<span style="color:var(--text-dim);">No registered vehicle.</span>';
     }
 
-    let dossierAvatar = generateAvatarSVG(cit.name || cit.id, 200);
+    let dossierAvatar = generateAvatarSVG(cit.name || cit.id, 200, cit.civPersonality);
     citizenPageBody.innerHTML = `
         <div style="font-size: 1.4rem; color: #fff; border-bottom: 1px solid var(--panel-border); padding-bottom: 15px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; gap: 20px;">
             <div style="flex-grow: 1;">
@@ -4818,7 +4818,7 @@ function updateWantedUI() {
         targetDiv.onmouseover = () => targetDiv.style.background = "rgba(255, 255, 255, 0.08)";
         targetDiv.onmouseout = () => targetDiv.style.background = "rgba(255, 255, 255, 0.02)";
 
-        let listAvatar = generateAvatarSVG(target.name);
+        let listAvatar = generateAvatarSVG(target.name, 40, target.civPersonality);
         targetDiv.innerHTML = `
             <div style="display: flex; gap: 10px; align-items: center;">
                 <div style="flex-shrink: 0; width: 40px; height: 40px; border: 1px solid var(--panel-border); background: #000; border-radius: 4px; overflow: hidden;">
@@ -4833,7 +4833,7 @@ function updateWantedUI() {
         `;
 
         targetDiv.addEventListener('click', () => {
-            let modalAvatar = generateAvatarSVG(target.name);
+            let modalAvatar = generateAvatarSVG(target.name, 100, target.civPersonality);
             openReportModal(`
                 <h3 style="color:${color}; border-bottom: 1px solid ${color}; padding-bottom: 10px;">HVT PROFILE: ${target.name}</h3>
                 <div style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 15px;">
@@ -4959,15 +4959,7 @@ dbSearchBtn.addEventListener('click', () => {
             let licensesSummary = (foundCit.licenses || []).map(l => `<span style="color:${l.color}; font-size:0.85rem;">• ${l.name} [${l.status}]</span>`).join("<br>") || "None";
             let vehSummary = foundCit.vehicle ? `${foundCit.vehicle.brand} ${foundCit.vehicle.model} (Plate: ${foundCit.vehicle.plate})<br>Insurance: ${foundCit.vehicle.insuranceProvider} — ${foundCit.vehicle.insuranceBadge}` : "No registered vehicle";
 
-            let svgAvatar = generateAvatarSVG(foundCit.name || query);
-            if (foundCit.civPersonality === 'Furry') {
-                let h = 0; let seed = foundCit.name || query;
-                for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
-                let idx = Math.abs(h) % 10 + 1;
-                let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png'};
-                let ext = exts[idx];
-                svgAvatar = `<img src="assets/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
-            }
+            let svgAvatar = generateAvatarSVG(foundCit.name || query, 100, foundCit.civPersonality);
             dbResults.innerHTML = `
                 <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;">
                     <strong style="color: var(--accent-blue);">CITIZEN RECORD FOUND:</strong>
@@ -8038,7 +8030,17 @@ setTimeout(updateStockMarkets, 1000);
 })();
 
 
-function generateAvatarSVG(seed, size) {
+function generateAvatarSVG(seed, size, personality) {
+    size = size || 100;
+    if (personality === 'Furry') {
+        let h = 0;
+        let seedStr = seed || "random";
+        for (let i = 0; i < seedStr.length; i++) h = seedStr.charCodeAt(i) + ((h << 5) - h);
+        let idx = Math.abs(h) % 10 + 1;
+        let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png'};
+        let ext = exts[idx];
+        return `<img src="assets/furry/furry${idx}.${ext}" width="${size}" height="${size*1.2}" style="object-fit: cover; border-radius: 4px;" />`;
+    }
     size = size || 100;
     let hash = 0;
     for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
