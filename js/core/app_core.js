@@ -7703,7 +7703,10 @@ function updateStockMarkets(forceDraw = false) {
 
     let stockLogEl = document.getElementById('stock-log');
     let isTabVisible = stockLogEl && stockLogEl.style.display !== 'none';
-    let shouldDrawDOM = forceDraw || isTabVisible;
+    let optToggle = document.getElementById('resource-opt-toggle');
+    let isOptEnabled = optToggle ? optToggle.checked : true;
+    
+    let shouldDrawDOM = forceDraw || isTabVisible || !isOptEnabled;
 
     updates.forEach(u => {
         let market = markets[u.id];
