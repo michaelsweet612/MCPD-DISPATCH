@@ -2911,16 +2911,18 @@ function simulateEvent(specificCrime = null) {
 
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
-    let weightedUnits = [];
-    const _active = getActiveCallsigns();
-    _active.forEach(c => {
-        weightedUnits.push(c);
-        const o = roster.find(u => u.id === c);
-        if (o && (o.personality === 'Trigger-Happy' || o.personality === 'Corrupt')) {
-            weightedUnits.push(c, c, c, c); // 5x higher chance to be selected
+        let weightedUnits = [];
+    const _activeUnits = roster.filter(u => u.status === 'On Duty');
+    _activeUnits.forEach(o => {
+        weightedUnits.push(o.id);
+        if (o.personality === 'Trigger-Happy' || o.personality === 'Corrupt') {
+            weightedUnits.push(o.id, o.id, o.id, o.id);
         }
     });
-    if (weightedUnits.length === 0) weightedUnits = _active;
+    if (weightedUnits.length === 0) weightedUnits = ['DISP-1'];
+    
+    // We also need the _active array of ids for the next step:
+    const _active = _activeUnits.map(u => u.id);
     
     const respondingUnits = [getRandomItem(weightedUnits), getRandomItem(weightedUnits)];
     if (respondingUnits[0] === respondingUnits[1] && _active.length > 1) {
@@ -5493,16 +5495,18 @@ function simulateEvent(specificCrime = null) {
 
     const div = document.createElement('div');
     const prioClass = crime.priority === 'high' ? 'high-priority' : (crime.priority === 'medium' ? 'medium-priority' : '');
-    let weightedUnits = [];
-    const _active = getActiveCallsigns();
-    _active.forEach(c => {
-        weightedUnits.push(c);
-        const o = roster.find(u => u.id === c);
-        if (o && (o.personality === 'Trigger-Happy' || o.personality === 'Corrupt')) {
-            weightedUnits.push(c, c, c, c); // 5x higher chance to be selected
+        let weightedUnits = [];
+    const _activeUnits = roster.filter(u => u.status === 'On Duty');
+    _activeUnits.forEach(o => {
+        weightedUnits.push(o.id);
+        if (o.personality === 'Trigger-Happy' || o.personality === 'Corrupt') {
+            weightedUnits.push(o.id, o.id, o.id, o.id);
         }
     });
-    if (weightedUnits.length === 0) weightedUnits = _active;
+    if (weightedUnits.length === 0) weightedUnits = ['DISP-1'];
+    
+    // We also need the _active array of ids for the next step:
+    const _active = _activeUnits.map(u => u.id);
     
     const respondingUnits = [getRandomItem(weightedUnits), getRandomItem(weightedUnits)];
     if (respondingUnits[0] === respondingUnits[1] && _active.length > 1) {
