@@ -6447,7 +6447,7 @@ window.updateOfficerLeaderboard = function() {
     if (lbEl) {
         const officersWithPoints = roster.filter(u => u.points && u.points > 0);
         officersWithPoints.sort((a, b) => b.points - a.points);
-        const top5 = officersWithPoints.slice(0, 5);
+        const top5 = officersWithPoints;
         
         if (top5.length === 0) {
             lbEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
@@ -6475,7 +6475,7 @@ window.updateOfficerLeaderboard = function() {
     if (killEl) {
         const officersWithKills = roster.filter(u => u.kills && u.kills > 0);
         officersWithKills.sort((a, b) => b.kills - a.kills);
-        const top5Kills = officersWithKills.slice(0, 5);
+        const top5Kills = officersWithKills;
         
         if (top5Kills.length === 0) {
             killEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
@@ -6503,7 +6503,7 @@ window.updateOfficerLeaderboard = function() {
     if (arrEl) {
         const officersWithArrests = roster.filter(u => u.arrests && u.arrests > 0);
         officersWithArrests.sort((a, b) => b.arrests - a.arrests);
-        const top5Arrests = officersWithArrests.slice(0, 5);
+        const top5Arrests = officersWithArrests;
         
         if (top5Arrests.length === 0) {
             arrEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
@@ -6531,7 +6531,7 @@ window.updateOfficerLeaderboard = function() {
     if (ansEl) {
         const officersWithAnswers = roster.filter(u => u.answeredCalls && u.answeredCalls > 0);
         officersWithAnswers.sort((a, b) => b.answeredCalls - a.answeredCalls);
-        const top5Answers = officersWithAnswers.slice(0, 5);
+        const top5Answers = officersWithAnswers;
         
         if (top5Answers.length === 0) {
             ansEl.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 10px;">Awaiting data...</div>';
