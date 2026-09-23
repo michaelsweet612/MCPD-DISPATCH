@@ -760,3 +760,26 @@ body.theme-rainbow .chat-message {
     animation: rainbowBorder 3s linear infinite;
     background: rgba(255, 255, 255, 0.1);
 }
+
+body.theme-pride {
+    --bg-main: #1a1a1a;
+    --panel-bg: rgba(0, 0, 0, 0.75);
+    --panel-border: #ffffff;
+    --text-main: #ffffff;
+    --text-dim: #cccccc;
+    --accent-blue: #78D5E3;
+    --accent-green: #F5A9B8;
+    --panic-red: #E40303;
+    --panic-orange: #FF8C00;
+    background-image: url("../assets/pride_flag.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+body.theme-pride .main-panel,
+body.theme-pride .control-panel,
+body.theme-pride .panel-content {
+    background: rgba(0, 0, 0, 0.7) !important;
+    border-radius: 8px;
+}

@@ -8457,3 +8457,5 @@ function generateAvatarSVG(seed, size) {
         });
     }
 })();
+
+if (document.getElementById('btn-theme-pride')) document.getElementById('btn-theme-pride').addEventListener('click', () => { document.body.className = 'theme-pride'; });
