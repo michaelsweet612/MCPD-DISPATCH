@@ -286,6 +286,11 @@ if (tabUnitStatus && unitStatusLogEl) {
         if (document.getElementById('citizens-list-view')) document.getElementById('citizens-list-view').style.display = 'none';
         if (recruitmentLogEl) recruitmentLogEl.style.display = 'none';
         if (chatInputArea) chatInputArea.style.display = 'none';
+          
+          if (document.getElementById('tab-stock')) { document.getElementById('tab-stock').classList.remove('active'); document.getElementById('tab-stock').style.color = 'var(--text-dim)'; }
+          if (document.getElementById('stock-log')) document.getElementById('stock-log').style.display = 'none';
+          if (document.getElementById('tab-map')) { document.getElementById('tab-map').classList.remove('active'); document.getElementById('tab-map').style.color = 'var(--text-dim)'; }
+          if (document.getElementById('map-log')) document.getElementById('map-log').style.display = 'none';
         
         if(typeof renderUnitStatus !== 'undefined') renderUnitStatus();
     });
