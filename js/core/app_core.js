@@ -4019,7 +4019,7 @@ function generateCitizens() {
         "MULTIPLE WARRANTS: Anti-Civil Behavior, Murder.",
         "KNOWN SYNDICATE ENFORCER. High-risk."
     ];
-    const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked", "Furry"];
+    const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked", "Furry", "Furry", "Furry"];
 
     for (let i = 0; i < 5000; i++) {
         const first = getRandomItem(firstNames);
@@ -4983,7 +4983,7 @@ dbSearchBtn.addEventListener('click', () => {
         let svgAvatar = generateAvatarSVG(query);
         let h = 0; let seed = query;
         for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
-        if (Math.abs(h) % 10 === 0) { // 10% chance for random queries
+        if (Math.abs(h) % 10 < 3) { // 30% chance for random queries
             let idx = Math.abs(h) % 10 + 1;
             let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png'};
             let ext = exts[idx];
