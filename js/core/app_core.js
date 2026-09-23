@@ -7709,9 +7709,10 @@ function updateStockMarkets() {
         let trendEl = document.getElementById(`${u.id}-stock-trend`);
         let statusEl = document.getElementById(`${u.id}-stock-status`);
         
+        let pctChange = (u.change / market.price) * 100;
+        
         if (priceEl && trendEl && statusEl) {
             priceEl.textContent = `NTND $${market.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            let pctChange = (u.change / market.price) * 100;
             
             // Color Logic based on performance
             let perfColor = market.color; // default
