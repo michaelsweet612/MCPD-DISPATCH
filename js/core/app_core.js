@@ -7953,8 +7953,7 @@ function generateAvatarSVG(seed, size) {
         'alien-grey','alien-blue','alien-green','alien-reptile','android','mutant']);
 
     // BACKGROUNDS (12)
-    const bg = pick(['#1a1b26','#1e1e2e','#2e1e1e','#1e2e1e','#2e2e1e','#0d1117',
-        '#1a0a2e','#0a1a2e','#2e0a0a','#0a2e1a','#1e1a2e','#2e1a0a']);
+    const bg = pick(['#f0f0f0', '#e5e7eb', '#d1d5db', '#e2e8f0', '#f8fafc', '#ffffff', '#f3f4f6', '#f1f5f9', '#e0e0e0', '#eaeaea', '#f5f5f5', '#efefef']); // Light mugshot backgrounds
 
     // SKIN TONES (18 human + alien)
     let skin;
@@ -7962,7 +7961,7 @@ function generateAvatarSVG(seed, size) {
     else if (species === 'alien-blue') skin = pick(['#6699cc','#4488bb','#3377aa','#5588cc']);
     else if (species === 'alien-green') skin = pick(['#66aa66','#558855','#77bb77','#448844']);
     else if (species === 'alien-reptile') skin = pick(['#6b8e23','#556b2f','#8b7d3c','#5a6e2f']);
-    else if (species === 'android') skin = pick(['#d0d0d0','#e0e0e0','#b8c0c8','silver','#c8ccd0']);
+    else if (species === 'android') skin = pick(['#d0d0d0','#e0e0e0','#b8c0c8','#c0c0c0','#c8ccd0']);
     else if (species === 'mutant') skin = pick(['#cc88cc','#aa66aa','#9944aa','#bb77bb']);
     else skin = pick(['#ffdbac','#f1c27d','#e0ac69','#c68642','#8d5524','#5c3a1e','#3d2c23',
         '#2a1d17','#fce4d6','#deb887','#d2a679','#a0724a','#704214','#4a2e10',
