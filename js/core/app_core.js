@@ -4009,6 +4009,35 @@ const insuranceProviders = [
     "Underworld Black-Market Gap Insurance"
 ];
 
+function getRandomCivPersonality() {
+    const customWeightsStr = localStorage.getItem('mcpd_civ_personality_weights');
+    let weights = {
+        'Passive': 20,
+        'Partially Aggressive': 20,
+        'Aggressive': 10,
+        'Panicked': 20,
+        'Furry': 30
+    };
+
+    if (customWeightsStr) {
+        try {
+            weights = JSON.parse(customWeightsStr);
+        } catch(e) {}
+    }
+    
+    let pool = [];
+    for (let p in weights) {
+        let count = parseInt(weights[p]);
+        if (isNaN(count)) count = 0;
+        for (let i = 0; i < count; i++) {
+            pool.push(p);
+        }
+    }
+    
+    if (pool.length === 0) return "Passive";
+    return pool[Math.floor(Math.random() * pool.length)];
+}
+
 function generateCitizens() {
     const firstNames = ["James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth", "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen", "Elena", "Marcus", "Sophia", "Viktor", "Aaliyah", "Desmond", "Fiona", "Gideon", "Haley", "Ivan", "Jocelyn", "Kael", "Lana", "Malik", "Nia", "Orion", "Penelope", "Quinn", "Rowan", "Serena", "Tariq", "Uma", "Vance", "Wren", "Xavier", "Yara", "Zane"];
     const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Chen", "Lee", "Kim", "Patel", "Singh", "Nguyen", "Ali", "Hassan", "Kovacs", "Novak", "Silva", "Costa", "Rossi", "Conti", "Dubois", "Lefevre", "Muller", "Schmidt", "Ivanov", "Sokolov", "Gomez", "Ruiz", "Tanaka", "Yamamoto", "Okafor", "Adebayo", "Cohen", "Levi"];
@@ -4101,7 +4130,7 @@ function generateCitizens() {
             status: initialStatus,
             trait: getRandomItem(traits),
             history: hist,
-            civPersonality: getRandomItem(civPersonalities),
+            civPersonality: getRandomCivPersonality(),
             address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
             dob: `${birthYear}-${birthMonth}-${birthDay} (Age: ${age})`,
             vehicle: {

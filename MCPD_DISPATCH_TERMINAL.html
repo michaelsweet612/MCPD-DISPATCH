@@ -301,7 +301,10 @@ document.addEventListener('keypress', function(e) {
                             
                             <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
                             <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">SYSTEM ACTIONS</h4>
-                            <button onclick="openPersonalityEditor()" style="width: 100%; margin-top: 15px; padding: 10px; background: transparent; color: #ffeb3b; font-weight: bold; border: 1px solid #ffeb3b; cursor: pointer; text-transform: uppercase;">CUSTOM PERSONALITY EDITOR</button>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 15px;">
+                                <button onclick="openPersonalityEditor('officer')" style="flex: 1; padding: 10px; background: transparent; color: var(--accent-blue); font-weight: bold; border: 1px solid var(--accent-blue); cursor: pointer; text-transform: uppercase;">OFFICER PERSONALITIES</button>
+                                <button onclick="openPersonalityEditor('civilian')" style="flex: 1; padding: 10px; background: transparent; color: var(--accent-green); font-weight: bold; border: 1px solid var(--accent-green); cursor: pointer; text-transform: uppercase;">CIVILIAN PERSONALITIES</button>
+                            </div>
                             
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                                 <button id="btn-fullscreen" style="flex: 1; padding: 10px; font-size: 0.85rem; background: var(--accent-green); color: #000; border: none; font-weight: bold;">TOGGLE FULLSCREEN</button>
@@ -1039,31 +1042,65 @@ document.addEventListener('keypress', function(e) {
     </div>
     
     <script>
-        const personalityTypes = ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Impatient', 'Trigger-Happy'];
-        
-        function openPersonalityEditor() {
+        let currentEditingType = 'officer';
+
+        function openPersonalityEditor(type) {
+            currentEditingType = type || 'officer';
             const container = document.getElementById('personality-sliders');
             container.innerHTML = '';
             
-            let weights = {
-                'Aggressive': 10, 'Rookie': 10, 'Veteran': 10, 'Paranoid': 10, 'Sarcastic': 10,
-                'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1, 'Impatient': 10, 'Trigger-Happy': 10
-            };
+            const titleEl = document.querySelector('#personality-editor-modal h2');
+            const pEl = document.querySelector('#personality-editor-modal p');
+            const modalContent = document.querySelector('#personality-editor-modal .modal-content');
             
-            const savedStr = localStorage.getItem('mcpd_personality_weights');
+            if (currentEditingType === 'civilian') {
+                titleEl.textContent = 'CIVILIAN PERSONALITY WEIGHTS';
+                titleEl.style.color = 'var(--accent-green)';
+                titleEl.style.borderColor = 'var(--accent-green)';
+                pEl.textContent = 'Adjust the sliders below to dictate the exact spawn percentage weights of new civilians in the city. Set to 0 to completely ban a personality.';
+                modalContent.style.borderColor = 'var(--accent-green)';
+                modalContent.style.boxShadow = '0 0 30px rgba(0, 255, 0, 0.4)';
+            } else {
+                titleEl.textContent = 'OFFICER PERSONALITY WEIGHTS';
+                titleEl.style.color = 'var(--accent-blue)';
+                titleEl.style.borderColor = 'var(--accent-blue)';
+                pEl.textContent = 'Adjust the sliders below to dictate the exact spawn percentage weights of new officer recruits. Set to 0 to completely ban a personality.';
+                modalContent.style.borderColor = 'var(--accent-blue)';
+                modalContent.style.boxShadow = '0 0 30px rgba(0, 255, 255, 0.4)';
+            }
+            
+            let weights = {};
+            let localKey = currentEditingType === 'civilian' ? 'mcpd_civ_personality_weights' : 'mcpd_personality_weights';
+            let defaultPool = currentEditingType === 'civilian' 
+                ? ["Passive", "Partially Aggressive", "Aggressive", "Panicked", "Furry"]
+                : ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Impatient', 'Trigger-Happy', 'Corrupt'];
+            
+            if (currentEditingType === 'civilian') {
+                weights = { 'Passive': 20, 'Partially Aggressive': 20, 'Aggressive': 10, 'Panicked': 20, 'Furry': 30 };
+            } else {
+                weights = {
+                    'Aggressive': 10, 'Rookie': 10, 'Veteran': 10, 'Paranoid': 10, 'Sarcastic': 10,
+                    'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1, 'Impatient': 10, 'Trigger-Happy': 10, 'Corrupt': 10
+                };
+            }
+            
+            const savedStr = localStorage.getItem(localKey);
             if (savedStr) {
                 try { weights = JSON.parse(savedStr); } catch(e) {}
             }
             
-            personalityTypes.forEach(p => {
-                const val = weights[p] !== undefined ? weights[p] : 10;
+            const accentColor = currentEditingType === 'civilian' ? 'var(--accent-green)' : 'var(--accent-blue)';
+            
+            defaultPool.forEach(p => {
+                const val = weights[p] !== undefined ? weights[p] : (currentEditingType==='civilian'?20:10);
+                const pId = p.replace(/\s+/g, '-');
                 container.innerHTML += `
                     <div style="display: flex; flex-direction: column;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                             <span style="color: var(--text-main); font-weight: bold;">${p}</span>
-                            <span id="weight-val-${p}" style="color: #ffeb3b;">${val}</span>
+                            <span id="weight-val-${pId}" style="color: ${accentColor};">${val}</span>
                         </div>
-                        <input type="range" id="slider-${p}" min="0" max="100" value="${val}" style="width: 100%; cursor: pointer;" oninput="document.getElementById('weight-val-${p}').innerText = this.value;">
+                        <input type="range" id="slider-${pId}" min="0" max="100" value="${val}" style="width: 100%; cursor: pointer;" oninput="document.getElementById('weight-val-${pId}').innerText = this.value;">
                     </div>
                 `;
             });
@@ -1072,40 +1109,63 @@ document.addEventListener('keypress', function(e) {
         }
         
         function defaultPersonalityWeights() {
-            const defaultW = {
-                'Aggressive': 10, 'Rookie': 10, 'Veteran': 10, 'Paranoid': 10, 'Sarcastic': 10,
-                'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1, 'Impatient': 10, 'Trigger-Happy': 10
-            };
-            personalityTypes.forEach(p => {
-                const slider = document.getElementById('slider-' + p);
+            let defaultPool = currentEditingType === 'civilian' 
+                ? ["Passive", "Partially Aggressive", "Aggressive", "Panicked", "Furry"]
+                : ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Impatient', 'Trigger-Happy', 'Corrupt'];
+            
+            let defaultW = {};
+            if (currentEditingType === 'civilian') {
+                defaultW = { 'Passive': 20, 'Partially Aggressive': 20, 'Aggressive': 10, 'Panicked': 20, 'Furry': 30 };
+            } else {
+                defaultW = {
+                    'Aggressive': 10, 'Rookie': 10, 'Veteran': 10, 'Paranoid': 10, 'Sarcastic': 10,
+                    'By-The-Book': 10, 'Lazy': 10, 'Reckless': 10, 'Idealistic': 10, 'Furry': 1, 'Fabulous': 1, 'Impatient': 10, 'Trigger-Happy': 10, 'Corrupt': 10
+                };
+            }
+            
+            defaultPool.forEach(p => {
+                const pId = p.replace(/\s+/g, '-');
+                const slider = document.getElementById('slider-' + pId);
                 if (slider) {
                     slider.value = defaultW[p];
-                    document.getElementById('weight-val-' + p).innerText = defaultW[p];
+                    document.getElementById('weight-val-' + pId).innerText = defaultW[p];
                 }
             });
         }
         
         function randomPersonalityWeights() {
-            personalityTypes.forEach(p => {
-                const slider = document.getElementById('slider-' + p);
+            let defaultPool = currentEditingType === 'civilian' 
+                ? ["Passive", "Partially Aggressive", "Aggressive", "Panicked", "Furry"]
+                : ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Impatient', 'Trigger-Happy', 'Corrupt'];
+                
+            defaultPool.forEach(p => {
+                const pId = p.replace(/\s+/g, '-');
+                const slider = document.getElementById('slider-' + pId);
                 if (slider) {
-                    const rand = Math.floor(Math.random() * 101);
-                    slider.value = rand;
-                    document.getElementById('weight-val-' + p).innerText = rand;
+                    const r = Math.floor(Math.random() * 50);
+                    slider.value = r;
+                    document.getElementById('weight-val-' + pId).innerText = r;
                 }
             });
         }
         
-        function applyPersonalityWeights() {
+        function savePersonalityWeights() {
+            let localKey = currentEditingType === 'civilian' ? 'mcpd_civ_personality_weights' : 'mcpd_personality_weights';
+            let defaultPool = currentEditingType === 'civilian' 
+                ? ["Passive", "Partially Aggressive", "Aggressive", "Panicked", "Furry"]
+                : ['Aggressive', 'Rookie', 'Veteran', 'Paranoid', 'Sarcastic', 'By-The-Book', 'Lazy', 'Reckless', 'Idealistic', 'Furry', 'Fabulous', 'Impatient', 'Trigger-Happy', 'Corrupt'];
+            
             let weights = {};
-            personalityTypes.forEach(p => {
-                weights[p] = parseInt(document.getElementById('slider-' + p).value) || 0;
+            defaultPool.forEach(p => {
+                const pId = p.replace(/\s+/g, '-');
+                weights[p] = parseInt(document.getElementById('slider-' + pId).value) || 0;
             });
-            localStorage.setItem('mcpd_personality_weights', JSON.stringify(weights));
-            document.getElementById('personality-editor-modal').style.display='none';
-            alert('Custom Officer Personalities saved! Future recruits will use these exact percentages.');
+            
+            localStorage.setItem(localKey, JSON.stringify(weights));
+            document.getElementById('personality-editor-modal').style.display = 'none';
+            alert((currentEditingType === 'civilian' ? 'Civilian' : 'Officer') + ' Personality Weights Saved! Will apply to newly generated units.');
         }
-    </script>
+        </script>
 
 </body>
 
