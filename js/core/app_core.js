@@ -4915,8 +4915,9 @@ dbSearchBtn.addEventListener('click', () => {
             if (foundCit.civPersonality === 'Furry') {
                 let h = 0; let seed = foundCit.name || query;
                 for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
-                let idx = Math.abs(h) % 5 + 1;
-                let ext = idx === 1 ? 'png' : 'jpg';
+                let idx = Math.abs(h) % 10 + 1;
+                let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png'};
+                let ext = exts[idx];
                 svgAvatar = `<img src="assets/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
             }
             dbResults.innerHTML = `
@@ -4969,8 +4970,9 @@ dbSearchBtn.addEventListener('click', () => {
         let h = 0; let seed = query;
         for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
         if (Math.abs(h) % 10 === 0) { // 10% chance for random queries
-            let idx = Math.abs(h) % 5 + 1;
-            let ext = idx === 1 ? 'png' : 'jpg';
+            let idx = Math.abs(h) % 10 + 1;
+            let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png'};
+            let ext = exts[idx];
             svgAvatar = `<img src="assets/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
         }
         dbResults.innerHTML = `
