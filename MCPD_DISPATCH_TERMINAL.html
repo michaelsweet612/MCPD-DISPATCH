@@ -1150,7 +1150,7 @@ document.addEventListener('keypress', function(e) {
             });
         }
         
-        function savePersonalityWeights() {
+        function applyPersonalityWeights() {
             let localKey = currentEditingType === 'civilian' ? 'mcpd_civ_personality_weights' : 'mcpd_personality_weights';
             let defaultPool = currentEditingType === 'civilian' 
                 ? ["Passive", "Partially Aggressive", "Aggressive", "Panicked", "Furry"]
