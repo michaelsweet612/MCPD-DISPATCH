@@ -8446,7 +8446,7 @@ function generateAvatarSVG(seed, size) {
                 clearInterval(autoSimulateInt);
             }
             
-            const intervalTime = rapidEventsToggle.checked ? 1000 : 10000;
+            const intervalTime = rapidEventsToggle.checked ? 100 : 10000;
             
             autoSimulateInt = setInterval(() => {
                 if (typeof simulateEvent === 'function') simulateEvent();
