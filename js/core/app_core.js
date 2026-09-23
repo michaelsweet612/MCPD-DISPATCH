@@ -7661,7 +7661,7 @@ let visibleMarkets = 10;
 })();
 
 
-function updateStockMarkets() {
+function updateStockMarkets(forceDraw = false) {
     let trustFactor = (typeof trustPercentage !== 'undefined' ? trustPercentage : 50);
     
     let updates = [];
@@ -7701,6 +7701,10 @@ function updateStockMarkets() {
         });
     }
 
+    let stockLogEl = document.getElementById('stock-log');
+    let isTabVisible = stockLogEl && stockLogEl.style.display !== 'none';
+    let shouldDrawDOM = forceDraw || isTabVisible;
+
     updates.forEach(u => {
         let market = markets[u.id];
         market.price += u.change;
@@ -7709,56 +7713,59 @@ function updateStockMarkets() {
         market.history.push(market.price);
         if (market.history.length > 40) market.history.shift();
         
-        let priceEl = document.getElementById(`${u.id}-stock-price`);
-        let trendEl = document.getElementById(`${u.id}-stock-trend`);
-        let statusEl = document.getElementById(`${u.id}-stock-status`);
-        
         let pctChange = (u.change / market.price) * 100;
         
-        if (priceEl && trendEl && statusEl) {
-            priceEl.textContent = `NTND $${market.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        // Only query DOM and draw canvas if the tab is actually visible, preventing background memory/CPU leaks
+        if (shouldDrawDOM) {
+            let priceEl = document.getElementById(`${u.id}-stock-price`);
+            let trendEl = document.getElementById(`${u.id}-stock-trend`);
+            let statusEl = document.getElementById(`${u.id}-stock-status`);
             
-            // Color Logic based on performance
-            let perfColor = market.color; // default
-            if (pctChange >= 2.0) {
-                perfColor = '#006400'; // Dark Green (Super successful / Best seller)
-            } else if (pctChange >= 0) {
-                perfColor = '#4caf50'; // Green (Going up)
-            } else if (pctChange >= -1.5) {
-                perfColor = '#ffeb3b'; // Yellow (Slightly down)
-            } else {
-                perfColor = market.badColor; // Red (Crashing)
-            }
+            if (priceEl && trendEl && statusEl) {
+                priceEl.textContent = `NTND $${market.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                // Color Logic based on performance
+                let perfColor = market.color; // default
+                if (pctChange >= 2.0) {
+                    perfColor = '#006400'; // Dark Green (Super successful / Best seller)
+                } else if (pctChange >= 0) {
+                    perfColor = '#4caf50'; // Green (Going up)
+                } else if (pctChange >= -1.5) {
+                    perfColor = '#ffeb3b'; // Yellow (Slightly down)
+                } else {
+                    perfColor = market.badColor; // Red (Crashing)
+                }
 
-            if (u.change >= 0) {
-                trendEl.textContent = `▲ +${pctChange.toFixed(2)}%`;
-                trendEl.style.color = perfColor;
-                priceEl.style.color = market.color;
-            } else {
-                trendEl.textContent = `▼ ${Math.abs(pctChange).toFixed(2)}%`;
-                trendEl.style.color = perfColor;
-                priceEl.style.color = market.color;
+                if (u.change >= 0) {
+                    trendEl.textContent = `▲ +${pctChange.toFixed(2)}%`;
+                    trendEl.style.color = perfColor;
+                    priceEl.style.color = market.color;
+                } else {
+                    trendEl.textContent = `▼ ${Math.abs(pctChange).toFixed(2)}%`;
+                    trendEl.style.color = perfColor;
+                    priceEl.style.color = market.color;
+                }
+                
+                if (Math.abs(pctChange) > 5) {
+                    statusEl.textContent = u.change > 0 ? "SURGING (BUY)" : "CRASHING (SELL)";
+                    statusEl.style.color = u.change > 0 ? market.color : market.badColor;
+                } else if (pctChange < -1.5) {
+                    statusEl.textContent = "BEARISH";
+                    statusEl.style.color = "var(--panic-orange)";
+                } else if (pctChange > 1.5) {
+                    statusEl.textContent = "BULLISH";
+                    statusEl.style.color = market.color;
+                } else {
+                    statusEl.textContent = "STABLE";
+                    statusEl.style.color = "var(--text-dim)";
+                }
             }
             
-            if (Math.abs(pctChange) > 5) {
-                statusEl.textContent = u.change > 0 ? "SURGING (BUY)" : "CRASHING (SELL)";
-                statusEl.style.color = u.change > 0 ? market.color : market.badColor;
-            } else if (pctChange < -1.5) {
-                statusEl.textContent = "BEARISH";
-                statusEl.style.color = "var(--panic-orange)";
-            } else if (pctChange > 1.5) {
-                statusEl.textContent = "BULLISH";
-                statusEl.style.color = market.color;
-            } else {
-                statusEl.textContent = "STABLE";
-                statusEl.style.color = "var(--text-dim)";
+            // Only draw chart if visible to save CPU!
+            let dash = document.getElementById(`${u.id}-stock-dashboard`);
+            if (dash && dash.style.display !== 'none') {
+                drawStockChart(u.id, pctChange);
             }
-        }
-        
-        // Only draw chart if visible to save CPU!
-        let dash = document.getElementById(`${u.id}-stock-dashboard`);
-        if (dash && dash.style.display !== 'none') {
-            drawStockChart(u.id, pctChange);
         }
     });
 }
@@ -7782,6 +7789,8 @@ setTimeout(updateStockMarkets, 1000);
             tabStock.style.color = 'var(--text-main)';
             stockLogEl.style.display = 'block';
             if (typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
+            // Instantly catch up / draw charts when tab is looked at
+            updateStockMarkets(true);
         });
         
         // Hook into hideAllTabs
