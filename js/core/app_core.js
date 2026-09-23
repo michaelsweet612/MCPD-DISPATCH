@@ -4821,7 +4821,7 @@ function updateWantedUI() {
         let listAvatar = generateAvatarSVG(target.name, 40, target.civPersonality);
         targetDiv.innerHTML = `
             <div style="display: flex; gap: 10px; align-items: center;">
-                <div style="flex-shrink: 0; width: 40px; height: 40px; border: 1px solid var(--panel-border); background: #000; border-radius: 4px; overflow: hidden;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; border: 1px solid var(--panel-border); background: #000; border-radius: 4px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
                     ${listAvatar}
                 </div>
                 <div>
@@ -8141,7 +8141,7 @@ function generateAvatarSVG(seed, size, personality) {
     let neck = pick(neckAcc);
 
     // =============== BUILD SVG ===============
-    let svg = `<svg viewBox="0 0 100 120" width="${size}" height="${Math.round(size * 1.2)}" style="border-radius: 4px; background: ${bg}; overflow: hidden;">`;
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="${size}" height="${Math.round(size * 1.2)}" style="border-radius: 4px; background: ${bg}; overflow: hidden;">`;
     
     // DEFINITIONS (Gradients/Filters)
     svg += `<defs>
