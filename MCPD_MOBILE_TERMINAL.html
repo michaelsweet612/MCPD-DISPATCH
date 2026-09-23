@@ -1290,7 +1290,13 @@ document.addEventListener('keypress', function(e) {
             
             localStorage.setItem(localKey, JSON.stringify(weights));
             document.getElementById('personality-editor-modal').style.display = 'none';
-            alert((currentEditingType === 'civilian' ? 'Civilian' : 'Officer') + ' Personality Weights Saved! Will apply to newly generated units.');
+            if (currentEditingType === 'civilian') {
+                if (typeof globalCitizens !== 'undefined') globalCitizens.forEach(c => c.civPersonality = getRandomCivPersonality());
+                if (typeof wantedTargets !== 'undefined') { wantedTargets.forEach(t => t.civPersonality = getRandomCivPersonality()); if (typeof updateWantedUI !== 'undefined') updateWantedUI(); }
+            } else {
+                if (typeof roster !== 'undefined') roster.forEach(r => r.personality = getRandomPersonality());
+            }
+            alert((currentEditingType === 'civilian' ? 'Civilian' : 'Officer') + ' Personality Weights Saved! ALL existing units have been retroactively updated.');
         }
         </script>
 

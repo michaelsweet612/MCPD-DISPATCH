@@ -1898,7 +1898,8 @@ async function simulateChat() {
                             level: "MEDIUM",
                             bounty: Math.floor(Math.random() * 20000) + 5000,
                             address: "Unknown",
-                            implants: randCit.trait
+                            implants: randCit.trait,
+                            civPersonality: randCit.civPersonality
                         });
                         if (typeof updateWantedUI !== 'undefined') updateWantedUI();
                         
@@ -3049,7 +3050,9 @@ function simulateEvent(specificCrime = null) {
                 level: "HIGH",
                 bounty: Math.floor(Math.random() * 50000) + 10000,
                 address: "Unknown",
-                implants: suspectCit.trait
+                implants: suspectCit.trait,
+                civPersonality: suspectCit.civPersonality,
+                civPersonality: suspectCit.civPersonality
             });
             if (typeof updateWantedUI !== 'undefined') updateWantedUI();
         } else {
@@ -4156,7 +4159,8 @@ function generateCitizens() {
                 level: "HIGH",
                 bounty: Math.floor(Math.random() * 50000) + 10000,
                 address: cit.address,
-                implants: cit.trait
+                implants: cit.trait,
+                civPersonality: cit.civPersonality
             });
         }
     }
@@ -4399,7 +4403,8 @@ function executeWarrant() {
             level: "HIGH",
             bounty: Math.floor(Math.random() * 50000) + 10000,
             address: cit.address,
-            implants: cit.trait
+            implants: cit.trait,
+            civPersonality: cit.civPersonality
         });
         if(typeof updateWantedUI !== 'undefined') updateWantedUI();
         renderCitizensList();
@@ -4522,7 +4527,8 @@ function updateCitizenStatus(newStatus) {
             level: "HIGH",
             bounty: Math.floor(Math.random() * 50000) + 10000,
             address: "Unknown",
-            implants: cit.trait
+            implants: cit.trait,
+            civPersonality: cit.civPersonality
         };
         wantedTargets.push(wantedData);
         updateWantedUI();
@@ -4875,7 +4881,9 @@ function generateRandomWantedTarget() {
         level: Math.random() > 0.5 ? 'HIGH' : 'MEDIUM',
         bounty: bounty,
         address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
-        implants: Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected'
+        implants: Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected',
+            civPersonality: getRandomCivPersonality(),
+        civPersonality: getRandomCivPersonality()
     });
     
     // Keep list manageable, remove oldest random target if we have more than 6
@@ -4898,7 +4906,9 @@ function initWantedTargets() {
             level: Math.random() > 0.5 ? 'HIGH' : 'MEDIUM',
             bounty: bounty,
             address: `Sector ${Math.floor(Math.random() * 20 + 1)}, Block ${Math.floor(Math.random() * 9 + 1)}`,
-            implants: Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected'
+            implants: Math.random() > 0.5 ? 'Optical camo, Subdermal plating' : 'None detected',
+            civPersonality: getRandomCivPersonality(),
+        civPersonality: getRandomCivPersonality()
         });
     }
     updateWantedUI();
@@ -5708,7 +5718,9 @@ function simulateEvent(specificCrime = null) {
                 level: "HIGH",
                 bounty: Math.floor(Math.random() * 50000) + 10000,
                 address: "Unknown",
-                implants: suspectCit.trait
+                implants: suspectCit.trait,
+                civPersonality: suspectCit.civPersonality,
+                civPersonality: suspectCit.civPersonality
             });
             if (typeof updateWantedUI !== 'undefined') updateWantedUI();
         } else {
