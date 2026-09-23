@@ -8377,3 +8377,30 @@ function generateAvatarSVG(seed, size) {
 }
 
 
+
+
+// === DYNAMIC CRIME POINTS MODIFICATION ===
+(function() {
+    if (typeof crimeReports !== 'undefined') {
+        // 1. Add Terrorism calls
+        crimeReports.push(
+            { title: "10-100: DOMESTIC TERRORISM", priority: "high", location: "Sector 1, City Center", desc: "Suspect is attempting to detonate a large cyber-explosive near the municipal water supply.", group: "Terrorists" },
+            { title: "10-100: CYBER TERRORISM", priority: "high", location: "Sector 2, Financial District", desc: "A group of hackers is threatening to overload the city's power grid unless demands are met.", group: "Terrorists" },
+            { title: "10-100: BIO-TERRORISM", priority: "high", location: "Sector 4, Bio-Dome", desc: "Individual threatening to release weaponized neuro-toxins into the ventilation system.", group: "Terrorists" },
+            { title: "10-100: ACT OF TERROR", priority: "high", location: "Grand TBMG Hotel", desc: "Hostage situation with suspected terrorists heavily armed and threatening the Mayor.", group: "Terrorists" }
+        );
+
+        // 2. Adjust points
+        crimeReports.forEach(c => {
+            if (c.title.toLowerCase().includes('terror')) {
+                c.points = 999999999;
+            } else if (c.priority === 'high') {
+                // 5k to 10k points
+                c.points = Math.floor(Math.random() * 5001) + 5000;
+            } else {
+                // Mandatory 1k points
+                c.points = 1000;
+            }
+        });
+    }
+})();
