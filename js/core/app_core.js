@@ -6028,8 +6028,18 @@ function triggerBribeEvent() {
     }
 
     const bribeToggle = document.getElementById('bribe-auth-toggle');
+    const corruptToggle = document.getElementById('corruption-toggle');
+    const isCorrupt = corruptToggle ? corruptToggle.checked : true;
     const bribeAmount = Math.floor(Math.random() * 4000) + 1000;
+    currentPendingBribeAmount = bribeAmount;
     
+    if (!isCorrupt) {
+        if (typeof addChatMessage !== 'undefined') {
+            addChatMessage(bribeAuthOfficer, `Dispatch, suspect attempted to offer a $${bribeAmount} bribe. They are in cuffs. Routine arrest proceeding.`, 'serious', false);
+        }
+        return;
+    }
+
     if (bribeToggle && bribeToggle.checked) {
         // Toggle is ON - Request permission
         bribeAuthActive = true;
@@ -6058,7 +6068,7 @@ function triggerBribeEvent() {
         }
     } else {
         // Toggle is OFF - Officers automatically decide
-        if (Math.random() < 0.6) { // 60% chance they take it automatically
+        if (Math.random() < 0.30) { // 30% chance they take it automatically
             totalBribesAccepted++;
             totalBribeMoney += currentPendingBribeAmount;
             updateBribesUI();
