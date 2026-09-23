@@ -4019,7 +4019,7 @@ function generateCitizens() {
         "MULTIPLE WARRANTS: Anti-Civil Behavior, Murder.",
         "KNOWN SYNDICATE ENFORCER. High-risk."
     ];
-    const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked"];
+    const civPersonalities = ["Passive", "Passive", "Partially Aggressive", "Aggressive", "Panicked", "Panicked", "Furry"];
 
     for (let i = 0; i < 5000; i++) {
         const first = getRandomItem(firstNames);
@@ -4425,6 +4425,26 @@ function executeWarrant() {
                     msgType = "worried";
                 } else {
                     reportMsg = getRandomItem([`Suspect got a little rough, but I overpowered them. Target secured.`, `Target put up a fight, but a quick shock from the baton settled them down. In custody.`, `Suspect resisted arrest, but I pinned them. Applying cuffs now.`, `They didn't want to go quietly. Bruised my knuckles, but they are secured.`]);
+                    finalStatus = 'Arrested';
+                }
+            }
+            else if (cit.civPersonality === 'Furry') {
+                if (!isROEEnabled) {
+                    reportMsg = getRandomItem([
+                        `Suspect started uwu-ing at me. I couldn't take it. Target neutralized.`,
+                        `Target tried to nuzzle my armor. Lethal force authorized and applied.`,
+                        `Suspect barked at me and got on all fours. I put them down permanently.`,
+                        `I'm not dealing with this today. Suspect is deceased. Call animal control.`
+                    ]);
+                    finalStatus = 'Deceased';
+                    msgType = "worried";
+                } else {
+                    reportMsg = getRandomItem([
+                        `Suspect tried to hug me, but I got the cuffs on. In custody.`,
+                        `Target was very compliant, kept wagging an imaginary tail. Arrested.`,
+                        `Suspect apprehended. Had to confiscate a very suspicious fursuit. Code 4.`,
+                        `Got them in the back of the cruiser. They keep whimpering. It's weird, but we're 10-8.`
+                    ]);
                     finalStatus = 'Arrested';
                 }
             }
@@ -4892,6 +4912,13 @@ dbSearchBtn.addEventListener('click', () => {
             let vehSummary = foundCit.vehicle ? `${foundCit.vehicle.brand} ${foundCit.vehicle.model} (Plate: ${foundCit.vehicle.plate})<br>Insurance: ${foundCit.vehicle.insuranceProvider} — ${foundCit.vehicle.insuranceBadge}` : "No registered vehicle";
 
             let svgAvatar = generateAvatarSVG(foundCit.name || query);
+            if (foundCit.civPersonality === 'Furry') {
+                let h = 0; let seed = foundCit.name || query;
+                for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
+                let idx = Math.abs(h) % 5 + 1;
+                let ext = idx === 1 ? 'png' : 'jpg';
+                svgAvatar = `<img src="assets/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
+            }
             dbResults.innerHTML = `
                 <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;">
                     <strong style="color: var(--accent-blue);">CITIZEN RECORD FOUND:</strong>
@@ -4939,6 +4966,13 @@ dbSearchBtn.addEventListener('click', () => {
         const fallbackInsBadge = fallbackInsExp ? `<span style="color:var(--panic-red); font-weight:bold;">EXPIRED (Auto-Lapsed)</span>` : `<span style="color:var(--accent-green); font-weight:bold;">VALID</span>`;
 
         let svgAvatar = generateAvatarSVG(query);
+        let h = 0; let seed = query;
+        for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
+        if (Math.abs(h) % 10 === 0) { // 10% chance for random queries
+            let idx = Math.abs(h) % 5 + 1;
+            let ext = idx === 1 ? 'png' : 'jpg';
+            svgAvatar = `<img src="assets/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
+        }
         dbResults.innerHTML = `
             <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">
                 <strong style="color: var(--accent-blue);">CITIZEN RECORD RETRIEVED (TRANSIENT):</strong>
