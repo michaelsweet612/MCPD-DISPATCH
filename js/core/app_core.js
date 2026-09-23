@@ -8404,3 +8404,27 @@ function generateAvatarSVG(seed, size) {
         });
     }
 })();
+
+
+// === RAPID EVENTS TOGGLE ===
+(function() {
+    const rapidEventsToggle = document.getElementById('rapid-events-toggle');
+    const autoEventsCheckbox = document.getElementById('auto-events');
+    
+    if (rapidEventsToggle && autoEventsCheckbox) {
+        rapidEventsToggle.addEventListener('change', () => {
+            if (typeof autoSimulateInt !== 'undefined') {
+                clearInterval(autoSimulateInt);
+            }
+            
+            const intervalTime = rapidEventsToggle.checked ? 1000 : 10000;
+            
+            autoSimulateInt = setInterval(() => {
+                if (typeof simulateEvent === 'function') simulateEvent();
+                if (Math.random() < 0.01 && autoEventsCheckbox.checked && typeof activePanics !== 'undefined' && activePanics.size < 3) {
+                    if (typeof triggerPanic === 'function') triggerPanic();
+                }
+            }, intervalTime);
+        });
+    }
+})();
