@@ -4737,6 +4737,7 @@ const resolutionLines = [
     "Threat is over. I got lucky, just a few flesh wounds."
 ];
 
+let wantedDisplayed = 10;
 const wantedNames = ["Ghost", "Fixer", "Viper", "Deadeye", "Cipher", "Splicer", "Ronin", "Neon", "Shadow", "Razer", "Glitch", "Krueger", "Vanguard", "Zero", "Echo"];
 
 function updateWantedUI() {
@@ -4773,7 +4774,9 @@ function updateWantedUI() {
     wantedListEl.appendChild(freemanDiv);
 
     // Render the dynamic wanted targets (both randomly generated and manually added)
-    wantedTargets.forEach(target => {
+    let displayLimit = Math.min(wantedDisplayed, wantedTargets.length);
+    for (let i = 0; i < displayLimit; i++) {
+        let target = wantedTargets[i];
         const targetDiv = document.createElement('div');
         let color = target.level === 'HIGH' ? 'var(--panic-red)' : 'var(--panic-orange)';
         
@@ -4813,7 +4816,18 @@ function updateWantedUI() {
             `);
         });
         wantedListEl.appendChild(targetDiv);
-    });
+    }
+    
+    if (displayLimit < wantedTargets.length) {
+        const loadBtn = document.createElement('button');
+        loadBtn.textContent = `LOAD MORE TARGETS (${displayLimit} / ${wantedTargets.length})`;
+        loadBtn.style.cssText = "width: 100%; padding: 10px; background: transparent; border: 1px solid var(--panic-red); color: var(--panic-red); cursor: pointer; margin-top: 10px; border-radius: 4px; font-weight: bold;";
+        loadBtn.onclick = () => {
+            wantedDisplayed += 10;
+            updateWantedUI();
+        };
+        wantedListEl.appendChild(loadBtn);
+    }
 }
 
 function generateRandomWantedTarget() {
