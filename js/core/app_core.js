@@ -5020,8 +5020,8 @@ dbSearchBtn.addEventListener('click', () => {
         let h = 0; let seed = query;
         for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
         if (Math.abs(h) % 10 < 3) { // 30% chance for random queries
-            let idx = Math.abs(h) % 29 + 1;
-        let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png', 11:'png', 12:'png', 13:'png', 14:'png', 15:'png', 16:'png', 17:'jpg', 18:'png', 19:'png', 20:'png', 21:'png', 22:'png', 23:'png', 24:'png', 25:'png', 26:'png', 27:'png', 28:'png', 29:'png'};
+            let idx = Math.abs(h) % 34 + 1;
+        let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png', 11:'png', 12:'png', 13:'png', 14:'png', 15:'png', 16:'png', 17:'jpg', 18:'png', 19:'png', 20:'png', 21:'png', 22:'png', 23:'png', 24:'png', 25:'png', 26:'png', 27:'png', 28:'png', 29:'png', 30:'jpg', 31:'jpg', 32:'png', 33:'png', 34:'png'};
             let ext = exts[idx];
             svgAvatar = `<img src="assets/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
         }
@@ -8048,8 +8048,8 @@ function generateAvatarSVG(seed, size, personality) {
         let h = 0;
         let seedStr = seed || "random";
         for (let i = 0; i < seedStr.length; i++) h = seedStr.charCodeAt(i) + ((h << 5) - h);
-        let idx = Math.abs(h) % 29 + 1;
-        let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png', 11:'png', 12:'png', 13:'png', 14:'png', 15:'png', 16:'png', 17:'jpg', 18:'png', 19:'png', 20:'png', 21:'png', 22:'png', 23:'png', 24:'png', 25:'png', 26:'png', 27:'png', 28:'png', 29:'png'};
+        let idx = Math.abs(h) % 34 + 1;
+        let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png', 11:'png', 12:'png', 13:'png', 14:'png', 15:'png', 16:'png', 17:'jpg', 18:'png', 19:'png', 20:'png', 21:'png', 22:'png', 23:'png', 24:'png', 25:'png', 26:'png', 27:'png', 28:'png', 29:'png', 30:'jpg', 31:'jpg', 32:'png', 33:'png', 34:'png'};
         let ext = exts[idx];
         return `<img src="assets/furry/furry${idx}.${ext}" width="${size}" height="${size*1.2}" style="object-fit: cover; border-radius: 4px;" />`;
     }
