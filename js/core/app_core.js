@@ -1900,7 +1900,15 @@ async function simulateChat() {
     let sender = getRandomItem(activeCallsigns);
 
     
-    if (Math.random() < 0.02) {
+    
+    // 5% chance for realistic debate
+    if (Math.random() < 0.05) {
+        if (typeof triggerRealisticDebate === 'function') {
+            triggerRealisticDebate(sender);
+            return;
+        }
+    }
+if (Math.random() < 0.02) {
         triggerVoreDebateEvent();
         return;
     }
