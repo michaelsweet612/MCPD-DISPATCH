@@ -275,7 +275,7 @@ if (tabUnitStatus && unitStatusLogEl) {
         if (tabDocuments) { tabDocuments.classList.remove('active'); tabDocuments.style.color = 'var(--text-dim)'; }
         if (tabDatabase) { tabDatabase.classList.remove('active'); tabDatabase.style.color = 'var(--text-dim)'; }
         if (tabWanted) { tabWanted.classList.remove('active'); tabWanted.style.color = 'var(--text-dim)';
-    if (tabItSupport) { tabItSupport.classList.remove(\'active\'); tabItSupport.style.color = \'var(--text-dim)\'; } }
+    if (tabItSupport) { tabItSupport.classList.remove('active'); tabItSupport.style.color = 'var(--text-dim)'; } }
         if (tabCitizens) { tabCitizens.classList.remove('active'); tabCitizens.style.color = 'var(--text-dim)'; }
         if (tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
         
@@ -3328,7 +3328,7 @@ function hideAllTabs() {
     tabDatabase.style.color = 'var(--text-dim)';
     tabWanted.classList.remove('active');
     tabWanted.style.color = 'var(--text-dim)';
-    if (tabItSupport) { tabItSupport.classList.remove(\'active\'); tabItSupport.style.color = \'var(--text-dim)\'; }
+    if (tabItSupport) { tabItSupport.classList.remove('active'); tabItSupport.style.color = 'var(--text-dim)'; }
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
     if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
@@ -3342,7 +3342,7 @@ function hideAllTabs() {
     documentLogEl.style.display = 'none';
     databaseLogEl.style.display = 'none';
     wantedLogEl.style.display = 'none';
-    if (itSupportLogEl) itSupportLogEl.style.display = \'none\';
+    if (itSupportLogEl) itSupportLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
     if(typeof recruitmentLogEl !== 'undefined' && recruitmentLogEl) recruitmentLogEl.style.display = 'none';
 }
