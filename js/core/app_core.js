@@ -8444,7 +8444,8 @@ function generateAvatarSVG(seed, size, personality) {
             { title: "10-100: DOMESTIC TERRORISM", priority: "high", location: "Sector 1, City Center", desc: "Suspect is attempting to detonate a large cyber-explosive near the municipal water supply.", group: "Terrorists" },
             { title: "10-100: CYBER TERRORISM", priority: "high", location: "Sector 2, Financial District", desc: "A group of hackers is threatening to overload the city's power grid unless demands are met.", group: "Terrorists" },
             { title: "10-100: BIO-TERRORISM", priority: "high", location: "Sector 4, Bio-Dome", desc: "Individual threatening to release weaponized neuro-toxins into the ventilation system.", group: "Terrorists" },
-            { title: "10-100: ACT OF TERROR", priority: "high", location: "Grand TBMG Hotel", desc: "Hostage situation with suspected terrorists heavily armed and threatening the Mayor.", group: "Terrorists" }
+            { title: "10-100: ACT OF TERROR", priority: "high", location: "Grand TBMG Hotel", desc: "Hostage situation with suspected terrorists heavily armed and threatening the Mayor.", group: "Terrorists" },
+            { title: "10-100: ECO-TERRORISM", priority: "high", location: "Sector 4, Bio-Dome", desc: "The suspect is with terrorism. It's time to engage the suspect. This is considered a call.", group: "Terrorists", points: 999999999 }
         );
 
         // 2. Adjust points
