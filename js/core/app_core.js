@@ -3029,7 +3029,7 @@ function simulateEvent(specificCrime = null) {
 
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
-        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+15 POINTS]</span>`;
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD)}</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
@@ -3596,7 +3596,7 @@ function triggerPanic(unitName = null, force = false) {
         const backupUnit = getRandomItem(getActiveCallsigns());
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
-        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${backupUnit}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4 Dispatch, I am engaging the 10-99 and arriving on scene! [+500 POINTS]</span>`;
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${backupUnit}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_PANIC)}</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         if (typeof awardOfficerPoints !== 'undefined' && typeof backupUnit !== 'undefined') { awardOfficerPoints(backupUnit, 500); } else { addPoints(500); }
@@ -5675,7 +5675,7 @@ function simulateEvent(specificCrime = null) {
 
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
-        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">10-4, en route to Sector ${sector} to engage the call. [+${crime.points || 15} STATION POINTS]</span>`;
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD).replace("15 POINTS", (crime.points || 15) + " STATION POINTS")}</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
