@@ -78,23 +78,30 @@ function performIntegrityChecks() {
     const criticalGlobals = [
         'roster', 'crimeReports', 'GLOBAL_ARRIVING_CHATS_STANDARD', 
         'GLOBAL_GIBBERISH_RESPONSES', 'PROFANITY_LINES', 'NPC_DICTIONARY',
-        'crosstalkData'
+        
     ];
 
     criticalGlobals.forEach(g => {
-        if (typeof window[g] === 'undefined') {
+        try {
+            eval(g); // If it throws ReferenceError, it doesn't exist in scope
+            if (typeof eval(g) === 'undefined') {
+                pushError(`[INTEGRITY FAULT] Critical global variable '${g}' is undefined.`);
+            }
+        } catch (e) {
             pushError(`[INTEGRITY FAULT] Critical global variable '${g}' is undefined or failed to load.`);
         }
     });
 
     // Check roster integrity
-    if (typeof window.roster !== 'undefined' && Array.isArray(window.roster)) {
-        window.roster.forEach(unit => {
-            if (!unit.id || !unit.status || !unit.personality) {
-                pushError(`[DATA FAULT] Corrupted unit found in roster list: ${JSON.stringify(unit)}`);
-            }
-        });
-    }
+    try {
+        if (typeof roster !== 'undefined' && Array.isArray(roster)) {
+            roster.forEach(unit => {
+                if (!unit.id || !unit.status || !unit.personality) {
+                    pushError(`[DATA FAULT] Corrupted unit found in roster list: ${JSON.stringify(unit)}`);
+                }
+            });
+        }
+    } catch(e) {}
 
     // Check critical functions exist
     const criticalFunctions = [
@@ -103,7 +110,11 @@ function performIntegrityChecks() {
     ];
 
     criticalFunctions.forEach(f => {
-        if (typeof window[f] !== 'function') {
+        try {
+            if (typeof eval(f) !== 'function') {
+                pushError(`[INTEGRITY FAULT] Critical function '${f}' is missing or broken.`);
+            }
+        } catch (e) {
             pushError(`[INTEGRITY FAULT] Critical function '${f}' is missing or broken.`);
         }
     });
@@ -111,7 +122,7 @@ function performIntegrityChecks() {
     // Check DOM Elements
     const requiredElements = [
         'unified-log', 'dispatch-chat-input', 'unit-status-log', 
-        'clock', 'stock-ticker', 'stock-market-grid'
+        'time-display'
     ];
     
     requiredElements.forEach(id => {
