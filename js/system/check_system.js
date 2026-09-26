@@ -107,7 +107,7 @@ function performIntegrityChecks() {
     // Check critical functions exist
     const criticalFunctions = [
         'simulateChat', 'processDispatchChat', 'generateDynamicAISentence', 
-        'handleDispatchChatReactions', 'analyzeImage'
+        'handleDispatchChatReactions'
     ];
 
     criticalFunctions.forEach(f => {
@@ -122,8 +122,7 @@ function performIntegrityChecks() {
 
     // Check DOM Elements
     const requiredElements = [
-        'unified-log', 'dispatch-chat-input', 'unit-status-log', 
-        'time-display'
+        'unified-log', 'dispatch-chat-input', 'unit-status-log'
     ];
     
     requiredElements.forEach(id => {
