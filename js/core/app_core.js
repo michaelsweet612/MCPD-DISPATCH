@@ -1904,6 +1904,15 @@ async function simulateChat() {
     
     
     
+    
+    // 5% chance to trigger unhinged memes and IP leaks
+    if (Math.random() < 0.05) {
+        if (typeof triggerMemeEvent === 'function') {
+            triggerMemeEvent();
+            return;
+        }
+    }
+
     // 5% chance to trigger an officer complaining about the department and getting crushed by AI
     if (Math.random() < 0.05) {
         if (typeof triggerDepartmentComplaint === 'function') {
