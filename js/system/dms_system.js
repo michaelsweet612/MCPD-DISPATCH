@@ -63,7 +63,7 @@ function initDms() {
     // Randomly generate incoming DMs
     setInterval(() => {
         if (Math.random() < 0.15 && window.roster && window.roster.length > 0) { // 15% chance every 45s
-            const activeUnits = window.roster.filter(u => u.status !== 'OFF-DUTY' && u.status !== 'KIA');
+            const activeUnits = window.roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
             if (activeUnits.length > 0) {
                 const randomUnit = activeUnits[Math.floor(Math.random() * activeUnits.length)].id;
                 receiveDm(randomUnit, incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)]);
@@ -81,7 +81,7 @@ function renderOfficerList() {
         return;
     }
 
-    const activeUnits = window.roster.filter(u => u.status !== 'OFF-DUTY' && u.status !== 'KIA');
+    const activeUnits = window.roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
     
     activeUnits.forEach(unit => {
         const div = document.createElement('div');

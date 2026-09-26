@@ -268,31 +268,10 @@ const unitStatusLogEl = document.getElementById('unit-status-log');
 
 if (tabUnitStatus && unitStatusLogEl) {
     tabUnitStatus.addEventListener('click', () => {
+        if(typeof hideAllTabs === 'function') hideAllTabs();
         tabUnitStatus.classList.add('active');
-        tabUnitStatus.style.color = 'var(--accent-blue)';
-        
-        if (tabUnified) { tabUnified.classList.remove('active'); tabUnified.style.color = 'var(--text-dim)'; }
-        if (tabDocuments) { tabDocuments.classList.remove('active'); tabDocuments.style.color = 'var(--text-dim)'; }
-        if (tabDatabase) { tabDatabase.classList.remove('active'); tabDatabase.style.color = 'var(--text-dim)'; }
-        if (tabWanted) { tabWanted.classList.remove('active'); tabWanted.style.color = 'var(--text-dim)';
-    if (tabItSupport) { tabItSupport.classList.remove('active'); tabItSupport.style.color = 'var(--text-dim)'; } }
-        if (tabCitizens) { tabCitizens.classList.remove('active'); tabCitizens.style.color = 'var(--text-dim)'; }
-        if (tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
-        
+        tabUnitStatus.style.color = 'var(--text-main)';
         unitStatusLogEl.style.display = 'block';
-        if (unifiedLogEl) unifiedLogEl.style.display = 'none';
-        if (documentLogEl) documentLogEl.style.display = 'none';
-        if (document.getElementById('database-view')) document.getElementById('database-view').style.display = 'none';
-        if (document.getElementById('wanted-view')) document.getElementById('wanted-view').style.display = 'none';
-        if (document.getElementById('citizens-list-view')) document.getElementById('citizens-list-view').style.display = 'none';
-        if (recruitmentLogEl) recruitmentLogEl.style.display = 'none';
-        if (chatInputArea) chatInputArea.style.display = 'none';
-          
-          if (document.getElementById('tab-stock')) { document.getElementById('tab-stock').classList.remove('active'); document.getElementById('tab-stock').style.color = 'var(--text-dim)'; }
-          if (document.getElementById('stock-log')) document.getElementById('stock-log').style.display = 'none';
-          if (document.getElementById('tab-map')) { document.getElementById('tab-map').classList.remove('active'); document.getElementById('tab-map').style.color = 'var(--text-dim)'; }
-          if (document.getElementById('map-log')) document.getElementById('map-log').style.display = 'none';
-        
         if(typeof renderUnitStatus !== 'undefined') renderUnitStatus();
     });
 }
