@@ -1,4 +1,5 @@
-// IMAGE ANALYZER (NO AI)
+
+// IMAGE ANALYZER (NO AI) - V2 (ENHANCED REALISM & EXPANDED CHATTER)
 // Simulates visual detection by parsing image metadata and generating procedural officer reactions.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -68,176 +69,199 @@ function simulateImageReaction(rawFileName, file) {
     const reactor = active[Math.floor(Math.random() * active.length)];
     const nameStr = rawFileName.toLowerCase();
     
-    const fileSizeKB = file ? Math.floor(file.size / 1024) : Math.floor(Math.random() * 5000);
-    
-    const isInappropriate = /nsfw|nude|porn|sexy|boob|xxx|onlyfans|lewd|naked/.test(nameStr);
-    const isAnimal = /dog|cat|pet|bird|kitten|puppy|fish|hamster|parrot|snake|lizard|bunny|rabbit/.test(nameStr);
-    const isSuspect = /suspect|wanted|criminal|perp|fugitive|target|bolo/.test(nameStr);
-    const isWeapon = /gun|weapon|knife|blade|rifle|pistol|shotgun|bomb|explosive|grenade|sword/.test(nameStr);
-    const isVehicle = /car|truck|van|vehicle|motorcycle|bike|sedan|suv|pickup|hovercraft/.test(nameStr);
-    const isCrime = /crime|scene|evidence|blood|murder|assault|robbery|theft|drugs|contraband/.test(nameStr);
-    const isFood = /food|pizza|burger|taco|noodle|sandwich|coffee|donut|doughnut|lunch|dinner|breakfast/.test(nameStr);
+    const isInappropriate = /nsfw|nude|porn|sexy|boob|xxx|onlyfans|lewd|naked|bikini|shirtless/.test(nameStr);
+    const isAnimal = /dog|cat|pet|bird|kitten|puppy|fish|hamster|parrot|snake|lizard|bunny|rabbit|bear|wolf|fox|furry|fursona/.test(nameStr);
+    const isSuspect = /suspect|wanted|criminal|perp|fugitive|target|bolo|mugshot/.test(nameStr);
+    const isWeapon = /gun|weapon|knife|blade|rifle|pistol|shotgun|bomb|explosive|grenade|sword|ammo/.test(nameStr);
+    const isVehicle = /car|truck|van|vehicle|motorcycle|bike|sedan|suv|pickup|hovercraft|cruiser/.test(nameStr);
+    const isCrime = /crime|scene|evidence|blood|murder|assault|robbery|theft|drugs|contraband|stash/.test(nameStr);
+    const isFood = /food|pizza|burger|taco|noodle|sandwich|coffee|donut|doughnut|lunch|dinner|breakfast|meal/.test(nameStr);
     const isSelfie = /selfie|me|self|face|portrait|headshot|photo of me/.test(nameStr);
-    const isLandscape = /city|skyline|building|street|road|bridge|sunset|sunrise|sky|mountain|ocean|beach|park/.test(nameStr);
-    const isMeme = /meme|funny|lol|lmao|bruh|shitpost|cursed/.test(nameStr);
-    const isScreenshot = /screenshot|screen|desktop|monitor|phone|chat|text/.test(nameStr);
+    const isLandscape = /city|skyline|building|street|road|bridge|sunset|sunrise|sky|mountain|ocean|beach|park|view/.test(nameStr);
+    const isMeme = /meme|funny|lol|lmao|bruh|shitpost|cursed|joke|pepe|troll/.test(nameStr);
+    const isScreenshot = /screenshot|screen|desktop|monitor|phone|chat|text|log/.test(nameStr);
     const isPerson = /person|man|woman|guy|girl|people|crowd|group|dude|kid|child|baby/.test(nameStr);
-    const isMap = /map|location|gps|coordinates|sector|grid|satellite/.test(nameStr);
-    const isDark = /dark|night|shadow|black|creepy|scary|horror/.test(nameStr);
+    const isMap = /map|location|gps|coordinates|sector|grid|satellite|layout/.test(nameStr);
+    const isDark = /dark|night|shadow|black|creepy|scary|horror|alley/.test(nameStr);
     
     let replies = [];
     
     if (isInappropriate) {
         replies = [
-            "Hey we're trying to do our job can you stop sending us a adult material This is not a group chat this is an official job where people's life all depend on you",
-            /* INAPP_ARRAY */
-        ];
-    } else if (isWeapon) {
-        replies = [
-            "10-4, weapon identified in image. Running ballistic profile against the MCPD weapons database now.",
-            "Is that a modified Kessler-9? Those are banned in 47 sectors. Flagging for weapons enforcement.",
-            "That's a serious piece of hardware. Where was this confiscated? I want one.",
-            "Dispatch, that weapon matches a stolen firearms report from last week. Good find.",
-            "I've seen that exact model in the black market sector. Someone's running guns again.",
-            "10-4, image logged. That firearm has been tagged as Evidence Item #" + Math.floor(1000 + Math.random() * 9000) + ".",
-            "That thing could punch through a hover-vehicle's armor plating. Where'd you get this image?",
-            "Cross-referencing against known arms dealers in Sectors %RANDOM_SECTOR% through %RANDOM_SECTOR%.",
+            "Dispatch, what the hell is this? This is a secure tactical channel.",
+            "I'm reporting this to Internal Affairs right now. Completely unacceptable.",
+            "Is your terminal hacked, Dispatch? Because if not, you're fired.",
+            "Wow. Just wow. Keep that garbage off the radio.",
+            "10-4, evidence logged. Wait... this isn't evidence. What are you doing?",
+            "Dispatch, my partner was looking over my shoulder! Are you kidding me?",
+            "I'm clearing my terminal cache immediately.",
+            "Someone come check on Dispatch, they're losing it.",
+            "This violates about seven different corporate IT policies.",
+            "Dispatch, please keep your personal files off the network.",
+            "I did not need to see that during my lunch break."
         ];
     } else if (isSuspect) {
         replies = [
-            "10-4, running facial recognition against the TBMG civilian database. Stand by for results.",
-            "I think I've seen this person before. They match a BOLO from Sector %RANDOM_SECTOR%.",
-            "Dispatching image to all active units. If anyone spots this individual, detain on sight.",
-            "Facial scan complete. 73% match to a wanted fugitive. Sending patrol to last known location.",
-            "That face is familiar. Pretty sure I arrested them last week. They must've posted bail already.",
-            "Running image through the criminal database... 4,231 partial matches found. This city is messed up.",
-            "10-4, suspect image received. Broadcasting BOLO to all " + active.length + " active units now.",
-            "I recognize this person. They owe me money from a card game. Also they're probably a criminal.",
+            "10-4 Dispatch. Pinging suspect facial recognition data now.",
+            "Copy that. BOLO is active. We have eyes peeled in all sectors.",
+            "That's the guy from the convenience store robbery last week.",
+            "Got it. Loading suspect profile into the cruiser HUD.",
+            "We have a 98% facial match on file. Target is considered armed and dangerous.",
+            "I've arrested him before. He usually hangs around Sector 4.",
+            "Suspect acquired. Units be advised, he's known to run on foot.",
+            "10-4. I'll pass this image to the anti-gang unit.",
+            "Does he have any known gang affiliations? Running the tattoos through the database.",
+            "Copy that. Distributing suspect photo to all patrol units in the grid.",
+            "Wait, I just saw this guy ten minutes ago near the transit hub!"
         ];
-    } else if (isVehicle) {
+    } else if (isWeapon) {
         replies = [
-            "Running plates through NCIC... Stand by. That vehicle matches a stolen report from Precinct " + Math.floor(1 + Math.random() * 47) + ".",
-            "10-4, vehicle image received. That model is frequently used in street racing in the lower sectors.",
-            "I just saw that exact vehicle fleeing Sector %RANDOM_SECTOR% about 20 minutes ago!",
-            "Nice ride. Too bad it's probably stolen. Flagging for traffic enforcement.",
-            "Vehicle scan complete. Registration expired " + Math.floor(1 + Math.random() * 36) + " months ago. Insurance: VOID.",
-            "That's a modified hover-vehicle. Those aftermarket thrusters are illegal in 12 districts.",
-            "Broadcasting vehicle description to all patrol units. If you see it, pull it over immediately.",
-            "I've been chasing a vehicle matching that description for 3 weeks. Where was this taken?!",
+            "10-4. Running serial numbers through the armory database.",
+            "That's military-grade hardware. Where did a street thug get that?",
+            "Copy. Weapons confirmed. All units, upgrade threat level to Lethal.",
+            "That looks like a modified plasma rifle. Highly illegal.",
+            "10-4, evidence logged. Secure the weapon before the media gets here.",
+            "Make sure you bag that properly. The serial is scratched off.",
+            "I haven't seen a weapon like that since the corporate wars.",
+            "Dispatch, verify if that weapon type is registered to any local security firms.",
+            "That's heavy ordinance. We might need SWAT for this one.",
+            "Copy. Weapon identified. Looks jammed, but treat it as loaded."
         ];
     } else if (isCrime) {
         replies = [
-            "10-4, crime scene image logged. Forensic drones being dispatched to the area now.",
-            "That's a lot of evidence in one photo. Tagging everything visible for the case file.",
-            "Dispatch, this image shows clear signs of forced entry. Sending a unit to secure the scene.",
-            "Cross-referencing this scene with open cases in the district. Multiple matches found.",
-            "I've been to that exact location before. Last time there were 3 bodies. What's there now?",
-            "Evidence collection team has been notified. ETA 8 minutes to the scene.",
-            "That image just became Exhibit A in case MC-" + Math.floor(100000000 + Math.random() * 899999999) + ".",
-            "Gruesome. I've seen worse though. Last Tuesday was... never mind. Logging the image.",
+            "10-4 Dispatch. Crime scene photos logged into the central database.",
+            "That's a mess. Send the forensic drones to process the area.",
+            "Copy that. Secure the perimeter and don't let anyone touch the evidence.",
+            "Looks like a professional hit. No casings left behind.",
+            "10-4. I'm seeing multiple points of entry. This was coordinated.",
+            "Make sure the coroner gets a copy of these photos.",
+            "Dispatch, check if there are any CCTV cameras covering that exact angle.",
+            "That's gruesome. Remind me why I signed up for this job again?",
+            "Evidence uploaded. The detectives are going to have a field day with this.",
+            "Copy. Ensure the chain of custody is maintained for all items in that photo."
+        ];
+    } else if (isVehicle) {
+        replies = [
+            "10-4. Running the plates through the DMV database.",
+            "Copy. Vehicle matches the description from the hit-and-run.",
+            "That vehicle is registered to a shell corporation. Typical.",
+            "10-4. I'll put out a BOLO for that make and model.",
+            "Looks like it has illegal tint and modified exhaust. Pull it over if spotted.",
+            "Dispatch, check the toll-booth cameras to see if that vehicle left the city.",
+            "That's a high-end luxury vehicle. Probably stolen.",
+            "Copy. Scanning for thermal signatures inside the vehicle.",
+            "Vehicle secured. Waiting for the tow truck to take it to impound.",
+            "10-4. Be advised, vehicles like that are often rigged with EMP countermeasures."
         ];
     } else if (isAnimal) {
         replies = [
-            "Why is dispatch sending us images of animals? Is this the new K9 unit? Actually... it's kind of cute.",
-            "Aww. That's adorable. But I'm in the middle of a stakeout, Dispatch. Keep the channel professional.",
-            "Is that a synth-pet or a real one? Either way, I want to pet it. Dispatch, can I pet it?",
-            "10-4... animal sighting confirmed. Should I arrest it? I'm going to arrest it.",
-            "My ex-wife got custody of our dog. This image is bringing up painful memories, Dispatch.",
-            "That animal looks suspicious. Running it through the K9 database just to be safe.",
-            "Cute. But is it licensed? Unlicensed pets carry a 50,000 NTND fine in this sector.",
-            "I'm forwarding this to the entire precinct. Everyone needs to see this immediately.",
+            "10-4 Dispatch. Is... is this relevant to an investigation?",
+            "Copy that. Is Animal Control responding to this?",
+            "Aw, it's actually kind of cute. Wait, is it aggressive?",
+            "Dispatch, why are you sending me animal pictures? I'm in the middle of a raid.",
+            "I'm a police officer, not a vet. Call animal control.",
+            "10-4. Logging image as... biological hazard? I don't even know.",
+            "Is it rabid? Keep your distance, those things carry diseases.",
+            "My partner says it looks delicious. Ignore him, he's crazy.",
+            "Copy that. Do you want me to arrest it?",
+            "Dispatch, please keep the tactical channel clear of pet photos."
         ];
     } else if (isFood) {
         replies = [
-            "Are you serious right now? I've been on patrol for 14 hours and you're sending me food pics?",
-            "That looks incredible. Where is that from? I'm rerouting my patrol through there RIGHT NOW.",
-            "Dispatch, I am STARVING. This is cruel and unusual punishment. I'm filing a grievance.",
-            "My wife never cooks anything that good. Actually, my wife never cooks at all.",
-            "10-4, food image received. Analyzing for potential contraband ingredients... looks clean. And delicious.",
-            "If that's from the noodle stand in Sector %RANDOM_SECTOR%, I'm leaving my post immediately.",
-            "That donut looks regulation. I'm confiscating it as evidence. Send location.",
-            "I haven't eaten since yesterday. This image physically hurts me. Thanks, Dispatch.",
-        ];
-    } else if (isSelfie) {
-        replies = [
-            "Did you just... send a selfie over the official dispatch channel? This isn't social media, officer.",
-            "Nice face. Now get back to work. There's a 10-31 in progress in Sector %RANDOM_SECTOR%.",
-            "I'm forwarding this to IA under 'Misuse of Department Resources.' Have a nice day.",
-            "Is this your MCPD ID photo? Because it looks terrible. You look exhausted. We all do.",
-            "Running facial recognition on your selfie... congratulations, you matched yourself. Great detective work.",
-            "Why do you look like you haven't slept in 6 days? Actually, I already know the answer.",
-            "That's a bold move using the tactical channel for selfies. I respect the audacity.",
-            "10-4, image received of... you. I don't know what to do with this information.",
+            "10-4 Dispatch. Now I'm starving. Thanks a lot.",
+            "Is this evidence, or are you just taunting me with your lunch?",
+            "Copy that. I'm confiscating that as 'civil forfeiture'.",
+            "That looks way better than the sludge they serve in the cafeteria.",
+            "Dispatch, stop transmitting food pics. My stomach is growling over the radio.",
+            "I'll trade you my half-eaten protein bar for whatever that is.",
+            "10-4. Is that from the new place on 5th street? I've been meaning to try it.",
+            "If you drop some of that off at my cruiser, I'll ignore your next parking ticket.",
+            "Copy. Logging image as 'Cruel and Unusual Punishment' for hungry officers.",
+            "Dispatch, we are 12 hours into a shift. Don't do this to us."
         ];
     } else if (isMeme) {
         replies = [
-            "Did you just send a meme on the official dispatch channel? During an active patrol? Incredible.",
-            "LMAO. Okay that's actually funny. But if IA sees this, we're both getting written up.",
-            "I'm saving this to the precinct shared drive. The night shift needs to see this immediately.",
-            "Dispatch, please keep memes off the secure channel. That said, forward it to my personal terminal.",
-            "I've seen funnier things happen on actual patrol. Last week a suspect slipped on a banana peel.",
-            "10-4, meme received. Morale has increased by 0.3%. Still not enough to cover the overtime.",
-            "You know Corporate monitors these channels, right? Bold move. I approve.",
-            "Bro I literally just spit out my synth-coffee. Warn me next time.",
-        ];
-    } else if (isLandscape) {
-        replies = [
-            "Nice shot. If you ignore the acid rain and the 47 active crime scenes, this city is actually beautiful.",
-            "That skyline view is incredible. You can almost forget about the systemic corruption from up there.",
-            "10-4, landscape image received. Cross-referencing location with surveillance grid coverage.",
-            "I patrolled that area last week. It's not as pretty in person. There were 3 shootouts.",
-            "Beautiful. Makes me want to retire to the Gulf of TBMG. If I survive this shift.",
-            "That building in the background is a known safehouse for the Downtown Syndicate. Just FYI.",
-            "Great photography skills, Dispatch. Wrong career though. Should've been a photographer instead.",
-            "Sector identified from image. Dispatching a drone for aerial surveillance of the area.",
+            "10-4. Forwarding to the precinct meme board.",
+            "Dispatch, keep memes off the tactical net. The captain is listening.",
+            "I literally laughed out loud and blew my cover. Thanks, Dispatch.",
+            "Copy that. Morale increased by 0.5%. Still tired though.",
+            "That's the most accurate representation of my career I've ever seen.",
+            "I'm saving this to my personal drive. Don't tell IT.",
+            "Dispatch, if you have time to send memes, you have time to approve my PTO.",
+            "10-4. I'll pretend I didn't see that.",
+            "My partner doesn't get the joke. Explain it to him.",
+            "This is highly unprofessional. I love it."
         ];
     } else if (isScreenshot) {
         replies = [
-            "Why are you sending screenshots over the tactical channel? Is your terminal malfunctioning?",
-            "10-4, screenshot received. I'm going to pretend I understand what I'm looking at.",
-            "Is this a screenshot of the dispatch terminal? Are you taking pictures of yourself working?",
-            "I can see your browser tabs in that screenshot. Interesting browsing history, Dispatch.",
-            "Forwarding this to IT. Either your terminal is broken or you're just bored. Probably both.",
-            "That screenshot shows sensitive information. Please redact before sharing on open channels.",
-            "10-4. I've examined the screenshot closely. I have no idea what any of it means.",
-            "Are you filing a bug report via the radio channel? That's a new one.",
+            "10-4 Dispatch. What exactly am I looking at here?",
+            "Copy that. Screenshot received. Should I forward this to cyber-crimes?",
+            "Dispatch, I can see your other tabs open. You might want to crop that next time.",
+            "Is this a glitch in the dispatch terminal?",
+            "10-4. I'll have the tech guys analyze the code in that screenshot.",
+            "I have no idea what this means. I'm a cop, not a hacker.",
+            "Copy. Looks like an encrypted chat log. We'll need a decryption key.",
+            "Dispatch, my terminal is having trouble parsing this image resolution.",
+            "10-4. I'm logging this as digital evidence.",
+            "This screenshot proves absolutely nothing. Get me real evidence."
         ];
-    } else if (isPerson) {
+    } else if (isSelfie) {
         replies = [
-            "Running facial recognition... Stand by. " + Math.floor(Math.random() * 100) + "% match confidence.",
-            "Is this person a suspect, a witness, or just someone you think looks suspicious? In this city, it's all three.",
-            "10-4, image of unknown individual logged. Broadcasting to all units for identification.",
-            "That person looks like they're having a worse day than me. And I'm on hour 16 of my shift.",
-            "Face doesn't match any active BOLOs. But I'm flagging them as 'person of interest' anyway.",
-            "I think I pulled that person over last week for a broken tail light. Or was it armed robbery? Hard to remember.",
-            "Scanning against the civilian registry... 1 of 5,000 citizens matched. Pulling dossier now.",
-            "That individual is either a witness or a suspect. In this precinct, there's really no difference.",
+            "10-4 Dispatch. Nice photo. Now get back to work.",
+            "Copy that. Did you mean to send this to the tactical channel?",
+            "I'm not sure what I'm supposed to do with this image.",
+            "Dispatch, please stop using the secure network for your social media updates.",
+            "10-4. You look tired, Dispatch. Get some coffee.",
+            "I'll add this to the suspect board just to mess with the detectives.",
+            "Copy. Is this a cry for help?",
+            "Looking good, Dispatch. But seriously, we have actual crimes to solve.",
+            "10-4. Image received. Deleting immediately to save server space.",
+            "Dispatch, you know the Captain monitors all uploads, right?"
         ];
     } else if (isMap) {
         replies = [
-            "10-4, location data received. Cross-referencing with active patrol routes and surveillance grids.",
-            "That sector has been a hotspot for the past 72 hours. Increasing drone coverage immediately.",
-            "I know that area. I've been shot at there 4 times this month alone.",
-            "GPS coordinates logged. Dispatching nearest available unit to investigate.",
-            "That location is in a dead zone for radio comms. Sending backup as a precaution.",
-            "Satellite imagery confirms movement in that area. Could be gang activity.",
-            "10-4, tactical map received. Overlaying with known criminal territory boundaries.",
-            "That's deep in Syndicate territory. Any unit going in there needs heavy backup.",
+            "10-4 Dispatch. Coordinates received. Plotting route now.",
+            "Copy that. Looks like a maze. I'll need drone support to navigate that sector.",
+            "That map is outdated. Half those buildings were demolished last year.",
+            "10-4. I'm sharing the tactical layout with all responding units.",
+            "Copy. Looks like there are multiple choke points. We need to proceed with caution.",
+            "Dispatch, can you highlight the primary target location on that map?",
+            "10-4. It's deep in Syndicate territory. We'll need heavy backup.",
+            "Copy that. I see three possible escape routes. Sealing them off.",
+            "That area is a known radio dead zone. We might lose comms once we're inside.",
+            "10-4. Map logged. ETA to the waypoint is 4 minutes."
         ];
-    } else if (isDark) {
+    } else if (isLandscape) {
         replies = [
-            "I can barely see anything in this image. Did you take this with a potato?",
-            "That's... unsettling. What exactly am I looking at, Dispatch?",
-            "Enhancing image brightness... still can't see anything. This is useless.",
-            "10-4, dark image received. Switching to thermal overlay mode. Still creepy.",
-            "Whatever is in that image, I don't want to know. I've seen enough horror on patrol.",
-            "That image gives me the same feeling as patrolling the lower levels at 3 AM.",
-            "Running low-light enhancement algorithms... Oh. Oh no. I wish I hadn't done that.",
-            "Is this a crime scene photo? Because the lighting says 'crime scene' and the vibe says 'run.'",
+            "10-4 Dispatch. Beautiful view. Almost makes you forget how corrupt the city is.",
+            "Copy that. Is there a crime happening somewhere in that photo, or are we just admiring the scenery?",
+            "That skyline always looks better from a distance.",
+            "10-4. I patrolled that street last week. It smells worse than it looks.",
+            "Copy. I can see the smog from here.",
+            "Dispatch, are you scouting for a new precinct location?",
+            "10-4. The neon lights really pop in this image.",
+            "Copy that. Sending a drone to sweep the area just in case.",
+            "It's quiet out there. Too quiet.",
+            "10-4. Reminds me of why I wanted to be a cop in the first place."
         ];
     } else {
+        // Generic Realistic Responses
         replies = [
-            /* NORMAL_ARRAY */
+            "10-4 Dispatch. Image received and logged into the central database.",
+            "Copy that. Running analysis on the image metadata.",
+            "Dispatch, what is the context for this image?",
+            "10-4. I'm sharing this with the other units in my sector.",
+            "Copy. It's a bit blurry. Do you have a higher resolution version?",
+            "10-4. Image is corrupt on my end. Can you resend?",
+            "Copy that. I've appended the image to the current incident report.",
+            "Dispatch, my terminal is taking forever to download this file.",
+            "10-4. I see it. Proceeding with caution.",
+            "Copy. I'll have the forensics team take a look at it when I get back to the precinct.",
+            "10-4 Dispatch. Keep the intel coming.",
+            "Copy that. It doesn't look like much, but I'll keep it on file.",
+            "10-4. Forwarding to the detectives division. It's above my paygrade.",
+            "Copy. I'll keep an eye out for anything matching this description.",
+            "10-4 Dispatch. Good work."
         ];
     }
     
@@ -259,9 +283,12 @@ function simulateImageReaction(rawFileName, file) {
                 "I agree with " + reactor + ". This is either critical evidence or a complete waste of time.",
                 reactor + ", you should run that through the facial recognition system just in case.",
                 "My partner just looked over at my screen and said 'what the hell is that?' So yeah.",
-                "Dispatch, if you're going to send images, at least make them useful. Or funny. That was neither.",
+                "Dispatch, if you're going to send images, at least make them useful.",
                 "I can neither confirm nor deny that this image is relevant to anything I'm investigating.",
                 "Same image came across my feed. Cross-referencing with my active cases now.",
+                "I'll add my report to " + reactor + "'s. We'll figure this out.",
+                "Dispatch, stop spamming the comms. We are actively taking fire.",
+                "I'm printing a copy of this for the break room wall."
             ];
             setTimeout(() => {
                 addChatMessage(secondReactor, _iaGetRandom(secondReplies), 'serious', false);
@@ -281,6 +308,10 @@ function simulateImageReaction(rawFileName, file) {
                 "My wife sends me better images than this. Actually no, she doesn't send me anything. We're getting divorced.",
                 "I swear this channel gets weirder every single day.",
                 "%RANDOM_UNIT%, can you go check on my wife while Dispatch is busy sending us pictures?",
+                "If I see one more pointless image, I'm quitting the force.",
+                "Are we cops or art critics? Focus on the job, people.",
+                "I'm muting my radio. Call me if there's an actual emergency.",
+                "This is why the Mayor wants to defund us."
             ];
             setTimeout(() => {
                 addChatMessage(thirdReactor, _iaGetRandom(thirdReplies), 'joking', false);
