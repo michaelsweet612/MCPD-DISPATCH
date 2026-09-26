@@ -1901,7 +1901,15 @@ async function simulateChat() {
 
     
     
-    // 5% chance for realistic debate
+    
+    // 6% chance for AI Dispatcher profanity reprimand event
+    if (Math.random() < 0.06) {
+        if (typeof triggerProfanityEvent === 'function') {
+            triggerProfanityEvent(sender);
+            return;
+        }
+    }
+// 5% chance for realistic debate
     if (Math.random() < 0.05) {
         if (typeof triggerRealisticDebate === 'function') {
             triggerRealisticDebate(sender);
