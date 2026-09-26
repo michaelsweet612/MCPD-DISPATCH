@@ -2583,7 +2583,7 @@ function simulateEvent(specificCrime = null) {
 
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
-        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD)}</span>`;
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD).replace(/%SECTOR%/g, crime.sector || Math.floor(Math.random() * 9 + 1))}</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
@@ -5229,7 +5229,7 @@ function simulateEvent(specificCrime = null) {
 
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
-        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD).replace("15 POINTS", (crime.points || 15) + " STATION POINTS")}</span>`;
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD).replace(/%SECTOR%/g, crime.sector || Math.floor(Math.random() * 9 + 1)).replace("15 POINTS", (crime.points || 15) + " STATION POINTS")}</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
