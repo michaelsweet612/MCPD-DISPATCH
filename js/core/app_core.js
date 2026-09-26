@@ -3345,6 +3345,11 @@ function hideAllTabs() {
     if (itSupportLogEl) itSupportLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
     if(typeof recruitmentLogEl !== 'undefined' && recruitmentLogEl) recruitmentLogEl.style.display = 'none';
+
+    const tabDms = document.getElementById('tab-dms');
+    if (tabDms) { tabDms.classList.remove('active'); tabDms.style.color = 'var(--text-dim)'; }
+    const dmsLogEl = document.getElementById('dms-log');
+    if (dmsLogEl) dmsLogEl.style.display = 'none';
 }
 
 tabUnified.addEventListener('click', () => {
