@@ -195,8 +195,8 @@ function initDms() {
     }
 
     setInterval(() => {
-        if (Math.random() < 0.15 && window.roster && window.roster.length > 0) {
-            const activeUnits = window.roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
+        if (Math.random() < 0.15 && roster && roster.length > 0) {
+            const activeUnits = roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
             if (activeUnits.length > 0) {
                 const randomUnit = activeUnits[Math.floor(Math.random() * activeUnits.length)].id;
                 receiveDm(randomUnit, incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)]);
@@ -210,12 +210,12 @@ function renderOfficerList() {
     list.innerHTML = '';
     list.style.padding = '0'; // removing padding for full width items
 
-    if (!window.roster || window.roster.length === 0) {
+    if (!roster || roster.length === 0) {
         list.innerHTML = '<div style="padding: 15px; color: #666; font-style: italic;">No active units.</div>';
         return;
     }
 
-    const activeUnits = window.roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
+    const activeUnits = roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
     
     activeUnits.forEach(unit => {
         const div = document.createElement('div');
