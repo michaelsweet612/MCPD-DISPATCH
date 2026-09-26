@@ -3128,30 +3128,8 @@ function simulateEvent(specificCrime = null) {
         }
 
         const suspectStr = suspectCit ? `${suspectCit.name} (CID: ${suspectCit.id})` : 'the suspect';
-        const arrestingChats = [
-            `Target ${suspectStr} in custody. Returning to precinct.`,
-            `I arrested ${suspectStr}. Code 4.`,
-            `${suspectStr} secured. We're 10-8.`,
-            `Apprehended ${suspectStr} without incident.`,
-            `Got them. ${suspectStr} is in cuffs.`,
-            `${suspectStr} is reading their rights now. Secured.`,
-            `Suspect ${suspectStr} gave up easy. Taking them to booking.`,
-            `Handcuffed and secured. ${suspectStr} is in the back of my cruiser.`,
-            `Situation resolved. ${suspectStr} is under arrest.`,
-            `Code 4. ${suspectStr} is going away for a long time.`,
-            `We have ${suspectStr} in custody. Wrapping up here.`,
-            `Arrest successful on ${suspectStr}. No injuries.`
-        ];
-
-        const killingChats = [
-            `Target ${suspectStr} neutralized. Call the meat wagon. Filing report now.`,
-            `Threat eliminated. No survivors. Returning to patrol.`,
-            `${suspectStr} resisted. Lethal force applied. Area is red but quiet.`,
-            `Subject down. Send bio-hazard cleanup to our coordinates.`,
-            `Target ${suspectStr} was hostile. Problem solved permanently.`
-        ];
-
-        let reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
+        let reportMsgTemplate = isROEEnabled ? getRandomItem(GLOBAL_ARRESTING_CHATS) : getRandomItem(GLOBAL_KILLING_CHATS);
+        let reportMsg = reportMsgTemplate.replace(/\{suspectStr\}/g, suspectStr);
         
         if (suspectCit) {
             suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
@@ -5796,30 +5774,8 @@ function simulateEvent(specificCrime = null) {
         }
 
         const suspectStr = suspectCit ? `${suspectCit.name} (CID: ${suspectCit.id})` : 'the suspect';
-        const arrestingChats = [
-            `Target ${suspectStr} in custody. Returning to precinct.`,
-            `I arrested ${suspectStr}. Code 4.`,
-            `${suspectStr} secured. We're 10-8.`,
-            `Apprehended ${suspectStr} without incident.`,
-            `Got them. ${suspectStr} is in cuffs.`,
-            `${suspectStr} is reading their rights now. Secured.`,
-            `Suspect ${suspectStr} gave up easy. Taking them to booking.`,
-            `Handcuffed and secured. ${suspectStr} is in the back of my cruiser.`,
-            `Situation resolved. ${suspectStr} is under arrest.`,
-            `Code 4. ${suspectStr} is going away for a long time.`,
-            `We have ${suspectStr} in custody. Wrapping up here.`,
-            `Arrest successful on ${suspectStr}. No injuries.`
-        ];
-
-        const killingChats = [
-            `Target ${suspectStr} neutralized. Call the meat wagon. Filing report now.`,
-            `Threat eliminated. No survivors. Returning to patrol.`,
-            `${suspectStr} resisted. Lethal force applied. Area is red but quiet.`,
-            `Subject down. Send bio-hazard cleanup to our coordinates.`,
-            `Target ${suspectStr} was hostile. Problem solved permanently.`
-        ];
-
-        let reportMsg = isROEEnabled ? getRandomItem(arrestingChats) : getRandomItem(killingChats);
+        let reportMsgTemplate = isROEEnabled ? getRandomItem(GLOBAL_ARRESTING_CHATS) : getRandomItem(GLOBAL_KILLING_CHATS);
+        let reportMsg = reportMsgTemplate.replace(/\{suspectStr\}/g, suspectStr);
         
         if (suspectCit) {
             suspectCit.status = isROEEnabled ? 'Arrested' : 'Deceased';
