@@ -16,18 +16,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const imgData = event.target.result;
-            const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-            
-            addChatImage('DISPATCH', imgData, fileName);
+        const isImage = file.type.startsWith('image/');
+        const fileName = file.name;
+        const fileSize = (file.size / 1024).toFixed(1) + ' KB';
+
+        if (isImage) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imgData = event.target.result;
+                const cleanName = fileName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+                addChatImage('DISPATCH', imgData, cleanName);
+                
+                setTimeout(() => {
+                    simulateImageReaction(cleanName, file);
+                }, 3000 + Math.random() * 5000);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // It's an arbitrary file
+            addChatFile('DISPATCH', fileName, fileSize, file.type);
             
             setTimeout(() => {
-                simulateImageReaction(fileName, file);
+                simulateFileReaction(fileName, file.type);
             }, 3000 + Math.random() * 5000);
-        };
-        reader.readAsDataURL(file);
+        }
         
         fileInput.value = '';
     });
@@ -317,5 +329,89 @@ function simulateImageReaction(rawFileName, file) {
                 addChatMessage(thirdReactor, _iaGetRandom(thirdReplies), 'joking', false);
             }, 6000 + Math.random() * 5000);
         }
+    }
+}
+
+
+function addChatFile(sender, fileName, fileSize, fileType) {
+    if (typeof addChatMessage === 'function') {
+        const fileHtml = `
+            <div style="background: rgba(255,255,255,0.1); border: 1px solid var(--panel-border); border-radius: 4px; padding: 10px; margin-top: 5px; display: flex; align-items: center; gap: 10px; max-width: 300px;">
+                <div style="font-size: 2rem;">📄</div>
+                <div style="overflow: hidden;">
+                    <div style="font-weight: bold; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" title="${fileName}">${fileName}</div>
+                    <div style="font-size: 0.8rem; color: #888;">${fileSize} | ${fileType || 'Unknown Type'}</div>
+                </div>
+            </div>
+        `;
+        addChatMessage(sender, "Uploading secure document...<br>" + fileHtml, 'dispatch-msg', false);
+    }
+}
+
+function simulateFileReaction(fileName, fileType) {
+    const activeUnits = window.roster ? window.roster.filter(u => u.status !== 'OFF-DUTY' && u.status !== 'KIA') : [];
+    if (activeUnits.length === 0) return;
+    
+    const reactor = activeUnits[Math.floor(Math.random() * activeUnits.length)].id;
+    let replies = [];
+    
+    if (fileType.includes('pdf') || fileType.includes('document') || fileName.toLowerCase().endsWith('.txt')) {
+        replies = [
+            "10-4 Dispatch. Downloading document now.",
+            "Copy that. Document received. I'll review it when I'm off patrol.",
+            "Dispatch, my terminal is out of storage. Can someone summarize this?",
+            "10-4. I'll print a copy when I get back to the precinct.",
+            "Are these the new ROE updates? Because I'm not reading all that.",
+            "Received. Looks like bureaucratic nonsense. Logging it.",
+            "Dispatch, did you really just send a 50-page manifesto to the public channel?",
+            "Copy. Forwarding to my dashboard. Need to decrypt it first."
+        ];
+    } else if (fileType.includes('audio') || fileType.includes('video')) {
+        replies = [
+            "10-4 Dispatch. Media file received. Standby for playback.",
+            "Copy that. I can't play this right now, I'm taking fire!",
+            "Media downloaded. Quality is terrible, Dispatch. Get better compression.",
+            "10-4. Audio/Video log received. Attaching to my incident report.",
+            "Dispatch, my squad car's speakers are blown. Can't play this.",
+            "Received. Is this the surveillance feed from Sector 4?"
+        ];
+    } else if (fileType.includes('zip') || fileType.includes('tar') || fileType.includes('rar')) {
+        replies = [
+            "10-4 Dispatch. Compressed archive received. Unzipping now.",
+            "Copy. Are you sure this isn't a Tyrell Corp virus?",
+            "Dispatch, my firewall is flagging this archive as malicious.",
+            "10-4. Extracting files to local drive.",
+            "Archive received. It's password protected. What's the key?"
+        ];
+    } else {
+        replies = [
+            "10-4 Dispatch. File received.",
+            "Copy that. Unknown file type. Should I just execute it?",
+            "Dispatch, what am I supposed to do with this file?",
+            "10-4. Appending data to the central database.",
+            "File received, but my terminal doesn't recognize the format.",
+            "Copy. Forwarding to cyber division for analysis."
+        ];
+    }
+    
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    if (typeof addChatMessage === 'function') addChatMessage(reactor, reply, 'serious', false);
+    
+    // Sometimes a second officer complains
+    if (Math.random() < 0.3 && activeUnits.length >= 2) {
+        const otherUnits = activeUnits.filter(u => u.id !== reactor);
+        const secondReactor = otherUnits[Math.floor(Math.random() * otherUnits.length)].id;
+        
+        const complaints = [
+            "Dispatch, stop clogging the bandwidth with large files.",
+            "Why are we getting files during a code 3?",
+            "I'm not downloading that.",
+            "Can we please go back to standard radio comms?",
+            "My terminal literally crashed trying to parse that file."
+        ];
+        
+        setTimeout(() => {
+            if (typeof addChatMessage === 'function') addChatMessage(secondReactor, complaints[Math.floor(Math.random() * complaints.length)], 'serious', false);
+        }, 2000 + Math.random() * 3000);
     }
 }
