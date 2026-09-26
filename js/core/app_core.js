@@ -1822,6 +1822,72 @@ function triggerCorruptIASequence(sender) {
     }, 2500);
 }
 
+
+function triggerVoreDebateEvent() {
+    const active = getActiveCallsigns();
+    if (active.length < 3) return;
+
+    const onDuty = roster.filter(u => u.status === 'On Duty');
+    const furryOfficers = onDuty.filter(u => u.personality === 'Furry');
+    const normalOfficers = onDuty.filter(u => u.personality !== 'Furry');
+
+    let furryUnit = active[0];
+    let normalUnit1 = active[1];
+    let normalUnit2 = active[2];
+
+    if (furryOfficers.length > 0 && normalOfficers.length >= 2) {
+        furryUnit = getRandomItem(furryOfficers).id;
+        normalUnit1 = getRandomItem(normalOfficers).id;
+        normalUnit2 = getRandomItem(normalOfficers.filter(u => u.id !== normalUnit1)).id;
+    }
+
+    addChatMessage(normalUnit1, "Hey, does anyone else think it's weird that the civilians are talking about vore lately?", "serious");
+
+    setTimeout(() => {
+        addChatMessage(normalUnit2, "Yeah, it's disgusting. Why would anyone be into that?", "serious");
+
+        setTimeout(() => {
+            addChatMessage(normalUnit1, "I don't know, but it's getting out of hand. We need a new policy against it.", "serious");
+
+            setTimeout(() => {
+                addChatMessage(furryUnit, "Actually... I kind of like it. :3", "joking");
+
+                setTimeout(() => {
+                    addChatMessage(normalUnit1, "Excuse me? What did you just say?", "dispatch-msg");
+
+                    setTimeout(() => {
+                        addChatMessage(normalUnit2, "Are you serious right now?", "serious");
+
+                        setTimeout(() => {
+                            addChatMessage(furryUnit, "I might eat a human just out of curiosity... UwU", "joking");
+
+                            setTimeout(() => {
+                                addChatMessage(normalUnit2, "Okay, now I'm officially worried. Someone check on them.", "worried");
+
+                                setTimeout(() => {
+                                    addChatMessage(normalUnit1, "Seriously, that's not okay. I'm reporting this behavior.", "serious");
+
+                                    setTimeout(() => {
+                                        addChatMessage(furryUnit, "Ah! I'm sorry! I'm so sorry! I didn't mean it! Please don't write me up!", "worried");
+
+                                        setTimeout(() => {
+                                            addChatMessage(normalUnit1, "Alright, alright. I'm sorry for snapping. Just... don't say that again.", "serious");
+
+                                            setTimeout(() => {
+                                                addChatMessage(normalUnit2, "Yeah, sorry for overreacting. Let's just drop it.", "serious");
+                                            }, 6000);
+                                        }, 6000);
+                                    }, 8000);
+                                }, 7000);
+                            }, 7000);
+                        }, 8000);
+                    }, 6000);
+                }, 7000);
+            }, 8000);
+        }, 7000);
+    }, 7000);
+}
+
 async function simulateChat() {
     console.log('SIMULATE CHAT RUNNING');
     if (restModeToggle.checked) return;
@@ -1833,7 +1899,12 @@ async function simulateChat() {
 
     let sender = getRandomItem(activeCallsigns);
 
-    if (Math.random() < 0.05) {
+    
+    if (Math.random() < 0.02) {
+        triggerVoreDebateEvent();
+        return;
+    }
+if (Math.random() < 0.05) {
         triggerCorruptIASequence(sender);
         return;
     }
