@@ -3378,8 +3378,7 @@ tabWanted.addEventListener('click', () => {
 
 if (tabItSupport) {
     tabItSupport.addEventListener('click', () => {
-        resetTabs();
-        hideAllPanels();
+        hideAllTabs();
         tabItSupport.classList.add('active');
         tabItSupport.style.color = 'var(--text-main)';
         if (itSupportLogEl) itSupportLogEl.style.display = 'block';
