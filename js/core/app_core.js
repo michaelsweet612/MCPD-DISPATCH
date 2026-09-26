@@ -2173,7 +2173,27 @@ async function processDispatchChat() {
 
 
     // Secret Mayhem Protocol
-    if (text === "10-999") {
+    
+    if (text.toLowerCase().includes("all officers are authorized to shoot") || text.toLowerCase().includes("weapons free")) {
+        dispatchChatInput.value = '';
+        addChatMessage('DISPATCH', text, 'dispatch-msg', true);
+        
+        setTimeout(() => {
+            if (roeToggle.checked) {
+                roeToggle.checked = false; // Turn OFF restrictions (authorize lethal)
+                roeToggle.dispatchEvent(new Event('change'));
+            }
+            addChatMessage('SYSTEM', 'ROE RESTRICTIONS LIFTED. LETHAL FORCE AUTHORIZED.', 'worried');
+            
+            setTimeout(() => {
+                const activeCallsigns = getActiveCallsigns();
+                if(activeCallsigns.length > 0) addChatMessage(getRandomItem(activeCallsigns), "Copy that Dispatch. Weapons free.", "serious");
+                if(activeCallsigns.length > 1) addChatMessage(getRandomItem(activeCallsigns), "10-4. Lethal authorized.", "serious");
+            }, 1000);
+        }, 500);
+        return;
+    }
+if (text === "10-999") {
         dispatchChatInput.value = '';
         addChatMessage('SYSTEM', 'PROTOCOL 8,997 IS NOW IN EFFECT. ALL OFFICERS ARE AUTHORIZED TO SHOOT EVERYONE.', 'worried');
         dispatchChatInput.placeholder = "Reply STOP to stop the chaos";
@@ -2225,10 +2245,10 @@ async function processDispatchChat() {
     try {
         
         // Gibberish fast-path intercept
-        const isGibberish = /^[a-zA-Z]{0,4}$/i.test(text.replace(/[^a-zA-Z]/g, '')) && text.length > 8 || /(alien|ghost|pizza|asdf|qwerty)/i.test(text);
+        const isGibberish = (/^[a-zA-Z0-9]{0,4}$/i.test(text.replace(/[^a-zA-Z0-9]/g, '')) && text.length > 8) || /(alien|ghost|pizza|asdf|qwerty)/i.test(text) || !/\s/.test(text) && text.length > 12;
         if(isGibberish) {
             setTimeout(() => {
-                typingDiv.querySelector('.text').innerHTML = `Dispatch, are you having a stroke? Repeat last transmission, you're making zero sense.`;
+                typingDiv.querySelector('.text').innerHTML = getRandomItem(GLOBAL_GIBBERISH_RESPONSES);
                 typingDiv.querySelector('.text').style.fontStyle = 'normal';
                 typingDiv.querySelector('.text').style.color = 'inherit';
             }, 1500);
