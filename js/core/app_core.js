@@ -274,7 +274,8 @@ if (tabUnitStatus && unitStatusLogEl) {
         if (tabUnified) { tabUnified.classList.remove('active'); tabUnified.style.color = 'var(--text-dim)'; }
         if (tabDocuments) { tabDocuments.classList.remove('active'); tabDocuments.style.color = 'var(--text-dim)'; }
         if (tabDatabase) { tabDatabase.classList.remove('active'); tabDatabase.style.color = 'var(--text-dim)'; }
-        if (tabWanted) { tabWanted.classList.remove('active'); tabWanted.style.color = 'var(--text-dim)'; }
+        if (tabWanted) { tabWanted.classList.remove('active'); tabWanted.style.color = 'var(--text-dim)';
+    if (tabItSupport) { tabItSupport.classList.remove(\'active\'); tabItSupport.style.color = \'var(--text-dim)\'; } }
         if (tabCitizens) { tabCitizens.classList.remove('active'); tabCitizens.style.color = 'var(--text-dim)'; }
         if (tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
         
@@ -1905,6 +1906,24 @@ async function simulateChat() {
     
     
     
+    
+    // 5% chance to trigger an IT Support Ticket
+    if (Math.random() < 0.05) {
+        if (typeof generateITTicket === 'function') {
+            generateITTicket();
+            return;
+        }
+    }
+
+    
+    // 5% chance to trigger an IT Support Ticket
+    if (Math.random() < 0.05) {
+        if (typeof generateITTicket === 'function') {
+            generateITTicket();
+            return;
+        }
+    }
+
     // 5% chance to trigger unhinged memes and IP leaks
     if (Math.random() < 0.05) {
         if (typeof triggerMemeEvent === 'function') {
@@ -3277,9 +3296,11 @@ dispatchChatInput.addEventListener('focus', () => {
 // Tab Interaction logic
 const tabDatabase = document.getElementById('tab-database');
 const tabWanted = document.getElementById('tab-wanted');
+const tabItSupport = document.getElementById('tab-it-support');
 const tabCitizens = document.getElementById('tab-citizens');
 const databaseLogEl = document.getElementById('database-log');
 const wantedLogEl = document.getElementById('wanted-log');
+const itSupportLogEl = document.getElementById('it-support-log');
 const citizensLogEl = document.getElementById('citizens-log');
       
 // Citizen Page Elements
@@ -3307,6 +3328,7 @@ function hideAllTabs() {
     tabDatabase.style.color = 'var(--text-dim)';
     tabWanted.classList.remove('active');
     tabWanted.style.color = 'var(--text-dim)';
+    if (tabItSupport) { tabItSupport.classList.remove(\'active\'); tabItSupport.style.color = \'var(--text-dim)\'; }
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
     if(tabRecruitment) { tabRecruitment.classList.remove('active'); tabRecruitment.style.color = 'var(--text-dim)'; }
@@ -3320,6 +3342,7 @@ function hideAllTabs() {
     documentLogEl.style.display = 'none';
     databaseLogEl.style.display = 'none';
     wantedLogEl.style.display = 'none';
+    if (itSupportLogEl) itSupportLogEl.style.display = \'none\';
     citizensLogEl.style.display = 'none';
     if(typeof recruitmentLogEl !== 'undefined' && recruitmentLogEl) recruitmentLogEl.style.display = 'none';
 }
@@ -3352,6 +3375,17 @@ tabWanted.addEventListener('click', () => {
     tabWanted.style.color = 'var(--text-main)';
     wantedLogEl.style.display = 'block';
 });
+
+if (tabItSupport) {
+    tabItSupport.addEventListener('click', () => {
+        resetTabs();
+        hideAllPanels();
+        tabItSupport.classList.add('active');
+        tabItSupport.style.color = 'var(--text-main)';
+        if (itSupportLogEl) itSupportLogEl.style.display = 'block';
+    });
+}
+
 
 
   if(tabRecruitment) {
