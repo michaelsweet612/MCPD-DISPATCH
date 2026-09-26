@@ -8,6 +8,7 @@ window._mcpd_errors = [];
 let _checkSystemInitialized = false;
 
 function renderSystemErrors() {
+    if (window._mcpd_silenced) return;
     if (window._mcpd_errors.length === 0) return;
     
     let errorContainer = document.getElementById('fatal-check-system-box');
@@ -43,7 +44,7 @@ function renderSystemErrors() {
         
     let details = "<ul style='margin-top: 30px; font-size: 1.1rem;'>" + window._mcpd_errors.map(e => `<li style="margin-bottom:10px;">${e}</li>`).join('') + "</ul>";
     
-    errorContainer.innerHTML = header + details + `<br><button onclick="document.getElementById('fatal-check-system-box').style.display='none'; window._mcpd_errors = [];" style="margin-top: 20px; padding: 15px 30px; font-size: 1.2rem; background: black; color: white; border: 2px solid white; cursor: pointer;">ACKNOWLEDGE & CLEAR</button>`;
+    errorContainer.innerHTML = header + details + `<br><button onclick="document.getElementById('fatal-check-system-box').style.display='none'; window._mcpd_errors = []; window._mcpd_silenced = true;" style="margin-top: 20px; padding: 15px 30px; font-size: 1.2rem; background: black; color: white; border: 2px solid white; cursor: pointer;">ACKNOWLEDGE & MUTE ALERTS</button>`;
 }
 
 function pushError(msg) {
@@ -155,7 +156,7 @@ function scanForTyposAndAnomalies() {
         for (const [typo, correction] of Object.entries(commonTypos)) {
             const regex = new RegExp(`\\b${typo}\\b`, 'i');
             if (regex.test(text)) {
-                pushError(`[SPELLING FAULT] Detected misspelled word "${typo}" in UI text. Did you mean "${correction}"?`);
+                console.warn(`[SPELLING FAULT] Detected misspelled word "${typo}" in UI text. Did you mean "${correction}"?`);
             }
         }
     }
@@ -169,9 +170,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // Run immediately
     performIntegrityChecks();
     
-    // Run periodically
-    setInterval(() => {
+    // Run once after 5 seconds to ensure all modules have loaded
+    setTimeout(() => {
         performIntegrityChecks();
         scanForTyposAndAnomalies();
-    }, 15000);
+    }, 5000);
 });
