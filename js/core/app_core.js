@@ -1902,7 +1902,15 @@ async function simulateChat() {
     
     
     
-    // 6% chance for AI Dispatcher profanity reprimand event
+    
+    // 35% chance to use the advanced AI procedural text generator instead of pre-written lines
+    if (Math.random() < 0.35) {
+        if (typeof triggerProceduralAIChatter === 'function') {
+            triggerProceduralAIChatter();
+            return;
+        }
+    }
+// 6% chance for AI Dispatcher profanity reprimand event
     if (Math.random() < 0.06) {
         if (typeof triggerProfanityEvent === 'function') {
             triggerProfanityEvent(sender);
