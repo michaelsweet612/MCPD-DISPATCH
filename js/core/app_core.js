@@ -1903,6 +1903,15 @@ async function simulateChat() {
     
     
     
+    
+    // 5% chance to trigger an officer complaining about the department and getting crushed by AI
+    if (Math.random() < 0.05) {
+        if (typeof triggerDepartmentComplaint === 'function') {
+            triggerDepartmentComplaint();
+            return;
+        }
+    }
+
     // 35% chance to use the advanced AI procedural text generator instead of pre-written lines
     if (Math.random() < 0.35) {
         if (typeof triggerProceduralAIChatter === 'function') {
