@@ -75,6 +75,7 @@ function renderITTickets() {
     
     if (window.itTickets.length === 0) {
         list.innerHTML = '<div style="color: #666; font-style: italic; padding: 20px;">No pending IT Support tickets.</div>';
+        updateITTicketBadge();
         return;
     }
     
@@ -99,6 +100,7 @@ function renderITTickets() {
         `;
         list.appendChild(div);
     });
+    updateITTicketBadge();
 }
 
 window.resolveITTicket = function(index, action) {
@@ -130,3 +132,16 @@ window.resolveITTicket = function(index, action) {
 document.addEventListener('DOMContentLoaded', () => {
     renderITTickets();
 });
+
+
+function updateITTicketBadge() {
+    const badge = document.getElementById('it-ticket-badge');
+    if (!badge) return;
+    const count = window.itTickets ? window.itTickets.length : 0;
+    if (count > 0) {
+        badge.innerText = count;
+        badge.style.display = 'inline-block';
+    } else {
+        badge.style.display = 'none';
+    }
+}
