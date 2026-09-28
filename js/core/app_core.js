@@ -4416,18 +4416,23 @@ function updateWantedUI() {
     // to allow real-time updates when a user declares someone wanted.
     
     wantedListEl.innerHTML = ''; // Clear existing
+    
+    // Convert to CSS Grid
+    wantedListEl.style.display = 'grid';
+    wantedListEl.style.gridTemplateColumns = 'repeat(auto-fill, minmax(400px, 1fr))';
+    wantedListEl.style.gap = '15px';
 
     // Gordon Freeman ALWAYS at the top
     const freemanDiv = document.createElement('div');
-    freemanDiv.style.cssText = "color: #ffd700; border-left: 3px solid #ffd700; padding-left: 10px; padding-bottom: 5px; margin-bottom: 15px; background: rgba(255, 215, 0, 0.05); cursor: pointer; transition: background 0.2s;";
+    freemanDiv.style.cssText = "color: #ffd700; border-left: 3px solid #ffd700; padding: 10px; background: rgba(255, 215, 0, 0.05); cursor: pointer; transition: background 0.2s; grid-column: 1 / -1; margin-bottom: 5px;";
     freemanDiv.onmouseover = () => freemanDiv.style.background = "rgba(255, 215, 0, 0.15)";
     freemanDiv.onmouseout = () => freemanDiv.style.background = "rgba(255, 215, 0, 0.05)";
 
     freemanDiv.innerHTML = `
-            < strong > [PRIME MULTIVERSE TARGET] GORDON FREEMAN</strong > <br>
-                Crime: Resonance Cascade, War Crimes, Assault on Overwatch, Anti-Civil Activity Level 1.<br>
-                    Bounty: 9,236,000 Credits. EXTREME PREJUDICE MANDATORY.
-                    `;
+            <strong>[PRIME MULTIVERSE TARGET] GORDON FREEMAN</strong><br>
+            Crime: Resonance Cascade, War Crimes, Assault on Overwatch, Anti-Civil Activity Level 1.<br>
+            Bounty: 9,236,000 Credits. EXTREME PREJUDICE MANDATORY.
+    `;
     freemanDiv.addEventListener('click', () => {
         openReportModal(`
             <h3 style="color:#ffd700; border-bottom: 1px solid #ffd700; padding-bottom: 10px;">GORDON FREEMAN - THREAT LEVEL: KETER</h3>
@@ -4448,7 +4453,7 @@ function updateWantedUI() {
         const targetDiv = document.createElement('div');
         let color = target.level === 'HIGH' ? 'var(--panic-red)' : 'var(--panic-orange)';
         
-        targetDiv.style.cssText = `color: ${color}; border-left: 3px solid ${color}; padding-left: 10px; padding-bottom: 5px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.02); cursor: pointer; transition: background 0.2s;`;
+        targetDiv.style.cssText = `color: ${color}; border-left: 3px solid ${color}; padding: 10px; background: rgba(255, 255, 255, 0.02); cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; justify-content: center;`;
         targetDiv.onmouseover = () => targetDiv.style.background = "rgba(255, 255, 255, 0.08)";
         targetDiv.onmouseout = () => targetDiv.style.background = "rgba(255, 255, 255, 0.02)";
 
@@ -4489,7 +4494,7 @@ function updateWantedUI() {
     if (displayLimit < wantedTargets.length) {
         const loadBtn = document.createElement('button');
         loadBtn.textContent = `LOAD MORE TARGETS (${displayLimit} / ${wantedTargets.length})`;
-        loadBtn.style.cssText = "width: 100%; padding: 10px; background: transparent; border: 1px solid var(--panic-red); color: var(--panic-red); cursor: pointer; margin-top: 10px; border-radius: 4px; font-weight: bold;";
+        loadBtn.style.cssText = "width: 100%; padding: 10px; background: transparent; border: 1px solid var(--panic-red); color: var(--panic-red); cursor: pointer; margin-top: 10px; border-radius: 4px; font-weight: bold; grid-column: 1 / -1;";
         loadBtn.onclick = () => {
             wantedDisplayed += 10;
             updateWantedUI();
