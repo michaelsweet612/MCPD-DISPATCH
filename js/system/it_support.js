@@ -1,3 +1,4 @@
+window.itAutoMode = 'MANUAL';
 // ==========================================
 // IT SUPPORT SYSTEM
 // ==========================================
@@ -55,6 +56,25 @@ function generateITTicket() {
     // Announce in chat
     addChatMessage(sender, `Dispatch, I'm submitting an IT ticket (${ticketId}). ${issue}`, 'casual', false);
     
+    if (window.itAutoMode === 'ACCEPT') {
+        setTimeout(() => {
+            const reply = HAPPY_ACCEPTANCES[Math.floor(Math.random() * HAPPY_ACCEPTANCES.length)];
+            addChatMessage(sender, reply, 'casual', false);
+        }, 3000);
+        return;
+    } else if (window.itAutoMode === 'DENY') {
+        setTimeout(() => {
+            const angry = ANGRY_REJECTIONS[Math.floor(Math.random() * ANGRY_REJECTIONS.length)];
+            addChatMessage(sender, angry, 'panic', false);
+            
+            setTimeout(() => {
+                const aiReaction = DISPATCH_CRASH_OUTS[Math.floor(Math.random() * DISPATCH_CRASH_OUTS.length)];
+                addChatMessage('DISPATCH', aiReaction, 'system', false);
+            }, 1000);
+        }, 3000);
+        return;
+    }
+
     // Add to ticket list
     const ticketObj = {
         id: ticketId,
@@ -73,12 +93,6 @@ function renderITTickets() {
     
     list.innerHTML = '';
     
-    if (window.itTickets.length === 0) {
-        list.innerHTML = '<div style="color: #666; font-style: italic; padding: 20px;">No pending IT Support tickets.</div>';
-        updateITTicketBadge();
-        return;
-    }
-    
     const btnWrapper = document.createElement('div');
     btnWrapper.style.display = 'flex';
     btnWrapper.style.gap = '10px';
@@ -86,17 +100,43 @@ function renderITTickets() {
     
     const btnAcceptAll = document.createElement('button');
     btnAcceptAll.innerText = 'AUTO ACCEPT ALL';
-    btnAcceptAll.style = 'background: var(--accent-green); color: #000; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px;';
-    btnAcceptAll.onclick = window.autoAcceptAllIT;
+    btnAcceptAll.style = `background: ${window.itAutoMode === 'ACCEPT' ? '#555' : 'var(--accent-green)'}; color: ${window.itAutoMode === 'ACCEPT' ? '#aaa' : '#000'}; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px; border: ${window.itAutoMode === 'ACCEPT' ? '2px solid var(--accent-green)' : '2px solid transparent'};`;
+    btnAcceptAll.onclick = () => {
+        window.itAutoMode = 'ACCEPT';
+        window.autoAcceptAllIT();
+        renderITTickets();
+    };
     
     const btnDenyAll = document.createElement('button');
-    btnDenyAll.innerText = 'DENY ALL';
-    btnDenyAll.style = 'background: var(--panic-red); color: #fff; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px;';
-    btnDenyAll.onclick = window.denyAllIT;
+    btnDenyAll.innerText = 'AUTO DENY ALL';
+    btnDenyAll.style = `background: ${window.itAutoMode === 'DENY' ? '#555' : 'var(--panic-red)'}; color: ${window.itAutoMode === 'DENY' ? '#aaa' : '#fff'}; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px; border: ${window.itAutoMode === 'DENY' ? '2px solid var(--panic-red)' : '2px solid transparent'};`;
+    btnDenyAll.onclick = () => {
+        window.itAutoMode = 'DENY';
+        window.denyAllIT();
+        renderITTickets();
+    };
+    
+    const btnManual = document.createElement('button');
+    btnManual.innerText = 'MANUAL REVIEW';
+    btnManual.style = `background: ${window.itAutoMode === 'MANUAL' ? '#555' : 'var(--accent-blue)'}; color: ${window.itAutoMode === 'MANUAL' ? '#aaa' : '#fff'}; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px; border: ${window.itAutoMode === 'MANUAL' ? '2px solid var(--accent-blue)' : '2px solid transparent'};`;
+    btnManual.onclick = () => {
+        window.itAutoMode = 'MANUAL';
+        renderITTickets();
+    };
 
     btnWrapper.appendChild(btnAcceptAll);
     btnWrapper.appendChild(btnDenyAll);
+    btnWrapper.appendChild(btnManual);
     list.appendChild(btnWrapper);
+    
+    if (window.itTickets.length === 0) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.style = 'color: #666; font-style: italic; padding: 20px;';
+        emptyDiv.innerText = 'No pending IT Support tickets.';
+        list.appendChild(emptyDiv);
+        updateITTicketBadge();
+        return;
+    }
     
     window.itTickets.forEach((ticket, index) => {
         const div = document.createElement('div');
