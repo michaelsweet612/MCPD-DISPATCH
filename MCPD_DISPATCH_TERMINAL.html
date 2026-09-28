@@ -21,7 +21,55 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.21.13">
+    <link rel="stylesheet" href="css/styles.css?v=4.20.63">
+
+<style>
+.how-to-tab {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--panel-border);
+    color: #888;
+    text-align: left;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.how-to-tab.active {
+    background: rgba(0, 122, 255, 0.2);
+    color: var(--accent-blue);
+    border-left: 3px solid var(--accent-blue);
+}
+.how-to-tab:hover:not(.active) {
+    background: rgba(255,255,255,0.05);
+}
+.how-to-section {
+    display: none;
+}
+.how-to-section.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+.how-to-section h3 {
+    color: var(--accent-blue);
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.how-to-section p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+.how-to-section ul {
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+.how-to-section li {
+    margin-bottom: 8px;
+}
+</style>
 </head>
 
 <body>
@@ -140,7 +188,8 @@ document.addEventListener('keypress', function(e) {
                 <div class="panel-content control-panel scrollable">
                     <p class="control-desc">Use buttons below to simulate events and trigger officer distress signals into the log.</p>
 
-                    <div id="standard-callouts-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #ffea00; font-weight: bold; user-select: none; padding: 15px 5px; background: rgba(255, 234, 0, 0.05); border-radius: 4px; margin-bottom: 5px;">
+                    <button onclick="document.getElementById('how-to-modal').style.display='flex'; showHowToTab('ht-intro');" style="padding: 10px 15px; font-size: 0.85rem; background: var(--accent-blue); color: #000; border: none; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: block; width: 100%;">📖 HOW TO USE MANUAL</button>
+<div id="standard-callouts-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #ffea00; font-weight: bold; user-select: none; padding: 15px 5px; background: rgba(255, 234, 0, 0.05); border-radius: 4px; margin-bottom: 5px;">
                         <span>📡 STANDARD CALLOUTS</span>
                         <span id="standard-callouts-chevron">▼</span>
                     </div>
@@ -967,25 +1016,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.21.13"></script>
+    <script src="js/system/check_system.js?v=4.20.63"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.21.13"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.21.13"></script>
-    <script src="js/system/export_log.js?v=4.21.13"></script>
-    <script src="js/chats/transmissions.js?v=4.21.13"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.21.13"></script>
-    <script src="js/core/chat_lines.js?v=4.21.13"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=4.21.13"></script>
-    <script src="js/core/chat_lines_arriving.js?v=4.21.13"></script>
-    <script src="js/core/realistic_debates.js?v=4.21.13"></script>
-    <script src="js/core/chat_reactions.js?v=4.21.13"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=4.21.13"></script>
-    <script src="js/core/profanity_events.js?v=4.21.13"></script>
-    <script src="js/core/department_complaints.js?v=4.21.13"></script>
-    <script src="js/core/meme_events.js?v=4.21.13"></script>
-    <script src="js/system/it_support.js?v=4.21.13"></script>
-    <script src="js/system/dms_system.js?v=4.21.13"></script>
-    <script src="js/core/app_core.js?v=4.21.13"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.20.63"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.20.63"></script>
+    <script src="js/system/export_log.js?v=4.20.63"></script>
+    <script src="js/chats/transmissions.js?v=4.20.63"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines_arriving.js?v=4.20.63"></script>
+    <script src="js/core/realistic_debates.js?v=4.20.63"></script>
+    <script src="js/core/chat_reactions.js?v=4.20.63"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=4.20.63"></script>
+    <script src="js/core/profanity_events.js?v=4.20.63"></script>
+    <script src="js/core/department_complaints.js?v=4.20.63"></script>
+    <script src="js/core/meme_events.js?v=4.20.63"></script>
+    <script src="js/system/it_support.js?v=4.20.63"></script>
+    <script src="js/system/dms_system.js?v=4.20.63"></script>
+    <script src="js/core/app_core.js?v=4.20.63"></script>
 
     
 
@@ -1281,6 +1330,121 @@ document.addEventListener('keypress', function(e) {
             <button onclick="document.getElementById('export-modal').style.display='none'" style="border: none; background: transparent; color: #888; cursor: pointer; text-decoration: underline;">CANCEL</button>
         </div>
     </div>
+
+
+<!-- HOW TO USE MODAL -->
+<div id="how-to-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #0d2136; border: 1px solid var(--accent-blue); width: 85%; max-width: 900px; height: 85vh; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 122, 255, 0.4);">
+        <div style="display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--panel-border); background: #06111e;">
+            <h2 style="color: var(--text-main); margin: 0; font-size: 1.4rem;">📖 MCPD DISPATCH OPERATOR MANUAL</h2>
+            <button onclick="document.getElementById('how-to-modal').style.display='none'" style="background: transparent; border: none; color: #ff3b30; font-size: 1.8rem; cursor: pointer; font-weight: bold;">&times;</button>
+        </div>
+        <div style="display: flex; flex: 1; overflow: hidden;">
+            <div style="width: 250px; border-right: 1px solid var(--panel-border); background: rgba(0,0,0,0.5); overflow-y: auto;" id="ht-sidebar">
+                <button class="how-to-tab active" onclick="showHowToTab('ht-intro')">Welcome Operator</button>
+                <button class="how-to-tab" onclick="showHowToTab('ht-terminal')">The Main Terminal</button>
+                <button class="how-to-tab" onclick="showHowToTab('ht-dms')">Secure DMs (iMessage)</button>
+                <button class="how-to-tab" onclick="showHowToTab('ht-it')">IT Support Ticketing</button>
+                <button class="how-to-tab" onclick="showHowToTab('ht-recruitment')">Recruitment System</button>
+                <button class="how-to-tab" onclick="showHowToTab('ht-controls')">Manual Event Controls</button>
+                <button class="how-to-tab" onclick="showHowToTab('ht-export')">Log Exporting</button>
+            </div>
+            <div style="flex: 1; padding: 30px; overflow-y: auto; color: #e0e0e0; background: #081624;">
+                
+                <div id="ht-intro" class="how-to-section active">
+                    <h3>Welcome to the MCPD Dispatch System</h3>
+                    <p>Welcome, Operator. You are currently logged into the <strong>Metro City Police Department Central Dispatch Terminal (v4.21)</strong>.</p>
+                    <p>This system acts as the digital backbone of the entire police force. From this seat, you will monitor all 5,000 active officers, coordinate responses to cyber-crimes, handle internal communications, process IT support requests, and approve new recruits.</p>
+                    <p>Use the sidebar on the left to navigate this manual and understand the specific subsystems you are responsible for.</p>
+                </div>
+
+                <div id="ht-terminal" class="how-to-section">
+                    <h3>The Main Terminal (Unified Log)</h3>
+                    <p>The Unified Log is the massive central chat window in the middle of your screen. It is your primary interface.</p>
+                    <ul>
+                        <li><strong>AI Simulations:</strong> The terminal simulates a live cyberpunk city. You will see officers calling in traffic stops, requesting backup for rogue androids, and Tyrell Corp. security making demands.</li>
+                        <li><strong>Your Commands:</strong> You can type directly into the chat input bar at the bottom to send a broadcast to ALL active officers. Use 10-codes (like <code>10-4</code>) for realism.</li>
+                        <li><strong>Furry Officers:</strong> Occasionally, genetically modified K-9 officers will ask for "head rubs". Standard officers will get annoyed, and the AI Dispatcher will issue warnings for hostility.</li>
+                    </ul>
+                </div>
+
+                <div id="ht-dms" class="how-to-section">
+                    <h3>Secure DMs (Private Messaging)</h3>
+                    <p>Click the <code>💬 DMs</code> tab to switch from the public broadcast frequency to end-to-end encrypted private messaging.</p>
+                    <ul>
+                        <li><strong>Active Roster:</strong> The sidebar shows all active units. You will notice colored status dots indicating if they are On Duty (Green), Busy (Yellow), or On Scene (Red).</li>
+                        <li><strong>Dynamic Sorting:</strong> If an officer messages you, they will instantly shoot to the top of the list!</li>
+                        <li><strong>Voice Memos & GPS:</strong> Use the 🎤 and 📍 buttons to send fake audio waves or map pings.</li>
+                        <li><strong>File Uploading:</strong> Click the blue <code>+</code> to upload a real image file from your PC and send it to an officer.</li>
+                        <li><strong>Self-Destruct:</strong> Type a message and click the red Bomb 💣 to send a classified message that explodes and deletes itself after 5 seconds.</li>
+                        <li><strong>Tapbacks:</strong> Double-click an officer's incoming message to drop a reaction emoji on it (❤️, 👍, etc).</li>
+                    </ul>
+                </div>
+
+                <div id="ht-it" class="how-to-section">
+                    <h3>IT Support Ticketing</h3>
+                    <p>The <code>🖥️ IT SUPPORT</code> tab is where officers complain about broken hardware (jammed biometric scanners, blue-screening cruisers, etc).</p>
+                    <ul>
+                        <li><strong>Accept / Reject:</strong> You can read their issue and manually Accept or Reject the ticket.</li>
+                        <li><strong>Chat Reactions:</strong> Depending on your choice, the officer will react in the main terminal! If you reject them, they might curse you out, triggering the automated AI Dispatcher to suspend their comms.</li>
+                        <li><strong>Mass Resolve:</strong> If you have 20 tickets and no time, use the <code>AUTO ACCEPT ALL</code> or <code>DENY ALL</code> buttons. The system will sequentially reply to each one in the chat log.</li>
+                    </ul>
+                </div>
+
+                <div id="ht-recruitment" class="how-to-section">
+                    <h3>Recruitment System</h3>
+                    <p>The <code>📁 JOIN MCPD</code> tab is the HR department. You will see resumes from randomized cyberpunk citizens applying to join the force.</p>
+                    <ul>
+                        <li><strong>Background Checks:</strong> Read their generated history, psychological profile, and physical traits.</li>
+                        <li><strong>Approve/Deny:</strong> If you Approve a recruit, their name is officially added to the 5,000-unit Active Roster!</li>
+                        <li><strong>AI Reactions:</strong> Denied applicants will often complain in the main chat log about how unfair the system is.</li>
+                    </ul>
+                </div>
+
+                <div id="ht-controls" class="how-to-section">
+                    <h3>Manual Event Controls</h3>
+                    <p>On the right-side control panel, you have manual override buttons.</p>
+                    <ul>
+                        <li><strong>Standard Callouts:</strong> Drop down this tab to manually force a <code>10-31 ROBBERY</code> or a <code>10-50 TRAFFIC STOP</code> into the terminal.</li>
+                        <li><strong>Department Stats:</strong> Drop down this accordion to see live-updating statistics on how many criminals have been arrested or deceased during your shift.</li>
+                        <li><strong>Customization:</strong> Use the color pickers at the bottom of the panel to change the UI colors of the entire website.</li>
+                    </ul>
+                </div>
+
+                <div id="ht-export" class="how-to-section">
+                    <h3>Log Exporting</h3>
+                    <p>If something hilarious or crazy happens in the chat log, you can export it as evidence.</p>
+                    <ul>
+                        <li><strong>Export to PDF:</strong> Generates a clean, readable PDF document of the entire chat history.</li>
+                        <li><strong>Export to PNG:</strong> Takes a massive, high-resolution screenshot of the chat log so you can share it.</li>
+                        <li><strong>System Requirement:</strong> Both buttons require you to wait for the "GENERATING..." process to finish rendering the file.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showHowToTab(tabId) {
+    // Hide all sections
+    document.querySelectorAll('.how-to-section').forEach(el => el.classList.remove('active'));
+    // Remove active from all tabs
+    document.querySelectorAll('.how-to-tab').forEach(el => el.classList.remove('active'));
+    
+    // Show selected section
+    document.getElementById(tabId).classList.add('active');
+    
+    // Find button that called it and make it active
+    const buttons = document.querySelectorAll('.how-to-tab');
+    for(let btn of buttons) {
+        if(btn.getAttribute('onclick').includes(tabId)) {
+            btn.classList.add('active');
+        }
+    }
+}
+</script>
 
 </body>
 
