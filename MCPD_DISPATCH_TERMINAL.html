@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.21.12">
+    <link rel="stylesheet" href="css/styles.css?v=4.20.63">
 </head>
 
 <body>
@@ -140,13 +140,36 @@ document.addEventListener('keypress', function(e) {
                 <div class="panel-content control-panel scrollable">
                     <p class="control-desc">Use buttons below to simulate events and trigger officer distress signals into the log.</p>
 
-                    <h3 style="color: #ffea00; font-size: 0.9rem; margin-top: 10px;">STANDARD CALLOUTS</h3>
-                    <button class="manual-event-btn" id="manual-event-robbery" style="background: #ff9800; color: #000; border: none; font-weight: bold;">10-31 ROBBERY</button>
-                    <button class="manual-event-btn" id="manual-event-suspicious" style="background: #ffeb3b; color: #000; border: none; font-weight: bold;">10-43 SUSPICIOUS ACTIVITY</button>
-                    <button class="manual-event-btn" id="manual-event-traffic" style="background: var(--accent-blue); color: #000; border: none; font-weight: bold;">10-50 TRAFFIC STOP</button>
-                    <button class="manual-event-btn" id="manual-event-random" style="background: #ccc; color: #000; border: none; font-weight: bold;">RANDOM CALLOUT</button>
-                    <button class="manual-event-btn" id="manual-event-confusion" style="background: #9c27b0; color: #fff; border: none; font-weight: bold;">10-30 CONFUSED OFFICER</button>
-<button id="btn-tencode-guide" style="padding: 10px 15px; font-size: 0.85rem; background: #ff9800; color: #000; border: none; font-weight: bold; margin-top: 10px; margin-bottom: 10px; cursor: pointer; display: block; width: 100%;">10-CODE GUIDE</button>
+                    <div id="standard-callouts-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #ffea00; font-weight: bold; user-select: none; padding: 15px 5px; background: rgba(255, 234, 0, 0.05); border-radius: 4px; margin-bottom: 5px;">
+                        <span>📡 STANDARD CALLOUTS</span>
+                        <span id="standard-callouts-chevron">▼</span>
+                    </div>
+                    <div id="standard-callouts-body" style="display: none; flex-direction: column; gap: 8px;">
+                        <button class="manual-event-btn" id="manual-event-robbery" style="background: #ff9800; color: #000; border: none; font-weight: bold;">10-31 ROBBERY</button>
+                        <button class="manual-event-btn" id="manual-event-suspicious" style="background: #ffeb3b; color: #000; border: none; font-weight: bold;">10-43 SUSPICIOUS ACTIVITY</button>
+                        <button class="manual-event-btn" id="manual-event-traffic" style="background: var(--accent-blue); color: #000; border: none; font-weight: bold;">10-50 TRAFFIC STOP</button>
+                        <button class="manual-event-btn" id="manual-event-random" style="background: #ccc; color: #000; border: none; font-weight: bold;">RANDOM CALLOUT</button>
+                        <button class="manual-event-btn" id="manual-event-confusion" style="background: #9c27b0; color: #fff; border: none; font-weight: bold;">10-30 CONFUSED OFFICER</button>
+                        <button id="btn-tencode-guide" style="padding: 10px 15px; font-size: 0.85rem; background: #ff9800; color: #000; border: none; font-weight: bold; margin-top: 10px; margin-bottom: 10px; cursor: pointer; display: block; width: 100%;">10-CODE GUIDE</button>
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const scHeader = document.getElementById('standard-callouts-header');
+                            const scBody = document.getElementById('standard-callouts-body');
+                            const scChevron = document.getElementById('standard-callouts-chevron');
+                            if(scHeader && scBody) {
+                                scHeader.addEventListener('click', () => {
+                                    if(scBody.style.display === 'none' || scBody.style.display === '') {
+                                        scBody.style.display = 'flex';
+                                        scChevron.innerText = '▲';
+                                    } else {
+                                        scBody.style.display = 'none';
+                                        scChevron.innerText = '▼';
+                                    }
+                                });
+                            }
+                        });
+                    </script>
 
                     <!-- DEPARTMENT STATS & CRITICAL EMERGENCIES (EXPANDABLE) -->
                     <div style="margin-top: 20px; border-top: 1px solid var(--panel-border); padding-top: 15px;">
@@ -944,25 +967,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.21.12"></script>
+    <script src="js/system/check_system.js?v=4.20.63"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.21.12"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.21.12"></script>
-    <script src="js/system/export_log.js?v=4.21.12"></script>
-    <script src="js/chats/transmissions.js?v=4.21.12"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.21.12"></script>
-    <script src="js/core/chat_lines.js?v=4.21.12"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=4.21.12"></script>
-    <script src="js/core/chat_lines_arriving.js?v=4.21.12"></script>
-    <script src="js/core/realistic_debates.js?v=4.21.12"></script>
-    <script src="js/core/chat_reactions.js?v=4.21.12"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=4.21.12"></script>
-    <script src="js/core/profanity_events.js?v=4.21.12"></script>
-    <script src="js/core/department_complaints.js?v=4.21.12"></script>
-    <script src="js/core/meme_events.js?v=4.21.12"></script>
-    <script src="js/system/it_support.js?v=4.21.12"></script>
-    <script src="js/system/dms_system.js?v=4.21.12"></script>
-    <script src="js/core/app_core.js?v=4.21.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.20.63"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.20.63"></script>
+    <script src="js/system/export_log.js?v=4.20.63"></script>
+    <script src="js/chats/transmissions.js?v=4.20.63"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines_arriving.js?v=4.20.63"></script>
+    <script src="js/core/realistic_debates.js?v=4.20.63"></script>
+    <script src="js/core/chat_reactions.js?v=4.20.63"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=4.20.63"></script>
+    <script src="js/core/profanity_events.js?v=4.20.63"></script>
+    <script src="js/core/department_complaints.js?v=4.20.63"></script>
+    <script src="js/core/meme_events.js?v=4.20.63"></script>
+    <script src="js/system/it_support.js?v=4.20.63"></script>
+    <script src="js/system/dms_system.js?v=4.20.63"></script>
+    <script src="js/core/app_core.js?v=4.20.63"></script>
 
     
 
