@@ -167,6 +167,73 @@ dmsStyle.innerHTML = `
         color: #fff;
     }
     
+    
+    .dm-action-btn {
+        background: transparent;
+        border: none;
+        color: var(--accent-blue);
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: 0.2s;
+    }
+    .dm-action-btn:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    .audio-waveform {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        height: 20px;
+        margin-left: 10px;
+    }
+    .audio-waveform span {
+        width: 3px;
+        background: #fff;
+        border-radius: 2px;
+        animation: wave 1s infinite ease-in-out;
+    }
+    @keyframes wave {
+        0%, 100% { height: 4px; }
+        50% { height: 16px; }
+    }
+    .self-destruct-msg {
+        animation: glitch 0.5s infinite;
+        color: #ff3b30;
+    }
+    @keyframes glitch {
+        0% { opacity: 1; transform: translate(0); }
+        20% { opacity: 0.8; transform: translate(-2px, 1px); }
+        40% { opacity: 0.9; transform: translate(2px, -1px); }
+        60% { opacity: 1; transform: translate(-1px, 2px); }
+        80% { opacity: 0.8; transform: translate(1px, -2px); }
+        100% { opacity: 1; transform: translate(0); }
+    }
+    .wallpaper-menu {
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 10px;
+        z-index: 100;
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .wallpaper-btn {
+        background: #222;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        text-align: left;
+    }
+    .wallpaper-btn:hover { background: var(--accent-blue); }
+    
     #dm-search-bar {
         width: 100%;
         background: rgba(0,0,0,0.5);
@@ -245,6 +312,24 @@ function initDms() {
     });
 
     document.getElementById('btn-dm-send').addEventListener('click', () => sendDm());
+
+    // Inject massive features into input area
+    const inputArea = document.getElementById('dm-input').parentElement;
+    if (inputArea && !document.getElementById('btn-dm-voice')) {
+        const actionsHtml = `
+            <button id="btn-dm-voice" class="dm-action-btn" title="Send Voice Memo">🎤</button>
+            <button id="btn-dm-gps" class="dm-action-btn" title="Ping GPS Location">📍</button>
+            <button id="btn-dm-credits" class="dm-action-btn" title="Send Cyber-Credits">💸</button>
+            <button id="btn-dm-destruct" class="dm-action-btn" style="color: #ff3b30;" title="Self-Destruct Message">💣</button>
+        `;
+        inputArea.insertAdjacentHTML('afterbegin', actionsHtml);
+        
+        document.getElementById('btn-dm-voice').addEventListener('click', sendVoiceMemo);
+        document.getElementById('btn-dm-gps').addEventListener('click', sendGpsPing);
+        document.getElementById('btn-dm-credits').addEventListener('click', sendCredits);
+        document.getElementById('btn-dm-destruct').addEventListener('click', sendSelfDestruct);
+    }
+    
     document.getElementById('dm-input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') sendDm();
     });
@@ -445,6 +530,13 @@ function selectDmUnit(unitId) {
     
     header.innerHTML = `
         <button onclick="clearChat('${unitId}')" style="position: absolute; right: 15px; top: 20px; background: none; border: none; color: #ff3b30; cursor: pointer; font-size: 18px;" title="Clear Chat">🗑️</button>
+        <button onclick="callOfficer()" style="position: absolute; right: 50px; top: 20px; background: none; border: none; color: #10b981; cursor: pointer; font-size: 18px;" title="Call Unit">📞</button>
+        <button onclick="toggleWallpaperMenu()" style="position: absolute; left: 15px; top: 20px; background: none; border: none; color: #888; cursor: pointer; font-size: 18px;" title="Chat Settings">⚙️</button>
+        <div id="dm-wallpaper-menu" class="wallpaper-menu">
+            <button class="wallpaper-btn" onclick="setDmWallpaper('dark')">Solid Black</button>
+            <button class="wallpaper-btn" onclick="setDmWallpaper('matrix')">Matrix Rain</button>
+            <button class="wallpaper-btn" onclick="setDmWallpaper('cyber')">Cyberpunk City</button>
+        </div>
         <div style="width: 40px; height: 40px; background: #333; border-radius: 50%; margin: 0 auto 5px auto; display: flex; align-items: center; justify-content: center; font-size: 20px;">👮</div>
         <div style="font-size: 14px; font-weight: bold;">${unitId} &rsaquo;</div>
         <div style="font-size: 11px; color: #8e8e93; margin-top: 2px;">
@@ -531,7 +623,7 @@ function renderChatHistory() {
         if (msg.type === 'image') {
             bubble.innerHTML = `<img src="${msg.text}" alt="Attachment">`;
         } else {
-            bubble.innerText = msg.text;
+            bubble.innerHTML = msg.text;
         }
 
         bubble.title = `Sent at ${new Date(msg.id).toLocaleTimeString()}`;
@@ -677,3 +769,80 @@ function receiveDm(unitId, text, type = 'text') {
 }
 
 document.addEventListener('DOMContentLoaded', initDms);
+
+window.sendVoiceMemo = function() {
+    if (!window.activeDmUnit) return;
+    const dur = Math.floor(Math.random() * 10) + 2;
+    const html = `▶️ Audio Message (${dur}s) <div class="audio-waveform"><span></span><span style="animation-delay:0.1s"></span><span style="animation-delay:0.2s"></span><span style="animation-delay:0.3s"></span><span style="animation-delay:0.4s"></span></div>`;
+    sendDm(html, 'audio');
+}
+
+window.sendGpsPing = function() {
+    if (!window.activeDmUnit) return;
+    const html = `📍 <b>Pinned Location</b><br>MCPD Dispatch Headquarters<br><span style="font-size:10px;color:#ccc;">Coordinates: 40.7128° N, 74.0060° W</span>`;
+    sendDm(html, 'gps');
+}
+
+window.sendCredits = function() {
+    if (!window.activeDmUnit) return;
+    const amt = prompt("Enter Cyber-Credits amount to transfer:");
+    if (amt && !isNaN(amt)) {
+        const html = `💸 <b>TRANSFER COMPLETE</b><br>Sent ${amt} Cyber-Credits to ${window.activeDmUnit}.`;
+        sendDm(html, 'transfer');
+    }
+}
+
+window.sendSelfDestruct = function() {
+    if (!window.activeDmUnit) return;
+    const input = document.getElementById('dm-input');
+    const text = input.value.trim();
+    if (!text) {
+        alert("Type a message first to make it self-destruct!");
+        return;
+    }
+    const html = `<div class="self-destruct-msg">💣 [CLASSIFIED] ${text}</div>`;
+    sendDm(html, 'destruct');
+    input.value = '';
+    
+    // Auto delete after 5 seconds
+    setTimeout(() => {
+        if (window.dmConversations[window.activeDmUnit]) {
+            const msgs = window.dmConversations[window.activeDmUnit].messages;
+            const last = msgs[msgs.length - 1];
+            if (last && last.type === 'destruct') {
+                last.text = "💥 <i>Message Self-Destructed</i>";
+                last.type = 'text';
+                if (document.getElementById('dms-log').style.display === 'flex') renderChatHistory();
+            }
+        }
+    }, 5000);
+}
+
+window.callOfficer = function() {
+    if (!window.activeDmUnit) return;
+    alert(`Calling ${window.activeDmUnit} over secure frequency...`);
+    setTimeout(() => {
+        alert(`${window.activeDmUnit} did not answer. Sent to Voicemail.`);
+        sendDm("📞 Missed Call from Dispatch", 'call');
+    }, 2000);
+}
+
+window.toggleWallpaperMenu = function() {
+    const menu = document.getElementById('dm-wallpaper-menu');
+    if (menu) {
+        menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
+    }
+}
+
+window.setDmWallpaper = function(type) {
+    const history = document.getElementById('dm-chat-history');
+    if (!history) return;
+    if (type === 'matrix') {
+        history.style.background = 'url("https://media.giphy.com/media/s2m00K3x6YvK0/giphy.gif") center/cover';
+    } else if (type === 'cyber') {
+        history.style.background = 'url("https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=1000") center/cover';
+    } else if (type === 'dark') {
+        history.style.background = '#000';
+    }
+    document.getElementById('dm-wallpaper-menu').style.display = 'none';
+}
