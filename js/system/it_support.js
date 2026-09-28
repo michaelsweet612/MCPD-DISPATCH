@@ -79,6 +79,25 @@ function renderITTickets() {
         return;
     }
     
+    const btnWrapper = document.createElement('div');
+    btnWrapper.style.display = 'flex';
+    btnWrapper.style.gap = '10px';
+    btnWrapper.style.marginBottom = '15px';
+    
+    const btnAcceptAll = document.createElement('button');
+    btnAcceptAll.innerText = 'AUTO ACCEPT ALL';
+    btnAcceptAll.style = 'background: var(--accent-green); color: #000; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px;';
+    btnAcceptAll.onclick = window.autoAcceptAllIT;
+    
+    const btnDenyAll = document.createElement('button');
+    btnDenyAll.innerText = 'DENY ALL';
+    btnDenyAll.style = 'background: var(--panic-red); color: #fff; font-weight: bold; padding: 10px; border: none; flex: 1; cursor: pointer; border-radius: 4px;';
+    btnDenyAll.onclick = window.denyAllIT;
+
+    btnWrapper.appendChild(btnAcceptAll);
+    btnWrapper.appendChild(btnDenyAll);
+    list.appendChild(btnWrapper);
+    
     window.itTickets.forEach((ticket, index) => {
         const div = document.createElement('div');
         div.style.background = 'var(--panel-bg)';
@@ -145,3 +164,35 @@ function updateITTicketBadge() {
         badge.style.display = 'none';
     }
 }
+
+
+window.autoAcceptAllIT = function() {
+    const tickets = [...window.itTickets];
+    window.itTickets = [];
+    renderITTickets();
+
+    tickets.forEach((ticket, i) => {
+        setTimeout(() => {
+            const reply = HAPPY_ACCEPTANCES[Math.floor(Math.random() * HAPPY_ACCEPTANCES.length)];
+            if (typeof addChatMessage !== 'undefined') addChatMessage(ticket.sender, reply, 'casual', false);
+        }, 1000 + (i * 1000));
+    });
+};
+
+window.denyAllIT = function() {
+    const tickets = [...window.itTickets];
+    window.itTickets = [];
+    renderITTickets();
+
+    tickets.forEach((ticket, i) => {
+        setTimeout(() => {
+            const angry = ANGRY_REJECTIONS[Math.floor(Math.random() * ANGRY_REJECTIONS.length)];
+            if (typeof addChatMessage !== 'undefined') addChatMessage(ticket.sender, angry, 'panic', false);
+            
+            setTimeout(() => {
+                const aiReaction = DISPATCH_CRASH_OUTS[Math.floor(Math.random() * DISPATCH_CRASH_OUTS.length)];
+                if (typeof addChatMessage !== 'undefined') addChatMessage("AI DISPATCHER", aiReaction, 'panic', false);
+            }, 1500);
+        }, 1000 + (i * 3000));
+    });
+};
