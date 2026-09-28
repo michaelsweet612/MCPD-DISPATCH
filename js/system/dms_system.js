@@ -4,6 +4,7 @@
 
 window.dmConversations = {}; 
 window.activeDmUnit = null;
+window.dmsListLimit = 20;
 
 // iMessage Style CSS injected dynamically
 const dmsStyle = document.createElement('style');
@@ -234,6 +235,7 @@ function initDms() {
         tabDms.classList.add('active');
         tabDms.style.color = 'var(--text-main)';
         document.getElementById('dms-log').style.display = 'flex';
+        window.dmsListLimit = 20;
         
         renderOfficerList();
         
@@ -287,7 +289,10 @@ function initDms() {
         searchDiv.innerHTML = `<input type="text" id="dm-search-bar" placeholder="Search officers...">`;
         sidebar.insertBefore(searchDiv, document.getElementById('dm-officer-list'));
         
-        document.getElementById('dm-search-bar').addEventListener('input', renderOfficerList);
+        document.getElementById('dm-search-bar').addEventListener('input', () => {
+            window.dmsListLimit = 20;
+            renderOfficerList();
+        });
     }
 
     // Add Smart Replies container
@@ -368,7 +373,9 @@ function renderOfficerList() {
         return a.id.localeCompare(b.id);
     });
     
-    activeUnits.forEach(unit => {
+    const displayUnits = activeUnits.slice(0, window.dmsListLimit || 20);
+
+    displayUnits.forEach(unit => {
         const div = document.createElement('div');
         div.className = 'sidebar-unit';
         if (window.activeDmUnit === unit.id) {
@@ -407,6 +414,24 @@ function renderOfficerList() {
         div.addEventListener('click', () => selectDmUnit(unit.id));
         list.appendChild(div);
     });
+
+    if (activeUnits.length > (window.dmsListLimit || 20)) {
+        const loadMore = document.createElement('div');
+        loadMore.innerText = "Load More Units...";
+        loadMore.style.padding = '15px';
+        loadMore.style.textAlign = 'center';
+        loadMore.style.color = 'var(--accent-blue)';
+        loadMore.style.cursor = 'pointer';
+        loadMore.style.fontWeight = 'bold';
+        loadMore.style.borderTop = '1px solid var(--panel-border)';
+        
+        loadMore.addEventListener('click', () => {
+            window.dmsListLimit += 20;
+            renderOfficerList();
+        });
+        
+        list.appendChild(loadMore);
+    }
 }
 
 function selectDmUnit(unitId) {
