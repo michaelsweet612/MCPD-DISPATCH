@@ -1093,7 +1093,8 @@ let citizensDisplayed = 10;
                 personality: getRandomPersonality(),
                 gender: getRandomGender(),
                 maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
-                sector: Math.floor(Math.random() * 9) + 1
+                sector: Math.floor(Math.random() * 9) + 1,
+                patrolVehicle: `MCPD-${Math.floor(1000 + Math.random() * 9000)}`
             });
         }
     }
@@ -4863,6 +4864,7 @@ function renderUnitStatus() {
                 <td style="padding: 8px 0; color: ${assignColor}; font-weight:bold; font-size: 0.85rem;">${assignment}</td>
                 <td style="padding: 8px 0; color: var(--accent-blue); font-size: 0.9rem;">${psych}</td>
                 <td style="padding: 8px 0; color: var(--text-dim); font-size: 0.9rem;">${u.gender || 'Unknown'}</td>
+                <td style="padding: 8px 0; color: #ffeb3b; font-size: 0.9rem; font-family: monospace;">${u.patrolVehicle || 'N/A'}</td>
             </tr>
         `;
     }
@@ -4870,7 +4872,7 @@ function renderUnitStatus() {
     if (displayLimit < roster.length) {
         html += `
             <tr>
-                <td colspan="5" style="text-align:center; padding: 10px;">
+                <td colspan="6" style="text-align:center; padding: 10px;">
                     <button onclick="unitsDisplayed += 25; renderUnitStatus();" style="width: 100%; padding: 10px; background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);">LOAD MORE UNITS (${displayLimit} / ${roster.length})</button>
                 </td>
             </tr>
