@@ -8090,3 +8090,219 @@ function generateAvatarSVG(seed, size, personality) {
 })();
 
 
+
+// ==========================================
+// CONTRABAND IMAGE SCANNER LOGIC
+// ==========================================
+window.handleContrabandUpload = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Reset UI
+    document.getElementById('image-scanner-ui').style.display = 'none';
+    document.getElementById('image-scanner-results').style.display = 'none';
+    
+    // Show Processing
+    const processingEl = document.getElementById('image-scanner-processing');
+    const statusText = document.getElementById('scanner-status-text');
+    processingEl.style.display = 'block';
+    
+    // Read Image for preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('scanned-image-preview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // Simulated Scanning Sequence
+    statusText.innerText = "Extracting visual metadata...";
+    
+    setTimeout(() => {
+        statusText.innerText = "Running against global weapons registry...";
+    }, 1000);
+    
+    setTimeout(() => {
+        statusText.innerText = "Analyzing 3D geometry & material composition...";
+    }, 2000);
+
+    setTimeout(() => {
+        // Complete Scan
+        processingEl.style.display = 'none';
+        
+        // Randomly decide, but we can seed it slightly by file size to be consistent for the same image
+        const isIllegal = (file.size % 2 === 0); 
+        
+        showScannerResults(isIllegal);
+    }, 3500);
+};
+
+window.showScannerResults = function(isIllegal) {
+    const resultsEl = document.getElementById('image-scanner-results');
+    const verdictEl = document.getElementById('scanner-verdict');
+    const detailsEl = document.getElementById('scanner-details');
+    
+    resultsEl.style.display = 'block';
+    
+    if (isIllegal) {
+        verdictEl.innerText = "VERDICT: ILLEGAL CONTRABAND";
+        verdictEl.style.color = "var(--panic-red)";
+        verdictEl.style.borderBottomColor = "var(--panic-red)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--panic-red); font-weight: bold;">[!] THREAT DETECTED</span><br><br>
+            Neural analysis indicates high probability of modified weaponry, explosive materials, or restricted tech.<br>
+            Possession is a Class-3 Felony.<br>
+            Confiscate immediately and detain suspect.
+        `;
+    } else {
+        verdictEl.innerText = "VERDICT: LEGAL / CLEARED";
+        verdictEl.style.color = "var(--accent-green)";
+        verdictEl.style.borderBottomColor = "var(--accent-green)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--accent-green); font-weight: bold;">[✓] NO THREAT DETECTED</span><br><br>
+            Item appears to be safe for civilian possession.<br>
+            No restricted materials, weaponized geometry, or illegal modifications detected.<br>
+            (e.g., spiky pencils, standard tools, normal civilian items).
+        `;
+    }
+};
+
+window.overrideScanner = function(status) {
+    const verdictEl = document.getElementById('scanner-verdict');
+    const detailsEl = document.getElementById('scanner-details');
+    
+    if (status === 'LEGAL') {
+        verdictEl.innerText = "VERDICT: OVERRIDDEN (LEGAL)";
+        verdictEl.style.color = "var(--accent-blue)";
+        verdictEl.style.borderBottomColor = "var(--accent-blue)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--accent-blue); font-weight: bold;">[!] DISPATCHER OVERRIDE APPLIED</span><br><br>
+            You have manually declared this item LEGAL.<br>
+            The neural network database has been updated with your classification.
+        `;
+    } else {
+        verdictEl.innerText = "VERDICT: OVERRIDDEN (ILLEGAL)";
+        verdictEl.style.color = "var(--panic-red)";
+        verdictEl.style.borderBottomColor = "var(--panic-red)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--panic-red); font-weight: bold;">[!] DISPATCHER OVERRIDE APPLIED</span><br><br>
+            You have manually declared this item ILLEGAL CONTRABAND.<br>
+            Units are authorized to treat this item as a restricted weapon.
+        `;
+    }
+};
+
+window.resetScanner = function() {
+    document.getElementById('image-scanner-results').style.display = 'none';
+    document.getElementById('image-scanner-processing').style.display = 'none';
+    document.getElementById('image-scanner-ui').style.display = 'block';
+    document.getElementById('contraband-upload').value = ''; // Clear file
+};
+
+
+// ==========================================
+// CONTRABAND IMAGE SCANNER LOGIC
+// ==========================================
+window.handleContrabandUpload = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Reset UI
+    document.getElementById('image-scanner-ui').style.display = 'none';
+    document.getElementById('image-scanner-results').style.display = 'none';
+    
+    // Show Processing
+    const processingEl = document.getElementById('image-scanner-processing');
+    const statusText = document.getElementById('scanner-status-text');
+    processingEl.style.display = 'block';
+    
+    // Read Image for preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('scanned-image-preview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // Simulated Scanning Sequence
+    statusText.innerText = "Extracting visual metadata...";
+    
+    setTimeout(() => {
+        statusText.innerText = "Running against global weapons registry...";
+    }, 1000);
+    
+    setTimeout(() => {
+        statusText.innerText = "Analyzing 3D geometry & material composition...";
+    }, 2000);
+
+    setTimeout(() => {
+        // Complete Scan
+        processingEl.style.display = 'none';
+        
+        // Randomly decide, but we can seed it slightly by file size to be consistent for the same image
+        const isIllegal = (file.size % 2 === 0); 
+        
+        showScannerResults(isIllegal);
+    }, 3500);
+};
+
+window.showScannerResults = function(isIllegal) {
+    const resultsEl = document.getElementById('image-scanner-results');
+    const verdictEl = document.getElementById('scanner-verdict');
+    const detailsEl = document.getElementById('scanner-details');
+    
+    resultsEl.style.display = 'block';
+    
+    if (isIllegal) {
+        verdictEl.innerText = "VERDICT: ILLEGAL CONTRABAND";
+        verdictEl.style.color = "var(--panic-red)";
+        verdictEl.style.borderBottomColor = "var(--panic-red)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--panic-red); font-weight: bold;">[!] THREAT DETECTED</span><br><br>
+            Neural analysis indicates high probability of modified weaponry, explosive materials, or restricted tech.<br>
+            Possession is a Class-3 Felony.<br>
+            Confiscate immediately and detain suspect.
+        `;
+    } else {
+        verdictEl.innerText = "VERDICT: LEGAL / CLEARED";
+        verdictEl.style.color = "var(--accent-green)";
+        verdictEl.style.borderBottomColor = "var(--accent-green)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--accent-green); font-weight: bold;">[✓] NO THREAT DETECTED</span><br><br>
+            Item appears to be safe for civilian possession.<br>
+            No restricted materials, weaponized geometry, or illegal modifications detected.<br>
+            (e.g., spiky pencils, standard tools, normal civilian items).
+        `;
+    }
+};
+
+window.overrideScanner = function(status) {
+    const verdictEl = document.getElementById('scanner-verdict');
+    const detailsEl = document.getElementById('scanner-details');
+    
+    if (status === 'LEGAL') {
+        verdictEl.innerText = "VERDICT: OVERRIDDEN (LEGAL)";
+        verdictEl.style.color = "var(--accent-blue)";
+        verdictEl.style.borderBottomColor = "var(--accent-blue)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--accent-blue); font-weight: bold;">[!] DISPATCHER OVERRIDE APPLIED</span><br><br>
+            You have manually declared this item LEGAL.<br>
+            The neural network database has been updated with your classification.
+        `;
+    } else {
+        verdictEl.innerText = "VERDICT: OVERRIDDEN (ILLEGAL)";
+        verdictEl.style.color = "var(--panic-red)";
+        verdictEl.style.borderBottomColor = "var(--panic-red)";
+        detailsEl.innerHTML = `
+            <span style="color: var(--panic-red); font-weight: bold;">[!] DISPATCHER OVERRIDE APPLIED</span><br><br>
+            You have manually declared this item ILLEGAL CONTRABAND.<br>
+            Units are authorized to treat this item as a restricted weapon.
+        `;
+    }
+};
+
+window.resetScanner = function() {
+    document.getElementById('image-scanner-results').style.display = 'none';
+    document.getElementById('image-scanner-processing').style.display = 'none';
+    document.getElementById('image-scanner-ui').style.display = 'block';
+    document.getElementById('contraband-upload').value = ''; // Clear file
+};
+
