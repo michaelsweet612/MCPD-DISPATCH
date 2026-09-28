@@ -1,5 +1,5 @@
 // ==========================================
-// PERSONAL DMs SYSTEM (iMESSAGE EDITION)
+// PERSONAL DMs SYSTEM (iMESSAGE EDITION V3)
 // ==========================================
 
 window.dmConversations = {}; 
@@ -18,6 +18,13 @@ dmsStyle.innerHTML = `
         font-size: 14px;
         position: relative;
         animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .imessage-bubble img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin-top: 5px;
+        cursor: pointer;
     }
     
     @keyframes popIn {
@@ -87,6 +94,7 @@ dmsStyle.innerHTML = `
         display: flex;
         flex-direction: column;
         transition: background 0.2s;
+        position: relative;
     }
     .sidebar-unit:hover {
         background: rgba(255,255,255,0.05);
@@ -107,6 +115,16 @@ dmsStyle.innerHTML = `
         font-weight: bold;
         font-size: 14px;
         color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
     }
     
     .sidebar-unit-preview {
@@ -115,9 +133,10 @@ dmsStyle.innerHTML = `
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding-right: 20px;
     }
 
-    .tapback-heart {
+    .tapback-badge {
         position: absolute;
         bottom: -10px;
         right: -10px;
@@ -128,6 +147,34 @@ dmsStyle.innerHTML = `
         border: 2px solid #000;
         cursor: pointer;
         animation: popIn 0.3s;
+        user-select: none;
+    }
+
+    .smart-reply-btn {
+        background: transparent;
+        border: 1px solid #007aff;
+        color: #007aff;
+        border-radius: 15px;
+        padding: 5px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: 0.2s;
+        white-space: nowrap;
+    }
+    .smart-reply-btn:hover {
+        background: #007aff;
+        color: #fff;
+    }
+    
+    #dm-search-bar {
+        width: 100%;
+        background: rgba(0,0,0,0.5);
+        border: 1px solid var(--panel-border);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        outline: none;
+        margin-bottom: 10px;
     }
 `;
 document.head.appendChild(dmsStyle);
@@ -147,7 +194,9 @@ const incomingDmTopics = [
     "Are we getting paid this week? Financial terminal is locked.",
     "Hey, I found a crate of confiscated cigars. Want me to stash a box for you?",
     "Can you reset my terminal password? I forgot it again.",
-    "Dispatch, I accidentally shot my own drone. Please advise."
+    "Dispatch, I accidentally shot my own drone. Please advise.",
+    "Do you guys see that massive blimp outside? What is Tyrell Corp advertising now?",
+    "I'm so tired. Can I sleep in my cruiser for 10 minutes? Don't log this."
 ];
 
 const dispatchResponses = [
@@ -160,8 +209,21 @@ const dispatchResponses = [
     "Copy that. I am logging this.",
     "Try turning your terminal off and on again.",
     "Negative. Proceed with standard protocol.",
-    "I don't get paid enough to deal with this."
+    "I don't get paid enough to deal with this.",
+    "Return to station immediately.",
+    "Acknowledge."
 ];
+
+const tapbackCycle = ['❤️', '👍', '👎', '‼️', '❓', null];
+
+function getStatusColor(status) {
+    if (!status) return '#888';
+    const s = status.toUpperCase();
+    if (s.includes('ON DUTY')) return '#10b981'; // Green
+    if (s.includes('BUSY')) return '#f59e0b'; // Yellow
+    if (s.includes('ON SCENE') || s.includes('EN ROUTE')) return '#ef4444'; // Red
+    return '#6b7280'; // Grey
+}
 
 function initDms() {
     const tabDms = document.getElementById('tab-dms');
@@ -171,7 +233,7 @@ function initDms() {
         if(typeof hideAllTabs === 'function') hideAllTabs();
         tabDms.classList.add('active');
         tabDms.style.color = 'var(--text-main)';
-        document.getElementById('dms-log').style.display = 'block';
+        document.getElementById('dms-log').style.display = 'flex';
         
         renderOfficerList();
         
@@ -180,10 +242,32 @@ function initDms() {
         badge.innerText = "0";
     });
 
-    document.getElementById('btn-dm-send').addEventListener('click', sendDm);
+    document.getElementById('btn-dm-send').addEventListener('click', () => sendDm());
     document.getElementById('dm-input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') sendDm();
     });
+
+    // Image Upload hook
+    const uploadBtn = document.getElementById('btn-dm-upload');
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', () => {
+            const fileInput = document.getElementById('dm-image-upload');
+            if (fileInput) fileInput.click();
+        });
+    }
+
+    const fileInput = document.getElementById('dm-image-upload');
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    sendDm(ev.target.result, 'image');
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
 
     // Replace the chat header with an iMessage-style header
     const header = document.getElementById('dm-chat-header');
@@ -192,30 +276,78 @@ function initDms() {
         header.style.background = '#1a1a1c';
         header.style.borderBottom = '1px solid #333';
         header.style.padding = '10px';
+        header.style.position = 'relative';
+    }
+
+    // Add search bar to the sidebar
+    const sidebar = document.getElementById('dm-officer-list').parentElement;
+    if (sidebar) {
+        const searchDiv = document.createElement('div');
+        searchDiv.style.padding = '10px 10px 0 10px';
+        searchDiv.innerHTML = `<input type="text" id="dm-search-bar" placeholder="Search officers...">`;
+        sidebar.insertBefore(searchDiv, document.getElementById('dm-officer-list'));
+        
+        document.getElementById('dm-search-bar').addEventListener('input', renderOfficerList);
+    }
+
+    // Add Smart Replies container
+    const historyDiv = document.getElementById('dm-chat-history');
+    if (historyDiv) {
+        const smartReplies = document.createElement('div');
+        smartReplies.id = 'dm-smart-replies';
+        smartReplies.style.display = 'none';
+        smartReplies.style.gap = '8px';
+        smartReplies.style.padding = '10px 20px';
+        smartReplies.style.background = '#000';
+        smartReplies.style.overflowX = 'auto';
+        smartReplies.style.borderBottom = '1px solid #222';
+        
+        smartReplies.innerHTML = `
+            <button class="smart-reply-btn" onclick="sendDm('10-4. Copy that.')">10-4. Copy that.</button>
+            <button class="smart-reply-btn" onclick="sendDm('Negative.')">Negative.</button>
+            <button class="smart-reply-btn" onclick="sendDm('Return to station.')">Return to station.</button>
+            <button class="smart-reply-btn" onclick="sendDm('I am logging this.')">I am logging this.</button>
+        `;
+        // Insert before input container
+        const rightSide = historyDiv.parentElement;
+        rightSide.insertBefore(smartReplies, rightSide.lastElementChild);
     }
 
     setInterval(() => {
-        if (Math.random() < 0.15 && roster && roster.length > 0) {
+        if (Math.random() < 0.20 && typeof roster !== 'undefined' && roster.length > 0) {
             const activeUnits = roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
             if (activeUnits.length > 0) {
                 const randomUnit = activeUnits[Math.floor(Math.random() * activeUnits.length)].id;
-                receiveDm(randomUnit, incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)]);
+                
+                // 10% chance they send a random image
+                if (Math.random() < 0.1) {
+                    receiveDm(randomUnit, 'https://picsum.photos/300/200?random=' + Math.random(), 'image');
+                } else {
+                    receiveDm(randomUnit, incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)]);
+                }
             }
         }
-    }, 45000);
+    }, 35000);
 }
 
 function renderOfficerList() {
     const list = document.getElementById('dm-officer-list');
+    if (!list) return;
     list.innerHTML = '';
-    list.style.padding = '0'; // removing padding for full width items
+    list.style.padding = '0';
 
-    if (!roster || roster.length === 0) {
+    if (typeof roster === 'undefined' || roster.length === 0) {
         list.innerHTML = '<div style="padding: 15px; color: #666; font-style: italic;">No active units.</div>';
         return;
     }
 
+    const searchQuery = (document.getElementById('dm-search-bar')?.value || '').toLowerCase();
+
     let activeUnits = roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
+    
+    if (searchQuery) {
+        activeUnits = activeUnits.filter(u => u.id.toLowerCase().includes(searchQuery));
+    }
     
     // Sort active units: those with recent messages at the top
     activeUnits.sort((a, b) => {
@@ -223,7 +355,7 @@ function renderOfficerList() {
         let bTime = 0;
         if (window.dmConversations[a.id] && window.dmConversations[a.id].messages.length > 0) {
             const msgs = window.dmConversations[a.id].messages;
-            aTime = msgs[msgs.length - 1].id; // id is Date.now() + Math.random()
+            aTime = msgs[msgs.length - 1].id;
         }
         if (window.dmConversations[b.id] && window.dmConversations[b.id].messages.length > 0) {
             const msgs = window.dmConversations[b.id].messages;
@@ -231,9 +363,9 @@ function renderOfficerList() {
         }
         
         if (aTime !== bTime) {
-            return bTime - aTime; // higher timestamp first
+            return bTime - aTime;
         }
-        return a.id.localeCompare(b.id); // fallback to alphabetical
+        return a.id.localeCompare(b.id);
     });
     
     activeUnits.forEach(unit => {
@@ -250,16 +382,22 @@ function renderOfficerList() {
             const msgs = window.dmConversations[unit.id].messages;
             unread = msgs.filter(m => !m.read).length;
             if (msgs.length > 0) {
-                lastMsg = msgs[msgs.length - 1].text;
+                const lm = msgs[msgs.length - 1];
+                lastMsg = lm.type === 'image' ? '📎 Attachment' : lm.text;
                 if (window.dmConversations[unit.id].isTyping) {
                     lastMsg = "Typing...";
                 }
             }
         }
 
+        const dotColor = getStatusColor(unit.status);
+
         let html = `
             <div class="sidebar-unit-header">
-                <span class="sidebar-unit-name">${unit.id}</span>
+                <span class="sidebar-unit-name">
+                    <span class="status-dot" style="background: ${dotColor}"></span>
+                    ${unit.id}
+                </span>
                 ${unread > 0 ? `<span style="background: #007aff; color: white; border-radius: 10px; padding: 2px 6px; font-size: 10px; font-weight: bold;">${unread}</span>` : ''}
             </div>
             <div class="sidebar-unit-preview" style="${unread > 0 ? 'color: #fff; font-weight: bold;' : ''}">${lastMsg}</div>
@@ -274,9 +412,20 @@ function renderOfficerList() {
 function selectDmUnit(unitId) {
     window.activeDmUnit = unitId;
     const header = document.getElementById('dm-chat-header');
+    
+    const unit = roster.find(u => u.id === unitId);
+    const dotColor = unit ? getStatusColor(unit.status) : '#888';
+    const statusText = unit ? unit.status : 'Unknown';
+    const personality = unit ? unit.personality : '';
+    
     header.innerHTML = `
+        <button onclick="clearChat('${unitId}')" style="position: absolute; right: 15px; top: 20px; background: none; border: none; color: #ff3b30; cursor: pointer; font-size: 18px;" title="Clear Chat">🗑️</button>
         <div style="width: 40px; height: 40px; background: #333; border-radius: 50%; margin: 0 auto 5px auto; display: flex; align-items: center; justify-content: center; font-size: 20px;">👮</div>
-        <div style="font-size: 12px; color: #8e8e93;">${unitId} &rsaquo;</div>
+        <div style="font-size: 14px; font-weight: bold;">${unitId} &rsaquo;</div>
+        <div style="font-size: 11px; color: #8e8e93; margin-top: 2px;">
+            <span class="status-dot" style="background: ${dotColor}; width: 6px; height: 6px; margin-right: 3px;"></span>
+            ${statusText} • ${personality}
+        </div>
     `;
     
     if (!window.dmConversations[unitId]) {
@@ -285,23 +434,39 @@ function selectDmUnit(unitId) {
         window.dmConversations[unitId].messages.forEach(m => m.read = true);
     }
     
+    document.getElementById('dm-smart-replies').style.display = 'flex';
+    
     renderOfficerList();
     renderChatHistory();
+}
+
+window.clearChat = function(unitId) {
+    if (confirm(`Are you sure you want to delete the secure chat history with ${unitId}?`)) {
+        if (window.dmConversations[unitId]) {
+            window.dmConversations[unitId].messages = [];
+            renderChatHistory();
+            renderOfficerList();
+        }
+    }
 }
 
 function toggleTapback(unitId, msgId) {
     const msg = window.dmConversations[unitId].messages.find(m => m.id === msgId);
     if (msg) {
-        msg.tapback = msg.tapback ? null : '❤️';
+        let currentIndex = tapbackCycle.indexOf(msg.tapback);
+        if (currentIndex === -1) currentIndex = -1;
+        msg.tapback = tapbackCycle[(currentIndex + 1) % tapbackCycle.length];
         renderChatHistory();
     }
 }
 
 function renderChatHistory() {
     const historyDiv = document.getElementById('dm-chat-history');
-    historyDiv.innerHTML = '';
+    if (!historyDiv) return;
     
-    // Add iMessage style background
+    const wasScrolledToBottom = Math.abs((historyDiv.scrollHeight - historyDiv.scrollTop) - historyDiv.clientHeight) < 20;
+
+    historyDiv.innerHTML = '';
     historyDiv.style.background = '#000';
     historyDiv.style.padding = '20px';
 
@@ -314,6 +479,14 @@ function renderChatHistory() {
         timeStamp.className = 'imessage-timestamp';
         timeStamp.innerText = `Today ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
         historyDiv.appendChild(timeStamp);
+    } else {
+        const em = document.createElement('div');
+        em.style.color = '#666';
+        em.style.textAlign = 'center';
+        em.style.marginTop = '40px';
+        em.style.fontStyle = 'italic';
+        em.innerHTML = 'End-to-End Encrypted Secure Connection<br>Communications are logged by Tyrell Corp.';
+        historyDiv.appendChild(em);
     }
 
     convo.messages.forEach((msg, index) => {
@@ -329,7 +502,14 @@ function renderChatHistory() {
 
         const bubble = document.createElement('div');
         bubble.className = `imessage-bubble ${msg.sender === 'DISPATCH' ? 'imessage-sent' : 'imessage-recv'}`;
-        bubble.innerText = msg.text;
+        
+        if (msg.type === 'image') {
+            bubble.innerHTML = `<img src="${msg.text}" alt="Attachment">`;
+        } else {
+            bubble.innerText = msg.text;
+        }
+
+        bubble.title = `Sent at ${new Date(msg.id).toLocaleTimeString()}`;
 
         if (msg.sender === 'DISPATCH') {
             row.style.justifyContent = 'flex-end';
@@ -338,11 +518,11 @@ function renderChatHistory() {
             
             // Add tapback logic
             bubble.addEventListener('dblclick', () => toggleTapback(window.activeDmUnit, msg.id));
-            bubble.title = "Double click to love";
+            bubble.title += " (Double click to react)";
             
             if (msg.tapback) {
                 const tapbackEl = document.createElement('div');
-                tapbackEl.className = 'tapback-heart';
+                tapbackEl.className = 'tapback-badge';
                 tapbackEl.innerText = msg.tapback;
                 bubble.appendChild(tapbackEl);
             }
@@ -383,12 +563,14 @@ function renderChatHistory() {
         }
     }
 
-    historyDiv.scrollTop = historyDiv.scrollHeight;
+    if (wasScrolledToBottom || convo.isTyping || convo.messages[convo.messages.length-1]?.sender === 'DISPATCH') {
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+    }
 }
 
-function sendDm() {
+window.sendDm = function(forcedText = null, type = 'text') {
     const input = document.getElementById('dm-input');
-    const text = input.value.trim();
+    const text = forcedText || input.value.trim();
     if (!text || !window.activeDmUnit) return;
 
     if (!window.dmConversations[window.activeDmUnit]) {
@@ -398,14 +580,15 @@ function sendDm() {
     const unitId = window.activeDmUnit;
 
     window.dmConversations[unitId].messages.push({
-        id: Date.now() + Math.random(),
+        id: Date.now(),
         sender: 'DISPATCH',
+        type: type,
         text: text,
         read: true,
         readByRecipient: false
     });
 
-    input.value = '';
+    if (!forcedText) input.value = '';
     renderChatHistory();
     renderOfficerList(); // update sidebar snippet
 
@@ -420,22 +603,24 @@ function sendDm() {
             // AI Officer Response after typing
             setTimeout(() => {
                 window.dmConversations[unitId].isTyping = false;
-                receiveDm(unitId, dispatchResponses[Math.floor(Math.random() * dispatchResponses.length)]);
+                const reply = dispatchResponses[Math.floor(Math.random() * dispatchResponses.length)];
+                receiveDm(unitId, reply);
             }, 2000 + Math.random() * 3000);
         }
     }, 1000 + Math.random() * 1000);
 }
 
-function receiveDm(unitId, text) {
+function receiveDm(unitId, text, type = 'text') {
     if (!window.dmConversations[unitId]) {
         window.dmConversations[unitId] = { messages: [], isTyping: false };
     }
 
-    const isCurrentlyViewing = (window.activeDmUnit === unitId && document.getElementById('dms-log').style.display === 'block');
+    const isCurrentlyViewing = (window.activeDmUnit === unitId && document.getElementById('dms-log').style.display === 'flex');
 
     window.dmConversations[unitId].messages.push({
-        id: Date.now() + Math.random(),
+        id: Date.now(),
         sender: unitId,
+        type: type,
         text: text,
         read: isCurrentlyViewing
     });
@@ -447,7 +632,7 @@ function receiveDm(unitId, text) {
         if (badge) {
             let current = parseInt(badge.innerText) || 0;
             badge.innerText = current + 1;
-            if (document.getElementById('dms-log').style.display !== 'block') {
+            if (document.getElementById('dms-log').style.display !== 'flex') {
                 badge.style.display = 'inline-block';
             }
         }
