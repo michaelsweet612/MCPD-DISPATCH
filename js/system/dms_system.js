@@ -215,7 +215,26 @@ function renderOfficerList() {
         return;
     }
 
-    const activeUnits = roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
+    let activeUnits = roster.filter(u => u.status.toUpperCase() !== 'OFF DUTY' && u.status.toUpperCase() !== 'OFF-DUTY' && u.status.toUpperCase() !== 'KIA');
+    
+    // Sort active units: those with recent messages at the top
+    activeUnits.sort((a, b) => {
+        let aTime = 0;
+        let bTime = 0;
+        if (window.dmConversations[a.id] && window.dmConversations[a.id].messages.length > 0) {
+            const msgs = window.dmConversations[a.id].messages;
+            aTime = msgs[msgs.length - 1].id; // id is Date.now() + Math.random()
+        }
+        if (window.dmConversations[b.id] && window.dmConversations[b.id].messages.length > 0) {
+            const msgs = window.dmConversations[b.id].messages;
+            bTime = msgs[msgs.length - 1].id;
+        }
+        
+        if (aTime !== bTime) {
+            return bTime - aTime; // higher timestamp first
+        }
+        return a.id.localeCompare(b.id); // fallback to alphabetical
+    });
     
     activeUnits.forEach(unit => {
         const div = document.createElement('div');
