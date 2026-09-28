@@ -529,7 +529,7 @@ function selectDmUnit(unitId) {
     const personality = unit ? unit.personality : '';
     
     header.innerHTML = `
-        <button onclick="clearChat('${unitId}')" style="position: absolute; right: 15px; top: 20px; background: none; border: none; color: #ff3b30; cursor: pointer; font-size: 18px;" title="Clear Chat">🗑️</button>
+        <button onclick="clearChat(window.activeDmUnit)" style="position: absolute; right: 15px; top: 20px; background: none; border: none; color: #ff3b30; cursor: pointer; font-size: 18px;" title="Clear Chat">🗑️</button>
         <button onclick="callOfficer()" style="position: absolute; right: 50px; top: 20px; background: none; border: none; color: #10b981; cursor: pointer; font-size: 18px;" title="Call Unit">📞</button>
         <button onclick="toggleWallpaperMenu()" style="position: absolute; left: 15px; top: 20px; background: none; border: none; color: #888; cursor: pointer; font-size: 18px;" title="Chat Settings">⚙️</button>
         <div id="dm-wallpaper-menu" class="wallpaper-menu">
