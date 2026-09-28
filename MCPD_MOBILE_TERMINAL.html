@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.21.5">
+    <link rel="stylesheet" href="css/styles.css?v=4.20.63">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -919,8 +919,8 @@ document.addEventListener('keypress', function(e) {
                 
                 
                 <!-- PERSONAL DMs VIEW (Hidden by default) -->
-                <div class="panel-content" id="dms-log" style="display: none; padding: 0; background: #040a12; border: 1px solid var(--panel-border);">
-                    <div style="display: flex; height: 100%;">
+                <div class="panel-content" id="dms-log" style="display: none; padding: 0; background: #040a12; border: 1px solid var(--panel-border); overflow: hidden; position: relative;">
+                    <div style="display: flex; position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
                         <!-- Left Sidebar: Officer List -->
                         <div style="width: 250px; border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; background: rgba(0,0,0,0.5);">
                             <div style="padding: 15px; border-bottom: 1px solid var(--panel-border); font-weight: bold; color: var(--accent-blue);">
@@ -940,6 +940,8 @@ document.addEventListener('keypress', function(e) {
                                 <!-- Chat bubbles go here -->
                             </div>
                             <div style="padding: 15px; border-top: 1px solid var(--panel-border); background: #06111e; display: flex; gap: 10px;">
+                                <button id="btn-dm-upload" style="padding: 10px 15px; font-weight:bold; background: var(--accent-blue); border: none; color: #000; border-radius:20px; font-size:1.2rem; cursor:pointer; flex-shrink: 0;" title="Upload File">+</button>
+                                <input type="file" id="dm-image-upload" style="display:none">
                                 <input type="text" id="dm-input" placeholder="Type a secure message..." style="flex: 1; padding: 10px; background: #000; border: 1px solid var(--panel-border); color: #0f0; outline: none; border-radius: 20px;">
                                 <button id="btn-dm-send" style="padding: 10px 20px; background: var(--accent-blue); color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 20px;">SEND</button>
                             </div>
@@ -1068,25 +1070,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.21.5"></script>
+    <script src="js/system/check_system.js?v=4.20.63"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.21.5"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.21.5"></script>
-    <script src="js/system/export_log.js?v=4.21.5"></script>
-    <script src="js/chats/transmissions.js?v=4.21.5"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.21.5"></script>
-    <script src="js/core/chat_lines.js?v=4.21.5"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=4.21.5"></script>
-    <script src="js/core/chat_lines_arriving.js?v=4.21.5"></script>
-    <script src="js/core/realistic_debates.js?v=4.21.5"></script>
-    <script src="js/core/chat_reactions.js?v=4.21.5"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=4.21.5"></script>
-    <script src="js/core/profanity_events.js?v=4.21.5"></script>
-    <script src="js/core/department_complaints.js?v=4.21.5"></script>
-    <script src="js/core/meme_events.js?v=4.21.5"></script>
-    <script src="js/system/it_support.js?v=4.21.5"></script>
-    <script src="js/system/dms_system.js?v=4.21.5"></script>
-    <script src="js/core/app_core.js?v=4.21.5"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.20.63"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.20.63"></script>
+    <script src="js/system/export_log.js?v=4.20.63"></script>
+    <script src="js/chats/transmissions.js?v=4.20.63"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=4.20.63"></script>
+    <script src="js/core/chat_lines_arriving.js?v=4.20.63"></script>
+    <script src="js/core/realistic_debates.js?v=4.20.63"></script>
+    <script src="js/core/chat_reactions.js?v=4.20.63"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=4.20.63"></script>
+    <script src="js/core/profanity_events.js?v=4.20.63"></script>
+    <script src="js/core/department_complaints.js?v=4.20.63"></script>
+    <script src="js/core/meme_events.js?v=4.20.63"></script>
+    <script src="js/system/it_support.js?v=4.20.63"></script>
+    <script src="js/system/dms_system.js?v=4.20.63"></script>
+    <script src="js/core/app_core.js?v=4.20.63"></script>
 
     
 

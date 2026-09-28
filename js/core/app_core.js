@@ -1078,9 +1078,14 @@ let citizensDisplayed = 10;
 
     function initRoster() {
         roster = [];
+        
+        const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
+        const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
+        const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
+        
         for(let i=0; i<5000; i++) {
             roster.push({
-                id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+                id: `Unit-${Math.floor(10000 + Math.random() * 90000)} "${getNickname()}"`,
                 rank: getRandomRank(),
                 status: Math.random() < 0.7 ? 'On Duty' : 'Off Duty',
                 health: 'HEALTHY',
@@ -3413,7 +3418,7 @@ function renderRoster() {
       currentApplicants = [];
       for(let i=0; i<5; i++) {
           const applicant = {
-              id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+              id: `Unit-${Math.floor(10000 + Math.random() * 90000)} "${getNickname()}"`,
               status: 'On Duty',
               personality: getRandomPersonality(),
                 gender: getRandomGender(),
@@ -3464,7 +3469,7 @@ function renderRoster() {
           } else {
               // Force generate a new one
               const newUnit = {
-                  id: `Unit-${Math.floor(10000 + Math.random() * 90000)}`,
+                  id: `Unit-${Math.floor(10000 + Math.random() * 90000)} "${getNickname()}"`,
                   status: 'On Duty',
                   personality: getRandomPersonality(),
                 gender: getRandomGender(),
