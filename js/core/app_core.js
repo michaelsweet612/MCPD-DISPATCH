@@ -1,3 +1,6 @@
+const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
+        const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
+        const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
 const lateArrivalLines = [
     `Well he got there before me that doesn't mean I don't get to get paid, but I'll move in anyways and kill the bastard.`,
     `I'm just going to cry in my cruiser. Unbelievable.`,
@@ -1079,9 +1082,7 @@ let citizensDisplayed = 10;
     function initRoster() {
         roster = [];
         
-        const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
-        const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
-        const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
+        
         
         for(let i=0; i<5000; i++) {
             roster.push({
