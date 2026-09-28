@@ -392,12 +392,7 @@ function initDms() {
         smartReplies.style.overflowX = 'auto';
         smartReplies.style.borderBottom = '1px solid #222';
         
-        smartReplies.innerHTML = `
-            <button class="smart-reply-btn" onclick="sendDm('10-4. Copy that.')">10-4. Copy that.</button>
-            <button class="smart-reply-btn" onclick="sendDm('Negative.')">Negative.</button>
-            <button class="smart-reply-btn" onclick="sendDm('Return to station.')">Return to station.</button>
-            <button class="smart-reply-btn" onclick="sendDm('I am logging this.')">I am logging this.</button>
-        `;
+        // innerHTML is now set dynamically by updateSmartReplies()
         // Insert before input container
         const rightSide = historyDiv.parentElement;
         rightSide.insertBefore(smartReplies, rightSide.lastElementChild);
@@ -577,7 +572,7 @@ function selectDmUnit(unitId) {
         window.dmConversations[unitId].messages.forEach(m => m.read = true);
     }
     
-    document.getElementById('dm-smart-replies').style.display = 'flex';
+    window.updateSmartReplies(unitId);
     
     renderOfficerList();
     renderChatHistory();
@@ -709,6 +704,7 @@ function renderChatHistory() {
     if (wasScrolledToBottom || convo.isTyping || convo.messages[convo.messages.length-1]?.sender === 'DISPATCH') {
         historyDiv.scrollTop = historyDiv.scrollHeight;
     }
+    if (window.updateSmartReplies) window.updateSmartReplies(window.activeDmUnit);
 }
 
 window.sendDm = function(forcedText = null, type = 'text') {
@@ -872,3 +868,51 @@ window.setDmWallpaper = function(type) {
     }
     document.getElementById('dm-wallpaper-menu').style.display = 'none';
 }
+
+window.updateSmartReplies = function(unitId) {
+    const smartReplies = document.getElementById('dm-smart-replies');
+    if (!smartReplies) return;
+    
+    let conv = window.dmConversations[unitId];
+    if (!conv || !conv.messages || conv.messages.length === 0) {
+        smartReplies.style.display = 'none';
+        return;
+    }
+    
+    let lastMsg = conv.messages[conv.messages.length - 1];
+    if (lastMsg.sender === 'Dispatch') {
+        // If we sent the last message, hide smart replies
+        smartReplies.style.display = 'none';
+        return;
+    }
+    
+    smartReplies.style.display = 'flex';
+    let text = lastMsg.text.toLowerCase();
+    
+    let options = [];
+    
+    if (text.includes('uwu') || text.includes('head rubs') || text.includes('nuzzles') || text.includes('furry')) {
+        options = ["*gives head rubs*", "Get back to work.", "Absolutely not.", "HR has been notified."];
+    } else if (text.includes('plate') || text.includes('check') || text.includes('run')) {
+        options = ["Plate is clean. 10-4.", "Flagged. Proceed with caution.", "Vehicle reported stolen.", "Negative. Try again."];
+    } else if (text.includes('backup') || text.includes('help') || text.includes('shots') || text.includes('10-78')) {
+        options = ["Sending backup immediately.", "SWAT is en route.", "Hold your position.", "Are you injured?"];
+    } else if (text.includes('joke') || text.includes('funny') || text.includes('laugh')) {
+        options = ["Haha, very funny.", "Focus on your patrol.", "I am logging this conversation.", "Not amused."];
+    } else if (text.includes('?')) {
+        options = ["Yes.", "No.", "I will look into it.", "Negative, return to patrol."];
+    } else if (text.includes('10-7') || text.includes('lunch') || text.includes('break')) {
+        options = ["10-4, enjoy your break.", "Denied. We need you out there.", "Make it quick.", "Copy that."];
+    } else {
+        options = ["10-4. Copy that.", "Negative.", "Return to station.", "I am logging this."];
+    }
+    
+    let html = '';
+    options.forEach(opt => {
+        // Escape quotes to prevent injection
+        let safeOpt = opt.replace(/'/g, "\\'");
+        html += `<button class="smart-reply-btn" onclick="sendDm('${safeOpt}')">${opt}</button>`;
+    });
+    
+    smartReplies.innerHTML = html;
+};
