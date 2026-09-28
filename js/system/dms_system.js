@@ -409,12 +409,38 @@ function initDms() {
             if (activeUnits.length > 0) {
                 const randomUnit = activeUnits[Math.floor(Math.random() * activeUnits.length)].id;
                 
-                // 10% chance they send a random image
+                const unitObj = roster.find(u => u.id === randomUnit);
+                let messageText = "";
+                
                 if (Math.random() < 0.1) {
                     receiveDm(randomUnit, 'https://picsum.photos/300/200?random=' + Math.random(), 'image');
-                } else {
-                    receiveDm(randomUnit, incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)]);
+                    return;
                 }
+                
+                // If it's a furry, 50% chance they ask for a head rub
+                if (unitObj && unitObj.personality === 'Furry' && Math.random() < 0.5) {
+                    messageText = window.voreChats ? window.voreChats[Math.floor(Math.random() * window.voreChats.length)] : "*nuzzles your terminal* dispatch can I have head rubs pwease? uwu";
+                } else if (unitObj) {
+                    const p = unitObj.personality;
+                    const r = Math.random();
+                    if (p === 'Aggressive') {
+                        messageText = window.yellLines ? window.yellLines[Math.floor(Math.random() * window.yellLines.length)] : "Stop ignoring me dispatch!";
+                    } else if (p === 'Lazy' && r < 0.5) {
+                        messageText = "Hey dispatch, I'm taking a 10-7 for lunch. Cover for me.";
+                    } else if (p === 'Paranoid' && r < 0.5) {
+                        messageText = window.worriedChats ? window.worriedChats[Math.floor(Math.random() * window.worriedChats.length)] : "They are watching us dispatch...";
+                    } else if (p === 'Joker' || r < 0.3) {
+                        messageText = window.jokes ? window.jokes[Math.floor(Math.random() * window.jokes.length)] : "You know what's funny? This job.";
+                    } else if (r < 0.6) {
+                        messageText = window.banterLines ? window.banterLines[Math.floor(Math.random() * window.banterLines.length)] : "Just checking in, dispatch.";
+                    } else {
+                        messageText = incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)];
+                    }
+                } else {
+                    messageText = incomingDmTopics[Math.floor(Math.random() * incomingDmTopics.length)];
+                }
+                
+                receiveDm(randomUnit, messageText);
             }
         }
     }, 35000);
