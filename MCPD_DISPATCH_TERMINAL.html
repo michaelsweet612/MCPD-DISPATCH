@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=4.27.0">
+    <link rel="stylesheet" href="css/styles.css?v=4.28.0">
 
 <style>
 .how-to-tab {
@@ -72,7 +72,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 </style>
 </head>
 
-<body>
+<body class="ui-neon">
 
 <!-- ============================== -->
 <!-- SECURE LOGIN OVERLAY SYSTEM    -->
@@ -395,6 +395,15 @@ document.addEventListener('keypress', function(e) {
                                 <button id="btn-theme-pride" style="flex: 1; min-width: 100px; padding: 8px; font-size: 0.8rem; background: url('assets/pride_flag.png') center/cover no-repeat; color: #fff; font-weight: bold; border: 1px solid #fff; text-shadow: 1px 1px 2px black;">PRIDE</button>
                                 <button id="btn-theme-custom" onclick="document.getElementById('custom-theme-modal').style.display='flex';" style="width: 100%; margin-top: 10px; padding: 10px; font-size: 0.85rem; background: transparent; color: var(--accent-blue); font-weight: bold; border: 1px solid var(--accent-blue); cursor: pointer; text-transform: uppercase;">CUSTOMIZE</button>
                             </div>
+                            
+                            <!-- UI ENGINE SWITCHER -->
+                            <hr style="border: 0; border-top: 1px dashed var(--panel-border); margin: 15px 0;">
+                            <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">UI ENGINE OVERRIDE</h4>
+                            <div style="display: flex; gap: 10px;">
+                                <button id="btn-ui-new" style="flex: 1; padding: 8px; font-size: 0.8rem; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; font-weight: bold; border: 1px solid #60a5fa; box-shadow: 0 0 10px var(--accent-blue);">NEW (NEON)</button>
+                                <button id="btn-ui-old" style="flex: 1; padding: 8px; font-size: 0.8rem; background: transparent; color: #888; border: 1px solid var(--panel-border);">OLD (FLAT)</button>
+                            </div>
+    
                             
                             <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
                             <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">SYSTEM ACTIONS</h4>
@@ -1095,25 +1104,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=4.27.0"></script>
+    <script src="js/system/check_system.js?v=4.28.0"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.27.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.27.0"></script>
-    <script src="js/system/export_log.js?v=4.27.0"></script>
-    <script src="js/chats/transmissions.js?v=4.27.0"></script>
-    <script src="js/information/imageAnalyzer.js?v=4.27.0"></script>
-    <script src="js/core/chat_lines.js?v=4.27.0"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=4.27.0"></script>
-    <script src="js/core/chat_lines_arriving.js?v=4.27.0"></script>
-    <script src="js/core/realistic_debates.js?v=4.27.0"></script>
-    <script src="js/core/chat_reactions.js?v=4.27.0"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=4.27.0"></script>
-    <script src="js/core/profanity_events.js?v=4.27.0"></script>
-    <script src="js/core/department_complaints.js?v=4.27.0"></script>
-    <script src="js/core/meme_events.js?v=4.27.0"></script>
-    <script src="js/system/it_support.js?v=4.27.0"></script>
-    <script src="js/system/dms_system.js?v=4.27.0"></script>
-    <script src="js/core/app_core.js?v=4.27.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=4.28.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=4.28.0"></script>
+    <script src="js/system/export_log.js?v=4.28.0"></script>
+    <script src="js/chats/transmissions.js?v=4.28.0"></script>
+    <script src="js/information/imageAnalyzer.js?v=4.28.0"></script>
+    <script src="js/core/chat_lines.js?v=4.28.0"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=4.28.0"></script>
+    <script src="js/core/chat_lines_arriving.js?v=4.28.0"></script>
+    <script src="js/core/realistic_debates.js?v=4.28.0"></script>
+    <script src="js/core/chat_reactions.js?v=4.28.0"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=4.28.0"></script>
+    <script src="js/core/profanity_events.js?v=4.28.0"></script>
+    <script src="js/core/department_complaints.js?v=4.28.0"></script>
+    <script src="js/core/meme_events.js?v=4.28.0"></script>
+    <script src="js/system/it_support.js?v=4.28.0"></script>
+    <script src="js/system/dms_system.js?v=4.28.0"></script>
+    <script src="js/core/app_core.js?v=4.28.0"></script>
 
     
 
@@ -1525,7 +1534,27 @@ function showHowToTab(tabId) {
 }
 </script>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnNew = document.getElementById('btn-ui-new');
+        const btnOld = document.getElementById('btn-ui-old');
+        
+        if(btnNew) {
+            btnNew.addEventListener('click', () => {
+                document.body.classList.add('ui-neon');
+            });
+        }
+        
+        if(btnOld) {
+            btnOld.addEventListener('click', () => {
+                document.body.classList.remove('ui-neon');
+            });
+        }
+    });
+</script>
 </body>
+
 
 </html>
 
