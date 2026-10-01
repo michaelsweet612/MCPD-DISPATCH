@@ -7730,7 +7730,7 @@ function generateAvatarSVG(seed, size, personality) {
         'alien-grey','alien-blue','alien-green','alien-reptile','android','mutant']);
 
     // BACKGROUNDS (12)
-    const bg = pick(['#f0f0f0', '#e5e7eb', '#d1d5db', '#e2e8f0', '#f8fafc', '#ffffff', '#f3f4f6', '#f1f5f9', '#e0e0e0', '#eaeaea', '#f5f5f5', '#efefef']); // Light mugshot backgrounds
+    const bg = pick(['#1a1a2e', '#16213e', '#0f3460', '#1c1c1c', '#2b2b2b', '#112233', '#1e293b', '#0a192f', '#0f172a', '#1e1e1e']); // Dark cyberpunk mugshot backgrounds
 
     // SKIN TONES (18 human + alien)
     let skin;
@@ -7884,7 +7884,7 @@ function generateAvatarSVG(seed, size, personality) {
     // ---- HEAD BASE ----
     // More realistic face contour
     if (species === 'alien-grey') {
-        svg += `<path d="M24,35 C24,10 76,10 76,35 C76,55 60,70 50,70 C40,70 24,55 24,35 Z" fill="url(#faceGrad)" />`;
+        svg += `<path d="M24,35 C24,10 76,10 76,35 C76,55 60,70 50,70 C40,70 24,55 24,35 Z" fill="url(#faceGrad)" stroke="${skinDark}" stroke-width="1.5" />`;
     } else if (species === 'alien-reptile') {
         svg += `<path d="M30,30 C30,10 70,10 70,30 C70,55 65,70 50,70 C35,70 30,55 30,30 Z" fill="url(#faceGrad)"/>`;
         for (let i = 0; i < 40; i++) {
@@ -7898,7 +7898,7 @@ function generateAvatarSVG(seed, size, personality) {
         svg += `<path d="M30,45 L70,45" stroke="#999" stroke-width="0.5"/>`;
     } else {
         // Human jawline is more contoured
-        svg += `<path d="M28,38 C28,15 72,15 72,38 C72,55 62,68 50,70 C38,68 28,55 28,38 Z" fill="url(#faceGrad)"/>`;
+        svg += `<path d="M28,38 C28,15 72,15 72,38 C72,55 62,68 50,70 C38,68 28,55 28,38 Z" fill="url(#faceGrad)" stroke="${skinDark}" stroke-width="1.5"/>`;
         // Cheekbones
         svg += `<path d="M28,45 Q35,55 45,55" fill="none" stroke="${skinDark}" stroke-width="2" opacity="0.1"/>`;
         svg += `<path d="M72,45 Q65,55 55,55" fill="none" stroke="${skinDark}" stroke-width="2" opacity="0.1"/>`;
