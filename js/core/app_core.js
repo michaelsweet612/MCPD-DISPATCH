@@ -2187,11 +2187,11 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        unreadDispatch++;
+        if(typeof window.unreadDispatch === "undefined") window.window.unreadDispatch = 0; window.if(typeof window.unreadDispatch === "undefined") window.unreadDispatch = 0; window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
             badge.style.display = 'block';
-            badge.innerText = unreadDispatch;
+            badge.innerText = window.unreadDispatch;
         }
     }
 }
@@ -2473,11 +2473,11 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        unreadDispatch++;
+        if(typeof window.unreadDispatch === "undefined") window.window.unreadDispatch = 0; window.if(typeof window.unreadDispatch === "undefined") window.unreadDispatch = 0; window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
             badge.style.display = 'block';
-            badge.innerText = unreadDispatch;
+            badge.innerText = window.unreadDispatch;
         }
     }
 }
@@ -3414,7 +3414,7 @@ function hideAllTabs() {
 }
 
 tabUnified.addEventListener('click', () => {
-        unreadDispatch = 0;
+        window.window.unreadDispatch = 0;
         let badge = document.getElementById('dispatch-badge');
         if(badge) badge.style.display = 'none';
     hideAllTabs();
@@ -5613,11 +5613,11 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        unreadDispatch++;
+        if(typeof window.unreadDispatch === "undefined") window.window.unreadDispatch = 0; window.if(typeof window.unreadDispatch === "undefined") window.unreadDispatch = 0; window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
             badge.style.display = 'block';
-            badge.innerText = unreadDispatch;
+            badge.innerText = window.unreadDispatch;
         }
     }
 }
