@@ -8559,29 +8559,62 @@ window.downloadStockLedger = function() {
         alert("Stock Ledger is currently empty. Waiting for market shifts.");
         return;
     }
-    const header = "=================================================\n" +
-                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      \n" +
-                   "=================================================\n\n";
-    const text = header + window.stockLedger.join("\n");
-    const blob = new Blob([text], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `TBMG_STOCK_LEDGER_${Date.now()}.txt`;
-    a.click();
+    const modal = document.getElementById('download-modal');
+    if(modal) modal.style.display = 'flex';
 };
 
-window.downloadStockLedger = function() {
-    if(typeof window.stockLedger === "undefined" || window.stockLedger.length === 0) {
-        alert("Stock Ledger is currently empty. Waiting for market shifts.");
-        return;
+window.executeDownload = function(format) {
+    document.getElementById('download-modal').style.display = 'none';
+    const header = "=================================================
+" +
+                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      
+" +
+                   "=================================================
+
+";
+    const text = header + window.stockLedger.join("
+");
+    
+    if (format === 'txt') {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `TBMG_STOCK_LEDGER_${Date.now()}.txt`;
+        a.click();
+    } else if (format === 'png' || format === 'pdf') {
+        // Create hidden element to render
+        const div = document.createElement('div');
+        div.style.position = 'absolute';
+        div.style.left = '-9999px';
+        div.style.background = '#06111e';
+        div.style.color = '#e0e0e0';
+        div.style.padding = '20px';
+        div.style.fontFamily = 'monospace';
+        div.style.fontSize = '14px';
+        div.style.whiteSpace = 'pre-wrap';
+        div.style.width = '800px';
+        div.style.border = '2px solid #3b82f6';
+        div.innerText = text;
+        document.body.appendChild(div);
+        
+        html2canvas(div).then(canvas => {
+            document.body.removeChild(div);
+            if (format === 'png') {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL("image/png");
+                a.download = `TBMG_STOCK_LEDGER_${Date.now()}.png`;
+                a.click();
+            } else if (format === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgData = canvas.toDataURL('image/png');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`TBMG_STOCK_LEDGER_${Date.now()}.pdf`);
+            }
+        });
     }
-    const header = "=================================================\n" +
-                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      \n" +
-                   "=================================================\n\n";
-    const text = header + window.stockLedger.join("\n");
-    const blob = new Blob([text], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `TBMG_STOCK_LEDGER_${Date.now()}.txt`;
-    a.click();
 };
+
+
