@@ -6808,9 +6808,25 @@ function drawCityMap() {
     ctx.scale(window.cameraZoom, window.cameraZoom);
     ctx.translate(-window.cameraX, -window.cameraY);
 
-    // 1. Draw World Background
-    ctx.fillStyle = '#050a0a';
+    // 1. Draw World Background (Cyberpunk Blueprint)
+    ctx.fillStyle = '#02050a'; // ultra dark blue
     ctx.fillRect(0, 0, window.worldWidth, window.worldHeight);
+    
+    // Blueprint Minor Grid
+    ctx.strokeStyle = 'rgba(0, 200, 255, 0.05)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i <= window.worldWidth; i += 50) { ctx.moveTo(i, 0); ctx.lineTo(i, window.worldHeight); }
+    for (let i = 0; i <= window.worldHeight; i += 50) { ctx.moveTo(0, i); ctx.lineTo(window.worldWidth, i); }
+    ctx.stroke();
+    
+    // Blueprint Major Grid
+    ctx.strokeStyle = 'rgba(0, 200, 255, 0.15)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= window.worldWidth; i += 200) { ctx.moveTo(i, 0); ctx.lineTo(i, window.worldHeight); }
+    for (let i = 0; i <= window.worldHeight; i += 200) { ctx.moveTo(0, i); ctx.lineTo(window.worldWidth, i); }
+    ctx.stroke();
 
     // 2. Heatmap
     if (window.radarHeatmap) {
@@ -6833,31 +6849,61 @@ function drawCityMap() {
         ctx.restore();
     }
 
-    // 3. Draw Blocks
+    // 3. Draw Blocks (Neon outline style)
     for(let b of cityBlocks) {
-        ctx.fillStyle = b.color;
+        // glowing background
+        ctx.fillStyle = 'rgba(5, 15, 25, 0.8)';
         ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
+        
+        // glowing neon border
+        ctx.strokeStyle = 'rgba(0, 200, 255, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(0, 255, 255, 0.5)';
+        ctx.strokeRect(b.x + 2, b.y + 2, b.w - 4, b.h - 4);
+        ctx.shadowBlur = 0; // reset
     }
     
     // Draw Landmarks
     if (window.landmarks) {
         for (let lm of window.landmarks) {
-            ctx.fillStyle = lm.type === 'Police Station' ? 'rgba(0,100,255,0.2)' : 'rgba(100,100,0,0.2)';
+            ctx.shadowBlur = 15;
+            if (lm.type === 'Police Station') {
+                ctx.fillStyle = 'rgba(0,100,255,0.3)';
+                ctx.shadowColor = '#0078d7';
+                ctx.strokeStyle = '#0078d7';
+            } else {
+                ctx.fillStyle = 'rgba(100,100,0,0.3)';
+                ctx.shadowColor = '#ffeb3b';
+                ctx.strokeStyle = '#ffeb3b';
+            }
             ctx.fillRect(lm.x, lm.y, lm.w, lm.h);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(lm.x, lm.y, lm.w, lm.h);
+            ctx.shadowBlur = 0;
+            
             ctx.fillStyle = '#fff';
-            ctx.font = '24px Arial';
+            ctx.font = 'bold 22px Courier New';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(lm.emoji + " " + lm.type, lm.x + lm.w/2, lm.y + lm.h/2);
         }
     }
 
-    // 4. Draw Roads
-    ctx.fillStyle = '#1a1a1a';
+    // 4. Draw Roads (Glowing centerlines)
+    ctx.fillStyle = '#060a12'; // Darker sleek road color
     for(let x of roadX) ctx.fillRect(x - ROAD_WIDTH/2, 0, ROAD_WIDTH, window.worldHeight);
     for(let y of roadY) ctx.fillRect(0, y - ROAD_WIDTH/2, window.worldWidth, ROAD_WIDTH);
+    
+    // Draw Dashed center lines for roads
+    ctx.strokeStyle = 'rgba(255, 200, 0, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([15, 20]); // dashed
+    ctx.beginPath();
+    for(let x of roadX) { ctx.moveTo(x, 0); ctx.lineTo(x, window.worldHeight); }
+    for(let y of roadY) { ctx.moveTo(0, y); ctx.lineTo(window.worldWidth, y); }
+    ctx.stroke();
+    ctx.setLineDash([]); // reset
     
     // Radar Toggles
     if (window.radarGridlines) {
@@ -6888,12 +6934,15 @@ function drawCityMap() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
+        ctx.shadowBlur = 8;
         // Horizontal Traffic Light
         ctx.globalAlpha = tl.state === 'H' ? 1.0 : 0.3;
+        ctx.shadowColor = tl.state === 'H' ? '#00ff00' : '#ff0000';
         ctx.fillText('🚥', tl.x - 15, tl.y - 15);
         
         // Vertical Traffic Light
         ctx.globalAlpha = tl.state === 'V' ? 1.0 : 0.3;
+        ctx.shadowColor = tl.state === 'V' ? '#00ff00' : '#ff0000';
         ctx.save();
         ctx.translate(tl.x + 15, tl.y - 15);
         ctx.rotate(Math.PI/2);
@@ -6901,6 +6950,7 @@ function drawCityMap() {
         ctx.restore();
         
         ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
     }
     
     // 6. Spawn Random Crashes
