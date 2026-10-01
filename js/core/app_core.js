@@ -2187,7 +2187,9 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0; }
+        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0;
+window.unreadDocs = 0;
+window.unreadDocs = 0; }
         window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
@@ -2474,7 +2476,9 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0; }
+        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0;
+window.unreadDocs = 0;
+window.unreadDocs = 0; }
         window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
@@ -3417,6 +3421,8 @@ function hideAllTabs() {
 
 tabUnified.addEventListener('click', () => {
         window.window.unreadDispatch = 0;
+window.unreadDocs = 0;
+window.unreadDocs = 0;
         let badge = document.getElementById('dispatch-badge');
         if(badge) badge.style.display = 'none';
     hideAllTabs();
@@ -3427,6 +3433,9 @@ tabUnified.addEventListener('click', () => {
 });
 
 tabDocuments.addEventListener('click', () => {
+    window.unreadDocs = 0;
+    let badge = document.getElementById('documents-badge');
+    if(badge) badge.style.display = 'none';
     hideAllTabs();
     tabDocuments.classList.add('active');
     tabDocuments.style.color = 'var(--text-main)';
@@ -5615,7 +5624,9 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0; }
+        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0;
+window.unreadDocs = 0;
+window.unreadDocs = 0; }
         window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
