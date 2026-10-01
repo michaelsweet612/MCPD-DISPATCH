@@ -2190,6 +2190,59 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 async function processDispatchChat() {
     const text = dispatchChatInput.value.trim();
     if (!text) return;
+
+    // AUDIO CONTROLS
+    if (text.toLowerCase() === '/audio on') {
+        if(window.MCPDAudio) window.MCPDAudio.toggleAudio(true);
+        addChatMessage("SYSTEM", "AUDIO SUB-SYSTEM ENABLED.", "serious");
+        dispatchChatInput.value = '';
+        return;
+    }
+    if (text.toLowerCase() === '/audio off') {
+        if(window.MCPDAudio) window.MCPDAudio.toggleAudio(false);
+        addChatMessage("SYSTEM", "AUDIO SUB-SYSTEM MUTED.", "serious");
+        dispatchChatInput.value = '';
+        return;
+    }
+    
+    // 10-CODE UNIT OVERRIDES
+    const tenCodeMatch = text.toUpperCase().match(/^(10-8|10-7|10-97|10-6)\s+([A-Z0-9-]+)/);
+    if (tenCodeMatch) {
+        const code = tenCodeMatch[1];
+        const unitName = tenCodeMatch[2];
+        const unit = roster.find(u => u.name.toUpperCase() === unitName);
+        if (unit) {
+            if (code === '10-8') { unit.status = '10-8 Available'; unit.color = 'var(--accent-green)'; }
+            if (code === '10-7') { unit.status = '10-7 Out of Service'; unit.color = 'var(--text-dim)'; }
+            if (code === '10-97') { unit.status = '10-97 On Scene'; unit.color = 'var(--panic-orange)'; }
+            if (code === '10-6') { unit.status = '10-6 Busy'; unit.color = 'var(--panic-orange)'; }
+            
+            addChatMessage("SYSTEM", `UNIT ${unitName} STATUS FORCED TO ${code}`, "serious");
+            if(typeof renderUnitStatus !== 'undefined') renderUnitStatus();
+        } else {
+            addChatMessage("SYSTEM", `UNIT ${unitName} NOT FOUND IN ROSTER.`, "error");
+        }
+        dispatchChatInput.value = '';
+        return;
+    }
+    
+    // RUN PLATE COMMAND
+    const runPlateMatch = text.toUpperCase().match(/^RUN\s+(MCPD-[A-Z0-9]+|[A-Z0-9]{5,7})/);
+    if (runPlateMatch) {
+        const plate = runPlateMatch[1];
+        addChatMessage("SYSTEM", `RUNNING PLATE: ${plate}...`, "serious");
+        setTimeout(() => {
+            const officer = roster.find(u => u.patrolVehicle === plate);
+            if (officer) {
+                addChatMessage("NCIC", `PLATE ${plate} RETURNS TO OFFICIAL MCPD CRUISER (ASSIGNED: ${officer.name})`, "serious");
+            } else {
+                addChatMessage("NCIC", `PLATE ${plate} RETURNS VALID. NO OUTSTANDING WARRANTS.`, "casual");
+            }
+        }, 1500);
+        dispatchChatInput.value = '';
+        return;
+    }
+
     if (text.toLowerCase().startsWith('/bolo ')) {
         const boloMsg = text.substring(6);
         addChatMessage("DISPATCH (YOU)", "BOLO BROADCAST: " + boloMsg, "serious");
