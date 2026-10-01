@@ -1,24 +1,28 @@
-# 🛠️ MCPD CONTRIBUTING GUIDELINES 🛠️
+# 🛠️ MCPD GRID CONTRIBUTION PROTOCOLS
 
-**ATTENTION ALL INDEPENDENT CYBER-CONTRACTORS**
+## 📡 ATTENTION ALL CYBER-ENGINEERS
+The MCPD Dispatch Terminal is a living, breathing interface that requires constant maintenance to prevent the city from descending into absolute chaos. We welcome all corporate engineers, rogue hackers, and freelance developers to contribute to the terminal's source code.
 
-So you want to contribute to the MCPD-DISPATCH Terminal? Central Command is always looking for cheap, disposable engineering talent to maintain our crumbling cyber-infrastructure. 
+## ⚙️ HOW TO CONTRIBUTE TO THE GRID
 
-Follow these protocols, or your Pull Requests (PRs) will be rejected and your credentials revoked.
+### 1. File an Incident Ticket (Issues)
+Before you start slicing into the code, file an official Incident Ticket on the GitHub Issues page. 
+* Detail exactly what system you plan to upgrade or what bug you are patching.
+* Wait for a Senior Dispatcher to approve your requisition before you start working.
 
-## 📥 HOW TO CONTRIBUTE
-1. **Clone the Mainframe:** Fork the repository to your local terminal.
-2. **Establish a Secure Branch:** Create a new branch for your modifications (`git checkout -b feature/tactical-upgrade`).
-3. **Commit with Precision:** Write clear, concise commit messages. Cryptic messages will be flagged by our surveillance algorithms.
-4. **Deploy the PR:** Submit your Pull Request directly to Central Command (`main` branch).
+### 2. Fork the Mainframe
+* Clone the repository to your local cyber-deck.
+* Create a secure, isolated branch for your modifications (e.g. `patch/audio-system` or `feature/new-database-ui`).
+* Do **NOT** push directly to the `main` branch. That is a fast way to get arrested by TBMG security.
 
-## ⚠️ ENGINEERING STANDARDS
-* **No Unsanctioned APIs:** Do not hook the terminal into unauthorized civilian networks.
-* **Cache Management:** If you modify `app_core.js` or `styles.css`, you **MUST** manually bump the cache buster query strings (e.g., `?v=4.21.0`) in both HTML files. Failure to do so causes stale-state anomalies that dispatchers despise.
-* **Maintain the Lore:** Any new UI elements, buttons, or console logs must fit the dystopian, high-stakes cyberpunk atmosphere of the MCPD. Emojis are encouraged if they are tactical. 
-* **Semantic Versioning:** Releases must be tagged properly. Major overhauls get a new leading digit. Minor UI changes get a decimal bump. Hotfixes get a patch bump. 
+### 3. Maintain the Corporate Aesthetic
+* **Lore-Friendly:** Any text, UI elements, or console logs you add MUST match the dystopian, cyberpunk "MCPD / TBMG" lore.
+* **Dark Mode Mandatory:** No blinding white screens. All CSS must utilize dark slate, neon greens, cyber-blues, and high-contrast reds.
+* **Zero-Waste Code:** Keep your Javascript optimized. A slow terminal costs the corporation credits.
 
-## 🧪 TESTING PROTOCOLS
-You are expected to test your code before deploying. If your code causes an `Uncaught SyntaxError` that bricks the terminal and leaves field officers without backup, Internal Affairs will investigate you for gross negligence. 
+### 4. Submit Your Patch (Pull Request)
+* Push your branch and open a Pull Request.
+* Include a full debriefing of what you changed.
+* Ensure you update the cache-buster versions (`?v=X.X.X`) in the HTML headers so the changes propagate globally.
 
-*Dismissed.*
+> **TBMG Corporate Thanks You For Your Unpaid Labor.**

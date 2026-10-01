@@ -1,27 +1,28 @@
-# 🛡️ MCPD SECURITY POLICY 🛡️
+# 🔒 TBMG CYBER-SECURITY DIRECTIVE
 
-**CRITICAL INFRASTRUCTURE PROTECTION PROTOCOLS**
+## 🛑 SECURITY BREACH PROTOCOLS
+The MCPD Dispatch Terminal holds highly classified civilian data, criminal dossiers, and active operation statuses. Maintaining the absolute security of this grid is our highest priority. 
 
-The MCPD-DISPATCH terminal manages the lives of thousands of officers and the containment of millions of hostile citizens. Its security is paramount. 
+**Do NOT file public GitHub Issues for security vulnerabilities.** 
+If rogue hackers discover a vulnerability before we patch it, it could compromise the entire corporate sector.
 
-## 🚨 REPORTING A VULNERABILITY
-If you discover a critical vulnerability, memory leak, or exploitable backdoor in the terminal source code, **DO NOT DISCLOSE IT PUBLICLY.** 
+## 🛡️ REPORTING A VULNERABILITY
+If you discover a critical vulnerability, exploit, or a rogue AI lurking in the codebase, you must follow the Corporate Silence protocol:
 
-Posting zero-day exploits on public forums allows the cyber-gangs (such as the Neon Syndicate or the Chrome Vipers) to hijack dispatch frequencies, misdirect SWAT teams, and manipulate the Stock Market API.
+1. **Do not broadcast the exploit.**
+2. Send a secure, encrypted direct transmission (email) to the Lead System Architect: `michaelsweet612` (via private channels).
+3. Include detailed reproduction steps, the affected line numbers, and the potential blast radius of the exploit.
 
-**To report a vulnerability:**
-1. Do not open a public GitHub Issue.
-2. Encrypt your findings.
-3. Transmit the report directly to MCPD Internal Affairs / Central Command via secure direct message or encrypted email. 
-4. Wait for authorization before discussing the patch.
+## 🛠️ SUPPORTED TERMINAL VERSIONS
+We actively maintain and provide security patches for the latest terminal build. Legacy versions of the terminal (v3.x and below) are considered decommissioned and are no longer protected against modern cyber-attacks.
 
-## 💰 BUG BOUNTIES
-Authorized cyber-contractors who responsibly disclose vulnerabilities that could lead to system compromise or fatal O(N^2) death spirals will be rewarded with:
-* A commendation on their permanent record.
-* Up to 500 Station Points.
-* Immunity from immediate execution.
+| Version | Status | Security Updates |
+| ------- | ------ | ---------------- |
+| **v4.x** (Current) | 🟢 ACTIVE | YES (Priority) |
+| **v3.x** | 🔴 DECOMMISSIONED | NO |
+| **v2.x** | 🔴 DECOMMISSIONED | NO |
 
-## 🔒 SUPPORTED VERSIONS
-Central Command only provides security patches for the **latest stable release tag** on the `main` branch. Older versions of the terminal are considered obsolete and legally disavowed. Update your cache busters immediately.
+## 🚫 ILLEGAL MODIFICATIONS
+Any attempt to bypass the TBMG authentication gatekeeper, reverse-engineer the contraband image scanner, or intentionally inject malicious cross-site scripting (XSS) payloads into the chat simulator will be met with immediate legal action and automated defense protocols. 
 
-*Security is everyone's responsibility. Trust no one.*
+> *Stay secure. Stay vigilant. Trust the Corporation.*

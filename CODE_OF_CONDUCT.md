@@ -1,23 +1,24 @@
-# 🚨 MCPD CENTRAL COMMAND: CODE OF CONDUCT 🚨
+# ⚖️ TBMG CORPORATE CODE OF CONDUCT
 
-**CLASSIFICATION: RESTRICTED // CONTRACTORS & INTERNAL PERSONNEL ONLY**
+## 📜 DIRECTIVE ZERO
+The Trust Nation Central Records Authority strictly enforces this Code of Conduct. By accessing the MCPD Dispatch Grid, submitting pull requests, or filing incident tickets, you are legally binding yourself to the TBMG Corporate terms of service. Failure to comply will result in immediate neural-link severing and account termination.
 
-Welcome to the Mega-City Police Department (MCPD) Open Source Initiative. As a civilian contractor, engineer, or dispatcher interacting with the MCPD-DISPATCH terminal infrastructure, you are bound by the following behavioral directives.
+### ✅ APPROVED BEHAVIORS (COMMENDATIONS)
+* **Efficient Data Transfer:** Keep bug reports and contributions concise, accurate, and free of emotional syntax.
+* **Corporate Synergy:** Collaborate with other dispatchers and developers respectfully. We are all cogs in the TBMG machine.
+* **Respect the Hierarchy:** Acknowledge maintainers and senior corporate officers when receiving feedback.
+* **Inclusive Formatting:** Code must be clean, heavily commented, and inclusive to all cybernetic operating systems.
 
-## 📜 DIRECTIVE 1: COMPLIANCE IS MANDATORY
-By interacting with this repository, you agree to submit to the absolute authority of Central Command. Insubordination, sabotage, or unauthorized manipulation of the terminal network will result in immediate termination of your contract—and potentially your life.
+### 🚫 STRICTLY PROHIBITED (CLASS-4 FELONIES)
+* **Insubordination:** Disrespecting fellow dispatchers, developers, or corporate officials will result in an immediate permanent ban.
+* **Harassment / Cyber-Bullying:** The use of targeted digital harassment, discriminatory language, or toxic syntax.
+* **Malicious Payloads:** Do not upload corrupted data, viruses, or rogue AI scripts to the terminal. 
+* **Data Leaks:** Sharing internal TBMG source code on unauthorized dark-web forums.
 
-## 📜 DIRECTIVE 2: ACCEPTABLE BEHAVIOR
-* **Efficiency:** Submit code that is highly optimized. We do not tolerate O(N^2) death spirals in our dispatch queues.
-* **Respect the Chain of Command:** Do not question the authorized use of deadly force by field officers. Your job is to engineer the UI, not play moral arbiter.
-* **Data Integrity:** Do not leak classified suspect dossiers, gang affiliations, or active warrants to the public net.
+## ⚖️ ENFORCEMENT PROTOCOLS
+Violations of this Code of Conduct will be flagged by automated Corporate moderation drones. 
+1. **Level 1 (Warning):** A formal citation on your permanent record.
+2. **Level 2 (Suspension):** Temporary lockdown of your GitHub repository access.
+3. **Level 3 (Termination):** Permanent account suspension. Biomass reclamation drones dispatched to your location.
 
-## 📜 DIRECTIVE 3: UNACCEPTABLE BEHAVIOR
-* Introducing backdoor exploits for the Neon Syndicate or other cyber-gangs.
-* Removing the "Lethal Force" toggle from the Advanced Configuration matrix.
-* Trolling, harassment, or verbal abuse of other dispatchers. We have enough problems with the citizens; we don't need infighting at the precinct.
-
-## ⚖️ ENFORCEMENT
-Violations of this Code of Conduct will be flagged by Internal Affairs. Punishments range from a deduction of Station Points and ration credits, up to and including a dispatch of a heavily armed SWAT unit to your physical coordinates.
-
-*Have a productive shift, citizen.*
+> *Report all Code of Conduct violations to the nearest Internal Affairs terminal immediately.*
