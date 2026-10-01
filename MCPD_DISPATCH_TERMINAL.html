@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.0.1">
+    <link rel="stylesheet" href="css/styles.css?v=5.1.0">
 
 <style>
 .how-to-tab {
@@ -1265,25 +1265,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.0.1"></script>
+    <script src="js/system/check_system.js?v=5.1.0"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.0.1"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.0.1"></script>
-    <script src="js/system/export_log.js?v=5.0.1"></script>
-    <script src="js/chats/transmissions.js?v=5.0.1"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.0.1"></script>
-    <script src="js/core/chat_lines.js?v=5.0.1"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.0.1"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.0.1"></script>
-    <script src="js/core/realistic_debates.js?v=5.0.1"></script>
-    <script src="js/core/chat_reactions.js?v=5.0.1"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.0.1"></script>
-    <script src="js/core/profanity_events.js?v=5.0.1"></script>
-    <script src="js/core/department_complaints.js?v=5.0.1"></script>
-    <script src="js/core/meme_events.js?v=5.0.1"></script>
-    <script src="js/system/it_support.js?v=5.0.1"></script>
-    <script src="js/system/dms_system.js?v=5.0.1"></script>
-    <script src="js/core/app_core.js?v=5.0.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.1.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.1.0"></script>
+    <script src="js/system/export_log.js?v=5.1.0"></script>
+    <script src="js/chats/transmissions.js?v=5.1.0"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.1.0"></script>
+    <script src="js/core/chat_lines.js?v=5.1.0"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.1.0"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.1.0"></script>
+    <script src="js/core/realistic_debates.js?v=5.1.0"></script>
+    <script src="js/core/chat_reactions.js?v=5.1.0"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.1.0"></script>
+    <script src="js/core/profanity_events.js?v=5.1.0"></script>
+    <script src="js/core/department_complaints.js?v=5.1.0"></script>
+    <script src="js/core/meme_events.js?v=5.1.0"></script>
+    <script src="js/system/it_support.js?v=5.1.0"></script>
+    <script src="js/system/dms_system.js?v=5.1.0"></script>
+    <script src="js/core/app_core.js?v=5.1.0"></script>
 
     
 
@@ -1366,9 +1366,52 @@ document.addEventListener('keypress', function(e) {
                     <input type="color" id="color-accent-green" value="#10b981" style="width: 100%; height: 40px; cursor: pointer; border: 1px solid var(--panel-border); background: transparent;">
                 </div>
 
+
             </div>
+
+            <!-- LIVE PREVIEW BOX -->
+            <div id="custom-theme-preview" style="background: var(--preview-bg, #06111e); padding: 15px; margin-bottom: 20px; border: 1px solid var(--preview-border, #1f3a57); border-radius: 4px;">
+                <div style="background: var(--preview-panel, #0d2136); border: 1px solid var(--preview-border, #1f3a57); padding: 10px;">
+                    <div style="color: var(--preview-text, #e0e0e0); font-family: monospace; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase;">> Live Terminal Preview_</div>
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1; padding: 10px; border: 1px solid var(--preview-blue, #3b82f6); background: rgba(0,0,0,0.3); color: var(--preview-text, #e0e0e0); font-size: 0.8rem; font-family: monospace;">
+                            [Unit-77] Dispatched to Sector 4.
+                        </div>
+                        <button type="button" style="background: var(--preview-green, #10b981); color: #000; border: none; padding: 5px 15px; font-weight: bold;">SEND</button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function updateThemePreview() {
+                    const preview = document.getElementById('custom-theme-preview');
+                    if (!preview) return;
+                    
+                    const bgMain = document.getElementById('color-bg-main').value;
+                    const panelBg = document.getElementById('color-panel-bg').value;
+                    const panelBorder = document.getElementById('color-panel-border').value;
+                    const textMain = document.getElementById('color-text-main').value;
+                    const accentBlue = document.getElementById('color-accent-blue').value;
+                    const accentGreen = document.getElementById('color-accent-green').value;
+                    
+                    preview.style.setProperty('--preview-bg', bgMain);
+                    preview.style.setProperty('--preview-panel', panelBg);
+                    preview.style.setProperty('--preview-border', panelBorder);
+                    preview.style.setProperty('--preview-text', textMain);
+                    preview.style.setProperty('--preview-blue', accentBlue);
+                    preview.style.setProperty('--preview-green', accentGreen);
+                }
+                
+                document.addEventListener('DOMContentLoaded', () => {
+                    const inputs = document.querySelectorAll('#custom-theme-modal input[type="color"]');
+                    inputs.forEach(inp => {
+                        inp.addEventListener('input', updateThemePreview);
+                    });
+                    updateThemePreview(); // run once to initialize
+                });
+            </script>
             
-            <button onclick="applyCustomTheme()" style="width: 100%; padding: 12px; background: var(--accent-blue); color: #000; font-weight: bold; border: none; cursor: pointer; margin-bottom: 10px;">APPLY & SAVE</button>
+            <but style="width: 100%; padding: 12px; background: var(--accent-blue); color: #000; font-weight: bold; border: none; cursor: pointer; margin-bottom: 10px;">APPLY & SAVE</button>
             <button onclick="document.getElementById('custom-theme-modal').style.display='none';" style="width: 100%; padding: 10px; background: transparent; color: var(--text-dim); border: 1px solid var(--text-dim); cursor: pointer;">CANCEL</button>
             
         </div>
