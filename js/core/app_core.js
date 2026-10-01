@@ -2187,7 +2187,8 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        if(typeof window.unreadDispatch === "undefined") window.window.unreadDispatch = 0; window.if(typeof window.unreadDispatch === "undefined") window.unreadDispatch = 0; window.unreadDispatch++;
+        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0; }
+        window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
             badge.style.display = 'block';
@@ -2473,7 +2474,8 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        if(typeof window.unreadDispatch === "undefined") window.window.unreadDispatch = 0; window.if(typeof window.unreadDispatch === "undefined") window.unreadDispatch = 0; window.unreadDispatch++;
+        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0; }
+        window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
             badge.style.display = 'block';
@@ -5613,7 +5615,8 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
 
     // Unread Dispatch Badge Logic
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
-        if(typeof window.unreadDispatch === "undefined") window.window.unreadDispatch = 0; window.if(typeof window.unreadDispatch === "undefined") window.unreadDispatch = 0; window.unreadDispatch++;
+        if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0; }
+        window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
             badge.style.display = 'block';
