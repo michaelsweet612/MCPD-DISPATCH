@@ -3392,6 +3392,12 @@ function hideAllTabs() {
 }
 
 tabUnified.addEventListener('click', () => {
+        unreadDispatch = 0;
+        let badge = document.getElementById('dispatch-badge');
+        if(badge) badge.style.display = 'none';
+        unreadDispatch = 0;
+        let badge = document.getElementById('dispatch-badge');
+        if(badge) badge.style.display = 'none';
     hideAllTabs();
     tabUnified.classList.add('active');
     tabUnified.style.color = 'var(--text-main)';
