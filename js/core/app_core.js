@@ -2189,7 +2189,11 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
         if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0;
 window.unreadDocs = 0;
-window.unreadDocs = 0; }
+window.stockLedger = [];
+window.stockLedger = [];
+window.unreadDocs = 0;
+window.stockLedger = [];
+window.stockLedger = []; }
         window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
@@ -2478,7 +2482,11 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
         if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0;
 window.unreadDocs = 0;
-window.unreadDocs = 0; }
+window.stockLedger = [];
+window.stockLedger = [];
+window.unreadDocs = 0;
+window.stockLedger = [];
+window.stockLedger = []; }
         window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
@@ -3422,7 +3430,11 @@ function hideAllTabs() {
 tabUnified.addEventListener('click', () => {
         window.window.unreadDispatch = 0;
 window.unreadDocs = 0;
+window.stockLedger = [];
+window.stockLedger = [];
 window.unreadDocs = 0;
+window.stockLedger = [];
+window.stockLedger = [];
         let badge = document.getElementById('dispatch-badge');
         if(badge) badge.style.display = 'none';
     hideAllTabs();
@@ -3434,6 +3446,8 @@ window.unreadDocs = 0;
 
 tabDocuments.addEventListener('click', () => {
     window.unreadDocs = 0;
+window.stockLedger = [];
+window.stockLedger = [];
     let badge = document.getElementById('documents-badge');
     if(badge) badge.style.display = 'none';
     hideAllTabs();
@@ -5626,7 +5640,11 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
         if(typeof window.unreadDispatch === "undefined") { window.unreadDispatch = 0;
 window.unreadDocs = 0;
-window.unreadDocs = 0; }
+window.stockLedger = [];
+window.stockLedger = [];
+window.unreadDocs = 0;
+window.stockLedger = [];
+window.stockLedger = []; }
         window.unreadDispatch++;
         let badge = document.getElementById('dispatch-badge');
         if (badge) {
@@ -7488,7 +7506,21 @@ function updateStockMarkets(forceDraw = false) {
     let mcpdTrend = (trustFactor - 50) / 100;
     let mcpdChangePct = (mcpdTrend * 0.03) + ((Math.random() * 0.02) - 0.01); 
     if (trustFactor < 20) mcpdChangePct -= (Math.random() * 0.03);
-    updates.push({ id: 'mcpd', change: markets.mcpd.price * mcpdChangePct });
+    
+    let changeVal = markets.mcpd.price * mcpdChangePct;
+    updates.push({ id: 'mcpd', change: changeVal });
+    
+    // Log reasons
+    if(typeof window.stockLedger === "undefined") window.stockLedger = [];
+    if(Math.abs(changeVal) > 5) {
+        let reasonsUp = ["Favorable public sentiment", "Successful tactical operation", "Corporate subsidy granted", "Crime rates dropped"];
+        let reasonsDown = ["Public outcry over excessive force", "Collateral damage lawsuits", "Internal corruption probe", "TBMG budget cuts"];
+        let r = changeVal > 0 ? reasonsUp[Math.floor(Math.random()*reasonsUp.length)] : reasonsDown[Math.floor(Math.random()*reasonsDown.length)];
+        let time = getCurrentTimeStr ? getCurrentTimeStr() : new Date().toLocaleTimeString();
+        let sym = changeVal > 0 ? "+" : "";
+        window.stockLedger.push(`[${time}] MCPD STOCK: ${sym}${changeVal.toFixed(2)} NTND | REASON: ${r}`);
+        if(window.stockLedger.length > 500) window.stockLedger.shift();
+    }
     
     // 2. CIV Market
     updates.push({ id: 'civ', change: markets.civ.price * ((Math.random() * 0.08) - 0.04) });
@@ -8409,3 +8441,35 @@ window.resetScanner = function() {
     document.getElementById('contraband-upload').value = ''; // Clear file
 };
 
+
+window.downloadStockLedger = function() {
+    if(typeof window.stockLedger === "undefined" || window.stockLedger.length === 0) {
+        alert("Stock Ledger is currently empty. Waiting for market shifts.");
+        return;
+    }
+    const header = "=================================================\n" +
+                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      \n" +
+                   "=================================================\n\n";
+    const text = header + window.stockLedger.join("\n");
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `TBMG_STOCK_LEDGER_${Date.now()}.txt`;
+    a.click();
+};
+
+window.downloadStockLedger = function() {
+    if(typeof window.stockLedger === "undefined" || window.stockLedger.length === 0) {
+        alert("Stock Ledger is currently empty. Waiting for market shifts.");
+        return;
+    }
+    const header = "=================================================\n" +
+                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      \n" +
+                   "=================================================\n\n";
+    const text = header + window.stockLedger.join("\n");
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `TBMG_STOCK_LEDGER_${Date.now()}.txt`;
+    a.click();
+};
