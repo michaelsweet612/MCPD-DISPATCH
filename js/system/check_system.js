@@ -76,12 +76,12 @@ console.error = function(...args) {
 // 4. Advanced Structure Integrity Checks
 function performIntegrityChecks() {
     // Check critical global variables
-            const criticalGlobals = [
+                    const criticalGlobals = [
         'roster', 'crimeReports', 'GLOBAL_ARRIVING_CHATS_STANDARD', 
         'GLOBAL_GIBBERISH_RESPONSES', 'PROFANITY_LINES', 'NPC_DICTIONARY',
         'wantedTargets', 'window.itTickets', 'window.itAutoMode', 
-        'window._mcpd_errors', 'window.MCPDAudio', 'PERSONALITIES', 
-        'window.unreadDispatch', 'IT_ISSUES', 'ANGRY_REJECTIONS', 'HAPPY_ACCEPTANCES',
+        'window._mcpd_errors', 'PERSONALITIES', 
+        'IT_ISSUES', 'ANGRY_REJECTIONS', 'HAPPY_ACCEPTANCES',
         'DISPATCH_CRASH_OUTS'
     ];
 
@@ -108,9 +108,9 @@ function performIntegrityChecks() {
     } catch(e) {}
 
     // Check critical functions exist
-    const criticalFunctions = [
+            const criticalFunctions = [
         'simulateChat', 'processDispatchChat', 'generateDynamicAISentence', 
-        'handleDispatchChatReactions', 'generateMassiveReport', 'generate911Call',
+        'handleDispatchChatReactions', 'generateMassiveReport', 
         'addChatMessage', 'handleContrabandUpload', 'renderUnitStatus', 
         'generateAvatarSVG', 'generateCityLayout', 'updateWantedUI', 
         'generateITTicket', 'renderITTickets'
@@ -127,13 +127,13 @@ function performIntegrityChecks() {
     });
 
     // Check DOM Elements
-    const requiredElements = [
+            const requiredElements = [
         'unified-log', 'dispatch-chat-input', 'unit-status-log',
         'document-log', 'chat-input-area', 'tab-unified', 'tab-documents',
         'tab-unit-status', 'tab-database', 'tab-wanted', 'tab-map', 
         'tab-it-support', 'tab-citizens', 'tab-dms', 'manual-panic-btn', 
-        'clear-panic-btn', 'event-count', 'wanted-list', 'markets-container',
-        'db-image-scanner', 'db-upload-btn'
+        'clear-panic-btn', 'wanted-list', 'markets-container',
+        'db-image-scanner'
     ];
     
     requiredElements.forEach(id => {
