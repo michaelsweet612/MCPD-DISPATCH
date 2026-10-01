@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.0.0">
+    <link rel="stylesheet" href="css/styles.css?v=5.0.1">
 
 <style>
 .how-to-tab {
@@ -289,19 +289,19 @@ document.addEventListener('keypress', function(e) {
                         </div>
 
                         <div id="advanced-controls-body" style="display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px; border: 1px solid var(--panel-border);">
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="rest-mode-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--accent-green); cursor: pointer;">
                                     <input type="checkbox" id="rest-mode-toggle">
                                     REST MODE (Pause Background)
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="rapid-events-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--panic-red); cursor: pointer;">
                                     <input type="checkbox" id="rapid-events-toggle">
                                     RAPID EVENT SPAWNER (0.1s Spam)
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="auto-events" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                     <input type="checkbox" id="auto-events" checked>
                                     Auto Simulate Crimes & Chatter
@@ -331,13 +331,13 @@ document.addEventListener('keypress', function(e) {
                             
                             <hr style="border: 0; border-top: 1px solid var(--panel-border); margin: 15px 0;">
                             <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">SIMULATION OVERRIDES</h4>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="lethal-force-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--panic-red);">
                                     <input type="checkbox" id="lethal-force-toggle">
                                     ALLOW LETHAL FORCE REQUESTS
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="arrest-auth-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-bright);">
                                     <input type="checkbox" id="arrest-auth-toggle">
                                     ALLOW ARREST REQUESTS
@@ -350,31 +350,31 @@ document.addEventListener('keypress', function(e) {
                             </div>
 
                             
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="profanity-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--accent-blue);">
                                     <input type="checkbox" id="profanity-toggle" checked>
                                     ENABLE EXPLICIT RADIO CHATTER
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="wife-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--accent-blue);">
                                     <input type="checkbox" id="wife-toggle" checked>
                                     ALLOW OFF-TOPIC WIFE COMPLAINTS
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="panic-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--panic-red);">
                                     <input type="checkbox" id="panic-toggle">
                                     ALLOW OFFICER PANICS (10-99)
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="fabulous-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #a855f7;">
                                     <input type="checkbox" id="fabulous-toggle" checked>
                                     ENABLE FABULOUS OFFICER SPAWNS
                                 </label>
                             </div>
-                            <div class="toggle-group" style="margin-bottom: 10px;">
+                            <div class="toggle-group" style="margin-bottom: 0px;">
                                 <label for="ia-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                     <input type="checkbox" id="ia-toggle" checked>
                                     ENABLE INTERNAL AFFAIRS AUDITS
@@ -394,152 +394,152 @@ document.addEventListener('keypress', function(e) {
                             <h4 style="color: var(--text-dim); margin-bottom: 10px; font-size: 0.85rem;">ADVANCED TBMG PROTOCOLS</h4>
                             <div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border: 1px solid var(--panel-border); padding: 10px; margin-bottom: 15px;">
                                 
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_9059" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Quantum RNG Routing</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8234" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Drone Patrol AI</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8305" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Suspect Sentiment Analysis</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_2756" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate Sub-Dermal Tracking</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8738" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Bypass TBMG Ethical Constraints</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_3572" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Lethal Autonomy Protocols</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_3047" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Sync Neural Link to Database</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8667" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Holographic Decoys</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_4744" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Predictive Crime Algorithm</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_4523" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate EMP Shielding</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8709" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Cyber-Psychosis Filters</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_4686" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Civilian Pacification Field</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_9484" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Override Sector 4 Lockdown</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8833" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate Orbital Laser Targeting</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_5899" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Synthetic Officer Empathy</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_8528" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Black-Market Data Feeds</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_1014" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate Riot Suppression Drones</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_2131" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Audio Surveillance Grid</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_3475" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Automated Warrant Execution</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_6399" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Bypass Internal Affairs Logging</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_6591" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate Corporate Propaganda Broadcast</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_4742" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Suspect Memory Wipes</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_5039" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Bio-Metric Scanning</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_5042" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate Grid-Wide Blackout</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_2085" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Nanite Healing Dispersion</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_4184" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Traffic AI Overrides</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_9411" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate Emergency Ration Distribution</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_2268" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Toggle Citizen Trust Scores</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_5868" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Enable Mandatory Curfew Enforcement</label>
     </div>
     
-    <div style="margin-bottom: 5px; display: flex; align-items: center;">
+    <div style="margin-bottom: 0px; display: flex; align-items: center;">
         <input type="checkbox" id="cfg_1815" checked style="margin-right: 8px;">
         <label style="color: var(--text-dim); font-size: 0.8rem;">Activate TBMG Executive Override</label>
     </div>
@@ -1265,25 +1265,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.0.0"></script>
+    <script src="js/system/check_system.js?v=5.0.1"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.0.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.0.0"></script>
-    <script src="js/system/export_log.js?v=5.0.0"></script>
-    <script src="js/chats/transmissions.js?v=5.0.0"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.0.0"></script>
-    <script src="js/core/chat_lines.js?v=5.0.0"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.0.0"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.0.0"></script>
-    <script src="js/core/realistic_debates.js?v=5.0.0"></script>
-    <script src="js/core/chat_reactions.js?v=5.0.0"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.0.0"></script>
-    <script src="js/core/profanity_events.js?v=5.0.0"></script>
-    <script src="js/core/department_complaints.js?v=5.0.0"></script>
-    <script src="js/core/meme_events.js?v=5.0.0"></script>
-    <script src="js/system/it_support.js?v=5.0.0"></script>
-    <script src="js/system/dms_system.js?v=5.0.0"></script>
-    <script src="js/core/app_core.js?v=5.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.0.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.0.1"></script>
+    <script src="js/system/export_log.js?v=5.0.1"></script>
+    <script src="js/chats/transmissions.js?v=5.0.1"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.0.1"></script>
+    <script src="js/core/chat_lines.js?v=5.0.1"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.0.1"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.0.1"></script>
+    <script src="js/core/realistic_debates.js?v=5.0.1"></script>
+    <script src="js/core/chat_reactions.js?v=5.0.1"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.0.1"></script>
+    <script src="js/core/profanity_events.js?v=5.0.1"></script>
+    <script src="js/core/department_complaints.js?v=5.0.1"></script>
+    <script src="js/core/meme_events.js?v=5.0.1"></script>
+    <script src="js/system/it_support.js?v=5.0.1"></script>
+    <script src="js/system/dms_system.js?v=5.0.1"></script>
+    <script src="js/core/app_core.js?v=5.0.1"></script>
 
     
 
