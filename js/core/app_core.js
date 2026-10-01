@@ -2184,7 +2184,18 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     if (unifiedLogEl.children.length > 100) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
     }
+
+    // Unread Dispatch Badge Logic
+    if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
+        unreadDispatch++;
+        let badge = document.getElementById('dispatch-badge');
+        if (badge) {
+            badge.style.display = 'block';
+            badge.innerText = unreadDispatch;
+        }
+    }
 }
+
 
 // User Chat Processing
 async function processDispatchChat() {
@@ -2459,7 +2470,18 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     if (unifiedLogEl.children.length > 100) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
     }
+
+    // Unread Dispatch Badge Logic
+    if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
+        unreadDispatch++;
+        let badge = document.getElementById('dispatch-badge');
+        if (badge) {
+            badge.style.display = 'block';
+            badge.innerText = unreadDispatch;
+        }
+    }
 }
+
 
 // User Chat Processing
 
@@ -3392,9 +3414,6 @@ function hideAllTabs() {
 }
 
 tabUnified.addEventListener('click', () => {
-        unreadDispatch = 0;
-        let badge = document.getElementById('dispatch-badge');
-        if(badge) badge.style.display = 'none';
         unreadDispatch = 0;
         let badge = document.getElementById('dispatch-badge');
         if(badge) badge.style.display = 'none';
@@ -5591,7 +5610,18 @@ function addChatMessage(sender, text, typeClass = 'serious', isPlayer = false) {
     if (unifiedLogEl.children.length > 100) {
         unifiedLogEl.removeChild(unifiedLogEl.firstChild);
     }
+
+    // Unread Dispatch Badge Logic
+    if (typeof tabUnified !== 'undefined' && tabUnified && !tabUnified.classList.contains('active') && sender !== 'SYSTEM') {
+        unreadDispatch++;
+        let badge = document.getElementById('dispatch-badge');
+        if (badge) {
+            badge.style.display = 'block';
+            badge.innerText = unreadDispatch;
+        }
+    }
 }
+
 
 // === UNIFIED triggerLethalAuthEvent ===
 function triggerLethalAuthEvent() {
