@@ -161,6 +161,7 @@ body {
     transition: all 0.2s;
     font-size: 0.85rem;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .tab:hover {
