@@ -162,6 +162,7 @@ body {
     font-size: 0.75rem;
     text-transform: uppercase;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .tab:hover {
