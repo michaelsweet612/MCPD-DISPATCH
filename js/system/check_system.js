@@ -76,10 +76,13 @@ console.error = function(...args) {
 // 4. Advanced Structure Integrity Checks
 function performIntegrityChecks() {
     // Check critical global variables
-    const criticalGlobals = [
+            const criticalGlobals = [
         'roster', 'crimeReports', 'GLOBAL_ARRIVING_CHATS_STANDARD', 
         'GLOBAL_GIBBERISH_RESPONSES', 'PROFANITY_LINES', 'NPC_DICTIONARY',
-        
+        'wantedTargets', 'window.itTickets', 'window.itAutoMode', 
+        'window._mcpd_errors', 'window.MCPDAudio', 'PERSONALITIES', 
+        'window.unreadDispatch', 'IT_ISSUES', 'ANGRY_REJECTIONS', 'HAPPY_ACCEPTANCES',
+        'DISPATCH_CRASH_OUTS'
     ];
 
     criticalGlobals.forEach(g => {
@@ -107,7 +110,10 @@ function performIntegrityChecks() {
     // Check critical functions exist
     const criticalFunctions = [
         'simulateChat', 'processDispatchChat', 'generateDynamicAISentence', 
-        'handleDispatchChatReactions'
+        'handleDispatchChatReactions', 'generateMassiveReport', 'generate911Call',
+        'addChatMessage', 'handleContrabandUpload', 'renderUnitStatus', 
+        'generateAvatarSVG', 'generateCityLayout', 'updateWantedUI', 
+        'generateITTicket', 'renderITTickets'
     ];
 
     criticalFunctions.forEach(f => {
@@ -122,7 +128,12 @@ function performIntegrityChecks() {
 
     // Check DOM Elements
     const requiredElements = [
-        'unified-log', 'dispatch-chat-input', 'unit-status-log'
+        'unified-log', 'dispatch-chat-input', 'unit-status-log',
+        'document-log', 'chat-input-area', 'tab-unified', 'tab-documents',
+        'tab-unit-status', 'tab-database', 'tab-wanted', 'tab-map', 
+        'tab-it-support', 'tab-citizens', 'tab-dms', 'manual-panic-btn', 
+        'clear-panic-btn', 'event-count', 'wanted-list', 'markets-container',
+        'db-image-scanner', 'db-upload-btn'
     ];
     
     requiredElements.forEach(id => {
