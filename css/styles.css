@@ -153,13 +153,13 @@ body {
 }
 
 .tab {
-    padding: 10px 16px;
+    padding: 8px 10px;
     cursor: pointer;
     border-right: 1px solid var(--panel-border);
     color: var(--text-dim);
     font-weight: bold;
     transition: all 0.2s;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     white-space: nowrap;
 }
