@@ -3500,11 +3500,6 @@ function hideAllTabs() {
     if (cctvTab) { cctvTab.classList.remove('active'); cctvTab.style.color = 'var(--text-dim)'; }
     if (cctvContent) cctvContent.style.display = 'none';
 
-    const cctvTab = document.querySelector('.tab#tab-cctv');
-    const cctvContent = document.querySelector('.tab-content#tab-cctv');
-    if (cctvTab) { cctvTab.classList.remove('active'); cctvTab.style.color = 'var(--text-dim)'; }
-    if (cctvContent) cctvContent.style.display = 'none';
-
     if (typeof tabMap !== 'undefined' && tabMap) { tabMap.classList.remove('active'); tabMap.style.color = 'var(--text-dim)'; }
     if (typeof mapLogEl !== 'undefined' && mapLogEl) mapLogEl.style.display = 'none';
     tabUnified.classList.remove('active');
