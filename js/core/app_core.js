@@ -8610,15 +8610,10 @@ window.downloadStockLedger = function() {
 
 window.executeDownload = function(format) {
     document.getElementById('download-modal').style.display = 'none';
-    const header = "=================================================
-" +
-                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      
-" +
-                   "=================================================
-
-";
-    const text = header + window.stockLedger.join("
-");
+    const header = "=================================================\n" +
+                   "      TBMG STOCK MARKET LEDGER (MCPD INDEX)      \n" +
+                   "=================================================\n\n";
+    const text = header + window.stockLedger.join("\n");
     
     if (format === 'txt') {
         const blob = new Blob([text], { type: 'text/plain' });
