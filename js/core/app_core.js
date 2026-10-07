@@ -3035,6 +3035,7 @@ function triggerColorAnomaly(active) {
                 .chat-msg { border-left-color: ${r2} !important; }
             `;
             document.body.style.filter = `hue-rotate(${Math.floor(Math.random() * 360)}deg)`;
+            doc.querySelector(".view-report-btn").onclick = () => openReportModal(fullReport);
         }, 250);
     } else {
         if (window.colorAnomalyInterval) {
@@ -3981,8 +3982,9 @@ ${aiText}`;
                 <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
                     "${aiText}"
                 </div>
-                <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
+                <button class="doc-btn view-report-btn" style="margin-top: 10px; padding: 5px;">VIEW AUTOMATED REPORT EXTRACT</button>
             `;
+            doc.querySelector(".view-report-btn").onclick = () => openReportModal(fullReport);
         } else {
             throw new Error("AI Generation Failed");
         }
@@ -3999,9 +4001,10 @@ ${aiText}`;
             <div style="color: #fff; font-size: 0.95rem; font-style: italic; margin-top:5px; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 8px;">
                 "Click VIEW REPORT for full incident documentation."
             </div>
-            <button class="doc-btn" style="margin-top: 10px; padding: 5px;" onclick="openReportModal(\`${fullReport}\`)">VIEW AUTOMATED REPORT EXTRACT</button>
+            <button class="doc-btn view-report-btn" style="margin-top: 10px; padding: 5px;">VIEW AUTOMATED REPORT EXTRACT</button>
         `;
-    }
+            doc.querySelector(".view-report-btn").onclick = () => openReportModal(fullReport);
+        }
 }
 
 // Global function to open modal
