@@ -3461,7 +3461,24 @@ function simulateEvent(specificCrime = null) {
 
         const chatDiv = document.createElement('div');
         chatDiv.className = 'chat-msg';
-        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD).replace(/%SECTOR%/g, crime.sector || Math.floor(Math.random() * 9 + 1))}</span>`;
+        
+        let arrivalText = getRandomItem(GLOBAL_ARRIVING_CHATS_STANDARD).replace(/%SECTOR%/g, crime.sector || Math.floor(Math.random() * 9 + 1));
+        if (crime.title.includes('10-15:')) {
+            const civilMsg = [
+                "Ugh, another civil issue? Tell them to stop blocking the road or I'm plowing through.",
+                "Really, Dispatch? A 10-15? I'm a police officer, not a babysitter for civilian behavior.",
+                "Copy that. Actually glad I'm getting a 10-15, easiest points of the shift.",
+                "A civil issue? Half the time these turn into a civil war over nothing. I'm on it.",
+                "Dispatch, tell them if I have to come down there for a general civilian complaint, they're all getting tased.",
+                "On scene. Honestly, I'm just happy it's not another shootout. I'll handle these civilians.",
+                "Are you kidding me? I am super annoyed right now. Stop sending me to these civilian disputes!",
+                "10-4. Approaching the 10-15. Could use a break from the actual crime anyway.",
+                "On scene. Why do civilians act like this? It's just annoying. Dealing with it now."
+            ];
+            arrivalText = getRandomItem(civilMsg);
+        }
+        
+        chatDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${respondingUnits[0]}]</span> <span class="text" style="color: var(--accent-green) !important;">${arrivalText}</span>`;
         unifiedLogEl.appendChild(chatDiv);
         scrollToBottom(unifiedLogEl);
         if (typeof awardOfficerPoints !== "undefined" && typeof respondingUnits !== "undefined" && respondingUnits.length > 0) { 
