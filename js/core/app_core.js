@@ -2971,7 +2971,7 @@ window.stockLedger = []; }
 
 
 // User Chat Processing
-async // --- TRIGGER EVENT ANOMALIES ---
+// --- TRIGGER EVENT ANOMALIES ---
 window.vreEventActive = false;
 window.vreInterval = null;
 
