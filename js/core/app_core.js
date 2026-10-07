@@ -475,8 +475,10 @@ function updateDepartmentStats() {
     const statWarrants = document.getElementById('stat-warrants');
     const statSuspects = document.getElementById('stat-suspects');
     const statDeceased = document.getElementById('stat-deceased');
+    const statCitations = document.getElementById('stat-citations');
     
     if (statIncidents) statIncidents.textContent = eventCount || 0;
+    if (statCitations) statCitations.textContent = globalCitationsCount || 0;
     
     if (wantedTargets && statWarrants) statWarrants.textContent = wantedTargets.length;
     
@@ -506,6 +508,7 @@ const dbResults = document.getElementById('db-results');
 
 // Global State
 let eventCount = 0;
+let globalCitationsCount = 0;
 let activePanics = new Map();
 window.genderPool = [
     "Sub-dermal Hologram",
@@ -2735,20 +2738,34 @@ if (Math.random() < 0.05) {
     }
 
     if (Math.random() < 0.04) {
-        addChatMessage(sender, "Suspect is non-compliant! OPEN FIRE!", 'worried', false);
+        let stoppedCit = { vehicle: { brand: 'Unknown', model: 'Vehicle' }, status: 'Normal', civPersonality: 'Normal', name: 'Unknown' };
+        if (globalCitizens && globalCitizens.length > 0) {
+            stoppedCit = globalCitizens[Math.floor(Math.random() * globalCitizens.length)];
+        }
+        
+        addChatMessage(sender, `Dispatch, I'm initiating a traffic stop on a ${stoppedCit.vehicle.brand} ${stoppedCit.vehicle.model}. Standby.`, 'serious', false);
+        
         setTimeout(() => {
-            addChatMessage(sender, "SHOTS FIRED! SHOTS FIRED! I'M BEING FUCKING SHOT AT!", 'worried', false);
-            pinRadioLog(sender, "10-71 SHOTS FIRED / OFFICER UNDER FIRE");
-            
-            // 40% chance the officer hits their panic button during a shootout
-            if (Math.random() < 0.4) {
-                setTimeout(() => triggerPanic(sender), 1000 + Math.random() * 2000);
+            const chanceToShoot = (stoppedCit.status === 'Wanted' || stoppedCit.civPersonality === 'Aggressive') ? 0.4 : 0.05;
+            if (Math.random() < chanceToShoot) {
+                addChatMessage(sender, `Wait, suspect ${stoppedCit.name} is reaching for a weapon! OPEN FIRE!`, 'worried', false);
+                setTimeout(() => {
+                    addChatMessage(sender, `SHOTS FIRED! SHOTS FIRED! I'M BEING FUCKING SHOT AT!`, 'worried', false);
+                    pinRadioLog(sender, "10-71 SHOTS FIRED / TRAFFIC STOP ESCALATION");
+                    
+                    if (Math.random() < 0.4) {
+                        setTimeout(() => triggerPanic(sender), 1000 + Math.random() * 2000);
+                    } else {
+                        unifiedLogEl.style.boxShadow = "inset 0 0 50px rgba(244,67,54,0.3)";
+                        setTimeout(() => unifiedLogEl.style.boxShadow = "none", 1500);
+                    }
+                }, 2000);
             } else {
-                // Just UI flair if no panic
-                unifiedLogEl.style.boxShadow = "inset 0 0 50px rgba(244,67,54,0.3)";
-                setTimeout(() => unifiedLogEl.style.boxShadow = "none", 1500);
+                addChatMessage(sender, `Traffic stop complete. Issued a citation to ${stoppedCit.name}. Returning to patrol.`, 'serious', false);
+                globalCitationsCount++;
+                if (typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
             }
-        }, 2500);
+        }, 3000 + Math.random() * 2000);
         return;
     }
 
@@ -4387,6 +4404,22 @@ const ARRESTED_COLOR = "#9e9e9e";
 const ESCAPED_COLOR = "#d946ef"; // Purple/Pinkish for escaped
 
 
+
+const citationTemplates = [
+    "Speeding in a school zone (9000 mph)",
+    "Hovering without a license",
+    "Illegal left turn across 14 lanes of traffic",
+    "Parking in a restricted wormhole",
+    "Operating a cyber-truck without a valid firmware update",
+    "Failure to yield to a corporate drone patrol",
+    "Running a red light while applying cyber-makeup",
+    "Littering (dumped 40 tons of radioactive waste)",
+    "Loud music (bass caused a minor earthquake)",
+    "Driving with a shattered windshield and no pants",
+    "Obstructing a public sidewalk with an illegal hot dog stand",
+    "Evading a toll booth using cloaking technology",
+    "Driving under the influence of synthetic squid ink"
+];
 const fictionalBrands = [
     "Toyotad", "Fjord Motor Co.", "Chevrolegs", "Teslah", 
     "Bavarian Motor Wagon (BWM)", "Mercedez-Bends", "Dodg-e", "Honk Motors", 
@@ -4613,7 +4646,15 @@ function generateCitizens() {
         const birthDay = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
         const age = 2026 - birthYear;
 
+        
+        let citizenCitations = [];
+        let numCits = Math.floor(Math.random() * 4);
+        for(let i=0; i<numCits; i++) {
+            citizenCitations.push(getRandomItem(citationTemplates));
+        }
         const cit = {
+            citations: citizenCitations,
+    
             id: randId,
             civNumber: civNum,
             gender: getRandomGender(),
@@ -4841,6 +4882,10 @@ function openCitizenDossier(idx) {
             ${licensesHtml}
         </div>
 
+        <div style="margin-top: 15px;">
+            <strong style="color:#d946ef; display:block; margin-bottom:5px; border-bottom:1px solid var(--panel-border); padding-bottom:3px;">RECENT TRAFFIC CITATIONS:</strong>
+            ${cit.citations && cit.citations.length > 0 ? cit.citations.map(c => `<div style="margin-bottom:4px; font-size:0.85rem; color:#d946ef;">- ${c}</div>`).join('') : '<span style="color:var(--text-dim);">No recent citations on record.</span>'}
+        </div>
         <div style="margin-top: 15px;"><strong>Crime / Infraction History:</strong><br><span style="color:var(--panic-orange);">${cit.history || "None."}</span></div>
         <div style="margin-top: 10px;"><strong>Biometric Notes & Cybernetics:</strong><br><span style="color:#aaa;">${cit.trait}</span></div>
         
