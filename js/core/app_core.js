@@ -1,6 +1,29 @@
 const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
         const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
         const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
+const calloutComplimentLines = [
+    "Good job getting there first, {original}.",
+    "Nice response time, {original}. Seriously impressive.",
+    "{original} is always on top of it. Stay safe out there.",
+    "Glad you're on this one, {original}. I'll cover your six if needed.",
+    "You always get the fun ones, {original}. Good luck.",
+    "{original} handling business as usual.",
+    "I was miles away, thanks for picking that up {original}.",
+    "Solid work, {original}. Keep your head on a swivel.",
+    "Leave some action for the rest of us, {original}!",
+    "I owe you a synth-caf for grabbing that call, {original}.",
+    "{original} is making the rest of us look slow.",
+    "Copy that. {original} has it under control.",
+    "Good hustle, {original}.",
+    "{original}, if you need backup, just say the word.",
+    "Textbook response, {original}.",
+    "You're a lifesaver, {original}.",
+    "They don't stand a chance with {original} on scene.",
+    "Just don't scratch your cruiser, {original}.",
+    "{original}'s on scene. Situation is practically resolved.",
+    "Appreciate you taking that one, {original}."
+];
+
 const lateArrivalLines = [
     `Well he got there before me that doesn't mean I don't get to get paid, but I'll move in anyways and kill the bastard.`,
     `I'm just going to cry in my cruiser. Unbelievable.`,
@@ -3407,30 +3430,42 @@ function simulateEvent(specificCrime = null) {
             addPoints(15); 
         }
         
-        // Jealous Officer mechanic
+        // Jealous OR Compliment Officer mechanic
         setTimeout(() => {
             const activeCallsigns = getActiveCallsigns();
             const originalUnit = respondingUnits[0];
             const backupUnits = activeCallsigns.filter(u => u !== originalUnit);
             if (backupUnits.length > 0) {
-                const jealousUnit = backupUnits[Math.floor(Math.random() * backupUnits.length)];
-                const rawLine = lateArrivalLines[Math.floor(Math.random() * lateArrivalLines.length)];
-                const line = rawLine.replace('{original}', originalUnit);
+                const reactionUnit = backupUnits[Math.floor(Math.random() * backupUnits.length)];
+                
+                let rawLine = "";
+                if (Math.random() > 0.5) {
+                    rawLine = lateArrivalLines[Math.floor(Math.random() * lateArrivalLines.length)];
+                } else {
+                    rawLine = calloutComplimentLines[Math.floor(Math.random() * calloutComplimentLines.length)];
+                }
+                const line = rawLine.replace(/{original}/g, originalUnit);
                 
                 const jDiv = document.createElement('div');
                 jDiv.className = 'chat-msg';
-                jDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${jealousUnit}]</span> <span class="text">${line}</span>`;
+                
+                let textStyle = '';
+                if (calloutComplimentLines.includes(rawLine)) {
+                    textStyle = 'color: var(--accent-green);';
+                }
+                
+                jDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${reactionUnit}]</span> <span class="text" style="${textStyle}">${line}</span>`;
                 unifiedLogEl.appendChild(jDiv);
                 scrollToBottom(unifiedLogEl);
                 
                 // Temporarily mark them on scene
-                unitAssignments[jealousUnit] = '10-6 (On Scene)';
+                unitAssignments[reactionUnit] = '10-6 (On Scene)';
                 if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
                 
                 // Switch them back to on duty after 12s
                 setTimeout(() => {
-                    if (unitAssignments[jealousUnit] === '10-6 (On Scene)') {
-                        unitAssignments[jealousUnit] = '10-8 (Available)';
+                    if (unitAssignments[reactionUnit] === '10-6 (On Scene)') {
+                        unitAssignments[reactionUnit] = '10-8 (Available)';
                         if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
                     }
                 }, 12000);
@@ -3447,7 +3482,7 @@ function simulateEvent(specificCrime = null) {
                         setTimeout(() => {
                             const iaDiv = document.createElement('div');
                             iaDiv.className = 'chat-msg';
-                            iaDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--panic-red)">[INTERNAL AFFAIRS]</span> <span class="text" style="color:var(--panic-red); font-weight:bold;">OFFICER ${jealousUnit}, LETHAL FORCE COMMENTS ARE FLAGGED. THIS WILL BE REVIEWED.</span>`;
+                            iaDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--panic-red)">[INTERNAL AFFAIRS]</span> <span class="text" style="color:var(--panic-red); font-weight:bold;">OFFICER ${reactionUnit}, LETHAL FORCE COMMENTS ARE FLAGGED. THIS WILL BE REVIEWED.</span>`;
                             unifiedLogEl.appendChild(iaDiv);
                             scrollToBottom(unifiedLogEl);
                         }, 2000);
@@ -6097,30 +6132,42 @@ function simulateEvent(specificCrime = null) {
             addPoints(crime.points || 15); 
         }
         
-        // Jealous Officer mechanic
+        // Jealous OR Compliment Officer mechanic
         setTimeout(() => {
             const activeCallsigns = getActiveCallsigns();
             const originalUnit = respondingUnits[0];
             const backupUnits = activeCallsigns.filter(u => u !== originalUnit);
             if (backupUnits.length > 0) {
-                const jealousUnit = backupUnits[Math.floor(Math.random() * backupUnits.length)];
-                const rawLine = lateArrivalLines[Math.floor(Math.random() * lateArrivalLines.length)];
-                const line = rawLine.replace('{original}', originalUnit);
+                const reactionUnit = backupUnits[Math.floor(Math.random() * backupUnits.length)];
+                
+                let rawLine = "";
+                if (Math.random() > 0.5) {
+                    rawLine = lateArrivalLines[Math.floor(Math.random() * lateArrivalLines.length)];
+                } else {
+                    rawLine = calloutComplimentLines[Math.floor(Math.random() * calloutComplimentLines.length)];
+                }
+                const line = rawLine.replace(/{original}/g, originalUnit);
                 
                 const jDiv = document.createElement('div');
                 jDiv.className = 'chat-msg';
-                jDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${jealousUnit}]</span> <span class="text">${line}</span>`;
+                
+                let textStyle = '';
+                if (calloutComplimentLines.includes(rawLine)) {
+                    textStyle = 'color: var(--accent-green);';
+                }
+                
+                jDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender">[${reactionUnit}]</span> <span class="text" style="${textStyle}">${line}</span>`;
                 unifiedLogEl.appendChild(jDiv);
                 scrollToBottom(unifiedLogEl);
                 
                 // Temporarily mark them on scene
-                unitAssignments[jealousUnit] = '10-6 (On Scene)';
+                unitAssignments[reactionUnit] = '10-6 (On Scene)';
                 if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
                 
                 // Switch them back to on duty after 12s
                 setTimeout(() => {
-                    if (unitAssignments[jealousUnit] === '10-6 (On Scene)') {
-                        unitAssignments[jealousUnit] = '10-8 (Available)';
+                    if (unitAssignments[reactionUnit] === '10-6 (On Scene)') {
+                        unitAssignments[reactionUnit] = '10-8 (Available)';
                         if(typeof renderUnitStatus !== 'undefined' && document.getElementById('tab-unit-status').classList.contains('active')) renderUnitStatus();
                     }
                 }, 12000);
@@ -6137,7 +6184,7 @@ function simulateEvent(specificCrime = null) {
                         setTimeout(() => {
                             const iaDiv = document.createElement('div');
                             iaDiv.className = 'chat-msg';
-                            iaDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--panic-red)">[INTERNAL AFFAIRS]</span> <span class="text" style="color:var(--panic-red); font-weight:bold;">OFFICER ${jealousUnit}, LETHAL FORCE COMMENTS ARE FLAGGED. THIS WILL BE REVIEWED.</span>`;
+                            iaDiv.innerHTML = `<span class="time">${getCurrentTimeStr()}</span> <span class="sender" style="color:var(--panic-red)">[INTERNAL AFFAIRS]</span> <span class="text" style="color:var(--panic-red); font-weight:bold;">OFFICER ${reactionUnit}, LETHAL FORCE COMMENTS ARE FLAGGED. THIS WILL BE REVIEWED.</span>`;
                             unifiedLogEl.appendChild(iaDiv);
                             scrollToBottom(unifiedLogEl);
                         }, 2000);
