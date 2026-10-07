@@ -2761,9 +2761,14 @@ if (Math.random() < 0.05) {
                     }
                 }, 2000);
             } else {
-                addChatMessage(sender, `Traffic stop complete. Issued a citation to ${stoppedCit.name}. Returning to patrol.`, 'serious', false);
-                globalCitationsCount++;
-                if (typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
+                const citationToggle = document.getElementById('citation-auth-toggle');
+                if (citationToggle && citationToggle.checked && !citationAuthActive) {
+                    triggerCitationAuthEvent(sender, stoppedCit.name);
+                } else {
+                    addChatMessage(sender, `Traffic stop complete. Issued a citation to ${stoppedCit.name}. Returning to patrol.`, 'serious', false);
+                    globalCitationsCount++;
+                    if (typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
+                }
             }
         }, 3000 + Math.random() * 2000);
         return;
@@ -9367,5 +9372,7 @@ window.executeDownload = function(format) {
         });
     }
 };
+
+
 
 
