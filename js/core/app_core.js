@@ -9376,3 +9376,75 @@ window.executeDownload = function(format) {
 
 
 
+
+
+// === CITATION AUTHORIZATION SYSTEM ===
+var citationAuthActive = false;
+var citationAuthTimer = null;
+var citationAuthOfficer = '';
+var citationAuthCitizen = '';
+var citationAuthTimeLeft = 30;
+
+function triggerCitationAuthEvent(officerName, citizenName) {
+    if (citationAuthActive) return; 
+    citationAuthActive = true;
+    citationAuthOfficer = officerName;
+    citationAuthCitizen = citizenName;
+    citationAuthTimeLeft = 30;
+    
+    addChatMessage(officerName, `DISPATCH, requesting authorization to issue a citation to ${citizenName}. Holding for your go-ahead.`, 'serious', false);
+    
+    const modal = document.getElementById('citation-auth-modal');
+    const textEl = document.getElementById('citation-auth-text');
+    const timeEl = document.getElementById('citation-auth-timer');
+    
+    if (modal && textEl && timeEl) {
+        textEl.innerText = `${officerName} is requesting authorization to issue a citation to ${citizenName}.`;
+        timeEl.innerText = citationAuthTimeLeft;
+        modal.style.display = 'flex';
+        
+        clearInterval(citationAuthTimer);
+        citationAuthTimer = setInterval(() => {
+            citationAuthTimeLeft--;
+            timeEl.innerText = citationAuthTimeLeft;
+            if (citationAuthTimeLeft <= 0) {
+                resolveCitationAuth(false);
+            }
+        }, 1000);
+    }
+}
+
+function resolveCitationAuth(approved) {
+    if (!citationAuthActive) return;
+    citationAuthActive = false;
+    if (typeof citationAuthTimer !== 'undefined') clearInterval(citationAuthTimer);
+    
+    const modal = document.getElementById('citation-auth-modal');
+    if (modal) modal.style.display = 'none';
+    
+    if (approved) {
+        addChatMessage('DISPATCH', `Authorization granted. Issue the citation to ${citationAuthCitizen}.`, 'serious', true);
+        if (typeof playSound !== 'undefined') playSound('dispatch_beep');
+        setTimeout(() => {
+            addChatMessage(citationAuthOfficer, `10-4. Citation issued to ${citationAuthCitizen}. Resuming patrol.`, 'serious', false);
+            if (typeof globalCitationsCount !== 'undefined') globalCitationsCount++;
+            if (typeof updateDepartmentStats !== 'undefined') updateDepartmentStats();
+        }, 1500);
+    } else {
+        addChatMessage('DISPATCH', `Negative. Issue a warning and release ${citationAuthCitizen}.`, 'serious', true);
+        if (typeof playSound !== 'undefined') playSound('dispatch_beep');
+        setTimeout(() => {
+            addChatMessage(citationAuthOfficer, `Copy that. Warning issued to ${citationAuthCitizen}. Back on patrol.`, 'serious', false);
+        }, 1500);
+    }
+}
+
+// Global keybinds for Y/N (Citation/Arrest/Lethal/Bribe)
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'y') {
+        if (typeof citationAuthActive !== 'undefined' && citationAuthActive && typeof resolveCitationAuth === 'function') resolveCitationAuth(true);
+    }
+    if (e.key.toLowerCase() === 'n') {
+        if (typeof citationAuthActive !== 'undefined' && citationAuthActive && typeof resolveCitationAuth === 'function') resolveCitationAuth(false);
+    }
+});

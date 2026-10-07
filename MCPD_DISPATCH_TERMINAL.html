@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.8.0">
+    <link rel="stylesheet" href="css/styles.css?v=5.8.1">
 
 <style>
 .how-to-tab {
@@ -346,6 +346,10 @@ document.addEventListener('keypress', function(e) {
                                 </label>
                                 <label for="bribe-auth-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #4caf50;">
                                     <input type="checkbox" id="bribe-auth-toggle">
+                                    ALLOW BRIBE NEGOTIATIONS
+                                </label>
+                                <label for="citation-auth-toggle" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #d946ef;">
+                                    <input type="checkbox" id="citation-auth-toggle">
                                     ALLOW BRIBE REQUESTS
                                 </label>
 
@@ -1268,29 +1272,44 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.8.0"></script>
+    <script src="js/system/check_system.js?v=5.8.1"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.0"></script>
-    <script src="js/system/export_log.js?v=5.8.0"></script>
-    <script src="js/chats/transmissions.js?v=5.8.0"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.8.0"></script>
-    <script src="js/core/chat_lines.js?v=5.8.0"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.8.0"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.8.0"></script>
-    <script src="js/core/realistic_debates.js?v=5.8.0"></script>
-    <script src="js/core/chat_reactions.js?v=5.8.0"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.8.0"></script>
-    <script src="js/core/profanity_events.js?v=5.8.0"></script>
-    <script src="js/core/department_complaints.js?v=5.8.0"></script>
-    <script src="js/core/meme_events.js?v=5.8.0"></script>
-    <script src="js/system/it_support.js?v=5.8.0"></script>
-    <script src="js/system/dms_system.js?v=5.8.0"></script>
-    <script src="js/core/app_core.js?v=5.8.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.1"></script>
+    <script src="js/system/export_log.js?v=5.8.1"></script>
+    <script src="js/chats/transmissions.js?v=5.8.1"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.8.1"></script>
+    <script src="js/core/chat_lines.js?v=5.8.1"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.8.1"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.8.1"></script>
+    <script src="js/core/realistic_debates.js?v=5.8.1"></script>
+    <script src="js/core/chat_reactions.js?v=5.8.1"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.8.1"></script>
+    <script src="js/core/profanity_events.js?v=5.8.1"></script>
+    <script src="js/core/department_complaints.js?v=5.8.1"></script>
+    <script src="js/core/meme_events.js?v=5.8.1"></script>
+    <script src="js/system/it_support.js?v=5.8.1"></script>
+    <script src="js/system/dms_system.js?v=5.8.1"></script>
+    <script src="js/core/app_core.js?v=5.8.1"></script>
 
     
 
 
+    
+    <!-- CITATION MODAL -->
+    <div id="citation-auth-modal" class="modal-overlay" style="display: none; z-index: 99999;">
+        <div class="modal-content" style="max-width: 500px; border-color: #d946ef; box-shadow: 0 0 30px rgba(217,70,239,0.4);">
+            <h2 style="color: #d946ef; text-align: center; text-shadow: 0 0 10px #d946ef; margin-top: 0;"> CITATION AUTHORIZATION </h2>
+            <p style="color: #fff; text-align: center; font-size: 1.1rem; margin: 20px 0;" id="citation-auth-text">Officer requests citation authorization.</p>
+            
+            <div style="text-align: center; font-size: 3rem; font-weight: bold; color: #d946ef; margin: 20px 0; font-family: monospace;" id="citation-auth-timer">30</div>
+            
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+                <button onclick="resolveCitationAuth(true)" style="background: var(--accent-green); color: #000; font-weight: bold; font-size: 1.2rem; padding: 15px 30px; border: none; cursor: pointer; text-shadow: none; border-radius: 4px;">AUTHORIZE (Y)</button>
+                <button onclick="resolveCitationAuth(false)" style="background: var(--panic-red); color: #fff; font-weight: bold; font-size: 1.2rem; padding: 15px 30px; border: none; cursor: pointer; border-radius: 4px;">DENY (N)</button>
+            </div>
+        </div>
+    </div>
     
     <!-- ARREST AUTH MODAL -->
     <div id="arrest-auth-modal" class="modal-overlay" style="display: none; z-index: 99998;">
