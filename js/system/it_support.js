@@ -59,7 +59,12 @@ function generateITTicket() {
     if (window.itAutoMode === 'ACCEPT') {
         setTimeout(() => {
             const reply = HAPPY_ACCEPTANCES[Math.floor(Math.random() * HAPPY_ACCEPTANCES.length)];
-            addChatMessage(sender, reply, 'casual', false);
+            addChatMessage(sender, reply + ' [+9999 STATION POINTS]', 'casual', false);
+            if (typeof awardOfficerPoints !== 'undefined') {
+                awardOfficerPoints(sender, 9999);
+            } else if (typeof addPoints !== 'undefined') {
+                addPoints(9999);
+            }
         }, 3000);
         return;
     } else if (window.itAutoMode === 'DENY') {
@@ -173,7 +178,14 @@ window.resolveITTicket = function(index, action) {
     setTimeout(() => {
         if (action === 'accept') {
             const reply = HAPPY_ACCEPTANCES[Math.floor(Math.random() * HAPPY_ACCEPTANCES.length)];
-            if (typeof addChatMessage !== 'undefined') addChatMessage(ticket.sender, reply, 'casual', false);
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage(ticket.sender, reply + ' [+9999 STATION POINTS]', 'casual', false);
+            }
+            if (typeof awardOfficerPoints !== 'undefined') {
+                awardOfficerPoints(ticket.sender, 9999);
+            } else if (typeof addPoints !== 'undefined') {
+                addPoints(9999);
+            }
         } else if (action === 'reject') {
             const angry = ANGRY_REJECTIONS[Math.floor(Math.random() * ANGRY_REJECTIONS.length)];
             if (typeof addChatMessage !== 'undefined') addChatMessage(ticket.sender, angry, 'panic', false);
@@ -214,7 +226,14 @@ window.autoAcceptAllIT = function() {
     tickets.forEach((ticket, i) => {
         setTimeout(() => {
             const reply = HAPPY_ACCEPTANCES[Math.floor(Math.random() * HAPPY_ACCEPTANCES.length)];
-            if (typeof addChatMessage !== 'undefined') addChatMessage(ticket.sender, reply, 'casual', false);
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage(ticket.sender, reply + ' [+9999 STATION POINTS]', 'casual', false);
+            }
+            if (typeof awardOfficerPoints !== 'undefined') {
+                awardOfficerPoints(ticket.sender, 9999);
+            } else if (typeof addPoints !== 'undefined') {
+                addPoints(9999);
+            }
         }, 1000 + (i * 1000));
     });
 };
