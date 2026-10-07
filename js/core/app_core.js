@@ -2421,6 +2421,23 @@ function triggerComplimentBanter(sender) {
     addChatMessage(sender, compliment.replace('%UNIT%', target), 'joking');
 }
 
+function triggerCivilianComplaintBanter(sender) {
+    const complaints = [
+        "These civilians are so annoying. They're just blocking the road.",
+        "It's a civil issue half the time, why are we even dispatched?",
+        "Civilians always act like their problems are emergencies. So annoying.",
+        "Some of them will take it personal, but I really don't care.",
+        "Why do civilians always block the road when we're running code 3?",
+        "Another civil issue... I swear, I'm taking this personally.",
+        "They complain about everything. General civilian behavior is exhausting.",
+        "I'm super annoyed by these people just standing in the middle of the street.",
+        "It feels like a civil war out here with how they act.",
+        "General civilian behavior: complain to us, then get mad when we show up.",
+        "I'm taking this personally now. Stop blocking the road!"
+    ];
+    addChatMessage(sender, getRandomItem(complaints), 'serious');
+}
+
 function triggerSergeantInsultBanter(sender) {
     const sergeants = ["Sgt. Harrison", "Sgt. Miller", "Sgt. O'Connor", "Sgt. Davis", "Sgt. Chen"];
     const sgt = getRandomItem(sergeants);
@@ -2686,10 +2703,12 @@ if (Math.random() < 0.05) {
         const banterRoll = Math.random();
         if (activePanics.size > 0 && Math.random() < 0.60) {
             triggerOffDutyCrashOut(sender);
-        } else if (banterRoll < 0.25) {
+        } else if (banterRoll < 0.20) {
             triggerOverwatchRoast(sender);
-        } else if (banterRoll < 0.50) {
+        } else if (banterRoll < 0.40) {
             triggerSergeantInsultBanter(sender);
+        } else if (banterRoll < 0.70) {
+            triggerCivilianComplaintBanter(sender);
         } else {
             triggerComplimentBanter(sender);
         }
