@@ -2971,9 +2971,108 @@ window.stockLedger = []; }
 
 
 // User Chat Processing
-async function processDispatchChat() {
+async // --- TRIGGER EVENT ANOMALIES ---
+window.vreEventActive = false;
+window.vreInterval = null;
+
+function triggerVREEvent() {
+    if (window.vreEventActive) return;
+    window.vreEventActive = true;
+    
+    const vreMessages = [
+        "Are we really talking about the VRE again? It's a waste of department funding.",
+        "The VRE training simulations are completely unrealistic anyway.",
+        "You're just mad you failed the VRE combat trial.",
+        "I didn't fail! The physics engine glitched and my gun floated away!",
+        "Sure, blame the VRE engine. Maybe you just have bad aim in virtual space too.",
+        "Can we get off the radio with this VRE nonsense? I'm trying to patrol.",
+        "The brass says VRE is the future. I say it gives me motion sickness.",
+        "If I have to do one more hour in the VRE headset, I'm quitting.",
+        "Why is Dispatch bringing up the VRE? Is there a mandatory training session?",
+        "I heard they're updating the VRE to include realistic smell processing. No thanks."
+    ];
+    
+    let count = 0;
+    window.vreInterval = setInterval(() => {
+        if (!window.vreEventActive || count >= 7) {
+            clearInterval(window.vreInterval);
+            window.vreEventActive = false;
+            return;
+        }
+        
+        if (typeof roster !== 'undefined') {
+            const activeUnits = roster.filter(u => u.status && (u.status.includes('On Duty') || u.status.includes('Available')));
+            if (activeUnits.length > 0) {
+                const unit = activeUnits[Math.floor(Math.random() * activeUnits.length)];
+                const msg = vreMessages[Math.floor(Math.random() * vreMessages.length)];
+                addChatMessage(unit.id, msg, 'casual', false);
+            }
+        }
+        count++;
+    }, 4000);
+}
+
+window.colorAnomalyInterval = null;
+function triggerColorAnomaly(active) {
+    let anomalyStyle = document.getElementById('anomaly-style');
+    if (active) {
+        if (window.colorAnomalyInterval) return;
+        
+        if (!anomalyStyle) {
+            anomalyStyle = document.createElement('style');
+            anomalyStyle.id = 'anomaly-style';
+            document.head.appendChild(anomalyStyle);
+        }
+        
+        window.colorAnomalyInterval = setInterval(() => {
+            const r1 = `hsl(${Math.floor(Math.random() * 360)}, 100%, 60%)`;
+            const r2 = `hsl(${Math.floor(Math.random() * 360)}, 100%, 60%)`;
+            const r3 = `hsl(${Math.floor(Math.random() * 360)}, 100%, 40%)`;
+            
+            anomalyStyle.innerHTML = `
+                * { color: ${r1} !important; border-color: ${r2} !important; }
+                button { background-color: ${r3} !important; color: #fff !important; }
+                .chat-msg { border-left-color: ${r2} !important; }
+            `;
+            document.body.style.filter = `hue-rotate(${Math.floor(Math.random() * 360)}deg)`;
+        }, 250);
+    } else {
+        if (window.colorAnomalyInterval) {
+            clearInterval(window.colorAnomalyInterval);
+            window.colorAnomalyInterval = null;
+        }
+        if (anomalyStyle) {
+            anomalyStyle.innerHTML = '';
+        }
+        document.body.style.filter = '';
+    }
+}
+
+function processDispatchChat() {
     const text = dispatchChatInput.value.trim();
     if (!text) return;
+
+    if (text.toUpperCase() === 'VRE') {
+        addChatMessage("SYSTEM", "VRE KEYWORD DETECTED. TRANSMITTING TO ALL UNITS.", "serious");
+        triggerVREEvent();
+        dispatchChatInput.value = '';
+        return;
+    }
+
+    if (text === '2007') {
+        addChatMessage("SYSTEM", "WARNING: TEMPORAL ANOMALY 2007 TRIGGERED.", "panic");
+        triggerColorAnomaly(true);
+        dispatchChatInput.value = '';
+        return;
+    }
+
+    if (text === '2000') {
+        addChatMessage("SYSTEM", "TEMPORAL ANOMALY RESOLVED (2000). STABILIZING UI.", "serious");
+        triggerColorAnomaly(false);
+        dispatchChatInput.value = '';
+        return;
+    }
+
 
     // AUDIO CONTROLS
     if (text.toLowerCase() === '/audio on') {
@@ -3369,6 +3468,12 @@ function setVoiceAndSpeak(utterance, voices) {
 }
 
 function simulateEvent(specificCrime = null) {
+    // Cancel VRE argument if a call happens
+    if (window.vreEventActive) {
+        window.vreEventActive = false;
+        if (window.vreInterval) clearInterval(window.vreInterval);
+    }
+
     if (restModeToggle.checked && !specificCrime) return;
 
     let crime = specificCrime;
@@ -6116,6 +6221,12 @@ crimeReports.forEach(c => {
 });
 
 function simulateEvent(specificCrime = null) {
+    // Cancel VRE argument if a call happens
+    if (window.vreEventActive) {
+        window.vreEventActive = false;
+        if (window.vreInterval) clearInterval(window.vreInterval);
+    }
+
     if (restModeToggle.checked && !specificCrime) return;
 
     let crime = specificCrime;
