@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.5.1">
+    <link rel="stylesheet" href="css/styles.css?v=5.6.0">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -510,9 +510,14 @@ document.addEventListener('keypress', function(e) {
                             <div class="toggle-group" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
                                 <label style="color: var(--text-dim); font-size: 0.85rem; font-weight: bold;">RADIO SPEED:</label>
                                 <select id="radio-speed-select" style="background: var(--bg-main); color: #fff; border: 1px solid var(--panel-border); padding: 5px; font-weight: bold;">
+                                    <option value="10000">SNAIL (10.0s)</option>
+                                    <option value="7000">RELAXED (7.0s)</option>
+                                    <option value="5000">SLOW (5.0s)</option>
                                     <option value="3000">NORMAL (3.0s)</option>
                                     <option value="1500" selected>ACCELERATED (1.5s)</option>
+                                    <option value="1000">BLITZ (1.0s)</option>
                                     <option value="500">HYPER-SPAM (0.5s)</option>
+                                    <option value="100">LUDICROUS (0.1s)</option>
                                 </select>
                             </div>
                             
@@ -1428,25 +1433,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.5.1"></script>
+    <script src="js/system/check_system.js?v=5.6.0"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.5.1"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.5.1"></script>
-    <script src="js/system/export_log.js?v=5.5.1"></script>
-    <script src="js/chats/transmissions.js?v=5.5.1"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.5.1"></script>
-    <script src="js/core/chat_lines.js?v=5.5.1"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.5.1"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.5.1"></script>
-    <script src="js/core/realistic_debates.js?v=5.5.1"></script>
-    <script src="js/core/chat_reactions.js?v=5.5.1"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.5.1"></script>
-    <script src="js/core/profanity_events.js?v=5.5.1"></script>
-    <script src="js/core/department_complaints.js?v=5.5.1"></script>
-    <script src="js/core/meme_events.js?v=5.5.1"></script>
-    <script src="js/system/it_support.js?v=5.5.1"></script>
-    <script src="js/system/dms_system.js?v=5.5.1"></script>
-    <script src="js/core/app_core.js?v=5.5.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.6.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.6.0"></script>
+    <script src="js/system/export_log.js?v=5.6.0"></script>
+    <script src="js/chats/transmissions.js?v=5.6.0"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.6.0"></script>
+    <script src="js/core/chat_lines.js?v=5.6.0"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.6.0"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.6.0"></script>
+    <script src="js/core/realistic_debates.js?v=5.6.0"></script>
+    <script src="js/core/chat_reactions.js?v=5.6.0"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.6.0"></script>
+    <script src="js/core/profanity_events.js?v=5.6.0"></script>
+    <script src="js/core/department_complaints.js?v=5.6.0"></script>
+    <script src="js/core/meme_events.js?v=5.6.0"></script>
+    <script src="js/system/it_support.js?v=5.6.0"></script>
+    <script src="js/system/dms_system.js?v=5.6.0"></script>
+    <script src="js/core/app_core.js?v=5.6.0"></script>
 
     
 
