@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.8.8">
+    <link rel="stylesheet" href="css/styles.css?v=5.8.9">
 
 <style>
 .how-to-tab {
@@ -705,13 +705,19 @@ document.addEventListener('keypress', function(e) {
                 <div class="panel-content scrollable" id="stock-log" style="display: none;">
                     
                     <!-- Download Ledger Button -->
-                    <div style="margin-bottom: 20px;">
-                        <button onclick="window.downloadStockLedger()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 8px 16px; cursor: pointer; font-family: monospace; font-size: 0.9rem;">
-                            📥 DOWNLOAD STOCK MARKET DATALOG
-                        </button>
-                    </div>
                     
-                    <!-- Download Ledger Button -->
+                    <!-- STOCK ACCOUNT DASHBOARD -->
+                    <div id="stock-account-dashboard" style="background: rgba(0, 50, 255, 0.1); border: 1px solid var(--accent-blue); padding: 15px; border-radius: 6px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0; color: var(--accent-blue);">TBMG BROKERAGE ACCOUNT</h3>
+                            <div style="font-size: 1.2rem; margin-top: 5px;">CASH BALANCE: <span id="stock-cash-balance" style="color: var(--accent-green); font-weight: bold;">NTND $50,000.00</span></div>
+                            <div style="font-size: 1rem; color: var(--text-dim);">PORTFOLIO VALUE: <span id="stock-portfolio-value">NTND $0.00</span></div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="window.addStockFunds()" style="background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 10px; cursor: pointer; font-weight: bold;">[+] ADD FUNDS</button>
+                            <button onclick="window.downloadStockLedger()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 10px; cursor: pointer;">📥 DOWNLOAD LEDGER</button>
+                        </div>
+                    </div>
                     
                     <div id="markets-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                         <!-- MCPD STOCK -->
@@ -728,6 +734,14 @@ document.addEventListener('keypress', function(e) {
                             </div>
                             <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                                 <canvas id="mcpd-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(0, 255, 0, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="mcpd-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('mcpd')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('mcpd')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('mcpd')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
                             </div>
                         </div>
 
@@ -746,6 +760,14 @@ document.addEventListener('keypress', function(e) {
                             <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                                 <canvas id="civ-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(0, 0, 255, 0.05); border-radius: 4px;"></canvas>
                             </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="civ-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('civ')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('civ')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('civ')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- GOV STOCK -->
@@ -762,6 +784,14 @@ document.addEventListener('keypress', function(e) {
                             </div>
                             <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                                 <canvas id="gov-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 152, 0, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="gov-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('gov')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('gov')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('gov')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
                             </div>
                         </div>
 
@@ -780,6 +810,14 @@ document.addEventListener('keypress', function(e) {
                             <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                                 <canvas id="synth-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(224, 64, 251, 0.05); border-radius: 4px;"></canvas>
                             </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="synth-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('synth')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('synth')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('synth')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- ARMS STOCK -->
@@ -797,6 +835,14 @@ document.addEventListener('keypress', function(e) {
                             <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                                 <canvas id="arms-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 82, 82, 0.05); border-radius: 4px;"></canvas>
                             </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="arms-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('arms')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('arms')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('arms')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- DATA STOCK -->
@@ -813,6 +859,14 @@ document.addEventListener('keypress', function(e) {
                             </div>
                             <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                                 <canvas id="data-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(0, 229, 255, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="data-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('data')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('data')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('data')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1215,6 +1269,20 @@ document.addEventListener('keypress', function(e) {
             </section>
         </main>
 
+        
+        <!-- STOCK INFO MODAL -->
+        <div id="stock-info-modal" class="modal-overlay" style="display: none; z-index: 9999999;">
+            <div class="modal-content" style="max-width: 700px;">
+                <div class="modal-header">
+                    <h2 id="stock-modal-title" style="color: var(--accent-blue); text-shadow: 0 0 5px var(--accent-blue); margin: 0;">STOCK INTEL</h2>
+                    <button style="border: none; background: transparent; color: var(--panic-red); font-size: 1.5rem; cursor: pointer;" onclick="document.getElementById('stock-info-modal').style.display='none'">[X]</button>
+                </div>
+                <div class="modal-body" id="stock-modal-body" style="padding: 20px; color: #ccc; line-height: 1.6; max-height: 60vh; overflow-y: auto; background: var(--bg-deep);">
+                    <!-- Content injected via JS -->
+                </div>
+            </div>
+        </div>
+        
         <!-- FULL REPORT MODAL -->
         
         <div id="report-modal" class="modal-overlay" style="display: none;">
@@ -1272,25 +1340,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.8.8"></script>
+    <script src="js/system/check_system.js?v=5.8.9"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.8"></script>
-    <script src="js/system/export_log.js?v=5.8.8"></script>
-    <script src="js/chats/transmissions.js?v=5.8.8"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.8.8"></script>
-    <script src="js/core/chat_lines.js?v=5.8.8"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.8.8"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.8.8"></script>
-    <script src="js/core/realistic_debates.js?v=5.8.8"></script>
-    <script src="js/core/chat_reactions.js?v=5.8.8"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.8.8"></script>
-    <script src="js/core/profanity_events.js?v=5.8.8"></script>
-    <script src="js/core/department_complaints.js?v=5.8.8"></script>
-    <script src="js/core/meme_events.js?v=5.8.8"></script>
-    <script src="js/system/it_support.js?v=5.8.8"></script>
-    <script src="js/system/dms_system.js?v=5.8.8"></script>
-    <script src="js/core/app_core.js?v=5.8.8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.9"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.9"></script>
+    <script src="js/system/export_log.js?v=5.8.9"></script>
+    <script src="js/chats/transmissions.js?v=5.8.9"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.8.9"></script>
+    <script src="js/core/chat_lines.js?v=5.8.9"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.8.9"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.8.9"></script>
+    <script src="js/core/realistic_debates.js?v=5.8.9"></script>
+    <script src="js/core/chat_reactions.js?v=5.8.9"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.8.9"></script>
+    <script src="js/core/profanity_events.js?v=5.8.9"></script>
+    <script src="js/core/department_complaints.js?v=5.8.9"></script>
+    <script src="js/core/meme_events.js?v=5.8.9"></script>
+    <script src="js/system/it_support.js?v=5.8.9"></script>
+    <script src="js/system/dms_system.js?v=5.8.9"></script>
+    <script src="js/core/app_core.js?v=5.8.9"></script>
 
     
 

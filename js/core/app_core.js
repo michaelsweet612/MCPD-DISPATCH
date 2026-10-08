@@ -1,3 +1,4 @@
+window.stockAccount = { balance: 50000, portfolio: {} };
 const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
         const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
         const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
@@ -9579,3 +9580,144 @@ document.addEventListener('keydown', (e) => {
         if (typeof citationAuthActive !== 'undefined' && citationAuthActive && typeof resolveCitationAuth === 'function') resolveCitationAuth(false);
     }
 });
+
+
+// --- STOCK MARKET TRADING LOGIC ---
+window.updateStockDashboard = function() {
+    if(!document.getElementById('stock-cash-balance')) return;
+    
+    // Update Cash Balance
+    document.getElementById('stock-cash-balance').innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    // Calculate Portfolio Value
+    let portfolioValue = 0;
+    for (let id in window.stockAccount.portfolio) {
+        let shares = window.stockAccount.portfolio[id];
+        if (markets[id] && shares > 0) {
+            portfolioValue += shares * markets[id].price;
+        }
+        
+        // Update shares in UI
+        let sharesEl = document.getElementById(id + '-shares-owned');
+        if (sharesEl) sharesEl.innerText = shares.toLocaleString();
+    }
+    
+    document.getElementById('stock-portfolio-value').innerText = 'NTND $' + portfolioValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+};
+
+window.addStockFunds = function() {
+    // Add 50,000 NTND per click, taking away 1000 Station Points if available, otherwise just free money for testing
+    if (typeof dispatcherScore !== 'undefined' && dispatcherScore >= 1000) {
+        addPoints(-1000);
+        window.stockAccount.balance += 50000;
+        if(typeof addChatMessage !== 'undefined') addChatMessage("BANKING AI", "Transfer complete. 1000 Station Points converted to 50,000 NTND.", "system", false);
+    } else {
+        window.stockAccount.balance += 10000;
+        if(typeof addChatMessage !== 'undefined') addChatMessage("BANKING AI", "Offshore slush fund accessed. 10,000 NTND deposited.", "system", false);
+    }
+    window.updateStockDashboard();
+};
+
+window.buyStock = function(id) {
+    if (!markets[id]) return;
+    const pricePerShare = markets[id].price;
+    const qty = 10;
+    const totalCost = pricePerShare * qty;
+    
+    if (window.stockAccount.balance >= totalCost) {
+        window.stockAccount.balance -= totalCost;
+        if (!window.stockAccount.portfolio[id]) window.stockAccount.portfolio[id] = 0;
+        window.stockAccount.portfolio[id] += qty;
+        
+        // Small market pump effect
+        markets[id].price *= (1 + (Math.random() * 0.005));
+        
+        window.updateStockDashboard();
+    } else {
+        alert("INSUFFICIENT FUNDS. You need NTND $" + totalCost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}));
+    }
+};
+
+window.sellStock = function(id) {
+    if (!markets[id]) return;
+    const qty = 10;
+    
+    if (window.stockAccount.portfolio[id] >= qty) {
+        const pricePerShare = markets[id].price;
+        const totalValue = pricePerShare * qty;
+        
+        window.stockAccount.portfolio[id] -= qty;
+        window.stockAccount.balance += totalValue;
+        
+        // Small market dump effect
+        markets[id].price *= (1 - (Math.random() * 0.005));
+        
+        window.updateStockDashboard();
+    } else {
+        alert("INSUFFICIENT SHARES. You do not own 10 shares of this stock.");
+    }
+};
+
+window.openStockInfo = function(id) {
+    if (!markets[id]) return;
+    
+    const marketName = document.getElementById(id + '-stock-dashboard').querySelector('h4').innerText.replace('📈 ', '');
+    document.getElementById('stock-modal-title').innerText = marketName + " INTEL";
+    
+    // Get ledger history for this stock
+    let historyHtml = '<h4 style="color:var(--accent-blue); margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">RECENT MARKET MOVEMENTS</h4>';
+    let entriesFound = 0;
+    
+    if (window.stockLedger && window.stockLedger.length > 0) {
+        // Reverse iterate to get newest first
+        for (let i = window.stockLedger.length - 1; i >= 0; i--) {
+            let entry = window.stockLedger[i];
+            if (entry.includes(marketName) || (id === 'mcpd' && entry.includes('MCPD STOCK'))) {
+                let color = entry.includes('+') ? 'var(--accent-green)' : 'var(--panic-red)';
+                historyHtml += `<div style="margin-bottom: 10px; border-left: 2px solid ${color}; padding-left: 10px;">${entry}</div>`;
+                entriesFound++;
+                if (entriesFound >= 10) break;
+            }
+        }
+    }
+    
+    if (entriesFound === 0) {
+        historyHtml += '<div style="color:var(--text-dim); font-style:italic;">No recent major movements recorded on the public ledger.</div>';
+    }
+    
+    // Generate institutional trades
+    const corps = ["ECLIPSE DYNAMICS", "TBMG ALGORITHMIC GRID", "ZENITH HEDGE FUND", "UNKNOWN OFFSHORE ENTITY", "OMNI-STAT PENSION FUND", "HELIOS RETAIL INVESTORS"];
+    let tradesHtml = '<h4 style="color:var(--accent-blue); margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">INSTITUTIONAL TRADE LOG (LAST 24H)</h4>';
+    
+    for (let i=0; i<4; i++) {
+        let corp = corps[Math.floor(Math.random() * corps.length)];
+        let action = Math.random() > 0.5 ? 'BOUGHT' : 'SOLD';
+        let actionColor = action === 'BOUGHT' ? 'var(--accent-green)' : 'var(--panic-red)';
+        let qty = Math.floor(1000 + Math.random() * 500000).toLocaleString();
+        
+        tradesHtml += `<div style="display:flex; justify-content:space-between; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">
+            <span style="color: #ccc;">${corp}</span>
+            <span style="color: ${actionColor}; font-weight: bold;">${action} ${qty} SHARES</span>
+        </div>`;
+    }
+    
+    // Add current price and owned shares
+    const currentPrice = markets[id].price.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+    const owned = (window.stockAccount.portfolio[id] || 0).toLocaleString();
+    
+    let summaryHtml = `
+        <div style="display:flex; justify-content:space-between; margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 5px;">
+            <div>
+                <div style="font-size:0.9rem; color:var(--text-dim);">CURRENT TRADING PRICE</div>
+                <div style="font-size:1.5rem; color:var(--accent-green); font-weight:bold;">NTND $${currentPrice}</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:0.9rem; color:var(--text-dim);">YOUR POSITIONS</div>
+                <div style="font-size:1.5rem; color:#fff; font-weight:bold;">${owned} SHARES</div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('stock-modal-body').innerHTML = summaryHtml + historyHtml + tradesHtml;
+    document.getElementById('stock-info-modal').style.display = 'flex';
+};
