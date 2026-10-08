@@ -6502,14 +6502,19 @@ document.getElementById('btn-fullscreen').addEventListener('click', () => {
 });
 
 document.getElementById('btn-purge-logs').addEventListener('click', () => {
-    document.getElementById('unified-log').innerHTML = '';
-    document.getElementById('chat-log').innerHTML = '';
-    const msg = document.createElement('div');
-    msg.style.color = 'var(--panic-red)';
-    msg.style.padding = '10px';
-    msg.style.textAlign = 'center';
-    msg.innerText = '[SYSTEM CACHE PURGED BY OPERATOR]';
-    document.getElementById('chat-log').appendChild(msg);
+    let unifiedLog = document.getElementById('unified-log');
+    if (unifiedLog) unifiedLog.innerHTML = '';
+    
+    let chatLog = document.getElementById('chat-log');
+    if (chatLog) {
+        chatLog.innerHTML = '';
+        const msg = document.createElement('div');
+        msg.style.color = 'var(--panic-red)';
+        msg.style.padding = '10px';
+        msg.style.textAlign = 'center';
+        msg.innerText = '[SYSTEM CACHE PURGED BY OPERATOR]';
+        chatLog.appendChild(msg);
+    }
 });
 
 
