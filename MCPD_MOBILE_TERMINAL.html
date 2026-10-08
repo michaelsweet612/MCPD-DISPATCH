@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.8.14">
+    <link rel="stylesheet" href="css/styles.css?v=5.8.15">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -881,6 +881,32 @@ document.addEventListener('keypress', function(e) {
                             </div>
                         </div>
 
+                        <!-- BANK STOCK -->
+                        <div id="bank-stock-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid #ffeb3b; padding: 15px; border-radius: 6px;">
+                            <h4 style="color: #ffeb3b; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed #ffeb3b; padding-bottom: 5px;">📈 TBMG CENTRAL BANK</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span id="bank-stock-price" style="font-size: 1.8rem; font-weight: bold; color: #ffeb3b;">NTND $500,000,000.00</span>
+                                    <span id="bank-stock-trend" style="color: #ffeb3b; font-size: 1.2rem; margin-left: 10px;">▲ +0.00%</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span id="bank-stock-status" style="font-size: 1.1rem; font-weight: bold; color: var(--text-dim);">STABLE</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
+                                <canvas id="bank-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 235, 59, 0.05); border-radius: 4px;"></canvas>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                                <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="bank-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="window.buyStock('bank')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                                    <button onclick="window.sellStock('bank')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                                    <button onclick="window.openStockInfo('bank')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <!-- CIV STOCK -->
                         <div id="civ-stock-dashboard" style="background: rgba(0,0,0,0.4); border: 1px solid var(--accent-blue); padding: 15px; border-radius: 6px;">
                             <h4 style="color: var(--accent-blue); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px dashed var(--accent-blue); padding-bottom: 5px;">📈 CIVILIAN STOCK MARKET</h4>
@@ -1542,25 +1568,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.8.14"></script>
+    <script src="js/system/check_system.js?v=5.8.15"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.14"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.14"></script>
-    <script src="js/system/export_log.js?v=5.8.14"></script>
-    <script src="js/chats/transmissions.js?v=5.8.14"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.8.14"></script>
-    <script src="js/core/chat_lines.js?v=5.8.14"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.8.14"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.8.14"></script>
-    <script src="js/core/realistic_debates.js?v=5.8.14"></script>
-    <script src="js/core/chat_reactions.js?v=5.8.14"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.8.14"></script>
-    <script src="js/core/profanity_events.js?v=5.8.14"></script>
-    <script src="js/core/department_complaints.js?v=5.8.14"></script>
-    <script src="js/core/meme_events.js?v=5.8.14"></script>
-    <script src="js/system/it_support.js?v=5.8.14"></script>
-    <script src="js/system/dms_system.js?v=5.8.14"></script>
-    <script src="js/core/app_core.js?v=5.8.14"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.15"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.15"></script>
+    <script src="js/system/export_log.js?v=5.8.15"></script>
+    <script src="js/chats/transmissions.js?v=5.8.15"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.8.15"></script>
+    <script src="js/core/chat_lines.js?v=5.8.15"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.8.15"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.8.15"></script>
+    <script src="js/core/realistic_debates.js?v=5.8.15"></script>
+    <script src="js/core/chat_reactions.js?v=5.8.15"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.8.15"></script>
+    <script src="js/core/profanity_events.js?v=5.8.15"></script>
+    <script src="js/core/department_complaints.js?v=5.8.15"></script>
+    <script src="js/core/meme_events.js?v=5.8.15"></script>
+    <script src="js/system/it_support.js?v=5.8.15"></script>
+    <script src="js/system/dms_system.js?v=5.8.15"></script>
+    <script src="js/core/app_core.js?v=5.8.15"></script>
 
     
 

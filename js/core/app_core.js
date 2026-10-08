@@ -8592,6 +8592,7 @@ setTimeout(updatePublicInfoUI, 1000);
 // ==========================================
 
 let markets = {
+    bank: { price: 500000000.00, history: new Array(40).fill(500000000.00), color: '#ffeb3b', badColor: '#f44336' },
     mcpd: { price: 2000000000.00, history: new Array(40).fill(2000000000.00), color: '#4caf50', badColor: '#f44336' },
     civ: { price: 1000000.00, history: new Array(40).fill(1000000.00), color: '#2196f3', badColor: '#f44336' },
     gov: { price: 1000000000000.00, history: new Array(40).fill(1000000000000.00), color: '#ff9800', badColor: '#f44336' },
@@ -8820,6 +8821,9 @@ function updateStockMarkets(forceDraw = false) {
     
     let changeVal = markets.mcpd.price * mcpdChangePct;
     updates.push({ id: 'mcpd', change: changeVal });
+    
+    // Bank Market
+    updates.push({ id: 'bank', change: markets.bank.price * ((Math.random() * 0.05) - 0.02) });
     
     // Log reasons
     if(typeof window.stockLedger === "undefined") window.stockLedger = [];
@@ -9923,7 +9927,21 @@ window.addStockFunds = function() {
         window.stockAccount.balance += 10000;
         if(typeof addChatMessage !== 'undefined') addChatMessage("BANKING AI", "Offshore slush fund accessed. 10,000 NTND deposited.", "system", false);
     }
+    
+    window.fundClicks = (window.fundClicks || 0) + 1;
+    if (window.fundClicks === 3) {
+        if (markets['bank']) {
+            markets['bank'].price *= 0.05; // 95% crash!
+            if (typeof window.stockLedger !== 'undefined') {
+                window.stockLedger.push(`[${typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString()}] TBMG CENTRAL BANK: -95.00% NTND | REASON: Massive bank run triggered by excessive off-the-books printing.`);
+            }
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("MARKET AI", "CRITICAL ALERT: TBMG Central Bank has collapsed due to hyper-inflationary deposits.", "system", false);
+            }
+        }
+    }
     window.updateStockDashboard();
+
 };
 
 window.buyStock = function(id) {
@@ -9940,7 +9958,21 @@ window.buyStock = function(id) {
         // Small market pump effect
         markets[id].price *= (1 + (Math.random() * 0.005));
         
-        window.updateStockDashboard();
+        
+    window.fundClicks = (window.fundClicks || 0) + 1;
+    if (window.fundClicks === 3) {
+        if (markets['bank']) {
+            markets['bank'].price *= 0.05; // 95% crash!
+            if (typeof window.stockLedger !== 'undefined') {
+                window.stockLedger.push(`[${typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString()}] TBMG CENTRAL BANK: -95.00% NTND | REASON: Massive bank run triggered by excessive off-the-books printing.`);
+            }
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("MARKET AI", "CRITICAL ALERT: TBMG Central Bank has collapsed due to hyper-inflationary deposits.", "system", false);
+            }
+        }
+    }
+    window.updateStockDashboard();
+
     } else {
         alert("INSUFFICIENT FUNDS. You need NTND $" + totalCost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}));
     }
@@ -9960,7 +9992,21 @@ window.sellStock = function(id) {
         // Small market dump effect
         markets[id].price *= (1 - (Math.random() * 0.005));
         
-        window.updateStockDashboard();
+        
+    window.fundClicks = (window.fundClicks || 0) + 1;
+    if (window.fundClicks === 3) {
+        if (markets['bank']) {
+            markets['bank'].price *= 0.05; // 95% crash!
+            if (typeof window.stockLedger !== 'undefined') {
+                window.stockLedger.push(`[${typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString()}] TBMG CENTRAL BANK: -95.00% NTND | REASON: Massive bank run triggered by excessive off-the-books printing.`);
+            }
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("MARKET AI", "CRITICAL ALERT: TBMG Central Bank has collapsed due to hyper-inflationary deposits.", "system", false);
+            }
+        }
+    }
+    window.updateStockDashboard();
+
     } else {
         alert("INSUFFICIENT SHARES. You do not own 10 shares of this stock.");
     }
