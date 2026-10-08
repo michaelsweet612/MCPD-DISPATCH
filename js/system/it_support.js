@@ -167,6 +167,83 @@ function renderITTickets() {
     updateITTicketBadge();
 }
 
+
+window.playITMinigame = function(index) {
+    const ticket = window.itTickets[index];
+    if (!ticket) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'it-minigame-overlay';
+    overlay.style = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(4px);';
+    
+    const box = document.createElement('div');
+    box.style = 'background:var(--panel-bg); border:2px solid var(--accent-blue); padding:30px; border-radius:5px; text-align:center; width:400px; box-shadow:0 0 30px var(--accent-blue);';
+    
+    const chars = '0123456789ABCDEF';
+    let hexCode = '';
+    for(let i=0; i<6; i++) hexCode += chars[Math.floor(Math.random() * chars.length)];
+    
+    box.innerHTML = `
+        <h2 style="color:var(--accent-blue); margin-top:0;">MANUAL DECRYPTION</h2>
+        <p style="color:#fff; font-size:0.9rem;">Ticket ${ticket.id} requires manual bypass. Enter the Hex Key below before the timer runs out!</p>
+        <div style="font-size:2rem; letter-spacing:5px; font-weight:bold; color:var(--accent-green); margin:20px 0;">${hexCode}</div>
+        <input type="text" id="it-mini-input" style="width:100%; padding:10px; font-size:1.5rem; text-align:center; text-transform:uppercase; background:#000; color:#fff; border:1px solid var(--accent-blue);" autocomplete="off" />
+        <div id="it-mini-timer" style="margin-top:15px; color:var(--panic-red); font-size:1.2rem; font-weight:bold;">00:07</div>
+    `;
+    
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    
+    const input = document.getElementById('it-mini-input');
+    input.focus();
+    
+    let timeLeft = 7.0;
+    const timerEl = document.getElementById('it-mini-timer');
+    
+    const interval = setInterval(() => {
+        timeLeft -= 0.1;
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            finishMinigame(false);
+        } else {
+            timerEl.innerText = '00:0' + Math.ceil(timeLeft);
+        }
+    }, 100);
+    
+    input.oninput = () => {
+        if (input.value.toUpperCase() === hexCode) {
+            clearInterval(interval);
+            finishMinigame(true);
+        }
+    };
+    
+    function finishMinigame(success) {
+        if(document.body.contains(overlay)) document.body.removeChild(overlay);
+        if (success) {
+            window.itTickets.splice(index, 1);
+            renderITTickets();
+            setTimeout(() => {
+                const reply = HAPPY_ACCEPTANCES[Math.floor(Math.random() * HAPPY_ACCEPTANCES.length)];
+                if (typeof addChatMessage !== 'undefined') {
+                    addChatMessage(ticket.sender, reply + ' [+25000 MANUAL OVERRIDE POINTS]', 'casual', false);
+                }
+                if (typeof awardOfficerPoints !== 'undefined') {
+                    awardOfficerPoints(ticket.sender, 25000);
+                } else if (typeof addPoints !== 'undefined') {
+                    addPoints(25000);
+                }
+            }, 1000);
+        } else {
+            window.itTickets.splice(index, 1);
+            renderITTickets();
+            setTimeout(() => {
+                const angry = ANGRY_REJECTIONS[Math.floor(Math.random() * ANGRY_REJECTIONS.length)];
+                if (typeof addChatMessage !== 'undefined') addChatMessage(ticket.sender, angry + ' [DECRYPTION FAILED]', 'panic', false);
+            }, 1000);
+        }
+    }
+};
+
 window.resolveITTicket = function(index, action) {
     const ticket = window.itTickets[index];
     if (!ticket) return;
