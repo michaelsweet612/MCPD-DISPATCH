@@ -4579,10 +4579,12 @@ dispatchChatInput.addEventListener('focus', () => {
 // Tab Interaction logic
 const tabDatabase = document.getElementById('tab-database');
 const tabWanted = document.getElementById('tab-wanted');
+const tabEvidence = document.getElementById('tab-evidence');
 const tabItSupport = document.getElementById('tab-it-support');
 const tabCitizens = document.getElementById('tab-citizens');
 const databaseLogEl = document.getElementById('database-log');
 const wantedLogEl = document.getElementById('wanted-log');
+const evidenceLogEl = document.getElementById('evidence-log');
 const itSupportLogEl = document.getElementById('it-support-log');
 const citizensLogEl = document.getElementById('citizens-log');
       
@@ -10025,3 +10027,100 @@ window.openStockInfo = function(id) {
     document.getElementById('stock-modal-body').innerHTML = summaryHtml + historyHtml + tradesHtml;
     document.getElementById('stock-info-modal').style.display = 'flex';
 };
+
+
+// ==========================================
+// EVIDENCE LOCKER LOGIC
+// ==========================================
+window.refreshEvidenceLocker = function() {
+    const container = document.getElementById('evidence-container');
+    if (!container) return;
+    
+    const itemTypes = ["Synth-Cocaine", "Unregistered Cyber-Arm", "Illegal Nanites", "Stolen Corporate Data Drive", "Plasma Pistol (Defaced Serial)", "Organic Vegetables (Contraband)", "Counterfeit NTND Chips", "Hacked RFID Spoofer", "EMP Grenade"];
+    const locations = ["Sector 7 Lockup", "HQ Vault B", "Processing Facility", "Sector 9 Overflow", "Sector 4 Bio-Hazard Bin"];
+    const statuses = ["PENDING TRIAL", "SCHEDULED FOR INCINERATION", "AWAITING FORENSICS", "CHAIN OF CUSTODY BROKEN", "SECURE"];
+    
+    let html = '';
+    for(let i=0; i<15; i++) {
+        let type = itemTypes[Math.floor(Math.random()*itemTypes.length)];
+        let loc = locations[Math.floor(Math.random()*locations.length)];
+        let status = statuses[Math.floor(Math.random()*statuses.length)];
+        let caseNum = "CASE-" + Math.floor(100000 + Math.random()*900000);
+        let color = status === "SECURE" ? "var(--accent-green)" : (status === "CHAIN OF CUSTODY BROKEN" ? "var(--panic-red)" : "var(--text-main)");
+        
+        html += `
+            <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); border-left: 4px solid ${color}; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="color: var(--accent-blue); font-weight: bold; font-size: 1.1rem; margin-bottom: 4px;">${type}</div>
+                    <div style="color: var(--text-dim); font-size: 0.85rem;">Tag: ${caseNum} | Loc: ${loc}</div>
+                </div>
+                <div style="text-align: right; color: ${color}; font-weight: bold;">
+                    ${status}
+                </div>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
+};
+
+// ==========================================
+// NEW DATABASE LOGIC
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Inmate Tracker
+    const btnInmate = document.getElementById('btn-search-inmate');
+    if (btnInmate) {
+        btnInmate.addEventListener('click', () => {
+            const val = document.getElementById('inmate-input').value.trim();
+            const res = document.getElementById('inmate-results');
+            if (!val) { res.innerHTML = '<span style="color:var(--panic-red);">ERROR: Input required.</span>'; return; }
+            
+            res.innerHTML = '<span style="color:var(--accent-blue);">[SEARCHING MAX-SEC PENITENTIARY DB...]</span>';
+            setTimeout(() => {
+                const isFound = Math.random() > 0.3;
+                if (!isFound) {
+                    res.innerHTML = `No records found for Inmate/Parolee: <b>${val}</b>`;
+                } else {
+                    const locations = ["Cell Block D - Solitary", "General Population - Sector C", "Parole (Sector 7)", "Transferred to Off-world Labor Camp", "Escaped (BOLO Active)"];
+                    const crimes = ["Grand Theft Cybernetics", "Corporate Espionage", "Assault on a Synth-Officer", "Eco-Terrorism", "Illegal AI Distribution"];
+                    const loc = locations[Math.floor(Math.random()*locations.length)];
+                    const crm = crimes[Math.floor(Math.random()*crimes.length)];
+                    res.innerHTML = `
+                        <div style="color: var(--accent-green); margin-bottom: 10px;">[MATCH FOUND]</div>
+                        <div><b>Name/ID:</b> ${val}</div>
+                        <div><b>Conviction:</b> ${crm}</div>
+                        <div><b>Current Status:</b> <span style="color: #ff5722; font-weight: bold;">${loc}</span></div>
+                    `;
+                }
+            }, 800);
+        });
+    }
+
+    // Stolen Property Tracker
+    const btnProp = document.getElementById('btn-search-property');
+    if (btnProp) {
+        btnProp.addEventListener('click', () => {
+            const val = document.getElementById('property-input').value.trim();
+            const res = document.getElementById('property-results');
+            if (!val) { res.innerHTML = '<span style="color:var(--panic-red);">ERROR: Input required.</span>'; return; }
+            
+            res.innerHTML = '<span style="color:var(--accent-blue);">[CHECKING NATIONAL STOLEN GOODS INDEX...]</span>';
+            setTimeout(() => {
+                const isStolen = Math.random() > 0.5;
+                if (!isStolen) {
+                    res.innerHTML = `Serial <b>${val}</b> returned NO STOLEN REPORTS. Item is clean.`;
+                } else {
+                    const items = ["Militech Hover-Bike", "Neural Processor Unit", "Cyber-Eye Mk IV", "Shipment of Synth-Steaks", "Corporate Data Tablet"];
+                    const it = items[Math.floor(Math.random()*items.length)];
+                    res.innerHTML = `
+                        <div style="color: var(--panic-red); margin-bottom: 10px;">[WARNING: STOLEN PROPERTY MATCH]</div>
+                        <div><b>Serial/RFID:</b> ${val}</div>
+                        <div><b>Registered Item:</b> ${it}</div>
+                        <div><b>Status:</b> Reported Stolen 3 days ago.</div>
+                        <div style="color: var(--panic-orange); margin-top: 5px;">Action: Confiscate item immediately and detain possessor.</div>
+                    `;
+                }
+            }, 800);
+        });
+    }
+});

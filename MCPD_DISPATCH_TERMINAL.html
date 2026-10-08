@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=5.8.12">
+    <link rel="stylesheet" href="css/styles.css?v=5.8.13">
 
 <style>
 .how-to-tab {
@@ -621,6 +621,7 @@ document.addEventListener('keypress', function(e) {
                     <div class="tab" id="tab-map">🗺️ LIVE MAP</div>
                     <div class="tab" id="tab-citizens">🆔 CITIZENS</div>
                     <div class="tab" id="tab-wanted">🎯 WANTED TARGETS</div>
+                    <div class="tab" id="tab-evidence">📦 EVIDENCE LOCKER</div>
                     
                 <div class="tab" id="tab-dms" style="position: relative;">
                     <span style="font-size: 1.2em; vertical-align: middle;">💬</span> DMs
@@ -701,6 +702,19 @@ document.addEventListener('keypress', function(e) {
 
                 <!-- PERSONNEL VIEW (Hidden by default) -->
                 
+                
+                <!-- EVIDENCE LOCKER VIEW -->
+                <div class="panel-content scrollable" id="evidence-log" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 20px;">
+                        <h2 style="margin: 0; color: #fff;">SECURE EVIDENCE LOCKER</h2>
+                        <button onclick="window.refreshEvidenceLocker()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 5px 10px; cursor: pointer;">🔄 REFRESH CUSTODY LOG</button>
+                    </div>
+                    
+                    <div id="evidence-container" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                        <!-- Evidence items injected here -->
+                    </div>
+                </div>
+        
                 <!-- STOCK MARKETS VIEW (Hidden by default) -->
                 <div class="panel-content scrollable" id="stock-log" style="display: none;">
                     
@@ -942,6 +956,31 @@ document.addEventListener('keypress', function(e) {
                         </div>
                     </div>
                     
+                    
+                    <!-- db-inmates -->
+                    <div id="db-inmates" class="db-view-panel" style="display: block; margin-top: 30px;">
+                        <h3 style="color: #ff5722; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">⛓️ INMATE & PAROLE REGISTRY</h3>
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="inmate-input" class="input-styled" placeholder="Enter Inmate ID or Name..." style="flex-grow: 1;">
+                            <button id="btn-search-inmate" style="padding: 10px 20px; font-size: 1rem; background: #ff5722; color: #000; border: none; font-weight: bold;">LOCATE INMATE</button>
+                        </div>
+                        <div id="inmate-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            [SYSTEM READY] Connected to Max-Sec Penitentiary API.
+                        </div>
+                    </div>
+
+                    <!-- db-stolen-property -->
+                    <div id="db-stolen-property" class="db-view-panel" style="display: block; margin-top: 30px;">
+                        <h3 style="color: #03a9f4; margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">🏷️ STOLEN PROPERTY & CYBERNETICS (NCIC)</h3>
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="property-input" class="input-styled" placeholder="Enter Serial Number or RFID..." style="flex-grow: 1;">
+                            <button id="btn-search-property" style="padding: 10px 20px; font-size: 1rem; background: #03a9f4; color: #000; border: none; font-weight: bold;">RUN SERIAL</button>
+                        </div>
+                        <div id="property-results" style="border: 1px solid var(--panel-border); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            [SYSTEM READY] Enter serial number to check against national stolen goods database.
+                        </div>
+                    </div>
+        
                     <!-- db-gangs -->
                     <div id="db-gangs" class="db-view-panel" style="display: block; margin-top: 30px;">
                         <h3 style="color: var(--accent-green); margin-bottom: 15px; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px;">👤 SYNDICATE INTEL</h3>
@@ -1340,25 +1379,25 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/system/check_system.js?v=5.8.12"></script>
+    <script src="js/system/check_system.js?v=5.8.13"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.12"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.12"></script>
-    <script src="js/system/export_log.js?v=5.8.12"></script>
-    <script src="js/chats/transmissions.js?v=5.8.12"></script>
-    <script src="js/information/imageAnalyzer.js?v=5.8.12"></script>
-    <script src="js/core/chat_lines.js?v=5.8.12"></script>
-    <script src="js/core/chat_lines_gibberish.js?v=5.8.12"></script>
-    <script src="js/core/chat_lines_arriving.js?v=5.8.12"></script>
-    <script src="js/core/realistic_debates.js?v=5.8.12"></script>
-    <script src="js/core/chat_reactions.js?v=5.8.12"></script>
-    <script src="js/core/npc_ai_dictionary.js?v=5.8.12"></script>
-    <script src="js/core/profanity_events.js?v=5.8.12"></script>
-    <script src="js/core/department_complaints.js?v=5.8.12"></script>
-    <script src="js/core/meme_events.js?v=5.8.12"></script>
-    <script src="js/system/it_support.js?v=5.8.12"></script>
-    <script src="js/system/dms_system.js?v=5.8.12"></script>
-    <script src="js/core/app_core.js?v=5.8.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js?v=5.8.13"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js?v=5.8.13"></script>
+    <script src="js/system/export_log.js?v=5.8.13"></script>
+    <script src="js/chats/transmissions.js?v=5.8.13"></script>
+    <script src="js/information/imageAnalyzer.js?v=5.8.13"></script>
+    <script src="js/core/chat_lines.js?v=5.8.13"></script>
+    <script src="js/core/chat_lines_gibberish.js?v=5.8.13"></script>
+    <script src="js/core/chat_lines_arriving.js?v=5.8.13"></script>
+    <script src="js/core/realistic_debates.js?v=5.8.13"></script>
+    <script src="js/core/chat_reactions.js?v=5.8.13"></script>
+    <script src="js/core/npc_ai_dictionary.js?v=5.8.13"></script>
+    <script src="js/core/profanity_events.js?v=5.8.13"></script>
+    <script src="js/core/department_complaints.js?v=5.8.13"></script>
+    <script src="js/core/meme_events.js?v=5.8.13"></script>
+    <script src="js/system/it_support.js?v=5.8.13"></script>
+    <script src="js/system/dms_system.js?v=5.8.13"></script>
+    <script src="js/core/app_core.js?v=5.8.13"></script>
 
     
 
