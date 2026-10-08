@@ -9894,6 +9894,8 @@ window.updateStockDashboard = function() {
     
     // Update Cash Balance
     document.getElementById('stock-cash-balance').innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let globalMoneyEl = document.getElementById('dispatcher-money-display');
+    if (globalMoneyEl) globalMoneyEl.innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     
     // Calculate Portfolio Value
     let portfolioValue = 0;
