@@ -1121,12 +1121,16 @@ let citizensDisplayed = 10;
                 gender: getRandomGender(),
                 maritalStatus: ['Single', 'Married', 'Married', 'Divorced', 'Divorced', 'Widowed', 'Married (Corporate Arranged)', 'Legally Separated', 'Complicated'][Math.floor(Math.random() * 9)],
                 sector: Math.floor(Math.random() * 9) + 1,
-                patrolVehicle: `MCPD-${Math.floor(1000 + Math.random() * 9000)}`
+                patrolVehicle: `MCPD-${Math.floor(1000 + Math.random() * 9000)}`,
+                kills: Math.floor(Math.random() * Math.random() * 60),
+                arrests: Math.floor(Math.random() * Math.random() * 150),
+                points: Math.floor(Math.random() * 75000)
             });
         }
     }
 
     initRoster();
+    if (typeof updateOfficerLeaderboard === 'function') setTimeout(updateOfficerLeaderboard, 1000);
 
 
 function getActiveCallsigns() {
