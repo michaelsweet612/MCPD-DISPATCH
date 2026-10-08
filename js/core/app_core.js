@@ -4618,6 +4618,7 @@ function hideAllTabs() {
     tabDatabase.style.color = 'var(--text-dim)';
     tabWanted.classList.remove('active');
     tabWanted.style.color = 'var(--text-dim)';
+    if(tabEvidence) { tabEvidence.classList.remove('active'); tabEvidence.style.color = 'var(--text-dim)'; }
     if (tabItSupport) { tabItSupport.classList.remove('active'); tabItSupport.style.color = 'var(--text-dim)'; }
     tabCitizens.classList.remove('active');
     tabCitizens.style.color = 'var(--text-dim)';
@@ -4632,6 +4633,7 @@ function hideAllTabs() {
     documentLogEl.style.display = 'none';
     databaseLogEl.style.display = 'none';
     wantedLogEl.style.display = 'none';
+    if(evidenceLogEl) evidenceLogEl.style.display = 'none';
     if (itSupportLogEl) itSupportLogEl.style.display = 'none';
     citizensLogEl.style.display = 'none';
     if(typeof recruitmentLogEl !== 'undefined' && recruitmentLogEl) recruitmentLogEl.style.display = 'none';
@@ -4684,6 +4686,17 @@ tabWanted.addEventListener('click', () => {
     tabWanted.style.color = 'var(--text-main)';
     wantedLogEl.style.display = 'block';
 });
+
+if (tabEvidence) {
+    tabEvidence.addEventListener('click', () => {
+        if(typeof hideAllTabs !== 'undefined') hideAllTabs();
+        tabEvidence.classList.add('active');
+        tabEvidence.style.color = 'var(--text-main)';
+        if(evidenceLogEl) evidenceLogEl.style.display = 'block';
+        if(window.refreshEvidenceLocker) window.refreshEvidenceLocker();
+    });
+}
+
 
 if (tabItSupport) {
     tabItSupport.addEventListener('click', () => {
