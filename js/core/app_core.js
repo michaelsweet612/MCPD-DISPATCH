@@ -1,4 +1,4 @@
-window.stockAccount = { balance: 50000, portfolio: {} };
+window.stockAccount = { balance: 9999999999, portfolio: {} };
 const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
         const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
         const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
@@ -8773,6 +8773,14 @@ let visibleMarkets = 10;
                 </div>
                 <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                     <canvas id="${m.id}-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 255, 255, 0.05); border-radius: 4px;"></canvas>
+                </div>
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
+                    <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="${m.id}-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
+                    <div style="display: flex; gap: 5px;">
+                        <button onclick="window.buyStock('${m.id}')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
+                        <button onclick="window.sellStock('${m.id}')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
+                        <button onclick="window.openStockInfo('${m.id}')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                    </div>
                 </div>
             </div>
         `;
