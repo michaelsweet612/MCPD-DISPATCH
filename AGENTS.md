@@ -62,14 +62,16 @@ Whenever introducing a new navigation tab:
 - **Identifier Consistency:** Cross-check all element IDs, class names, and dataset attributes across both HTML files and JavaScript scripts to guarantee exact casing and spelling matches, preventing `null` property reference errors.
 
 ## 6. Project Structure & File Placement
-- `js/core/` — Primary engine only (`app_core.js`). Do not place raw line banks or independent subsystems here.
-- `js/dialogue/` — Static radio chatter, callout line banks, response dictionaries, and transcriptions.
-- `js/events/` — Standalone procedural chat events (`trigger*()` functions: complaints, memes, profanity, debates).
-- `js/systems/` — Feature subsystems (DMs, IT support, log exporter, image analyzer, system integrity, audio engine).
-- `assets/` — Partitioned strictly into `assets/images/`, `assets/audio/`, and `assets/avatars/furry/`.
-- `tools/tests/` — Automated smoke and test scripts. Never commit one-off debug or patch scripts to the root directory.
-- `docs/wiki/` — Repository documentation and universe lore guides.
+All supporting project directories live inside the consolidated `project_resources/` directory to keep the repository root clean:
+- `project_resources/js/core/` — Primary engine only (`app_core.js`). Do not place raw line banks or independent subsystems here.
+- `project_resources/js/dialogue/` — Static radio chatter, callout line banks, response dictionaries, and transcriptions.
+- `project_resources/js/events/` — Standalone procedural chat events (`trigger*()` functions: complaints, memes, profanity, debates).
+- `project_resources/js/systems/` — Feature subsystems (DMs, IT support, log exporter, image analyzer, system integrity, audio engine).
+- `project_resources/assets/` — Partitioned strictly into `images/`, `audio/`, and `avatars/furry/`.
+- `project_resources/tools/tests/` — Automated smoke and test scripts. Never commit one-off debug or patch scripts to the root directory.
+- `project_resources/docs/` — Repository documentation and universe lore guides (`docs/wiki/`).
 - **Script Order Constraint:** When adding new modules, ensure they are registered in both `MCPD_DISPATCH_TERMINAL.html` and `MCPD_MOBILE_TERMINAL.html` before `app_core.js` to preserve global dependency initialization.
+
 
 
 

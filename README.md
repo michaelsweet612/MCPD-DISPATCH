@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.0.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.1.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -10,18 +10,19 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 🗂️ MAJOR ARCHITECTURAL & MODULAR REORGANIZATION (v6.0.0)
+## 🗂️ CONSOLIDATED REPOSITORY ARCHITECTURE (v6.1.0)
 
-* **Domain-Driven Directory Layout:** The codebase has undergone a complete, comprehensive overhaul to separate concerns cleanly:
-  * `js/core/` — Dedicated exclusively to the main dispatch engine (`app_core.js`).
-  * `js/dialogue/` — Holds all structured chatter line banks, procedural dictionaries, and radio response matrices (`radio_transmissions.js`, `arrival_chatter.js`, `arrest_and_kill_chatter.js`, `gibberish_responses.js`, `chat_reactions.js`, `npc_ai_dictionary.js`, `late_responses.js`).
-  * `js/events/` — Standalone procedural chat events and department drama (`department_complaints.js`, `meme_events.js`, `profanity_events.js`, `realistic_debates.js`).
-  * `js/systems/` — Feature subsystems (`audio_engine.js`, `direct_messages.js`, `it_support.js`, `image_analyzer.js`, `log_exporter.js`, `system_integrity.js`).
-  * `assets/` — Partitioned into typed subfolders (`assets/images/`, `assets/audio/`, `assets/avatars/furry/`).
-  * `docs/wiki/` — Complete, consolidated offline Markdown archive of all universe lore and operation manuals.
-  * `tools/tests/` — Automated smoke and headless Puppeteer verification test suite.
+* **Single Dedicated Resource Directory (`project_resources/`):** To eliminate repository clutter and present a minimalist, clean front page on GitHub, all supporting code, assets, styles, documentation, and tooling have been consolidated into a single dedicated folder:
+  * `project_resources/js/core/` — Dedicated exclusively to the main dispatch engine (`app_core.js`).
+  * `project_resources/js/dialogue/` — Holds all structured chatter line banks, procedural dictionaries, and radio response matrices (`radio_transmissions.js`, `arrival_chatter.js`, `arrest_and_kill_chatter.js`, `gibberish_responses.js`, `chat_reactions.js`, `npc_ai_dictionary.js`, `late_responses.js`).
+  * `project_resources/js/events/` — Standalone procedural chat events and department drama (`department_complaints.js`, `meme_events.js`, `profanity_events.js`, `realistic_debates.js`).
+  * `project_resources/js/systems/` — Feature subsystems (`audio_engine.js`, `direct_messages.js`, `it_support.js`, `image_analyzer.js`, `log_exporter.js`, `system_integrity.js`).
+  * `project_resources/assets/` — Partitioned into typed subfolders (`images/`, `audio/`, `avatars/furry/`).
+  * `project_resources/docs/` — Consolidated offline Markdown archive of all universe lore, operations manuals, and contributor guidelines.
+  * `project_resources/tools/tests/` — Automated headless Puppeteer verification test suite.
+* **Streamlined Front Page:** The repository root is kept strictly focused on the core simulation entry points (`MCPD_DISPATCH_TERMINAL.html`, `MCPD_MOBILE_TERMINAL.html`, `index.html`), essential licensing, and documentation.
 * **Audio Subsystem Restoration:** `audio_engine.js` is now officially wired into both Desktop and Mobile dispatch terminals. Dispatchers can toggle live synthesized tactical radio clicks, alert tones, and audio squelch using `/audio on` and `/audio off`.
-* **Repository Hygiene & Push Protection:** Cleaned up stray root patch files, untracked bulky dependencies (`node_modules`), and added a robust `.gitignore` preventing sensitive script exposure.
+
 
 ---
 

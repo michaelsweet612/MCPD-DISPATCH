@@ -4334,7 +4334,7 @@ window.openReportModal = function (reportHTML) {
 
 // --- Panic System ---
 
-const panicAudioElement = new Audio('assets/audio/panic-button.mp3');
+const panicAudioElement = new Audio('project_resources/assets/audio/panic-button.mp3');
 panicAudioElement.loop = true;
 
 function playPanicSound() {
@@ -6015,7 +6015,7 @@ dbSearchBtn.addEventListener('click', () => {
             let idx = Math.abs(h) % 34 + 1;
         let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png', 11:'png', 12:'png', 13:'png', 14:'png', 15:'png', 16:'png', 17:'jpg', 18:'png', 19:'png', 20:'png', 21:'png', 22:'png', 23:'png', 24:'png', 25:'png', 26:'png', 27:'png', 28:'png', 29:'png', 30:'jpg', 31:'jpg', 32:'png', 33:'png', 34:'png'};
             let ext = exts[idx];
-            svgAvatar = `<img src="assets/avatars/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
+            svgAvatar = `<img src="project_resources/assets/avatars/furry/furry${idx}.${ext}" width="100" height="120" style="object-fit: cover; border-radius: 4px;" />`;
         }
         dbResults.innerHTML = `
             <div style="margin-bottom: 10px; border-bottom: 1px solid var(--panel-border); padding-bottom: 5px;">
@@ -9139,7 +9139,7 @@ function generateAvatarSVG(seed, size, personality) {
         let idx = Math.abs(h) % 34 + 1;
         let exts = {1:'png', 2:'jpg', 3:'jpg', 4:'jpg', 5:'jpg', 6:'png', 7:'png', 8:'jpg', 9:'png', 10:'png', 11:'png', 12:'png', 13:'png', 14:'png', 15:'png', 16:'png', 17:'jpg', 18:'png', 19:'png', 20:'png', 21:'png', 22:'png', 23:'png', 24:'png', 25:'png', 26:'png', 27:'png', 28:'png', 29:'png', 30:'jpg', 31:'jpg', 32:'png', 33:'png', 34:'png'};
         let ext = exts[idx];
-        return `<img src="assets/avatars/furry/furry${idx}.${ext}" width="${size}" height="${size*1.2}" style="object-fit: cover; border-radius: 4px;" />`;
+        return `<img src="project_resources/assets/avatars/furry/furry${idx}.${ext}" width="${size}" height="${size*1.2}" style="object-fit: cover; border-radius: 4px;" />`;
     }
     size = size || 100;
     let hash = 0;

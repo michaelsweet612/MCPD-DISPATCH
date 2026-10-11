@@ -11,7 +11,7 @@ const path = require('path');
       if (!response.ok()) console.log('HTTP ERROR:', response.url(), response.status());
   });
 
-  await page.goto('file:///' + path.resolve(__dirname, '..', '..', 'MCPD_DISPATCH_TERMINAL.html').replace(/\\/g, '/'), { waitUntil: 'networkidle0' });
+  await page.goto('file:///' + path.resolve(__dirname, '..', '..', '..', 'MCPD_DISPATCH_TERMINAL.html').replace(/\\/g, '/'), { waitUntil: 'networkidle0' });
   
   await new Promise(r => setTimeout(r, 2000));
   await browser.close();

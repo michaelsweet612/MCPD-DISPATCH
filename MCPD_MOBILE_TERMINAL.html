@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="css/styles.css?v=6.0.0">
+    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.1.0">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -687,7 +687,7 @@ document.addEventListener('keypress', function(e) {
                                 <button id="btn-theme-oled" style="flex: 1; padding: 8px; font-size: 0.8rem; background: #000; color: #fff; border: 1px solid #333;">OLED BLACK</button>
                                 <button id="btn-theme-light" style="flex: 1; padding: 8px; font-size: 0.8rem; background: #fff; color: #000; font-weight: bold; border: none;">CORPORATE WHITE</button>
                                 <button id="btn-theme-rainbow" style="flex: 1; min-width: 100px; padding: 8px; font-size: 0.8rem; background: linear-gradient(90deg, red, yellow, green, cyan, blue, magenta); color: #fff; font-weight: bold; border: none; text-shadow: 1px 1px 2px black;">PRISMATIC</button>
-                                <button id="btn-theme-pride" style="flex: 1; min-width: 100px; padding: 8px; font-size: 0.8rem; background: url('assets/images/pride_flag.png') center/cover no-repeat; color: #fff; font-weight: bold; border: 1px solid #fff; text-shadow: 1px 1px 2px black;">PRIDE</button>
+                                <button id="btn-theme-pride" style="flex: 1; min-width: 100px; padding: 8px; font-size: 0.8rem; background: url('project_resources/assets/images/pride_flag.png') center/cover no-repeat; color: #fff; font-weight: bold; border: 1px solid #fff; text-shadow: 1px 1px 2px black;">PRIDE</button>
                                 <button id="btn-theme-custom" onclick="document.getElementById('custom-theme-modal').style.display='flex';" style="width: 100%; margin-top: 10px; padding: 10px; font-size: 0.85rem; background: transparent; color: var(--accent-blue); font-weight: bold; border: 1px solid var(--accent-blue); cursor: pointer; text-transform: uppercase;">CUSTOMIZE</button>
                             </div>
                             
@@ -731,7 +731,7 @@ document.addEventListener('keypress', function(e) {
             <section class="panel main-panel" style="position: relative;" style="position: relative;">
           <!-- WATERMARK LOGO -->
           <div id="mcpd-watermark" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 0;">
-              <img src="assets/images/mcpd_logo.jpg" style="width: 85%; max-width: 600px; border-radius: 20px; filter: grayscale(100%) invert(1); opacity: 0.1; mix-blend-mode: screen;">
+              <img src="project_resources/assets/images/mcpd_logo.jpg" style="width: 85%; max-width: 600px; border-radius: 20px; filter: grayscale(100%) invert(1); opacity: 0.1; mix-blend-mode: screen;">
           </div>
 
                 <div class="panel-header tab-header" style="justify-content: flex-start; overflow-x: auto;">
@@ -1568,26 +1568,26 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="js/systems/system_integrity.js?v=6.0.0"></script>
+    <script src="project_resources/js/systems/system_integrity.js?v=6.1.0"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="js/systems/log_exporter.js?v=6.0.0"></script>
-    <script src="js/dialogue/radio_transmissions.js?v=6.0.0"></script>
-    <script src="js/systems/image_analyzer.js?v=6.0.0"></script>
-    <script src="js/dialogue/arrest_and_kill_chatter.js?v=6.0.0"></script>
-    <script src="js/dialogue/gibberish_responses.js?v=6.0.0"></script>
-    <script src="js/dialogue/arrival_chatter.js?v=6.0.0"></script>
-    <script src="js/events/realistic_debates.js?v=6.0.0"></script>
-    <script src="js/dialogue/chat_reactions.js?v=6.0.0"></script>
-    <script src="js/dialogue/npc_ai_dictionary.js?v=6.0.0"></script>
-    <script src="js/events/profanity_events.js?v=6.0.0"></script>
-    <script src="js/events/department_complaints.js?v=6.0.0"></script>
-    <script src="js/events/meme_events.js?v=6.0.0"></script>
-    <script src="js/systems/it_support.js?v=6.0.0"></script>
-    <script src="js/systems/direct_messages.js?v=6.0.0"></script>
-    <script src="js/systems/audio_engine.js?v=6.0.0"></script>
-    <script src="js/core/app_core.js?v=6.0.0"></script>
+    <script src="project_resources/js/systems/log_exporter.js?v=6.1.0"></script>
+    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.1.0"></script>
+    <script src="project_resources/js/systems/image_analyzer.js?v=6.1.0"></script>
+    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.1.0"></script>
+    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.1.0"></script>
+    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.1.0"></script>
+    <script src="project_resources/js/events/realistic_debates.js?v=6.1.0"></script>
+    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.1.0"></script>
+    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.1.0"></script>
+    <script src="project_resources/js/events/profanity_events.js?v=6.1.0"></script>
+    <script src="project_resources/js/events/department_complaints.js?v=6.1.0"></script>
+    <script src="project_resources/js/events/meme_events.js?v=6.1.0"></script>
+    <script src="project_resources/js/systems/it_support.js?v=6.1.0"></script>
+    <script src="project_resources/js/systems/direct_messages.js?v=6.1.0"></script>
+    <script src="project_resources/js/systems/audio_engine.js?v=6.1.0"></script>
+    <script src="project_resources/js/core/app_core.js?v=6.1.0"></script>
 
     
 
