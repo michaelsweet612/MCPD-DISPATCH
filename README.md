@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.2.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.2.1)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -10,8 +10,9 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 📻 DIRECT RADIO CHATTER MUTE DOCK (v6.2.0)
+## 🎯 ERGONOMIC TACTICAL TABS & RADIO MUTE DOCK (v6.2.1)
 
+* **Taller, Click-Friendly Tab Targets:** Expanded vertical tab height to a comfortable 42px touch/click target (`padding: 11px 9px`, `font-size: 0.82rem`) with high-readability typography, eliminating cramped click boxes while maintaining zero scrollbar overflow.
 * **Direct Chat Bar Mute Control (`🔇` / `🔊`):** Relocated incoming radio chatter audio controls out of nested Advanced Settings directly into the primary dispatch message bar (`#chat-input-area`). Dispatchers can instantly toggle incoming radio voice broadcasts (Text-to-Speech & tactical squelch) with a single tap directly beside the message prompt.
 * **Silent Patrol Default:** Incoming radio chatter defaults automatically to Muted (`🔇`) on system boot to prevent unexpected audio output until explicitly unmuted by the operator.
 * **Bi-Directional Command Sync:** Fully synchronized with `/audio on` and `/audio off` terminal commands and visual HUD indicators across both Desktop and Mobile dispatch terminals.
