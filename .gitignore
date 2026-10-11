@@ -1,0 +1,17 @@
+# Dependencies (installed locally via npm install)
+node_modules/
+
+# Local clone of the GitHub Wiki repo (published wiki lives at github.com/.../wiki)
+MCPD-DISPATCH.wiki/
+
+# Scratch / one-off helper scripts (never commit - may contain tokens)
+scratch/
+release*.py
+temp_*.py
+temp_*.js
+
+# Editor / OS / temp
+*.tmp
+*.log
+.DS_Store
+Thumbs.db

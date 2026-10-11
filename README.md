@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v5.8.18)
+# 🚨 MCPD DISPATCH TERMINAL (v6.0.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -10,7 +10,22 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 🛠️ LATEST MEGACITY & MARTIAL LAW UPDATES (v5.8.18)
+## 🗂️ MAJOR ARCHITECTURAL & MODULAR REORGANIZATION (v6.0.0)
+
+* **Domain-Driven Directory Layout:** The codebase has undergone a complete, comprehensive overhaul to separate concerns cleanly:
+  * `js/core/` — Dedicated exclusively to the main dispatch engine (`app_core.js`).
+  * `js/dialogue/` — Holds all structured chatter line banks, procedural dictionaries, and radio response matrices (`radio_transmissions.js`, `arrival_chatter.js`, `arrest_and_kill_chatter.js`, `gibberish_responses.js`, `chat_reactions.js`, `npc_ai_dictionary.js`, `late_responses.js`).
+  * `js/events/` — Standalone procedural chat events and department drama (`department_complaints.js`, `meme_events.js`, `profanity_events.js`, `realistic_debates.js`).
+  * `js/systems/` — Feature subsystems (`audio_engine.js`, `direct_messages.js`, `it_support.js`, `image_analyzer.js`, `log_exporter.js`, `system_integrity.js`).
+  * `assets/` — Partitioned into typed subfolders (`assets/images/`, `assets/audio/`, `assets/avatars/furry/`).
+  * `docs/wiki/` — Complete, consolidated offline Markdown archive of all universe lore and operation manuals.
+  * `tools/tests/` — Automated smoke and headless Puppeteer verification test suite.
+* **Audio Subsystem Restoration:** `audio_engine.js` is now officially wired into both Desktop and Mobile dispatch terminals. Dispatchers can toggle live synthesized tactical radio clicks, alert tones, and audio squelch using `/audio on` and `/audio off`.
+* **Repository Hygiene & Push Protection:** Cleaned up stray root patch files, untracked bulky dependencies (`node_modules`), and added a robust `.gitignore` preventing sensitive script exposure.
+
+---
+
+## 🛠️ LATEST MEGACITY & MARTIAL LAW UPDATES
 
 * **The Megacity Expansion:** The physical boundaries of the city map have been increased 5-fold to a massive 15,000x15,000 grid! The Live Map now actively generates and simulates exactly **59,999 individual entities** roaming the island simultaneously. Powered by a new Spatial Partitioning Grid algorithm to render thousands of cars and pedestrians at a flawless 60 FPS.
 * **Civil War & Martial Law Event:** If you abuse your citizens and the City Trust Level drops below 40%, the system will automatically declare Martial Law and trigger a Civil War. Heavily armed Military Units (`🪖`) will continuously pour out of the Military Base to pacify the streets until you restore Trust above 80%.
@@ -20,6 +35,7 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 * **Public Information Registry:** A glowing new dashboard inside the Database Tab that tracks live, fluctuating stats for the Megacity population, including Homeowners, Businesses, Alien/Bio-Splicing Experimental Licenses, and an absurdly large counter for Personal Firearms Owned that scales into the hundreds of billions.
 * **Dispatch Metrics Leaderboards:** Four massive live leaderboards dynamically track the Top 5 performing officers in the entire 5,000-man precinct. Track top performers by **Points Earned**, **Total Arrests**, **Suspects Killed**, and a brand new purple dashboard for **Total Calls Answered**.
 * **Permanent Live Map Landmarks:** The megacity dynamically generates massive permanent `🚓 Police Station` and `🪖 Military Base` zones onto random blocks. Roads have been upgraded with literal Traffic Light emojis (`🚥`) at every intersection!
+
 
 ---
 
