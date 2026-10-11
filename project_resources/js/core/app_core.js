@@ -3340,7 +3340,6 @@ function triggerColorAnomaly(active) {
                 .chat-msg { border-left-color: ${r2} !important; }
             `;
             document.body.style.filter = `hue-rotate(${Math.floor(Math.random() * 360)}deg)`;
-            doc.querySelector(".view-report-btn").onclick = () => openReportModal(fullReport);
         }, 250);
     } else {
         if (window.colorAnomalyInterval) {

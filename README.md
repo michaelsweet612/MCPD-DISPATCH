@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.1.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.1.1)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -10,7 +10,9 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 
 ---
 
-## 🗂️ CONSOLIDATED REPOSITORY ARCHITECTURE (v6.1.0)
+## 🗂️ CONSOLIDATED REPOSITORY ARCHITECTURE & UI POLISH (v6.1.1)
+
+* **Zero-Scrollbar High-Density Tab Bar:** Compacted tab header geometry removes native horizontal scrollbars ("white volume") while tightly condensing spacing across all 12 operational dispatch modules (`DISPATCH LOG`, `UNIT STATUS`, `LOGS`, `JOIN MCPD`, `DATABASE`, `STOCK MARKET`, `LIVE MAP`, `CITIZENS`, `WANTED TARGETS`, `EVIDENCE LOCKER`, `DMs`, `IT SUPPORT`) with zero truncated titles or lost labels across desktop and mobile viewports.
 
 * **Single Dedicated Resource Directory (`project_resources/`):** To eliminate repository clutter and present a minimalist, clean front page on GitHub, all supporting code, assets, styles, documentation, and tooling have been consolidated into a single dedicated folder:
   * `project_resources/js/core/` — Dedicated exclusively to the main dispatch engine (`app_core.js`).

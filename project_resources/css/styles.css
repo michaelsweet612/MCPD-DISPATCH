@@ -150,19 +150,30 @@ body {
     display: flex;
     border-bottom: 1px solid var(--panel-border);
     background: rgba(0, 0, 0, 0.1);
+    padding: 0 !important;
+    gap: 0 !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.tab-header::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 .tab {
-    padding: 8px 10px;
+    padding: 6px 4px;
     cursor: pointer;
     border-right: 1px solid var(--panel-border);
     color: var(--text-dim);
     font-weight: bold;
     transition: all 0.2s;
-    font-size: 0.75rem;
+    font-size: 0.70rem;
     text-transform: uppercase;
     white-space: nowrap;
     flex-shrink: 0;
+    letter-spacing: -0.25px;
 }
 
 .tab:hover {
@@ -608,9 +619,23 @@ body.theme-light img, body.theme-light video {
     background: #06111e !important;
     border-bottom: 2px solid #1f3a57 !important;
 }
+.main-panel .tab-header {
+    padding: 0 !important;
+    gap: 0 !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+.main-panel .tab-header::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
 .main-panel .tab {
     color: #94a3b8 !important;
     border-right: 1px solid #1f3a57 !important;
+    padding: 6px 4px !important;
+    font-size: 0.70rem !important;
+    letter-spacing: -0.25px !important;
 }
 .main-panel .tab.active {
     background: #000000 !important;
