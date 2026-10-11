@@ -4,8 +4,8 @@
 
 window.MCPDAudio = (function() {
     let audioCtx = null;
-    let ttsEnabled = true;
-    let sfxEnabled = true;
+    let ttsEnabled = false; // Default: Muted automatically per user specification
+    let sfxEnabled = false; // Default: Muted automatically per user specification
     
     // Initialize Audio Context on first user interaction
     function initContext() {

@@ -3381,14 +3381,14 @@ function processDispatchChat() {
 
     // AUDIO CONTROLS
     if (text.toLowerCase() === '/audio on') {
-        if(window.MCPDAudio) window.MCPDAudio.toggleAudio(true);
-        addChatMessage("SYSTEM", "AUDIO SUB-SYSTEM ENABLED.", "serious");
+        if (typeof window.setRadioChatterMute === 'function') window.setRadioChatterMute(false);
+        addChatMessage("SYSTEM", "AUDIO SUB-SYSTEM ENABLED [RADIO CHATTER UNMUTED].", "serious");
         dispatchChatInput.value = '';
         return;
     }
     if (text.toLowerCase() === '/audio off') {
-        if(window.MCPDAudio) window.MCPDAudio.toggleAudio(false);
-        addChatMessage("SYSTEM", "AUDIO SUB-SYSTEM MUTED.", "serious");
+        if (typeof window.setRadioChatterMute === 'function') window.setRadioChatterMute(true);
+        addChatMessage("SYSTEM", "AUDIO SUB-SYSTEM MUTED [RADIO CHATTER MUTED].", "serious");
         dispatchChatInput.value = '';
         return;
     }
@@ -3735,7 +3735,48 @@ const backupAcknowledgeLines = [
 ];
 
 
-let ttsEnabled = true;
+let ttsEnabled = false; // Default: Muted automatically on boot per user directive
+
+window.setRadioChatterMute = function(muted) {
+    ttsEnabled = !muted;
+    if (window.MCPDAudio && typeof window.MCPDAudio.toggleAudio === 'function') {
+        window.MCPDAudio.toggleAudio(!muted);
+    }
+    if (muted) {
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+    } else {
+        if (window.MCPDAudio && typeof window.MCPDAudio.playSquelch === 'function') {
+            window.MCPDAudio.playSquelch();
+        }
+    }
+    if (typeof window.updateRadioMuteButtonUI === 'function') {
+        window.updateRadioMuteButtonUI();
+    }
+};
+
+window.updateRadioMuteButtonUI = function() {
+    const btn = document.getElementById('btn-toggle-radio-mute');
+    if (!btn) return;
+    if (ttsEnabled) {
+        btn.innerHTML = '🔊';
+        btn.title = 'Incoming Radio Chatter: ACTIVE (Click to Mute)';
+        btn.style.background = 'rgba(59, 130, 246, 0.25)';
+        btn.style.color = 'var(--accent-blue)';
+        btn.style.borderColor = 'var(--accent-blue)';
+        btn.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.4)';
+    } else {
+        btn.innerHTML = '🔇';
+        btn.title = 'Incoming Radio Chatter: MUTED (Click to Unmute)';
+        btn.style.background = '#1e293b';
+        btn.style.color = '#94a3b8';
+        btn.style.borderColor = '#475569';
+        btn.style.boxShadow = 'none';
+    }
+    const legacyToggle = document.getElementById('mute-chatter-toggle');
+    if (legacyToggle) {
+        legacyToggle.checked = !ttsEnabled;
+    }
+};
 
 function speakDispatch(text) {
     if (!ttsEnabled || !window.speechSynthesis) return;
@@ -6517,12 +6558,34 @@ document.getElementById('btn-purge-logs').addEventListener('click', () => {
 });
 
 
-document.getElementById('mute-chatter-toggle').addEventListener('change', (e) => {
-    ttsEnabled = !e.target.checked;
-    if (e.target.checked) {
-        window.speechSynthesis.cancel();
-    }
-});
+// --- RADIO CHATTER MUTE TOGGLE ---
+const btnRadioMute = document.getElementById('btn-toggle-radio-mute');
+if (btnRadioMute) {
+    btnRadioMute.addEventListener('click', () => {
+        window.setRadioChatterMute(ttsEnabled); // toggles state
+        if (ttsEnabled) {
+            if (typeof addChatMessage === 'function') {
+                addChatMessage("SYSTEM", "RADIO CHATTER AUDIO UNMUTED [TTS ACTIVE]", "serious");
+            }
+        } else {
+            if (typeof addChatMessage === 'function') {
+                addChatMessage("SYSTEM", "RADIO CHATTER AUDIO MUTED [SILENT PATROL]", "serious");
+            }
+        }
+    });
+}
+
+const legacyMuteToggle = document.getElementById('mute-chatter-toggle');
+if (legacyMuteToggle) {
+    legacyMuteToggle.addEventListener('change', (e) => {
+        window.setRadioChatterMute(e.target.checked);
+    });
+}
+
+// Initial UI sync
+if (typeof window.updateRadioMuteButtonUI === 'function') {
+    window.updateRadioMuteButtonUI();
+}
 
 const radioSpeedSelect = document.getElementById('radio-speed-select');
 if(radioSpeedSelect) {

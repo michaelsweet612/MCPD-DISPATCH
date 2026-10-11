@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD MOBILE TERMINAL</title>
-    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.1.1">
+    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.2.0">
 
     <style>
         /* BULLETPROOF MOBILE OVERRIDES */
@@ -712,13 +712,6 @@ document.addEventListener('keypress', function(e) {
                                 <button id="btn-purge-logs" style="flex: 1; padding: 10px; font-size: 0.85rem; background: var(--panic-red); color: #000; border: none; font-weight: bold;">PURGE TERMINAL LOGS</button>
                             </div>
                             
-                            <div class="toggle-group" style="margin-top: 15px;">
-                                <label for="mute-chatter-toggle" style="display: flex; align-items: center; gap: 8px; color: var(--text-dim); cursor: pointer;">
-                                    <input type="checkbox" id="mute-chatter-toggle">
-                                    MUTE INCOMING RADIO CHATTER
-                                </label>
-                            </div>
-
                             <button class="manual-event-btn" id="btn-arrest-nearby" style="background: var(--accent-blue); color: #000; border: none; font-weight: bold; width: 100%; margin-top: 5px;">
                                 ARREST NEARBY SUSPECT
                             </button>
@@ -1486,6 +1479,7 @@ document.addEventListener('keypress', function(e) {
                     <button id="btn-upload-image" style="padding: 10px 15px; font-weight:bold; background: var(--accent-blue); border: none; color: #000; border-radius:4px; font-size:1.2rem; cursor:pointer; flex-shrink: 0;" title="Upload Image">+</button>
                     <input type="file" id="dispatch-image-upload" style="display:none">
                     <input type="text" id="dispatch-chat-input" class="input-styled" placeholder="Transmit order to active units..." style="flex-grow:1;">
+                    <button id="btn-toggle-radio-mute" style="padding: 10px 14px; font-weight: bold; background: #1e293b; color: #94a3b8; border: 1px solid #475569; border-radius: 4px; flex-shrink: 0; cursor: pointer; font-size: 1.1rem; transition: all 0.2s;" title="Incoming Radio Chatter: MUTED (Click to Unmute)">🔇</button>
                     <button id="btn-auto-scroll" style="padding: 10px; font-weight: bold; background: var(--accent-green); color: #000; border: none; flex-shrink: 0; cursor: pointer;" title="Toggle Auto-Scroll">SCROLL: ON</button>
                     <button id="btn-export-log" style="padding: 10px; font-weight: bold; background: var(--accent-blue); color: #000; border: none; flex-shrink: 0; cursor: pointer;" title="Download Chat Log">EXPORT LOG</button>
                       <button id="dispatch-chat-send" style="padding: 10px 20px; flex-shrink: 0;">TRANSMIT</button>
@@ -1564,26 +1558,26 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="project_resources/js/systems/system_integrity.js?v=6.1.1"></script>
+    <script src="project_resources/js/systems/system_integrity.js?v=6.2.0"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="project_resources/js/systems/log_exporter.js?v=6.1.1"></script>
-    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.1.1"></script>
-    <script src="project_resources/js/systems/image_analyzer.js?v=6.1.1"></script>
-    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.1.1"></script>
-    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.1.1"></script>
-    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.1.1"></script>
-    <script src="project_resources/js/events/realistic_debates.js?v=6.1.1"></script>
-    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.1.1"></script>
-    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.1.1"></script>
-    <script src="project_resources/js/events/profanity_events.js?v=6.1.1"></script>
-    <script src="project_resources/js/events/department_complaints.js?v=6.1.1"></script>
-    <script src="project_resources/js/events/meme_events.js?v=6.1.1"></script>
-    <script src="project_resources/js/systems/it_support.js?v=6.1.1"></script>
-    <script src="project_resources/js/systems/direct_messages.js?v=6.1.1"></script>
-    <script src="project_resources/js/systems/audio_engine.js?v=6.1.1"></script>
-    <script src="project_resources/js/core/app_core.js?v=6.1.1"></script>
+    <script src="project_resources/js/systems/log_exporter.js?v=6.2.0"></script>
+    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.2.0"></script>
+    <script src="project_resources/js/systems/image_analyzer.js?v=6.2.0"></script>
+    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.2.0"></script>
+    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.2.0"></script>
+    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.2.0"></script>
+    <script src="project_resources/js/events/realistic_debates.js?v=6.2.0"></script>
+    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.2.0"></script>
+    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.2.0"></script>
+    <script src="project_resources/js/events/profanity_events.js?v=6.2.0"></script>
+    <script src="project_resources/js/events/department_complaints.js?v=6.2.0"></script>
+    <script src="project_resources/js/events/meme_events.js?v=6.2.0"></script>
+    <script src="project_resources/js/systems/it_support.js?v=6.2.0"></script>
+    <script src="project_resources/js/systems/direct_messages.js?v=6.2.0"></script>
+    <script src="project_resources/js/systems/audio_engine.js?v=6.2.0"></script>
+    <script src="project_resources/js/core/app_core.js?v=6.2.0"></script>
 
     
 

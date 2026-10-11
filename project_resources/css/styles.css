@@ -853,3 +853,19 @@ body.ui-neon input, body.ui-neon textarea {
 body.ui-neon input:focus, body.ui-neon textarea:focus {
     box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
 }
+
+/* Radio Chatter Mute Button */
+#btn-toggle-radio-mute {
+    user-select: none;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+#btn-toggle-radio-mute:hover {
+    filter: brightness(1.25);
+    transform: scale(1.03);
+}
+#btn-toggle-radio-mute:active {
+    transform: scale(0.97);
+}
