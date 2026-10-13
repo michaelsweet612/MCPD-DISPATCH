@@ -1,4 +1,6 @@
-window.stockAccount = { balance: 9999999999, portfolio: {} };
+window.stockAccount = { balance: 9999999999, portfolio: { mcpd: 536 } };
+if (typeof window.stockLedger === "undefined") window.stockLedger = [];
+window.stockLedger.push(`[${new Date().toLocaleTimeString()}] MCPD ESOP GRANTED: 536 shares automatically allocated & vested to Dispatcher Portfolio.`);
 const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
         const seriousNames = ['Steel', 'Hunter', 'Wolf', 'Stone', 'Frost', 'Hawk', 'Shadow', 'Blaze', 'Iron', 'Cross', 'Drake', 'Kane', 'Vance', 'Graves', 'Cole', 'Flint', 'Rook', 'Slate', 'Thorne', 'Vane'];
         const getNickname = () => Math.random() < 0.5 ? funnyNames[Math.floor(Math.random() * funnyNames.length)] : seriousNames[Math.floor(Math.random() * seriousNames.length)];
@@ -9023,10 +9025,15 @@ function updateStockMarkets(forceDraw = false) {
             }
         }
     });
+
+    if (typeof window.updateStockDashboard === 'function') {
+        window.updateStockDashboard();
+    }
 }
 
 setInterval(updateStockMarkets, 3500);
 setTimeout(updateStockMarkets, 1000);
+setTimeout(() => { if (typeof window.updateStockDashboard === 'function') window.updateStockDashboard(); }, 200);
 
 
 // ==========================================
@@ -9044,8 +9051,9 @@ setTimeout(updateStockMarkets, 1000);
             tabStock.style.color = 'var(--text-main)';
             stockLogEl.style.display = 'block';
             if (typeof chatInputArea !== 'undefined' && chatInputArea) chatInputArea.style.display = 'none';
-            // Instantly catch up / draw charts when tab is looked at
+            // Instantly catch up / draw charts and update portfolio when tab is looked at
             updateStockMarkets(true);
+            if (typeof window.updateStockDashboard === 'function') window.updateStockDashboard();
         });
         
         // Hook into hideAllTabs
@@ -9982,27 +9990,40 @@ document.addEventListener('keydown', (e) => {
 
 // --- STOCK MARKET TRADING LOGIC ---
 window.updateStockDashboard = function() {
-    if(!document.getElementById('stock-cash-balance')) return;
+    if (!window.stockAccount) {
+        window.stockAccount = { balance: 9999999999, portfolio: { mcpd: 536 } };
+    }
+    if (!window.stockAccount.portfolio) {
+        window.stockAccount.portfolio = { mcpd: 536 };
+    }
+    if (typeof window.stockAccount.portfolio.mcpd === 'undefined') {
+        window.stockAccount.portfolio.mcpd = 536;
+    }
+
+    if (!document.getElementById('stock-cash-balance')) return;
     
     // Update Cash Balance
     document.getElementById('stock-cash-balance').innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     let globalMoneyEl = document.getElementById('dispatcher-money-display');
     if (globalMoneyEl) globalMoneyEl.innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     
-    // Calculate Portfolio Value
+    // Calculate Portfolio Value across all markets
     let portfolioValue = 0;
-    for (let id in window.stockAccount.portfolio) {
-        let shares = window.stockAccount.portfolio[id];
-        if (markets[id] && shares > 0) {
-            portfolioValue += shares * markets[id].price;
+    if (typeof markets !== 'undefined') {
+        for (let id in markets) {
+            let shares = (window.stockAccount.portfolio && window.stockAccount.portfolio[id]) ? window.stockAccount.portfolio[id] : 0;
+            if (shares > 0 && markets[id]) {
+                portfolioValue += shares * markets[id].price;
+            }
+            
+            // Update shares in UI
+            let sharesEl = document.getElementById(id + '-shares-owned');
+            if (sharesEl) sharesEl.innerText = shares.toLocaleString();
         }
-        
-        // Update shares in UI
-        let sharesEl = document.getElementById(id + '-shares-owned');
-        if (sharesEl) sharesEl.innerText = shares.toLocaleString();
     }
     
-    document.getElementById('stock-portfolio-value').innerText = 'NTND $' + portfolioValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let portValEl = document.getElementById('stock-portfolio-value');
+    if (portValEl) portValEl.innerText = 'NTND $' + portfolioValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 };
 
 window.addStockFunds = function() {

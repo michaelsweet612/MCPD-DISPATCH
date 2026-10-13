@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.3.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.4.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -7,6 +7,15 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 > **📱 MOBILE & DESKTOP ARCHITECTURE:** We utilize an immersive Single Page Application (SPA) architecture. The main `index.html` portal serves as a Smart Hardware Selector. Clicking your platform will lock your screen behind a secure, fullscreen **Terminal Authentication Overlay**. Enter your dispatcher credentials to bypass firewalls and boot directly into the live grid!
+
+---
+
+## 📈 MCPD EMPLOYEE STOCK OWNERSHIP & AUTO-VESTED PORTFOLIO (v6.4.0)
+
+* **Automatic Department Equity Grant (536 Shares):** Every precinct dispatcher now automatically starts with **536 shares** of official `📈 MCPD STOCK` already in their portfolio on boot. Because dispatchers are the backbone of the department, starting with zero shares made no sense—equity is automatically vested to your terminal.
+* **Synchronized Live Portfolio Valuation:** The Stock Account Dashboard now dynamically calculates total portfolio value based on live fluctuating stock prices ($1.072+ Trillion NTND), updating in real-time as market conditions shift.
+* **Fully Integrated Trading & Ledger Audit:** Buying and selling functions seamlessly scale from your 536 baseline shares. The official public stock ledger logs the initial Employee Stock Ownership Plan (ESOP) grant on startup.
+* **Cross-Platform Parity:** Fully synced across both Desktop and Mobile dispatch terminals.
 
 ---
 
