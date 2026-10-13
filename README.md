@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.2.1)
+# 🚨 MCPD DISPATCH TERMINAL (v6.3.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -7,6 +7,14 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 > **📱 MOBILE & DESKTOP ARCHITECTURE:** We utilize an immersive Single Page Application (SPA) architecture. The main `index.html` portal serves as a Smart Hardware Selector. Clicking your platform will lock your screen behind a secure, fullscreen **Terminal Authentication Overlay**. Enter your dispatcher credentials to bypass firewalls and boot directly into the live grid!
+
+---
+
+## 🦅 COMPACT OS HEADER & TWO-TIER NAVIGATION DOCK (v6.3.0)
+
+* **Two-Layer Tactical Tab Dock:** Organized all 12 operational dispatch modules across two dedicated 6-tab tiers (Tier 1: `📡 DISPATCH LOG`, `⚨ UNIT STATUS`, `📜 LOGS`, `📋 JOIN MCPD`, `💾 DATABASE`, `💲 STOCK MARKET`; Tier 2: `🗺️ LIVE MAP`, `🆔 CITIZENS`, `🎯 WANTED TARGETS`, `📦 EVIDENCE LOCKER`, `💬 DMs`, `💻 IT SUPPORT`). Guarantees generous click targets, zero clipping, no label abbreviation, and clean alignment across both Desktop and Mobile viewports.
+* **Streamlined OS Title Bar:** Vertically compacted `.os-header` banner and HUD status indicators (reducing header height from ~80px to 44px) to maximize real-time viewport height for live dispatch simulations, active CAD unit status trackers, and incident feeds.
+* **Synchronized Responsive Viewports:** Desktop delivers full-width dual-tier distribution with custom neon active indicators, while mobile features smooth horizontal glide rails on both tiers with hidden scrollbars for flawless thumb navigation.
 
 ---
 
