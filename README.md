@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.4.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.5.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -7,6 +7,16 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 > **📱 MOBILE & DESKTOP ARCHITECTURE:** We utilize an immersive Single Page Application (SPA) architecture. The main `index.html` portal serves as a Smart Hardware Selector. Clicking your platform will lock your screen behind a secure, fullscreen **Terminal Authentication Overlay**. Enter your dispatcher credentials to bypass firewalls and boot directly into the live grid!
+
+---
+
+## 🏛️ CONNECTED STATION TREASURY & 'INS' QUANTITY TRADING DOCK (v6.5.0)
+
+* **Integrated Station Bank Account & Valuation Growth:** The station's bank account (`#dispatcher-money-display` and `#stock-cash-balance`) is now permanently and automatically wired into the MCPD Stock Market by default. Total station treasury is calculated in real-time as `Total Bank = Liquid Reserves + (MCPD Shares × MCPD Price)`.
+* **Capital Appreciation & 5% Liquid Yield on Acquisition:** When buying MCPD shares, the station's total bank account expands immediately—department valuation surges and pays an instant 5% liquid dividend yield straight into cash reserves.
+* **Tactical `INS` (Insert) Trading Controller:** Replaced rigid fixed-lot trade buttons with an intuitive numerical input and `INS` button. Dispatchers can insert custom share targets before executing `BUY` or `SELL` operations.
+* **Dedicated Department Asset Ownership:** Fixed illogical police precinct ownership across 55+ private sector corporate indices. MCPD stock is the exclusive equity asset owned and traded by the station (vested with 536 baseline shares), while all other 55+ equities operate as real-time spectator intelligence indices.
+* **Cross-Platform Parity:** Deployed with 100% feature parity across both Desktop and Mobile dispatch terminals.
 
 ---
 

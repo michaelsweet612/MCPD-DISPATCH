@@ -8856,12 +8856,10 @@ let visibleMarkets = 10;
                 <div style="margin-top: 15px; border-top: 1px dashed var(--panel-border); padding-top: 10px;">
                     <canvas id="${m.id}-stock-chart" width="600" height="100" style="width: 100%; height: 100px; background: rgba(255, 255, 255, 0.05); border-radius: 4px;"></canvas>
                 </div>
-                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 4px;">
-                    <div style="font-size: 0.9rem; color: #ccc;">OWNED: <span id="${m.id}-shares-owned" style="font-weight: bold; color: #fff;">0</span></div>
-                    <div style="display: flex; gap: 5px;">
-                        <button onclick="window.buyStock('${m.id}')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">BUY 10</button>
-                        <button onclick="window.sellStock('${m.id}')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">SELL 10</button>
-                        <button onclick="window.openStockInfo('${m.id}')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">INFO</button>
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 8px 10px; border-radius: 4px;">
+                    <div style="font-size: 0.85rem; color: var(--text-dim);">SECTOR INDEX: <span style="font-weight: bold; color: #fff;">PUBLIC MARKET</span></div>
+                    <div>
+                        <button onclick="window.openStockInfo('${m.id}')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">INFO</button>
                     </div>
                 </div>
             </div>
@@ -10000,34 +9998,48 @@ window.updateStockDashboard = function() {
         window.stockAccount.portfolio.mcpd = 536;
     }
 
-    if (!document.getElementById('stock-cash-balance')) return;
-    
-    // Update Cash Balance
-    document.getElementById('stock-cash-balance').innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let mcpdPrice = (typeof markets !== 'undefined' && markets.mcpd) ? markets.mcpd.price : 2000000000.00;
+    let mcpdShares = window.stockAccount.portfolio.mcpd || 536;
+    let mcpdVal = mcpdShares * mcpdPrice;
+
+    // Station Bank Account is automatically connected to the MCPD Stock Market by default
+    let totalStationBank = window.stockAccount.balance + mcpdVal;
+
     let globalMoneyEl = document.getElementById('dispatcher-money-display');
-    if (globalMoneyEl) globalMoneyEl.innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    
-    // Calculate Portfolio Value across all markets
-    let portfolioValue = 0;
-    if (typeof markets !== 'undefined') {
-        for (let id in markets) {
-            let shares = (window.stockAccount.portfolio && window.stockAccount.portfolio[id]) ? window.stockAccount.portfolio[id] : 0;
-            if (shares > 0 && markets[id]) {
-                portfolioValue += shares * markets[id].price;
+    if (globalMoneyEl) {
+        globalMoneyEl.innerText = 'NTND $' + totalStationBank.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    if (!document.getElementById('stock-cash-balance')) return;
+
+    document.getElementById('stock-cash-balance').innerText = 'NTND $' + totalStationBank.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    let portValEl = document.getElementById('stock-portfolio-value');
+    if (portValEl) {
+        portValEl.innerText = 'NTND $' + mcpdVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    let mcpdSharesEl = document.getElementById('mcpd-shares-owned');
+    if (mcpdSharesEl) mcpdSharesEl.innerText = mcpdShares.toLocaleString();
+};
+
+window.insertStockQty = function(id = 'mcpd') {
+    let qtyInput = document.getElementById(id + '-stock-qty');
+    let currentVal = qtyInput ? qtyInput.value : '10';
+    let userVal = prompt("INSERT NUMBER OF SHARES TO TRADE:", currentVal || "10");
+    if (userVal !== null) {
+        let num = parseInt(userVal.replace(/[^0-9]/g, ''), 10);
+        if (!isNaN(num) && num > 0) {
+            if (qtyInput) qtyInput.value = num;
+            if (typeof addChatMessage !== 'undefined') {
+                addChatMessage("STOCK TERMINAL", `Trade target set to ${num.toLocaleString()} shares. Ready to BUY or SELL.`, "system", false);
             }
-            
-            // Update shares in UI
-            let sharesEl = document.getElementById(id + '-shares-owned');
-            if (sharesEl) sharesEl.innerText = shares.toLocaleString();
         }
     }
-    
-    let portValEl = document.getElementById('stock-portfolio-value');
-    if (portValEl) portValEl.innerText = 'NTND $' + portfolioValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 };
 
 window.addStockFunds = function() {
-    // Add 50,000 NTND per click, taking away 1000 Station Points if available, otherwise just free money for testing
+    // Add 50,000 NTND per click, taking away 1000 Station Points if available
     if (typeof dispatcherScore !== 'undefined' && dispatcherScore >= 1000) {
         addPoints(-1000);
         window.stockAccount.balance += 50000;
@@ -10050,75 +10062,70 @@ window.addStockFunds = function() {
         }
     }
     window.updateStockDashboard();
-
 };
 
-window.buyStock = function(id) {
+window.buyStock = function(id = 'mcpd') {
     if (!markets[id]) return;
+    let qtyInput = document.getElementById(id + '-stock-qty');
+    let qty = qtyInput ? (parseInt(qtyInput.value, 10) || 10) : 10;
+    if (qty <= 0) qty = 10;
+
+    if (!window.stockAccount.portfolio) window.stockAccount.portfolio = {};
+    if (!window.stockAccount.portfolio[id]) window.stockAccount.portfolio[id] = 0;
+    window.stockAccount.portfolio[id] += qty;
+
+    // Pump stock price upon buy
+    let pumpPct = 0.01 + (Math.random() * 0.02) + (Math.min(qty, 100) * 0.0005);
+    markets[id].price *= (1 + pumpPct);
+
+    // Buying MCPD stock increases the station's liquid capital / dividend yield
+    let dividendYield = markets[id].price * qty * 0.05;
+    window.stockAccount.balance += dividendYield;
+
+    if (typeof window.stockLedger !== 'undefined') {
+        let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
+        window.stockLedger.push(`[${time}] BOUGHT ${qty.toLocaleString()} SHARES ${id.toUpperCase()} | VALUATION SURGE: +${(pumpPct*100).toFixed(2)}% | CAPITAL YIELD: +NTND $${dividendYield.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+    }
+
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage("MARKET AI", `ACQUISITION CONFIRMED: Bought ${qty.toLocaleString()} shares of MCPD Stock. Department valuation surged +${(pumpPct*100).toFixed(2)}%! Station bank account increased.`, "system", false);
+    }
+
+    window.updateStockDashboard();
+};
+
+window.sellStock = function(id = 'mcpd') {
+    if (!markets[id]) return;
+    let qtyInput = document.getElementById(id + '-stock-qty');
+    let qty = qtyInput ? (parseInt(qtyInput.value, 10) || 10) : 10;
+    if (qty <= 0) qty = 10;
+
+    let currentOwned = (window.stockAccount.portfolio && window.stockAccount.portfolio[id]) ? window.stockAccount.portfolio[id] : 0;
+    if (currentOwned < qty) {
+        alert(`INSUFFICIENT SHARES. You only own ${currentOwned.toLocaleString()} shares of this stock.`);
+        return;
+    }
+
     const pricePerShare = markets[id].price;
-    const qty = 10;
-    const totalCost = pricePerShare * qty;
-    
-    if (window.stockAccount.balance >= totalCost) {
-        window.stockAccount.balance -= totalCost;
-        if (!window.stockAccount.portfolio[id]) window.stockAccount.portfolio[id] = 0;
-        window.stockAccount.portfolio[id] += qty;
-        
-        // Small market pump effect
-        markets[id].price *= (1 + (Math.random() * 0.005));
-        
-        
-    window.fundClicks = (window.fundClicks || 0) + 1;
-    if (window.fundClicks === 3) {
-        if (markets['bank']) {
-            markets['bank'].price *= 0.05; // 95% crash!
-            if (typeof window.stockLedger !== 'undefined') {
-                window.stockLedger.push(`[${typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString()}] TBMG CENTRAL BANK: -95.00% NTND | REASON: Massive bank run triggered by excessive off-the-books printing.`);
-            }
-            if (typeof addChatMessage !== 'undefined') {
-                addChatMessage("MARKET AI", "CRITICAL ALERT: TBMG Central Bank has collapsed due to hyper-inflationary deposits.", "system", false);
-            }
-        }
+    const totalProceeds = pricePerShare * qty;
+
+    window.stockAccount.portfolio[id] -= qty;
+    window.stockAccount.balance += totalProceeds;
+
+    // Small market dip
+    markets[id].price *= (1 - (Math.random() * 0.005));
+    if (markets[id].price < 0.01) markets[id].price = 0.01;
+
+    if (typeof window.stockLedger !== 'undefined') {
+        let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
+        window.stockLedger.push(`[${time}] SOLD ${qty.toLocaleString()} SHARES ${id.toUpperCase()} | LIQUIDATED CASH: +NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`);
     }
+
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage("MARKET AI", `LIQUIDATION: Sold ${qty.toLocaleString()} shares of MCPD Stock for NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}.`, "system", false);
+    }
+
     window.updateStockDashboard();
-
-    } else {
-        alert("INSUFFICIENT FUNDS. You need NTND $" + totalCost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}));
-    }
-};
-
-window.sellStock = function(id) {
-    if (!markets[id]) return;
-    const qty = 10;
-    
-    if (window.stockAccount.portfolio[id] >= qty) {
-        const pricePerShare = markets[id].price;
-        const totalValue = pricePerShare * qty;
-        
-        window.stockAccount.portfolio[id] -= qty;
-        window.stockAccount.balance += totalValue;
-        
-        // Small market dump effect
-        markets[id].price *= (1 - (Math.random() * 0.005));
-        
-        
-    window.fundClicks = (window.fundClicks || 0) + 1;
-    if (window.fundClicks === 3) {
-        if (markets['bank']) {
-            markets['bank'].price *= 0.05; // 95% crash!
-            if (typeof window.stockLedger !== 'undefined') {
-                window.stockLedger.push(`[${typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString()}] TBMG CENTRAL BANK: -95.00% NTND | REASON: Massive bank run triggered by excessive off-the-books printing.`);
-            }
-            if (typeof addChatMessage !== 'undefined') {
-                addChatMessage("MARKET AI", "CRITICAL ALERT: TBMG Central Bank has collapsed due to hyper-inflationary deposits.", "system", false);
-            }
-        }
-    }
-    window.updateStockDashboard();
-
-    } else {
-        alert("INSUFFICIENT SHARES. You do not own 10 shares of this stock.");
-    }
 };
 
 window.openStockInfo = function(id) {
