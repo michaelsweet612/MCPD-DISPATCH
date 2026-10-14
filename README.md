@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.5.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.6.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -7,6 +7,72 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 > **📱 MOBILE & DESKTOP ARCHITECTURE:** We utilize an immersive Single Page Application (SPA) architecture. The main `index.html` portal serves as a Smart Hardware Selector. Clicking your platform will lock your screen behind a secure, fullscreen **Terminal Authentication Overlay**. Enter your dispatcher credentials to bypass firewalls and boot directly into the live grid!
+
+---
+
+## ⚡ 50-FEATURE ADVANCED TACTICAL STOCK EXCHANGE & AUTOMATION MATRIX (v6.6.0)
+
+The MCPD Financial Intelligence Subsystem has undergone a comprehensive departmental overhaul, deploying **50 full-scale tactical stock market features**, algorithmic trading tools, precinct interventions, and cyber-treasury instruments across both desktop and mobile terminals:
+
+### 1. Advanced Order Execution & Automation
+* **MAX Allocation Button:** Instantly sets the trade quantity input to your terminal's maximum affordable or liquidated share capacity.
+* **50% Half Allocation Button:** Sets trade sizing to exactly half of your position or buying power for fast risk scaling.
+* **Limit Order Automation System:** Dispatchers can place conditional Limit Buy and Limit Sell orders with user-defined target execution prices and lot quantities.
+* **Stop-Loss Protection Circuit:** Configurable liquidation failsafe that monitors the tape and automatically sells station equity to prevent catastrophic drawdown during market crashes.
+* **Bearish Short Selling Contract:** Dispatchers can open short contracts against market equity, capitalizing on megacity crime waves, riots, and precinct scandals.
+* **DRIP Reinvestment Engine:** Automated Dividend Reinvestment Program that immediately re-deploys dividend yields into additional MCPD equity.
+* **Leverage Margin Multiplier (1x, 2x, 5x, 10x):** Leveraged trade exposure allowing dispatchers to multiply gains (and margin risks) on equity purchases.
+* **Emergency Municipal Federal Bailout:** Call upon the Central Federal Banking Reserve to request an immediate +50,000,000,000 NTND liquidity injection during insolvencies.
+* **Stock Split Simulator:** Execute forward 2:1 splits or 1:2 reverse share consolidations with immediate price and quantity adjustments.
+* **Dark Pool Secrecy Mode:** Execute tactical trades through untraceable dark pools with zero market slippage and zero broadcast to the public ledger.
+
+### 2. Precinct Interventions & Covert Market Ops
+* **Precinct Media Propaganda PR:** Launch aggressive police public relations campaigns on megacity media feeds, pumping MCPD stock valuation by +10% to +18%.
+* **Hostile SWAT Corporate Audit:** Dispatch tactical SWAT units to raid corrupt corporate targets (`KINETIC ARMS`, `NEON SYNTHETICS`, `ASTRAL DATA`, `TBMG BANK`), crashing their market valuation by -15% and seizing civil forfeiture cash.
+* **Insider Trading Wiretap Intercept:** Wiretap high-profile corporate CEO phone lines to intercept unencrypted insider communications forecasting upcoming price movements.
+* **City Trust Correlation Engine:** Dynamic macroeconomic engine tying municipal public trust directly to equity sentiment (high trust stimulates organic bullish expansion; low trust triggers panicked market selloffs).
+* **Martial Law Market Freeze:** Enforce a 60-second emergency trading freeze, halting volatility and preserving valuations during intense crime waves.
+* **Contraband Slush Laundering:** Launder seized illicit evidence locker contraband directly into official MCPD treasury equity shares.
+* **Black Swan Systemic Disaster Engine:** Trigger macroeconomic catastrophe simulations (grid blackout, synthetic AI breach, orbital strikes) provoking citywide market crashes.
+* **Crime Wave Volatility Multiplier:** Market volatility automatically intensifies during active 10-codes, high-risk felonies, and officer-involved shootouts.
+* **Corporate Espionage Dossier:** Purchase classified competitive intelligence dossiers from the black market for confidential balance sheet intel.
+* **Shareholder Referendum Voting:** Cast station equity proxy votes on high-level department ballot initiatives to unlock operational buffs.
+
+### 3. Charting, Visual Analytics & Intel Grid
+* **Candlestick vs Neon Line Charting:** Switch real-time equity visualizers between classic cyberpunk neon line rendering and dynamic green/red Candlestick OHLC bars.
+* **Multi-Interval Timeframe Selector:** Toggle analysis intervals between 1M, 5M, 1H, and 24H data streams.
+* **Technical Moving Average Overlay (SMA-10 / SMA-20):** Render smoothed Simple Moving Average technical indicators directly over the live pricing canvas.
+* **Megacity Sector Performance Heatmap:** Live visual matrix displaying color-coded performance across Government, Banking, Defense, Synthetics, and Data sectors.
+* **Top Gainers Leaderboard:** Real-time leaderboard highlighting the top 3 surging equities across the megacity exchange.
+* **Top Losers Leaderboard:** Real-time leaderboard highlighting the top 3 crashing corporate equities.
+* **Live Stock Search Bar:** Instant real-time search input filtering markets by ticker or corporate name.
+* **Sector Category Filter Pills:** Fast category switching (`[ALL]`, `[GOV]`, `[BANK]`, `[DEFENSE]`, `[SYNTH]`, `[DATA]`).
+* **Market Depth Order Book Ladder:** Real-time order book ladder displaying live simulated BID and ASK volume walls.
+* **Volume Histogram Bars:** Dynamic technical volume bars rendered along the lower axis of all equity charts.
+
+### 4. Municipal Treasury, Darknet Crypto & Alternative Assets
+* **Municipal Defense War Bonds:** 60-second fixed-term war bonds yielding an 8.5% guaranteed return on maturity.
+* **Precinct Pension Hedge Fund:** Configurable dispatcher merit contribution slider (0% to 25%) diverting salary into long-term retirement hedge funds.
+* **Darknet Token CYBER-CRED ($CRED):** High-volatility decentralized cryptocurrency asset available for speculative trading.
+* **Megacity Bullion Reserve Vault:** Physical gold bullion vaulting (priced per ounce) providing a hedge against hyperinflation.
+* **Contraband Plutonium Futures:** Ultra-high-risk speculative commodity contracts tied to black-market nuclear isotopes.
+* **FDIC-MCPD Crash Insurance:** Buy insurance policies that automatically pay out 1,000,000,000 NTND if the equity market experiences a drop greater than 15%.
+* **Executive Merit Dividend:** Convert equity portfolio valuation milestones directly into Dispatcher Merit Points (+500 pts).
+* **Syndicate Debt Loan Facility:** Borrow emergency liquidity (up to 500M NTND) from underground syndicates with repayment tracking.
+* **Compound High-Yield Vault:** Secure savings vault compounding interest automatically at 1.2% every 30 seconds.
+* **Offshore Shell Tax Haven:** Route high-value transactions through encrypted orbital satellite relays to evade municipal trade fees and taxes.
+
+### 5. Automation, Robotics & Sensory Immersion
+* **Autonomous Robo-Dispatcher Trader AI:** Algorithmic trading bot that analyzes market dips, buys undervalued equities, and automatically locks in profit on surges.
+* **Watchlist & Star Pinning (★):** Pin high-priority equities to the top of your market feed with custom star toggles.
+* **Compact Ticker Ribbon vs Detailed Card Mode:** Toggle the trading floor layout between detailed interactive canvas cards and dense high-frequency ticker ribbons.
+* **All-Time High & Low Record Badges:** Record trackers marking historic ATH and ATL price extremes for each corporation.
+* **Custom Price Alarm System:** Set threshold alerts that trigger visual HUD alerts and sirens when equities breach target prices.
+* **Trading Floor Audio Bell SFX:** Authentic synthetic Web Audio API trading chimes, confirmation beeps, and tactical order squelches.
+* **Radio Dispatch Financial Voiceover:** Automated tactical audio and text alerts broadcast directly into the main CAD feed upon major market events.
+* **Real-time Session PnL Tracker:** Real-time tracking of realized and unrealized net profits/losses with percentage gain/loss metrics.
+* **Extended CSV & JSON Ledger Exports:** One-click data exports allowing dispatchers to download complete cryptographic transaction logs in CSV or JSON format.
+* **Live Cyberpunk Marquee Ticker Banner:** Real-time scrolling financial wire displaying live ticker prices, sector trends, fear & greed index, and bot status across the top of the terminal.
 
 ---
 

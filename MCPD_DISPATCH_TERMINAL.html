@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.5.0">
+    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.6.0">
 
 <style>
 .how-to-tab {
@@ -713,18 +713,286 @@ document.addEventListener('keypress', function(e) {
                 <!-- STOCK MARKETS VIEW (Hidden by default) -->
                 <div class="panel-content scrollable" id="stock-log" style="display: none;">
                     
-                    <!-- Download Ledger Button -->
-                    
+                    <!-- FEATURE 50: LIVE CYBERPUNK MARQUEE TICKER BANNER -->
+                    <div id="stock-marquee-banner" style="background: #000; border: 1px solid var(--accent-blue); padding: 8px 14px; margin-bottom: 15px; border-radius: 4px; overflow: hidden; white-space: nowrap; font-family: monospace; font-size: 0.85rem; color: #00e5ff; display: flex; align-items: center; box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);">
+                        <span style="background: var(--panic-red); color: #fff; padding: 2px 8px; border-radius: 2px; font-weight: bold; font-size: 0.75rem; margin-right: 12px; letter-spacing: 1px;">LIVE WIRE</span>
+                        <div id="stock-marquee-text" style="display: inline-block; white-space: nowrap;">🚨 [MEGACITY FINANCIAL WIRE] MCPD: NTND $2,000,000,000.00 ▲ // TBMG BANK: NTND $500,000,000.00 // KINETIC ARMS: NTND $50,000,000.00 // FEAR & GREED: 74 // AUTO-ROBO TRADER: STANDBY // 🚨</div>
+                    </div>
+
                     <!-- STOCK ACCOUNT DASHBOARD -->
-                    <div id="stock-account-dashboard" style="background: rgba(0, 50, 255, 0.1); border: 1px solid var(--accent-blue); padding: 15px; border-radius: 6px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div id="stock-account-dashboard" style="background: rgba(0, 50, 255, 0.1); border: 1px solid var(--accent-blue); padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                         <div>
                             <h3 style="margin: 0; color: var(--accent-blue);">🏛️ MCPD TREASURY & BROKERAGE ACCOUNT (CONNECTED TO MCPD STOCK)</h3>
                             <div style="font-size: 1.2rem; margin-top: 5px;">STATION BANK ACCOUNT: <span id="stock-cash-balance" style="color: var(--accent-green); font-weight: bold;">NTND $9,999,999,999.00</span></div>
                             <div style="font-size: 1rem; color: var(--text-dim);">PORTFOLIO VALUE: <span id="stock-portfolio-value">NTND $1,072,000,000,000.00</span></div>
+                            <div id="stock-pnl-display" style="font-size: 0.9rem; margin-top: 4px; color: var(--text-dim);">SESSION PnL: <span style="color:var(--accent-green); font-weight:bold;">+NTND $0.00 (+0.00%)</span></div>
                         </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button onclick="window.addStockFunds()" style="background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 10px; cursor: pointer; font-weight: bold;">[+] ADD FUNDS</button>
-                            <button onclick="window.downloadStockLedger()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 10px; cursor: pointer;">📥 DOWNLOAD LEDGER</button>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button onclick="window.addStockFunds()" style="background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;">[+] ADD FUNDS</button>
+                            <button onclick="window.downloadStockLedger()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 8px 12px; cursor: pointer; font-size: 0.85rem; border-radius: 3px;">📥 LEDGER</button>
+                            <button onclick="window.exportStockLedgerCsv()" style="background: var(--bg-deep); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;" title="Export ledger as CSV">📄 CSV</button>
+                            <button onclick="window.exportStockLedgerJson()" style="background: var(--bg-deep); color: #00e5ff; border: 1px solid #00e5ff; padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;" title="Export ledger as JSON">💾 JSON</button>
+                        </div>
+                    </div>
+
+                    <!-- 50-FEATURE ADVANCED TACTICAL STOCK EXCHANGE CONSOLE -->
+                    <div id="stock-feature-console" style="background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 6px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px;">
+                                <button class="stock-feature-tab-btn" data-tab="stock-tab-orders" onclick="window.switchStockFeatureTab('stock-tab-orders')" style="background: var(--accent-blue); color: #fff; border: 1px solid var(--accent-blue); padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">⚡ ORDERS & EXECUTION</button>
+                                <button class="stock-feature-tab-btn" data-tab="stock-tab-interventions" onclick="window.switchStockFeatureTab('stock-tab-interventions')" style="background: rgba(0,0,0,0.5); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">🚨 PRECINCT INTERVENTIONS</button>
+                                <button class="stock-feature-tab-btn" data-tab="stock-tab-treasury" onclick="window.switchStockFeatureTab('stock-tab-treasury')" style="background: rgba(0,0,0,0.5); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">🏛️ TREASURY & ASSETS</button>
+                                <button class="stock-feature-tab-btn" data-tab="stock-tab-analytics" onclick="window.switchStockFeatureTab('stock-tab-analytics')" style="background: rgba(0,0,0,0.5); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">📊 ANALYTICS & ROBOTICS</button>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: monospace;">TACTICAL EXCHANGE v6.6.0</div>
+                        </div>
+
+                        <!-- TAB 1: ORDERS & EXECUTION (Features 1 - 10) -->
+                        <div id="stock-tab-orders" class="stock-feature-panel" style="display: block;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <!-- Limit Orders -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--accent-blue); font-size: 0.95rem;">🎯 LIMIT ORDER AUTOMATION</h4>
+                                    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                                        <select id="limit-order-type" style="background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); padding: 4px 6px; font-size: 0.8rem; border-radius: 3px;">
+                                            <option value="BUY">LIMIT BUY</option>
+                                            <option value="SELL">LIMIT SELL</option>
+                                        </select>
+                                        <input type="number" id="limit-order-price" placeholder="Target Price" value="1900000000" style="flex: 1; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); padding: 4px 6px; font-size: 0.8rem; border-radius: 3px;">
+                                        <input type="number" id="limit-order-qty" placeholder="Qty" value="10" style="width: 60px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); padding: 4px 6px; font-size: 0.8rem; border-radius: 3px;">
+                                        <button onclick="window.addLimitOrder()" style="background: var(--accent-blue); color: #fff; border: none; padding: 4px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">PLACE</button>
+                                    </div>
+                                    <div id="limit-orders-list" style="max-height: 90px; overflow-y: auto;"></div>
+                                </div>
+
+                                <!-- Stop-Loss & Short Selling -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--panic-red); font-size: 0.95rem;">🛡️ STOP-LOSS & SHORT SELLING</h4>
+                                    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                                        <input type="number" id="stop-loss-threshold" value="1500000000" placeholder="Stop-Loss Price" style="flex: 1; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panic-red); padding: 4px 6px; font-size: 0.8rem; border-radius: 3px;">
+                                        <button id="btn-stop-loss-toggle" onclick="window.toggleStopLoss()" style="background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">STOP-LOSS: OFF</button>
+                                    </div>
+                                    <div style="display: flex; gap: 6px; align-items: center; margin-top: 6px;">
+                                        <button onclick="window.openShortPosition()" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">OPEN SHORT CONTRACT</button>
+                                        <div id="short-position-status" style="font-size: 0.8rem; color: var(--text-dim); flex: 1;">NO ACTIVE SHORT CONTRACT</div>
+                                    </div>
+                                </div>
+
+                                <!-- Execution Modifiers (DRIP, Margin, Bailout, Split, Dark Pool) -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--accent-green); font-size: 0.95rem;">⚡ TACTICAL MODIFIERS</h4>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;">
+                                        <button id="btn-drip-toggle" onclick="window.toggleDrip()" style="background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px 8px; cursor: pointer; font-size: 0.75rem; border-radius: 3px;">DRIP REINVEST: OFF</button>
+                                        <button id="btn-dark-pool-toggle" onclick="window.toggleDarkPool()" style="background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px 8px; cursor: pointer; font-size: 0.75rem; border-radius: 3px;">DARK POOL: OFF</button>
+                                        <button onclick="window.requestEmergencyBailout()" style="background: rgba(239, 68, 68, 0.2); color: var(--panic-red); border: 1px solid var(--panic-red); padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;">🚨 FED BAILOUT</button>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.8rem;">
+                                        <span>LEVERAGE MARGIN:</span>
+                                        <div style="display: flex; gap: 4px;">
+                                            <button onclick="window.setLeverageMultiplier(1)" style="padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">1x</button>
+                                            <button onclick="window.setLeverageMultiplier(2)" style="padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">2x</button>
+                                            <button onclick="window.setLeverageMultiplier(5)" style="padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">5x</button>
+                                            <button onclick="window.setLeverageMultiplier(10)" style="padding: 2px 6px; background: rgba(0,0,0,0.6); color: var(--panic-orange); border: 1px solid var(--panic-orange); cursor: pointer; font-size: 0.75rem; border-radius: 2px; font-weight: bold;">10x</button>
+                                            <span id="leverage-display" style="color: var(--accent-green); font-weight: bold; margin-left: 6px;">1x LEVERAGE</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 6px;">
+                                        <span style="font-size: 0.8rem; color: var(--text-dim);">STOCK SPLIT:</span>
+                                        <div>
+                                            <button onclick="window.executeStockSplit(2)" style="background: rgba(0,0,0,0.6); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">2:1 FORWARD</button>
+                                            <button onclick="window.executeStockSplit(0.5)" style="background: rgba(0,0,0,0.6); color: var(--panic-orange); border: 1px solid var(--panic-orange); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">1:2 REVERSE</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: PRECINCT INTERVENTIONS (Features 11 - 20) -->
+                        <div id="stock-tab-interventions" class="stock-feature-panel" style="display: none;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <!-- Tactical Operations (SWAT & Propaganda) -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--accent-blue); font-size: 0.95rem;">🚔 SWAT AUDITS & MEDIA PR</h4>
+                                    <div style="margin-bottom: 8px;">
+                                        <button onclick="window.launchPropagandaCampaign()" style="width: 100%; background: var(--bg-deep); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">📢 LAUNCH PROPAGANDA PR (+10% MCPD PUMP)</button>
+                                    </div>
+                                    <div style="display: flex; gap: 6px;">
+                                        <select id="swat-target-select" style="flex: 1; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); padding: 4px 6px; font-size: 0.8rem; border-radius: 3px;">
+                                            <option value="arms">KINETIC ARMS CO.</option>
+                                            <option value="synth">NEON SYNTHETICS</option>
+                                            <option value="data">ASTRAL DATA CORP</option>
+                                            <option value="bank">TBMG CENTRAL BANK</option>
+                                        </select>
+                                        <button onclick="window.executeSwatRaid()" style="background: var(--panic-red); color: #000; border: none; padding: 4px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">DISPATCH SWAT</button>
+                                    </div>
+                                    <div style="margin-top: 8px; display: flex; gap: 6px;">
+                                        <button id="btn-freeze-toggle" onclick="window.toggleMarketFreeze()" style="flex: 1; background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px; cursor: pointer; font-size: 0.75rem; border-radius: 3px;">🛑 FREEZE MARKET (60s)</button>
+                                        <button onclick="window.launderContrabandFunds()" style="flex: 1; background: var(--bg-deep); color: #fbbf24; border: 1px solid #fbbf24; padding: 4px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;">💼 LAUNDER EVIDENCE</button>
+                                    </div>
+                                </div>
+
+                                <!-- Wiretap & Espionage Intel -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: #00e5ff; font-size: 0.95rem;">📡 WIRETAPS & ESPIONAGE LEAKS</h4>
+                                    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                                        <button onclick="window.interceptInsiderWiretap()" style="flex: 1; background: var(--bg-deep); color: #00e5ff; border: 1px solid #00e5ff; padding: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">INTERCEPT CEO WIRETAP</button>
+                                        <button onclick="window.purchaseCorporateDossier()" style="flex: 1; background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">BUY DOSSIER ($10M)</button>
+                                    </div>
+                                    <div id="wiretap-intel-display" style="background: rgba(0,0,0,0.6); padding: 6px; border-radius: 3px; font-size: 0.8rem; min-height: 28px; margin-bottom: 6px; color: var(--text-dim);">No active intercept audio feed.</div>
+                                    <div id="dossier-intel-display" style="background: rgba(0,0,0,0.6); padding: 6px; border-radius: 3px; font-size: 0.8rem; min-height: 28px; color: var(--text-dim);">No confidential dossier opened.</div>
+                                </div>
+
+                                <!-- Macro Events & Referendums -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <h4 style="margin: 0; color: var(--panic-orange); font-size: 0.95rem;">⚡ BLACK SWAN & VOTES</h4>
+                                        <button onclick="window.triggerBlackSwanDisaster()" style="background: var(--panic-orange); color: #000; border: none; padding: 3px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 2px;">TRIGGER BLACK SWAN</button>
+                                    </div>
+                                    <div id="shareholder-motions-container" style="max-height: 120px; overflow-y: auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: TREASURY & ASSETS (Features 31 - 40) -->
+                        <div id="stock-tab-treasury" class="stock-feature-panel" style="display: none;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <!-- Municipal War Bonds & Pension -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--accent-blue); font-size: 0.95rem;">🛡️ MUNICIPAL BONDS & PENSION</h4>
+                                    <div style="margin-bottom: 8px;">
+                                        <button onclick="window.buyMunicipalDefenseBond(100000000)" style="width: 100%; background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">BUY $100M DEFENSE BOND (60s @ 8.5%)</button>
+                                    </div>
+                                    <div id="active-bonds-list" style="max-height: 60px; overflow-y: auto; margin-bottom: 8px;"></div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 6px;">
+                                        <span>PENSION CONTRIBUTION:</span>
+                                        <input type="range" min="0" max="25" value="5" onchange="window.setPensionAllocation(this.value)" style="width: 80px;">
+                                        <span id="pension-percent-display" style="color: var(--accent-green); font-weight: bold;">5% ALLOCATION</span>
+                                    </div>
+                                </div>
+
+                                <!-- Crypto, Bullion & Futures -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: #fbbf24; font-size: 0.95rem;">🪙 CRYPTO, GOLD & FUTURES</h4>
+                                    <!-- Cyber Cred -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem;">
+                                        <div id="cyber-cred-display"><strong>$CRED:</strong> $420.69 | OWNED: 0</div>
+                                        <div>
+                                            <button onclick="window.tradeCyberCred('BUY')" style="background: var(--accent-green); color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">+10</button>
+                                            <button onclick="window.tradeCyberCred('SELL')" style="background: var(--panic-red); color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">-10</button>
+                                        </div>
+                                    </div>
+                                    <!-- Gold Reserve -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem;">
+                                        <div id="gold-reserve-display"><strong>GOLD:</strong> $35,000/oz | 50 oz</div>
+                                        <div>
+                                            <button onclick="window.tradeGoldReserve('BUY')" style="background: #fbbf24; color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">+5 oz</button>
+                                            <button onclick="window.tradeGoldReserve('SELL')" style="background: var(--panic-red); color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">-5 oz</button>
+                                        </div>
+                                    </div>
+                                    <!-- Plutonium Futures -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+                                        <div id="plutonium-futures-display"><strong>PLUTONIUM:</strong> 0 CONTRACTS</div>
+                                        <div>
+                                            <button onclick="window.tradePlutoniumFutures('BUY')" style="background: var(--panic-orange); color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">LONG</button>
+                                            <button onclick="window.tradePlutoniumFutures('SELL')" style="background: var(--bg-deep); color: #fff; border: 1px solid var(--panel-border); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">CLOSE</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Banking, Debt, Vault & Haven -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--accent-green); font-size: 0.95rem;">🏦 VAULT, DEBT & HAVEN</h4>
+                                    <!-- Compound Vault -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem;">
+                                        <div id="vault-balance-display"><strong>VAULT:</strong> NTND $0.00</div>
+                                        <div>
+                                            <button onclick="window.depositCompoundVault(100000000)" style="background: var(--accent-green); color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">+100M</button>
+                                            <button onclick="window.withdrawCompoundVault()" style="background: var(--bg-deep); color: #fff; border: 1px solid var(--panel-border); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">WITHDRAW</button>
+                                        </div>
+                                    </div>
+                                    <!-- Syndicate Debt -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem;">
+                                        <div id="syndicate-debt-display"><strong>DEBT:</strong> NTND $0.00</div>
+                                        <div>
+                                            <button onclick="window.borrowSyndicateLoan()" style="background: var(--panic-red); color: #000; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">BORROW</button>
+                                            <button onclick="window.repaySyndicateLoan()" style="background: var(--accent-blue); color: #fff; border: none; padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">REPAY</button>
+                                        </div>
+                                    </div>
+                                    <!-- Controls -->
+                                    <div style="display: flex; gap: 6px; margin-top: 8px;">
+                                        <button id="btn-insurance-policy" onclick="window.buyCrashInsurance()" style="flex: 1; background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">INSURANCE POLICY</button>
+                                        <button id="btn-offshore-haven-toggle" onclick="window.toggleOffshoreHaven()" style="flex: 1; background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">OFFSHORE HAVEN</button>
+                                        <button onclick="window.claimExecutiveBonus()" style="background: var(--bg-deep); color: #fbbf24; border: 1px solid #fbbf24; padding: 4px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;" title="Claim Executive Bonus">+500 PTS</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: ANALYTICS & ROBOTICS (Features 21 - 30 & 41 - 47) -->
+                        <div id="stock-tab-analytics" class="stock-feature-panel" style="display: none;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <!-- Chart Controls & Automation -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: var(--accent-blue); font-size: 0.95rem;">📈 CHARTING & BOT CONTROLS</h4>
+                                    <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+                                        <button id="btn-chart-mode-toggle" onclick="window.toggleChartMode()" style="background: var(--bg-deep); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;">CHART: LINE</button>
+                                        <button id="btn-sma-toggle" onclick="window.toggleSmaOverlay()" style="background: var(--bg-deep); color: #00e5ff; border: 1px solid #00e5ff; padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;">INDICATOR: NONE</button>
+                                        <button id="btn-compact-view-toggle" onclick="window.toggleCompactView()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 4px 8px; cursor: pointer; font-size: 0.75rem; border-radius: 3px;">VIEW: DETAILED</button>
+                                        <button id="btn-robo-trader-toggle" onclick="window.toggleRoboTrader()" style="background: var(--bg-deep); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;">ROBO-TRADER: OFF</button>
+                                        <button id="btn-price-alarm" onclick="window.setCustomPriceAlarm()" style="background: var(--bg-deep); color: var(--panic-orange); border: 1px solid var(--panic-orange); padding: 4px 8px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;">ALARM: [OFF]</button>
+                                    </div>
+                                    <div style="display: flex; gap: 4px; align-items: center; font-size: 0.8rem; margin-top: 6px;">
+                                        <span style="color: var(--text-dim);">TIMEFRAME:</span>
+                                        <button class="timeframe-btn" data-tf="1M" onclick="window.setTimeframe('1M')" style="background: var(--accent-blue); color: #fff; border: 1px solid var(--panel-border); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">1M</button>
+                                        <button class="timeframe-btn" data-tf="5M" onclick="window.setTimeframe('5M')" style="background: transparent; color: var(--text-dim); border: 1px solid var(--panel-border); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">5M</button>
+                                        <button class="timeframe-btn" data-tf="1H" onclick="window.setTimeframe('1H')" style="background: transparent; color: var(--text-dim); border: 1px solid var(--panel-border); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">1H</button>
+                                        <button class="timeframe-btn" data-tf="24H" onclick="window.setTimeframe('24H')" style="background: transparent; color: var(--text-dim); border: 1px solid var(--panel-border); padding: 2px 6px; cursor: pointer; font-size: 0.75rem; border-radius: 2px;">24H</button>
+                                    </div>
+                                </div>
+
+                                <!-- Gainers & Losers -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 8px 0; color: var(--accent-green); font-size: 0.95rem;">🏆 TOP GAINERS & LOSERS</h4>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--accent-green); font-weight: bold; margin-bottom: 4px;">SURGING (BULLS)</div>
+                                            <div id="top-gainers-list"></div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 0.75rem; color: var(--panic-red); font-weight: bold; margin-bottom: 4px;">CRASHING (BEARS)</div>
+                                            <div id="top-losers-list"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Order Book Depth -->
+                                <div style="background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                    <h4 style="margin: 0 0 8px 0; color: #00e5ff; font-size: 0.95rem;">📖 ORDER BOOK DEPTH LADDER</h4>
+                                    <div id="order-book-display"></div>
+                                </div>
+                            </div>
+
+                            <!-- Sector Heatmap Grid (Feature 24) -->
+                            <div style="margin-top: 15px; background: rgba(0,0,0,0.4); padding: 12px; border: 1px solid var(--panel-border); border-radius: 4px;">
+                                <h4 style="margin: 0 0 10px 0; color: var(--accent-blue); font-size: 0.95rem;">🔥 MEGACITY SECTOR PERFORMANCE HEATMAP</h4>
+                                <div id="sector-heatmap-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH & SECTOR CATEGORY FILTER BAR (Features 27 & 28) -->
+                    <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;">
+                            <span style="font-size: 0.9rem; color: var(--accent-blue);">🔍 SEARCH:</span>
+                            <input type="text" id="stock-search-input" onkeyup="window.onStockSearchInput(this.value)" placeholder="Filter markets by name or ticker..." style="flex: 1; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--panel-border); padding: 6px 10px; font-size: 0.85rem; border-radius: 3px;">
+                        </div>
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                            <button class="sector-pill" data-cat="all" onclick="window.setStockCategoryFilter('all')" style="padding: 4px 8px; background: var(--accent-blue); color: #fff; border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">ALL MARKETS</button>
+                            <button class="sector-pill" data-cat="gov" onclick="window.setStockCategoryFilter('gov')" style="padding: 4px 8px; background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">GOV / MCPD</button>
+                            <button class="sector-pill" data-cat="bank" onclick="window.setStockCategoryFilter('bank')" style="padding: 4px 8px; background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">BANKING</button>
+                            <button class="sector-pill" data-cat="arms" onclick="window.setStockCategoryFilter('arms')" style="padding: 4px 8px; background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">DEFENSE</button>
+                            <button class="sector-pill" data-cat="synth" onclick="window.setStockCategoryFilter('synth')" style="padding: 4px 8px; background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">SYNTHETICS</button>
+                            <button class="sector-pill" data-cat="data" onclick="window.setStockCategoryFilter('data')" style="padding: 4px 8px; background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--panel-border); cursor: pointer; font-size: 0.75rem; border-radius: 2px;">DATA / AI</button>
                         </div>
                     </div>
                     
@@ -750,11 +1018,14 @@ document.addEventListener('keypress', function(e) {
                                     OWNED: <span id="mcpd-shares-owned" style="font-weight: bold; color: #fff;">536</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 5px;">
-                                    <input type="number" id="mcpd-stock-qty" value="10" min="1" style="width: 70px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--accent-green); padding: 4px 6px; font-size: 0.85rem; font-family: monospace; border-radius: 3px; text-align: center;">
+                                    <button onclick="window.setStockQtyMax('mcpd')" style="background: var(--bg-deep); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 4px 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;" title="Set maximum shares">MAX</button>
+                                    <button onclick="window.setStockQtyHalf('mcpd')" style="background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 4px 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; border-radius: 3px;" title="Set 50% shares">50%</button>
+                                    <input type="number" id="mcpd-stock-qty" value="10" min="1" style="width: 60px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid var(--accent-green); padding: 4px 6px; font-size: 0.85rem; font-family: monospace; border-radius: 3px; text-align: center;">
                                     <button id="btn-mcpd-ins" onclick="window.insertStockQty('mcpd')" title="Insert custom trade quantity" style="background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 5px 8px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">INS</button>
                                     <button onclick="window.buyStock('mcpd')" style="background: var(--accent-green); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">BUY</button>
                                     <button onclick="window.sellStock('mcpd')" style="background: var(--panic-red); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">SELL</button>
                                     <button onclick="window.openStockInfo('mcpd')" style="background: var(--accent-blue); color: #fff; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">INFO</button>
+                                    <button class="btn-watchlist-star" data-id="mcpd" onclick="window.toggleWatchlistPin('mcpd')" style="background: none; border: none; font-size: 1.1rem; color: #fbbf24; cursor: pointer;" title="Pin to Watchlist">★</button>
                                 </div>
                             </div>
                         </div>
@@ -1394,26 +1665,27 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="project_resources/js/systems/system_integrity.js?v=6.5.0"></script>
+    <script src="project_resources/js/systems/system_integrity.js?v=6.6.0"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="project_resources/js/systems/log_exporter.js?v=6.5.0"></script>
-    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.5.0"></script>
-    <script src="project_resources/js/systems/image_analyzer.js?v=6.5.0"></script>
-    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.5.0"></script>
-    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.5.0"></script>
-    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.5.0"></script>
-    <script src="project_resources/js/events/realistic_debates.js?v=6.5.0"></script>
-    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.5.0"></script>
-    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.5.0"></script>
-    <script src="project_resources/js/events/profanity_events.js?v=6.5.0"></script>
-    <script src="project_resources/js/events/department_complaints.js?v=6.5.0"></script>
-    <script src="project_resources/js/events/meme_events.js?v=6.5.0"></script>
-    <script src="project_resources/js/systems/it_support.js?v=6.5.0"></script>
-    <script src="project_resources/js/systems/direct_messages.js?v=6.5.0"></script>
-    <script src="project_resources/js/systems/audio_engine.js?v=6.5.0"></script>
-    <script src="project_resources/js/core/app_core.js?v=6.5.0"></script>
+    <script src="project_resources/js/systems/log_exporter.js?v=6.6.0"></script>
+    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/image_analyzer.js?v=6.6.0"></script>
+    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.6.0"></script>
+    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.6.0"></script>
+    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.6.0"></script>
+    <script src="project_resources/js/events/realistic_debates.js?v=6.6.0"></script>
+    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.6.0"></script>
+    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.6.0"></script>
+    <script src="project_resources/js/events/profanity_events.js?v=6.6.0"></script>
+    <script src="project_resources/js/events/department_complaints.js?v=6.6.0"></script>
+    <script src="project_resources/js/events/meme_events.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/it_support.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/direct_messages.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/audio_engine.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/stock_exchange_features.js?v=6.6.0"></script>
+    <script src="project_resources/js/core/app_core.js?v=6.6.0"></script>
 
     
 

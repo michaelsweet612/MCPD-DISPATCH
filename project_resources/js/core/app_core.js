@@ -8723,50 +8723,109 @@ function drawStockChart(id, pctChange) {
         ctx.lineTo(canvas.width, gridY);
         ctx.stroke();
     }
-    
-    // Draw line
-    ctx.beginPath();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = perfColor;
-    
+
     const stepX = canvas.width / (hist.length - 1);
-    
+
+    // FEATURE 30: Volume Histogram Bars at bottom
+    const volHeight = canvas.height * 0.25;
     for (let i = 0; i < hist.length; i++) {
-        const x = i * stepX;
-        const y = canvas.height - (((hist[i] - minPrice) / range) * canvas.height);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        const prevP = (i > 0) ? hist[i - 1] : hist[i];
+        const barColor = (hist[i] >= prevP) ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)';
+        const barH = ((Math.abs(hist[i] - prevP) / (range || 1)) * volHeight * 3) + 4;
+        ctx.fillStyle = barColor;
+        ctx.fillRect(i * stepX - 2, canvas.height - Math.min(barH, volHeight), 4, Math.min(barH, volHeight));
     }
-    ctx.stroke();
-    
-    // Draw Arrowhead at the very end
-    if (hist.length > 1) {
-        const lastX = canvas.width;
-        const lastY = canvas.height - (((hist[hist.length - 1] - minPrice) / range) * canvas.height);
-        const prevX = (hist.length - 2) * stepX;
-        const prevY = canvas.height - (((hist[hist.length - 2] - minPrice) / range) * canvas.height);
-        
-        let angle = Math.atan2(lastY - prevY, lastX - prevX);
-        
+
+    const isCandle = (window.stockFeatures && window.stockFeatures.chartMode === 'candlestick');
+    if (isCandle) {
+        // FEATURE 21: Candlestick chart rendering
+        for (let i = 0; i < hist.length; i++) {
+            const currentP = hist[i];
+            const prevP = (i > 0) ? hist[i - 1] : currentP;
+            const open = prevP;
+            const close = currentP;
+            const high = Math.max(open, close) + (range * 0.04);
+            const low = Math.min(open, close) - (range * 0.04);
+
+            const x = i * stepX;
+            const yOpen = canvas.height - (((open - minPrice) / range) * canvas.height);
+            const yClose = canvas.height - (((close - minPrice) / range) * canvas.height);
+            const yHigh = canvas.height - (((high - minPrice) / range) * canvas.height);
+            const yLow = canvas.height - (((low - minPrice) / range) * canvas.height);
+
+            const cColor = (close >= open) ? '#10b981' : '#ef4444';
+            // Wick
+            ctx.strokeStyle = cColor;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x, yHigh);
+            ctx.lineTo(x, yLow);
+            ctx.stroke();
+
+            // Candle Body
+            ctx.fillStyle = cColor;
+            const bodyY = Math.min(yOpen, yClose);
+            const bodyH = Math.max(2, Math.abs(yClose - yOpen));
+            ctx.fillRect(x - 3, bodyY, 6, bodyH);
+        }
+    } else {
+        // Standard neon line chart
         ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(lastX - 12 * Math.cos(angle - Math.PI / 7), lastY - 12 * Math.sin(angle - Math.PI / 7));
-        ctx.lineTo(lastX - 12 * Math.cos(angle + Math.PI / 7), lastY - 12 * Math.sin(angle + Math.PI / 7));
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = perfColor;
+        for (let i = 0; i < hist.length; i++) {
+            const x = i * stepX;
+            const y = canvas.height - (((hist[i] - minPrice) / range) * canvas.height);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Arrowhead
+        if (hist.length > 1) {
+            const lastX = canvas.width;
+            const lastY = canvas.height - (((hist[hist.length - 1] - minPrice) / range) * canvas.height);
+            const prevX = (hist.length - 2) * stepX;
+            const prevY = canvas.height - (((hist[hist.length - 2] - minPrice) / range) * canvas.height);
+            let angle = Math.atan2(lastY - prevY, lastX - prevX);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(lastX - 12 * Math.cos(angle - Math.PI / 7), lastY - 12 * Math.sin(angle - Math.PI / 7));
+            ctx.lineTo(lastX - 12 * Math.cos(angle + Math.PI / 7), lastY - 12 * Math.sin(angle + Math.PI / 7));
+            ctx.closePath();
+            ctx.fillStyle = perfColor;
+            ctx.fill();
+        }
+
+        // Gradient under line
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
         ctx.closePath();
-        ctx.fillStyle = perfColor;
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, `${perfColor}66`);
+        gradient.addColorStop(1, `${perfColor}00`);
+        ctx.fillStyle = gradient;
         ctx.fill();
     }
-    
-    // Gradient fill under line
-    ctx.lineTo(canvas.width, canvas.height);
-    ctx.lineTo(0, canvas.height);
-    ctx.closePath();
-    
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, `${perfColor}66`); // 40% opacity
-    gradient.addColorStop(1, `${perfColor}00`); // 0% opacity
-    ctx.fillStyle = gradient;
-    ctx.fill();
+
+    // FEATURE 23: SMA overlay (Simple Moving Average)
+    if (window.stockFeatures && window.stockFeatures.smaOverlay !== 'none') {
+        const period = (window.stockFeatures.smaOverlay === 'sma10') ? 10 : 20;
+        ctx.beginPath();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#00e5ff';
+        let started = false;
+        for (let i = period - 1; i < hist.length; i++) {
+            let sum = 0;
+            for (let j = 0; j < period; j++) sum += hist[i - j];
+            let avg = sum / period;
+            let sx = i * stepX;
+            let sy = canvas.height - (((avg - minPrice) / range) * canvas.height);
+            if (!started) { ctx.moveTo(sx, sy); started = true; }
+            else { ctx.lineTo(sx, sy); }
+        }
+        ctx.stroke();
+    }
 }
 
 const generatedMarkets = [
@@ -9026,6 +9085,10 @@ function updateStockMarkets(forceDraw = false) {
 
     if (typeof window.updateStockDashboard === 'function') {
         window.updateStockDashboard();
+    }
+
+    if (typeof window.onStockMarketTick === 'function') {
+        window.onStockMarketTick(updates);
     }
 }
 
@@ -10067,8 +10130,11 @@ window.addStockFunds = function() {
 window.buyStock = function(id = 'mcpd') {
     if (!markets[id]) return;
     let qtyInput = document.getElementById(id + '-stock-qty');
-    let qty = qtyInput ? (parseInt(qtyInput.value, 10) || 10) : 10;
-    if (qty <= 0) qty = 10;
+    let baseQty = qtyInput ? (parseInt(qtyInput.value, 10) || 10) : 10;
+    if (baseQty <= 0) baseQty = 10;
+
+    let leverage = (window.stockFeatures && window.stockFeatures.leverageMultiplier) ? window.stockFeatures.leverageMultiplier : 1;
+    let qty = baseQty * leverage;
 
     if (!window.stockAccount.portfolio) window.stockAccount.portfolio = {};
     if (!window.stockAccount.portfolio[id]) window.stockAccount.portfolio[id] = 0;
@@ -10080,15 +10146,30 @@ window.buyStock = function(id = 'mcpd') {
 
     // Buying MCPD stock increases the station's liquid capital / dividend yield
     let dividendYield = markets[id].price * qty * 0.05;
-    window.stockAccount.balance += dividendYield;
 
-    if (typeof window.stockLedger !== 'undefined') {
+    // FEATURE 6: DRIP Dividend Reinvestment
+    if (window.stockFeatures && window.stockFeatures.dripEnabled) {
+        let dripShares = Math.max(1, Math.floor(dividendYield / markets[id].price));
+        window.stockAccount.portfolio[id] += dripShares;
+        if (typeof window.broadcastMarketRadio === 'function') {
+            window.broadcastMarketRadio(`DRIP REINVESTMENT: +${dripShares} MCPD shares automatically acquired from dividend yield!`);
+        }
+    } else {
+        window.stockAccount.balance += dividendYield;
+    }
+
+    let isDark = (window.stockFeatures && window.stockFeatures.darkPoolActive);
+    if (typeof window.stockLedger !== 'undefined' && !isDark) {
         let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
         window.stockLedger.push(`[${time}] BOUGHT ${qty.toLocaleString()} SHARES ${id.toUpperCase()} | VALUATION SURGE: +${(pumpPct*100).toFixed(2)}% | CAPITAL YIELD: +NTND $${dividendYield.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`);
     }
 
-    if (typeof addChatMessage !== 'undefined') {
-        addChatMessage("MARKET AI", `ACQUISITION CONFIRMED: Bought ${qty.toLocaleString()} shares of MCPD Stock. Department valuation surged +${(pumpPct*100).toFixed(2)}%! Station bank account increased.`, "system", false);
+    if (typeof addChatMessage !== 'undefined' && !isDark) {
+        addChatMessage("MARKET AI", `ACQUISITION CONFIRMED: Bought ${qty.toLocaleString()} shares of MCPD Stock (${leverage}x Margin). Department valuation surged +${(pumpPct*100).toFixed(2)}%! Station bank account increased.`, "system", false);
+    }
+
+    if (typeof window.playTradingSound === 'function') {
+        window.playTradingSound('bell');
     }
 
     window.updateStockDashboard();
@@ -10116,13 +10197,18 @@ window.sellStock = function(id = 'mcpd') {
     markets[id].price *= (1 - (Math.random() * 0.005));
     if (markets[id].price < 0.01) markets[id].price = 0.01;
 
-    if (typeof window.stockLedger !== 'undefined') {
+    let isDark = (window.stockFeatures && window.stockFeatures.darkPoolActive);
+    if (typeof window.stockLedger !== 'undefined' && !isDark) {
         let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
         window.stockLedger.push(`[${time}] SOLD ${qty.toLocaleString()} SHARES ${id.toUpperCase()} | LIQUIDATED CASH: +NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`);
     }
 
-    if (typeof addChatMessage !== 'undefined') {
+    if (typeof addChatMessage !== 'undefined' && !isDark) {
         addChatMessage("MARKET AI", `LIQUIDATION: Sold ${qty.toLocaleString()} shares of MCPD Stock for NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}.`, "system", false);
+    }
+
+    if (typeof window.playTradingSound === 'function') {
+        window.playTradingSound('bell');
     }
 
     window.updateStockDashboard();
