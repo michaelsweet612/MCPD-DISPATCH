@@ -1,5 +1,5 @@
 // =======================================================================
-// MCPD STOCK EXCHANGE // 50-FEATURE ADVANCED TERMINAL SUBSYSTEM (v6.6.0)
+// MCPD STOCK EXCHANGE // 50-FEATURE ADVANCED TERMINAL SUBSYSTEM (v6.7.0)
 // Complete High-Frequency Tactical Financial Engine & Market Automation
 // =======================================================================
 

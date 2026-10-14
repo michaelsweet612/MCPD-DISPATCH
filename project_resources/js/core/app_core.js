@@ -1,4 +1,5 @@
-window.stockAccount = { balance: 9999999999, portfolio: { mcpd: 536 } };
+window.stationBankBalance = (typeof window.stationBankBalance !== 'undefined') ? window.stationBankBalance : 9999999999.00;
+window.stockAccount = (typeof window.stockAccount !== 'undefined') ? window.stockAccount : { balance: 5000000000.00, portfolio: { mcpd: 536 } };
 if (typeof window.stockLedger === "undefined") window.stockLedger = [];
 window.stockLedger.push(`[${new Date().toLocaleTimeString()}] MCPD ESOP GRANTED: 536 shares automatically allocated & vested to Dispatcher Portfolio.`);
 const funnyNames = ['Meatball', 'Slick', 'Turbo', 'Crash', 'Pudding', 'Boomer', 'Sarge', 'Sparky', 'Noodle', 'Giggles', 'Tank', 'Twitch', 'Scooter', 'Buster', 'Buttercup', 'Ghost', 'Viper', 'Maverick', 'Goose', 'Ice'];
@@ -10050,9 +10051,11 @@ document.addEventListener('keydown', (e) => {
 
 
 // --- STOCK MARKET TRADING LOGIC ---
+window.stationBankBalance = (typeof window.stationBankBalance !== 'undefined') ? window.stationBankBalance : 9999999999.00;
+
 window.updateStockDashboard = function() {
     if (!window.stockAccount) {
-        window.stockAccount = { balance: 9999999999, portfolio: { mcpd: 536 } };
+        window.stockAccount = { balance: 5000000000.00, portfolio: { mcpd: 536 } };
     }
     if (!window.stockAccount.portfolio) {
         window.stockAccount.portfolio = { mcpd: 536 };
@@ -10065,17 +10068,21 @@ window.updateStockDashboard = function() {
     let mcpdShares = window.stockAccount.portfolio.mcpd || 536;
     let mcpdVal = mcpdShares * mcpdPrice;
 
-    // Station Bank Account is automatically connected to the MCPD Stock Market by default
-    let totalStationBank = window.stockAccount.balance + mcpdVal;
-
+    // Station Bank Account is independent from the Stock Market
     let globalMoneyEl = document.getElementById('dispatcher-money-display');
     if (globalMoneyEl) {
-        globalMoneyEl.innerText = 'NTND $' + totalStationBank.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        globalMoneyEl.innerText = 'NTND $' + window.stationBankBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 
-    if (!document.getElementById('stock-cash-balance')) return;
+    let stationBankEl = document.getElementById('station-bank-balance');
+    if (stationBankEl) {
+        stationBankEl.innerText = 'NTND $' + window.stationBankBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
 
-    document.getElementById('stock-cash-balance').innerText = 'NTND $' + totalStationBank.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let stockCashEl = document.getElementById('stock-cash-balance');
+    if (stockCashEl) {
+        stockCashEl.innerText = 'NTND $' + window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
 
     let portValEl = document.getElementById('stock-portfolio-value');
     if (portValEl) {
@@ -10102,28 +10109,100 @@ window.insertStockQty = function(id = 'mcpd') {
 };
 
 window.addStockFunds = function() {
-    // Add 50,000 NTND per click, taking away 1000 Station Points if available
-    if (typeof dispatcherScore !== 'undefined' && dispatcherScore >= 1000) {
-        addPoints(-1000);
-        window.stockAccount.balance += 50000;
-        if(typeof addChatMessage !== 'undefined') addChatMessage("BANKING AI", "Transfer complete. 1000 Station Points converted to 50,000 NTND.", "system", false);
-    } else {
-        window.stockAccount.balance += 10000;
-        if(typeof addChatMessage !== 'undefined') addChatMessage("BANKING AI", "Offshore slush fund accessed. 10,000 NTND deposited.", "system", false);
-    }
+    let currentBank = (typeof window.stationBankBalance !== 'undefined') ? window.stationBankBalance : 9999999999.00;
+    let promptMsg = `TRANSFER FUNDS TO STOCK TRADING ACCOUNT\n\nStation Bank Available: NTND $${currentBank.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}\n\nEnter amount in NTND to deposit into Stock Trading Account (e.g. 500000000, 1B, MAX):`;
+    let userVal = prompt(promptMsg, "500,000,000");
+    if (userVal === null) return;
     
-    window.fundClicks = (window.fundClicks || 0) + 1;
-    if (window.fundClicks === 3) {
-        if (markets['bank']) {
-            markets['bank'].price *= 0.05; // 95% crash!
-            if (typeof window.stockLedger !== 'undefined') {
-                window.stockLedger.push(`[${typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString()}] TBMG CENTRAL BANK: -95.00% NTND | REASON: Massive bank run triggered by excessive off-the-books printing.`);
-            }
-            if (typeof addChatMessage !== 'undefined') {
-                addChatMessage("MARKET AI", "CRITICAL ALERT: TBMG Central Bank has collapsed due to hyper-inflationary deposits.", "system", false);
-            }
-        }
+    let cleanVal = userVal.trim().toUpperCase();
+    let amount = 0;
+    if (cleanVal === 'MAX' || cleanVal === 'ALL') {
+        amount = currentBank;
+    } else if (cleanVal.endsWith('B')) {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, '')) * 1000000000;
+    } else if (cleanVal.endsWith('M')) {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, '')) * 1000000;
+    } else if (cleanVal.endsWith('K')) {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, '')) * 1000;
+    } else {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, ''));
     }
+
+    if (isNaN(amount) || amount <= 0) {
+        alert("TRANSACTION CANCELLED: Invalid transfer amount specified.");
+        return;
+    }
+
+    if (amount > window.stationBankBalance) {
+        alert(`INSUFFICIENT STATION BANK FUNDS:\nYou requested NTND $${amount.toLocaleString(undefined, {minimumFractionDigits:2})}\nAvailable in Station Bank: NTND $${window.stationBankBalance.toLocaleString(undefined, {minimumFractionDigits:2})}`);
+        return;
+    }
+
+    window.stationBankBalance -= amount;
+    window.stockAccount.balance += amount;
+
+    if (typeof window.playTradingSound === 'function') {
+        window.playTradingSound('bell');
+    }
+
+    let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
+    if (typeof window.stockLedger !== 'undefined') {
+        window.stockLedger.push(`[${time}] DEPOSITED NTND $${amount.toLocaleString(undefined, {minimumFractionDigits:2})} FROM STATION BANK INTO STOCK TRADING CASH.`);
+    }
+
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage("BANKING AI", `CAPITAL TRANSFER CONFIRMED: Added NTND $${amount.toLocaleString(undefined, {minimumFractionDigits:2})} to Stock Trading Cash from Station Bank.`, "system", false);
+    }
+
+    window.updateStockDashboard();
+};
+
+window.decreaseStockFunds = function() {
+    let currentCash = (window.stockAccount && window.stockAccount.balance) ? window.stockAccount.balance : 0;
+    let promptMsg = `WITHDRAW FUNDS FROM STOCK TRADING ACCOUNT\n\nStock Trading Cash Available: NTND $${currentCash.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}\n\nEnter amount in NTND to transfer back to Station Bank (e.g. 500000000, 1B, MAX):`;
+    let userVal = prompt(promptMsg, "500,000,000");
+    if (userVal === null) return;
+    
+    let cleanVal = userVal.trim().toUpperCase();
+    let amount = 0;
+    if (cleanVal === 'MAX' || cleanVal === 'ALL') {
+        amount = currentCash;
+    } else if (cleanVal.endsWith('B')) {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, '')) * 1000000000;
+    } else if (cleanVal.endsWith('M')) {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, '')) * 1000000;
+    } else if (cleanVal.endsWith('K')) {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, '')) * 1000;
+    } else {
+        amount = parseFloat(cleanVal.replace(/[^0-9.]/g, ''));
+    }
+
+    if (isNaN(amount) || amount <= 0) {
+        alert("TRANSACTION CANCELLED: Invalid withdrawal amount specified.");
+        return;
+    }
+
+    if (amount > window.stockAccount.balance) {
+        alert(`INSUFFICIENT TRADING CASH:\nYou requested NTND $${amount.toLocaleString(undefined, {minimumFractionDigits:2})}\nAvailable Trading Cash: NTND $${window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits:2})}`);
+        return;
+    }
+
+    window.stockAccount.balance -= amount;
+    window.stationBankBalance += amount;
+
+    if (typeof window.playTradingSound === 'function') {
+        window.playTradingSound('bell');
+    }
+
+    let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
+    if (typeof window.stockLedger !== 'undefined') {
+        window.stockLedger.push(`[${time}] WITHDREW NTND $${amount.toLocaleString(undefined, {minimumFractionDigits:2})} FROM STOCK TRADING CASH TO STATION BANK.`);
+    }
+
+    if (typeof addChatMessage !== 'undefined') {
+        addChatMessage("BANKING AI", `CAPITAL WITHDRAWAL CONFIRMED: Decreased Stock Trading Cash by NTND $${amount.toLocaleString(undefined, {minimumFractionDigits:2})} and credited to Station Bank.`, "system", false);
+    }
+
     window.updateStockDashboard();
 };
 
@@ -10133,10 +10212,23 @@ window.buyStock = function(id = 'mcpd') {
     let baseQty = qtyInput ? (parseInt(qtyInput.value, 10) || 10) : 10;
     if (baseQty <= 0) baseQty = 10;
 
-    let leverage = (window.stockFeatures && window.stockFeatures.leverageMultiplier) ? window.stockFeatures.leverageMultiplier : 1;
+    let sfState = (window.stockFeatures && window.stockFeatures.state) ? window.stockFeatures.state : window.stockFeatures;
+    let leverage = (sfState && sfState.leverageMultiplier) ? sfState.leverageMultiplier : 1;
     let qty = baseQty * leverage;
+    let pricePerShare = markets[id].price;
+    let totalCost = pricePerShare * qty;
 
+    if (!window.stockAccount) window.stockAccount = { balance: 5000000000.00, portfolio: { mcpd: 536 } };
     if (!window.stockAccount.portfolio) window.stockAccount.portfolio = {};
+
+    // Check if trading account has enough cash
+    if (window.stockAccount.balance < totalCost) {
+        alert(`INSUFFICIENT TRADING CASH!\n\nPurchase Cost: NTND $${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}\nAvailable Trading Cash: NTND $${window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits:2})}\n\nUse [+] ADD FUNDS to transfer capital from your Station Bank, or sell existing shares.`);
+        return;
+    }
+
+    // Deduct purchase cost from stock trading cash
+    window.stockAccount.balance -= totalCost;
     if (!window.stockAccount.portfolio[id]) window.stockAccount.portfolio[id] = 0;
     window.stockAccount.portfolio[id] += qty;
 
@@ -10144,28 +10236,24 @@ window.buyStock = function(id = 'mcpd') {
     let pumpPct = 0.01 + (Math.random() * 0.02) + (Math.min(qty, 100) * 0.0005);
     markets[id].price *= (1 + pumpPct);
 
-    // Buying MCPD stock increases the station's liquid capital / dividend yield
-    let dividendYield = markets[id].price * qty * 0.05;
-
     // FEATURE 6: DRIP Dividend Reinvestment
-    if (window.stockFeatures && window.stockFeatures.dripEnabled) {
+    let dividendYield = markets[id].price * qty * 0.02;
+    if (sfState && sfState.dripEnabled) {
         let dripShares = Math.max(1, Math.floor(dividendYield / markets[id].price));
         window.stockAccount.portfolio[id] += dripShares;
         if (typeof window.broadcastMarketRadio === 'function') {
             window.broadcastMarketRadio(`DRIP REINVESTMENT: +${dripShares} MCPD shares automatically acquired from dividend yield!`);
         }
-    } else {
-        window.stockAccount.balance += dividendYield;
     }
 
-    let isDark = (window.stockFeatures && window.stockFeatures.darkPoolActive);
+    let isDark = (sfState && sfState.darkPoolActive);
+    let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
     if (typeof window.stockLedger !== 'undefined' && !isDark) {
-        let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
-        window.stockLedger.push(`[${time}] BOUGHT ${qty.toLocaleString()} SHARES ${id.toUpperCase()} | VALUATION SURGE: +${(pumpPct*100).toFixed(2)}% | CAPITAL YIELD: +NTND $${dividendYield.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+        window.stockLedger.push(`[${time}] BOUGHT ${qty.toLocaleString()} SHARES ${id.toUpperCase()} @ NTND $${pricePerShare.toLocaleString(undefined, {minimumFractionDigits:2})} | TOTAL COST: NTND $${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})} | REMAINING TRADING CASH: NTND $${window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits:2})}`);
     }
 
     if (typeof addChatMessage !== 'undefined' && !isDark) {
-        addChatMessage("MARKET AI", `ACQUISITION CONFIRMED: Bought ${qty.toLocaleString()} shares of MCPD Stock (${leverage}x Margin). Department valuation surged +${(pumpPct*100).toFixed(2)}%! Station bank account increased.`, "system", false);
+        addChatMessage("MARKET AI", `ACQUISITION CONFIRMED: Bought ${qty.toLocaleString()} shares of ${id.toUpperCase()} (${leverage}x Margin) for NTND $${totalCost.toLocaleString(undefined, {minimumFractionDigits:2})}. Trading Cash: NTND $${window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits:2})}.`, "system", false);
     }
 
     if (typeof window.playTradingSound === 'function') {
@@ -10181,7 +10269,7 @@ window.sellStock = function(id = 'mcpd') {
     let qty = qtyInput ? (parseInt(qtyInput.value, 10) || 10) : 10;
     if (qty <= 0) qty = 10;
 
-    let currentOwned = (window.stockAccount.portfolio && window.stockAccount.portfolio[id]) ? window.stockAccount.portfolio[id] : 0;
+    let currentOwned = (window.stockAccount && window.stockAccount.portfolio && window.stockAccount.portfolio[id]) ? window.stockAccount.portfolio[id] : 0;
     if (currentOwned < qty) {
         alert(`INSUFFICIENT SHARES. You only own ${currentOwned.toLocaleString()} shares of this stock.`);
         return;
@@ -10190,6 +10278,7 @@ window.sellStock = function(id = 'mcpd') {
     const pricePerShare = markets[id].price;
     const totalProceeds = pricePerShare * qty;
 
+    // GAIN THE MONEY into the Stock Trading Cash account!
     window.stockAccount.portfolio[id] -= qty;
     window.stockAccount.balance += totalProceeds;
 
@@ -10197,14 +10286,15 @@ window.sellStock = function(id = 'mcpd') {
     markets[id].price *= (1 - (Math.random() * 0.005));
     if (markets[id].price < 0.01) markets[id].price = 0.01;
 
-    let isDark = (window.stockFeatures && window.stockFeatures.darkPoolActive);
+    let sfState = (window.stockFeatures && window.stockFeatures.state) ? window.stockFeatures.state : window.stockFeatures;
+    let isDark = (sfState && sfState.darkPoolActive);
+    let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
     if (typeof window.stockLedger !== 'undefined' && !isDark) {
-        let time = typeof getCurrentTimeStr !== 'undefined' ? getCurrentTimeStr() : new Date().toLocaleTimeString();
-        window.stockLedger.push(`[${time}] SOLD ${qty.toLocaleString()} SHARES ${id.toUpperCase()} | LIQUIDATED CASH: +NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+        window.stockLedger.push(`[${time}] SOLD ${qty.toLocaleString()} SHARES ${id.toUpperCase()} @ NTND $${pricePerShare.toLocaleString(undefined, {minimumFractionDigits:2})} | LIQUIDATED PROCEEDS: +NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2})} | NEW TRADING CASH: NTND $${window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits:2})}`);
     }
 
     if (typeof addChatMessage !== 'undefined' && !isDark) {
-        addChatMessage("MARKET AI", `LIQUIDATION: Sold ${qty.toLocaleString()} shares of MCPD Stock for NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}.`, "system", false);
+        addChatMessage("MARKET AI", `LIQUIDATION GAIN: Sold ${qty.toLocaleString()} shares of ${id.toUpperCase()}! Gained +NTND $${totalProceeds.toLocaleString(undefined, {minimumFractionDigits:2})} in Stock Trading Cash (New Balance: NTND $${window.stockAccount.balance.toLocaleString(undefined, {minimumFractionDigits:2})}). Use [-] DECREASE FUNDS to withdraw to Station Bank.`, "system", false);
     }
 
     if (typeof window.playTradingSound === 'function') {

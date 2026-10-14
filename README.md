@@ -1,4 +1,4 @@
-# 🚨 MCPD DISPATCH TERMINAL (v6.6.0)
+# 🚨 MCPD DISPATCH TERMINAL (v6.7.0)
 
 > *"Main City Police Department: Protect. Serve. Sterilize."*
 
@@ -7,6 +7,18 @@ Welcome to the **MCPD DISPATCH TERMINAL**, a highly immersive, interactive, term
 📖 **[Read the Official MCPD Lore & Universe Wiki Here](https://github.com/michaelsweet612/MCPD-DISPATCH/wiki)**
 
 > **📱 MOBILE & DESKTOP ARCHITECTURE:** We utilize an immersive Single Page Application (SPA) architecture. The main `index.html` portal serves as a Smart Hardware Selector. Clicking your platform will lock your screen behind a secure, fullscreen **Terminal Authentication Overlay**. Enter your dispatcher credentials to bypass firewalls and boot directly into the live grid!
+
+---
+
+## 🏦 INDEPENDENT STATION BANK ACCOUNT & BROKERAGE LIQUIDITY INTERFACE (v6.7.0)
+
+* **Decoupled Station Bank & Stock Trading Accounts:** The main Station Bank Account (`#dispatcher-money-display` and `#station-bank-balance`) has been completely decoupled from the volatile stock market valuation. Station operational treasury now remains stable and distinct from speculative brokerage balances.
+* **Bi-Directional Capital Transfer Matrix:**
+  * **`[+] ADD FUNDS` (Deposit to Stock):** Dispatchers can transfer custom amounts or presets (e.g., $100M, $1B, or `MAX`) from the Station Bank Account into the Stock Trading Cash account to finance share acquisitions.
+  * **`[-] DECREASE FUNDS` (Withdraw to Station Bank):** Dispatchers can withdraw profits or excess liquidity from the Stock Trading Cash account directly back into the Station Bank Account.
+* **Liquid Selling Realization ("Gain the Money"):** Selling equity (`sellStock`) directly realizes and deposits liquid cash proceeds straight into your Stock Trading Cash account (`#stock-cash-balance`). From there, operators can either re-deploy capital into market plays or withdraw profits to the precinct treasury.
+* **Cost-Controlled Buy Execution:** Equity purchases (`buyStock`) now rigorously verify and deduct purchase costs from available Stock Trading Cash, providing informative warnings if capital transfers are required.
+* **Universal Cross-Platform Synchronization:** Synchronized with identical styling, safeguards, and audio cues across both Desktop and Mobile dispatch terminals.
 
 ---
 

@@ -21,7 +21,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCPD DISPATCH TERMINAL</title>
-    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.6.0">
+    <link rel="stylesheet" href="project_resources/css/styles.css?v=6.7.0">
 
 <style>
 .how-to-tab {
@@ -722,13 +722,15 @@ document.addEventListener('keypress', function(e) {
                     <!-- STOCK ACCOUNT DASHBOARD -->
                     <div id="stock-account-dashboard" style="background: rgba(0, 50, 255, 0.1); border: 1px solid var(--accent-blue); padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                         <div>
-                            <h3 style="margin: 0; color: var(--accent-blue);">🏛️ MCPD TREASURY & BROKERAGE ACCOUNT (CONNECTED TO MCPD STOCK)</h3>
-                            <div style="font-size: 1.2rem; margin-top: 5px;">STATION BANK ACCOUNT: <span id="stock-cash-balance" style="color: var(--accent-green); font-weight: bold;">NTND $9,999,999,999.00</span></div>
+                            <h3 style="margin: 0; color: var(--accent-blue);">🏛️ MCPD BROKERAGE & TRADING ACCOUNT</h3>
+                            <div style="font-size: 1.05rem; margin-top: 5px; color: #60a5fa;">STATION BANK ACCOUNT: <span id="station-bank-balance" style="font-weight: bold; color: #60a5fa;">NTND $9,999,999,999.00</span></div>
+                            <div style="font-size: 1.2rem; margin-top: 3px;">STOCK TRADING CASH: <span id="stock-cash-balance" style="color: var(--accent-green); font-weight: bold;">NTND $5,000,000,000.00</span></div>
                             <div style="font-size: 1rem; color: var(--text-dim);">PORTFOLIO VALUE: <span id="stock-portfolio-value">NTND $1,072,000,000,000.00</span></div>
                             <div id="stock-pnl-display" style="font-size: 0.9rem; margin-top: 4px; color: var(--text-dim);">SESSION PnL: <span style="color:var(--accent-green); font-weight:bold;">+NTND $0.00 (+0.00%)</span></div>
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button onclick="window.addStockFunds()" style="background: var(--bg-deep); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;">[+] ADD FUNDS</button>
+                            <button onclick="window.addStockFunds()" style="background: var(--bg-deep); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;" title="Transfer/Add money from Station Bank to Stock Trading Cash">[+] ADD FUNDS</button>
+                            <button onclick="window.decreaseStockFunds()" style="background: var(--bg-deep); color: var(--panic-orange); border: 1px solid var(--panic-orange); padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;" title="Withdraw/Decrease money from Stock Trading Cash to Station Bank">[-] DECREASE FUNDS</button>
                             <button onclick="window.downloadStockLedger()" style="background: var(--bg-deep); color: var(--text-main); border: 1px solid var(--panel-border); padding: 8px 12px; cursor: pointer; font-size: 0.85rem; border-radius: 3px;">📥 LEDGER</button>
                             <button onclick="window.exportStockLedgerCsv()" style="background: var(--bg-deep); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;" title="Export ledger as CSV">📄 CSV</button>
                             <button onclick="window.exportStockLedgerJson()" style="background: var(--bg-deep); color: #00e5ff; border: 1px solid #00e5ff; padding: 8px 12px; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-radius: 3px;" title="Export ledger as JSON">💾 JSON</button>
@@ -744,7 +746,7 @@ document.addEventListener('keypress', function(e) {
                                 <button class="stock-feature-tab-btn" data-tab="stock-tab-treasury" onclick="window.switchStockFeatureTab('stock-tab-treasury')" style="background: rgba(0,0,0,0.5); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">🏛️ TREASURY & ASSETS</button>
                                 <button class="stock-feature-tab-btn" data-tab="stock-tab-analytics" onclick="window.switchStockFeatureTab('stock-tab-analytics')" style="background: rgba(0,0,0,0.5); color: var(--text-dim); border: 1px solid var(--panel-border); padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 0.8rem; border-radius: 3px;">📊 ANALYTICS & ROBOTICS</button>
                             </div>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: monospace;">TACTICAL EXCHANGE v6.6.0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: monospace;">TACTICAL EXCHANGE v6.7.0</div>
                         </div>
 
                         <!-- TAB 1: ORDERS & EXECUTION (Features 1 - 10) -->
@@ -1665,27 +1667,27 @@ document.addEventListener('keypress', function(e) {
             <button id="close-tencode-modal" style="width: 100%; margin-top: 15px; padding: 10px; background: var(--text-dim); color: #000; border: none; font-weight: bold; cursor: pointer;">CLOSE</button>
         </div>
     </div>
-    <script src="project_resources/js/systems/system_integrity.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/system_integrity.js?v=6.7.0"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="project_resources/js/systems/log_exporter.js?v=6.6.0"></script>
-    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.6.0"></script>
-    <script src="project_resources/js/systems/image_analyzer.js?v=6.6.0"></script>
-    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.6.0"></script>
-    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.6.0"></script>
-    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.6.0"></script>
-    <script src="project_resources/js/events/realistic_debates.js?v=6.6.0"></script>
-    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.6.0"></script>
-    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.6.0"></script>
-    <script src="project_resources/js/events/profanity_events.js?v=6.6.0"></script>
-    <script src="project_resources/js/events/department_complaints.js?v=6.6.0"></script>
-    <script src="project_resources/js/events/meme_events.js?v=6.6.0"></script>
-    <script src="project_resources/js/systems/it_support.js?v=6.6.0"></script>
-    <script src="project_resources/js/systems/direct_messages.js?v=6.6.0"></script>
-    <script src="project_resources/js/systems/audio_engine.js?v=6.6.0"></script>
-    <script src="project_resources/js/systems/stock_exchange_features.js?v=6.6.0"></script>
-    <script src="project_resources/js/core/app_core.js?v=6.6.0"></script>
+    <script src="project_resources/js/systems/log_exporter.js?v=6.7.0"></script>
+    <script src="project_resources/js/dialogue/radio_transmissions.js?v=6.7.0"></script>
+    <script src="project_resources/js/systems/image_analyzer.js?v=6.7.0"></script>
+    <script src="project_resources/js/dialogue/arrest_and_kill_chatter.js?v=6.7.0"></script>
+    <script src="project_resources/js/dialogue/gibberish_responses.js?v=6.7.0"></script>
+    <script src="project_resources/js/dialogue/arrival_chatter.js?v=6.7.0"></script>
+    <script src="project_resources/js/events/realistic_debates.js?v=6.7.0"></script>
+    <script src="project_resources/js/dialogue/chat_reactions.js?v=6.7.0"></script>
+    <script src="project_resources/js/dialogue/npc_ai_dictionary.js?v=6.7.0"></script>
+    <script src="project_resources/js/events/profanity_events.js?v=6.7.0"></script>
+    <script src="project_resources/js/events/department_complaints.js?v=6.7.0"></script>
+    <script src="project_resources/js/events/meme_events.js?v=6.7.0"></script>
+    <script src="project_resources/js/systems/it_support.js?v=6.7.0"></script>
+    <script src="project_resources/js/systems/direct_messages.js?v=6.7.0"></script>
+    <script src="project_resources/js/systems/audio_engine.js?v=6.7.0"></script>
+    <script src="project_resources/js/systems/stock_exchange_features.js?v=6.7.0"></script>
+    <script src="project_resources/js/core/app_core.js?v=6.7.0"></script>
 
     
 
